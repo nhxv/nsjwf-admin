@@ -67,7 +67,7 @@ export default function Layout({ children }) {
               </label> 
             </div>
             <div className="navbar-center">
-              <div className="flex-1 px-2 mx-2 font-bold text-xl">SJWH</div>
+              <div className="flex-1 px-2 mx-2 font-bold text-xl">NSJWF</div>
             </div>
             <div className="navbar-end">
               <div className="dropdown dropdown-end">
