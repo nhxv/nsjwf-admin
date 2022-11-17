@@ -30,22 +30,22 @@ export default function App() {
 
           {/* Finance routes */}
           <Route element={<AdminOutlet />}>
-            <Route path="report" element={<ReportPage />}></Route>
+            <Route path="/report" element={<ReportPage />}></Route>
           </Route>
           <Route element={<MasterOutlet />}>
-            <Route path="purchase" element={<PurchasePage />}></Route>
+            <Route path="/purchase" element={<PurchasePage />}></Route>
           </Route>
-          <Route path="sold" element={<SoldPage />}></Route>
+          <Route path="/sold" element={<SoldPage />}></Route>
 
           {/* Warehouse routes */}
-          <Route path="stock" element={<StockPage />}></Route>
-          <Route path="inbound" element={<InboundPage />}></Route>
-          <Route path="outbound" element={<OutboundPage />}></Route>
+          <Route path="/stock" element={<StockPage />}></Route>
+          <Route path="/inbound" element={<InboundPage />}></Route>
+          <Route path="/outbound" element={<OutboundPage />}></Route>
 
           {/* Configure routes */}
-          <Route path="products" element={<ProductPage />}></Route>
-          <Route path="vendors" element={<VendorPage />}></Route>
-          <Route path="customers" element={<CustomerPage />}></Route>
+          <Route path="/products" element={<ProductPage />}></Route>
+          <Route path="/vendors" element={<VendorPage />}></Route>
+          <Route path="/customers" element={<CustomerPage />}></Route>
         </Route>
         
         <Route path="*" element={<NotFoundPage />}></Route>
