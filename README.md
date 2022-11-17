@@ -17,3 +17,16 @@ Create .env file:
 Run dev server:
 
     npm run dev
+
+## Deployment
+Create project on Vercel, then add env variable:
+
+    VITE_API_URL={your_api_url_here}
+
+Add vercel.json to the root folder of the project:
+
+    {
+        "rewrites":  [
+            {"source": "/(.*)", "destination": "/"}
+        ]
+    }
