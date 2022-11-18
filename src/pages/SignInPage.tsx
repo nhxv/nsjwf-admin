@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { HiExclamationCircle } from "react-icons/hi2";
+import { BiError } from "react-icons/bi";
 import Input from "../components/Input";
+import Spinner from "../components/Spinner";
 import { useFormik } from "formik";
 import { SignInResponse } from "../models/sign-in-response.model";
 import { useNavigate } from "react-router-dom";
@@ -10,6 +11,7 @@ import api from "../stores/api";
 export default function SignInPage() {
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
   const signIn = useAuthStore((state) => state.signIn);
 
   const signInForm = useFormik({
@@ -18,13 +20,16 @@ export default function SignInPage() {
       password: "",
     },
     onSubmit: async (data) => {
+      setLoading(true);
       await api.post<SignInResponse>(`/auth/login`, data)
       .then((res) => {
         const resData: SignInResponse = res.data;
         signIn(resData);
+        setLoading(false);
         navigate("/sold");
       })
       .catch(e => {
+        setLoading(false);
         const error = JSON.parse(JSON.stringify(e));
         setErrorMessage(error.message);
       });
@@ -33,12 +38,12 @@ export default function SignInPage() {
 
   return (
     <>
-      <div className="flex justify-center items-center min-h-screen p-6 bg-base-200">
+      <div className="flex flex-col justify-center items-center min-h-screen p-6 bg-base-200">
         <form onSubmit={signInForm.handleSubmit} className="max-w-5/12 bg-white p-6 rounded-box shadow-md">
           {errorMessage ? (
           <div className="alert alert-error text-red-700 mb-5">
             <div>
-              <HiExclamationCircle className="flex-shrink-0 h-6 w-6"></HiExclamationCircle>
+              <BiError className="flex-shrink-0 h-6 w-6"></BiError>
               <span>{errorMessage}</span>
             </div>
           </div>
@@ -55,6 +60,14 @@ export default function SignInPage() {
           </div>
           <button type="submit" className="btn btn-primary text-white w-full mt-3">Sign in</button>
         </form>
+        {loading ? (
+        <>
+          <div className="mt-4">
+            <Spinner></Spinner>
+          </div>
+        </>
+        ) : <></>}
+
       </div>
     </>
   )

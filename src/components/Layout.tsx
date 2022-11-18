@@ -1,8 +1,8 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { 
-  HiBars3CenterLeft,
-  HiOutlineEllipsisHorizontal, 
-} from "react-icons/hi2";
+  BiMenuAltLeft,
+  BiDotsHorizontalRounded, 
+} from "react-icons/bi";
 import { useAuthStore } from "../stores/auth.store";
 import { Role } from "../commons/role.enum";
 
@@ -63,7 +63,7 @@ export default function Layout({ children }) {
           <nav className="w-full navbar bg-base-100 shadow-md">
             <div className="navbar-start">
               <label htmlFor="my-drawer-3" className="btn btn-square btn-ghost">
-                <HiBars3CenterLeft className="inline-block w-6 h-6"></HiBars3CenterLeft>
+                <BiMenuAltLeft className="inline-block w-8 h-8"></BiMenuAltLeft>
               </label> 
             </div>
             <div className="navbar-center">
@@ -72,7 +72,7 @@ export default function Layout({ children }) {
             <div className="navbar-end">
               <div className="dropdown dropdown-end">
                 <label tabIndex={0} className="btn btn-square btn-ghost">
-                  <HiOutlineEllipsisHorizontal className="inline-block w-6 h-6"></HiOutlineEllipsisHorizontal>
+                  <BiDotsHorizontalRounded className="inline-block w-8 h-8"></BiDotsHorizontalRounded>
                 </label>
                 <ul tabIndex={0} className="dropdown-content menu p-2 shadow-md bg-base-100 rounded-box border border-gray-300 w-52">
                   <li>

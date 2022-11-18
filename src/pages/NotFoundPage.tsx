@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { HiArrowRight } from "react-icons/hi2";
+import { BiRightArrowAlt } from "react-icons/bi";
 
 export default function NotFoundPage() {
   const navigate = useNavigate();
@@ -14,8 +14,8 @@ export default function NotFoundPage() {
     <h1 className="font-bold text-7xl">404</h1>
     <p className="text-xl">This page does not exist.</p>
     <button className="btn btn-primary text-white mt-3" onClick={onBack}>
-      <span className="mr-2">Go to sign in</span> 
-      <HiArrowRight strokeWidth={1}/>
+      <span className="mr-1">Go to sign in</span> 
+      <BiRightArrowAlt className="w-6 h-6" />
     </button>
   </div>
   </>
