@@ -55,7 +55,7 @@ export default function VehicleSearch() {
     <div className="w-12/12 sm:w-12/12 md:w-5/12 mt-12">
       <form onSubmit={searchForm.handleSubmit} className="flex flex-col justify-center">
         <div className="mb-5 flex">
-          <SearchInput id="vehicle-search" name="keyword" placeholder="Search by vehicle's name" 
+          <SearchInput id="vehicle-search" name="keyword" placeholder="Search by license plate" 
           value={searchForm.values.keyword} onChange={searchForm.handleChange} />
           <button type="submit" className="btn btn-accent border-gray-400 ml-2">
             <BiSearch className="w-6 h-6"></BiSearch>
