@@ -1,20 +1,27 @@
-import { useAuthStore } from "./stores/auth.store";
 import {Routes, Route, Navigate} from "react-router-dom";
-import SignInPage from "./pages/SignInPage";
-import PrivateOutlet from "./components/outlets/PrivateOutlet";
-import ReportPage from "./pages/ReportPage";
-import PurchasePage from "./pages/PurchasePage";
-import SoldPage from "./pages/SoldPage";
+
 import MasterOutlet from "./components/outlets/MasterOutlet";
 import AdminOutlet from "./components/outlets/AdminOutlet";
+import PrivateOutlet from "./components/outlets/PrivateOutlet";
+
+import SignInPage from "./pages/SignInPage";
 import NotFoundPage from "./pages/NotFoundPage";
-import StockPage from "./pages/StockPage";
-import InboundPage from "./pages/InboundPage";
-import OutboundPage from "./pages/OutboundPage";
-import ProductPage from "./pages/ProductPage";
-import VendorPage from "./pages/VendorPage";
-import CustomerPage from "./pages/CustomerPage";
 import ProfilePage from "./pages/ProfilePage";
+
+import CustomerOrderPage from "./pages/finance/CustomerOrderPage";
+import CustomerPaymentPage from "./pages/finance/CustomerPaymentPage";
+import CustomerListingPage from "./pages/finance/CustomerListingPage";
+
+import StockPage from "./pages/logistics/StockPage";
+import InboundPage from "./pages/logistics/InboundPage";
+import OutboundPage from "./pages/logistics/OutboundPage";
+
+import ProductPage from "./pages/configure/product-page/ProductPage";
+import VendorPage from "./pages/configure/vendor-page/VendorPage";
+import CustomerPage from "./pages/configure/customer-page/CustomerPage";
+import VehiclePage from "./pages/configure/vehicle-page/VehiclePage";
+import ResetPage from "./pages/test/ResetPage";
+
 
 export default function App() {
   return (
@@ -26,26 +33,32 @@ export default function App() {
 
         {/* Private routes */}
         <Route element={<PrivateOutlet />}>
-          <Route path="profile" element={<ProfilePage />}></Route>
+          <Route path="/profile" element={<ProfilePage />}></Route>
 
-          {/* Finance routes */}
+          {/* Customer routes */}
           <Route element={<AdminOutlet />}>
-            <Route path="/report" element={<ReportPage />}></Route>
+            <Route path="/finance/customer-listing" element={<CustomerListingPage />}></Route>
+            <Route path="/finance/customer-order" element={<CustomerOrderPage />}></Route>
+            <Route path="/finance/customer-payment" element={<CustomerPaymentPage />}></Route>
           </Route>
-          <Route element={<MasterOutlet />}>
-            <Route path="/purchase" element={<PurchasePage />}></Route>
-          </Route>
-          <Route path="/sold" element={<SoldPage />}></Route>
 
-          {/* Warehouse routes */}
-          <Route path="/stock" element={<StockPage />}></Route>
-          <Route path="/inbound" element={<InboundPage />}></Route>
-          <Route path="/outbound" element={<OutboundPage />}></Route>
+          {/* Logistics routes */}
+          <Route path="/logistics/stock" element={<StockPage />}></Route>
+          <Route path="/logistics/inbound" element={<InboundPage />}></Route>
+          <Route path="/logistics/outbound" element={<OutboundPage />}></Route>
 
           {/* Configure routes */}
-          <Route path="/products" element={<ProductPage />}></Route>
-          <Route path="/vendors" element={<VendorPage />}></Route>
-          <Route path="/customers" element={<CustomerPage />}></Route>
+          <Route element={<AdminOutlet />}>
+            <Route path="/configure/product" element={<ProductPage />}></Route>
+            <Route path="/configure/customer" element={<CustomerPage />}></Route>
+            <Route path="/configure/vendor" element={<VendorPage />}></Route>
+            <Route path="/configure/vehicle" element={<VehiclePage />}></Route>
+          </Route>
+
+          {/* Test routes */}
+          <Route element={<MasterOutlet />}>
+            <Route path="/test/reset" element={<ResetPage />}></Route>
+          </Route>
         </Route>
         
         <Route path="*" element={<NotFoundPage />}></Route>

@@ -19,7 +19,8 @@ module.exports = {
       {
         mytheme: {
           "primary": "#2563eb", // bg-blue-600
-          "secondary": "#db2777", // bg-purple-600
+          "secondary": "#1f2937", // bg-gray-800
+          "accent": "#d1d5db", // bg-gray-400
           "base-100": "#fff",
           "info": "#dbeafe", // bg-blue-100
           "success": "#dcfce7", // bg-green-100

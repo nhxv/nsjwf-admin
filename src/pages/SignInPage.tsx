@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { BiError } from "react-icons/bi";
-import Input from "../components/Input";
+import TextInput from "../components/TextInput";
 import Spinner from "../components/Spinner";
 import { useFormik } from "formik";
 import { SignInResponse } from "../models/sign-in-response.model";
@@ -26,12 +26,14 @@ export default function SignInPage() {
         const resData: SignInResponse = res.data;
         signIn(resData);
         setLoading(false);
-        navigate("/sold");
+        signInForm.resetForm();
+        navigate("/logistics/stock");
       })
       .catch(e => {
         setLoading(false);
         const error = JSON.parse(JSON.stringify(e));
         setErrorMessage(error.message);
+        signInForm.resetForm();
       });
     }
   });
@@ -50,13 +52,13 @@ export default function SignInPage() {
           )  : <></>}
           <div className="mb-5">
             <label htmlFor="username" className="font-medium text-gray-600 mb-4">Username</label>
-            <Input id="username" type="text" placeholder={`Username`} 
-            value={signInForm.values.username} onChange={signInForm.handleChange}></Input>
+            <TextInput id="username" name="username" type="text" placeholder={`Username`} 
+            value={signInForm.values.username} onChange={signInForm.handleChange}></TextInput>
           </div>
           <div className="my-5">
             <label htmlFor="password" className="font-medium text-gray-600">Password</label>
-            <Input id="password" type="password" placeholder={`Password`}
-            value={signInForm.values.password} onChange={signInForm.handleChange}></Input>
+            <TextInput id="password" type="password" name="password" placeholder={`Password`}
+            value={signInForm.values.password} onChange={signInForm.handleChange}></TextInput>
           </div>
           <button type="submit" className="btn btn-primary text-white w-full mt-3">Sign in</button>
         </form>
@@ -67,7 +69,6 @@ export default function SignInPage() {
           </div>
         </>
         ) : <></>}
-
       </div>
     </>
   )
