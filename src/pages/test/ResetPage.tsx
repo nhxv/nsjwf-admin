@@ -26,7 +26,7 @@ export default function ResetPage() {
       <div className="flex flex-col items-center p-6 min-h-screen">
         <h1 className="font-bold text-xl">Version 1</h1>
         <div className="mt-8 flex flex-col justify-center items-center">
-          <h2 className="font-medium underline underline-offset-4">Phase 1: Configure</h2>
+          <h2 className="font-medium underline underline-offset-4">Configure</h2>
           <button className="btn btn-secondary text-white mt-4" onClick={onReset}>
             <span>Reset configured data</span>
             <BiReset className="w-6 h-6 ml-1"></BiReset>
@@ -41,7 +41,7 @@ export default function ResetPage() {
         </div>
 
         <div className="mt-8 flex flex-col justify-center items-center">
-          <h2 className="font-medium underline underline-offset-4">Phase 2: Stock</h2>
+          <h2 className="font-medium underline underline-offset-4">Stock</h2>
           <p className="mt-4">(Incoming)</p>
         </div>
       </div>
