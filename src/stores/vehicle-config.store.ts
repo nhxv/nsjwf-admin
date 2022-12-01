@@ -17,7 +17,7 @@ export const useVehicleConfigStore = create<VehicleConfigState>((set) => ({
     nickname: "",
     volume: 0,
   },
-  formType: FormType.ADD,
+  formType: FormType.CREATE,
   editVehicleConfig: (editedVehicle) => {
     set((state) => ({vehicle: {
       ...state.vehicle,
@@ -40,6 +40,6 @@ export const useVehicleConfigStore = create<VehicleConfigState>((set) => ({
       nickname: "",
       volume: 0,
     }}));
-    set({formType: FormType.ADD});
+    set({formType: FormType.CREATE});
   }
 }));

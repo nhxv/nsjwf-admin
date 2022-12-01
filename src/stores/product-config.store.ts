@@ -10,7 +10,7 @@ interface ProductConfigState {
 
 export const useProductConfigStore = create<ProductConfigState>((set) => ({
   product: {id: 0, name: "", discontinued: false},
-  formType: FormType.ADD,
+  formType: FormType.CREATE,
   editProductConfig: (editedProduct) => {
     set((state) => ({product: {
       ...state.product, 
@@ -22,6 +22,6 @@ export const useProductConfigStore = create<ProductConfigState>((set) => ({
   },
   clearProductConfig: () => {
     set((state) => ({product: {...state.product, id: 0, name: "", discontinued: false}}));
-    set({formType: FormType.ADD});
+    set({formType: FormType.CREATE});
   }
 }));

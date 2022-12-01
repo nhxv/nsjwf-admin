@@ -8,11 +8,11 @@ import SignInPage from "./pages/SignInPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import ProfilePage from "./pages/ProfilePage";
 
-import CustomerOrderPage from "./pages/finance/CustomerOrderPage";
-import CustomerPaymentPage from "./pages/finance/CustomerPaymentPage";
-import CustomerListingPage from "./pages/finance/CustomerListingPage";
+import CustomerOrderPage from "./pages/finance/customer/CustomerOrderPage";
+import CustomerPaymentPage from "./pages/finance/customer/CustomerPaymentPage";
+import CustomerListingPage from "./pages/finance/customer/CustomerListingPage";
 
-import StockPage from "./pages/logistics/StockPage";
+import StockPage from "./pages/logistics/stock-page/StockPage";
 import InboundPage from "./pages/logistics/InboundPage";
 import OutboundPage from "./pages/logistics/OutboundPage";
 
@@ -35,8 +35,10 @@ export default function App() {
         <Route element={<PrivateOutlet />}>
           <Route path="/profile" element={<ProfilePage />}></Route>
 
-          {/* Customer routes */}
+          {/* Finance routes */}
           <Route element={<AdminOutlet />}>
+
+            {/* Customer routes */}
             <Route path="/finance/customer-listing" element={<CustomerListingPage />}></Route>
             <Route path="/finance/customer-order" element={<CustomerOrderPage />}></Route>
             <Route path="/finance/customer-payment" element={<CustomerPaymentPage />}></Route>

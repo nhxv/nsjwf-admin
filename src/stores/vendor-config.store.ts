@@ -18,7 +18,7 @@ export const useVendorConfigStore = create<VendorConfigState>((set) => ({
     presentative: "", 
     discontinued: false
   },
-  formType: FormType.ADD,
+  formType: FormType.CREATE,
   editVendorConfig: (editedVendor) => {
     set((state) => ({vendor: {
       ...state.vendor, 
@@ -43,6 +43,6 @@ export const useVendorConfigStore = create<VendorConfigState>((set) => ({
       presentative: "", 
       discontinued: false
     }}));
-    set({formType: FormType.ADD});
+    set({formType: FormType.CREATE});
   }
 }));

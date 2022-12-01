@@ -10,8 +10,10 @@ import api from "../stores/api";
 
 export default function SignInPage() {
   const navigate = useNavigate();
-  const [errorMessage, setErrorMessage] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
+  const [formState, setFormState] = useState({
+    error: "",
+    loading: false,
+  });
   const signIn = useAuthStore((state) => state.signIn);
 
   const signInForm = useFormik({
@@ -20,19 +22,20 @@ export default function SignInPage() {
       password: "",
     },
     onSubmit: async (data) => {
-      setLoading(true);
+      setFormState(prev => ({...prev, loading: true}));
       await api.post<SignInResponse>(`/auth/login`, data)
       .then((res) => {
         const resData: SignInResponse = res.data;
         signIn(resData);
-        setLoading(false);
+        setFormState(prev => ({...prev, loading: false}));
         signInForm.resetForm();
         navigate("/logistics/stock");
       })
       .catch(e => {
-        setLoading(false);
-        const error = JSON.parse(JSON.stringify(e));
-        setErrorMessage(error.message);
+        const error = JSON.parse(JSON.stringify(
+          e.response ? e.response.data.error : e
+        ));
+        setFormState(prev => ({...prev, error: error.message, loading: false}));
         signInForm.resetForm();
       });
     }
@@ -42,27 +45,33 @@ export default function SignInPage() {
     <>
       <div className="flex flex-col justify-center items-center min-h-screen p-6 bg-base-200">
         <form onSubmit={signInForm.handleSubmit} className="max-w-5/12 bg-white p-6 rounded-box shadow-md">
-          {errorMessage ? (
+          {formState.error ? (
           <div className="alert alert-error text-red-700 mb-5">
             <div>
               <BiError className="flex-shrink-0 h-6 w-6"></BiError>
-              <span>{errorMessage}</span>
+              <span>{formState.error}</span>
             </div>
           </div>
           )  : <></>}
           <div className="mb-5">
-            <label htmlFor="username" className="font-medium text-gray-600 mb-4">Username</label>
+            <label htmlFor="username" className="font-medium inline-block mb-2">Username</label>
             <TextInput id="username" name="username" type="text" placeholder={`Username`} 
-            value={signInForm.values.username} onChange={signInForm.handleChange}></TextInput>
+            value={signInForm.values.username} 
+            onChange={signInForm.handleChange}
+            onBlur={signInForm.handleBlur}
+            ></TextInput>
           </div>
           <div className="my-5">
-            <label htmlFor="password" className="font-medium text-gray-600">Password</label>
+            <label htmlFor="password" className="font-medium inline-block mb-2">Password</label>
             <TextInput id="password" type="password" name="password" placeholder={`Password`}
-            value={signInForm.values.password} onChange={signInForm.handleChange}></TextInput>
+            value={signInForm.values.password} 
+            onChange={signInForm.handleChange}
+            onBlur={signInForm.handleBlur}
+            ></TextInput>
           </div>
           <button type="submit" className="btn btn-primary text-white w-full mt-3">Sign in</button>
         </form>
-        {loading ? (
+        {formState.loading ? (
         <>
           <div className="mt-4">
             <Spinner></Spinner>

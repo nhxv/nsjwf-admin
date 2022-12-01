@@ -9,9 +9,11 @@ import { useVehicleConfigStore } from "../../../../stores/vehicle-config.store";
 import { FormType } from "../../../../commons/form-type.enum";
 
 export default function VehicleForm() {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [successMessage, setSuccessMessage] = useState<string>("");
-  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [formState, setFormState] = useState({
+    success: "",
+    error: "",
+    loading: false,
+  });
   const { vehicle, formType } = useVehicleConfigStore((state) => {
     return state;
   });
@@ -27,44 +29,44 @@ export default function VehicleForm() {
       volume: (formType === FormType.EDIT ? vehicle.volume : 0),
     },
     onSubmit: async (data) => {
-      setLoading(true);
+      setFormState(prev => ({...prev, loading: true}));
 
       if (formType === FormType.EDIT) {
         // edit mode
         try {
           const res = await api.put<VehicleResponse>(`/vehicles/${vehicle.id}`, data);
-          setLoading(false);
-          setSuccessMessage("Updated successfully.")
+          setFormState(prev => ({
+            ...prev, success: "Updated successfully.", loading: false
+          }));
           setTimeout(() => {
-            setSuccessMessage("");
+            setFormState(prev => ({...prev, success: ""}));
             clearVehicleConfig();
-          }, 1000);
-          vehicleForm.resetForm();
-        } catch (e) {
-          setLoading(false);
-          const error = JSON.parse(JSON.stringify(e));
-          setErrorMessage(error.message);
-          setTimeout(() => {
-            setErrorMessage("");
           }, 2000);
-          vehicleForm.resetForm();
+        } catch (e) {
+          const error = JSON.parse(JSON.stringify(
+            e.response ? e.response.data.error : e
+          ));
+          setFormState(prev => ({...prev, error: error.message, loading: false}));
+          setTimeout(() => {
+            setFormState(prev => ({...prev, error: ""}));
+          }, 2000);
         }
-      } else if (formType === FormType.ADD) {
+      } else if (formType === FormType.CREATE) {
         // add mode
         try {
           const res = await api.post<VehicleResponse>(`/vehicles`, data);
-          setLoading(false);
-          setSuccessMessage("Added successfully.")
+          setFormState(prev => ({...prev, success: "Added successfully.", loading: false}));
           setTimeout(() => {
-            setSuccessMessage("");
+            setFormState(prev => ({...prev, success: ""}));
           }, 2000);
           vehicleForm.resetForm();
         } catch (e) {
-          setLoading(false);
-          const error = JSON.parse(JSON.stringify(e));
-          setErrorMessage(error.message);
+          const error = JSON.parse(JSON.stringify(
+            e.response ? e.response.data.error : e
+          ));
+          setFormState(prev => ({...prev, error: error.message, loading: false}));
           setTimeout(() => {
-            setErrorMessage("");
+            setFormState(prev => ({...prev, error: ""}));
           }, 2000);
           vehicleForm.resetForm();
         }
@@ -89,21 +91,30 @@ export default function VehicleForm() {
   <>
     <form onSubmit={vehicleForm.handleSubmit}>
       <div className="mb-5">
-        <label htmlFor="license-plate" className="font-medium">License Plate</label>
+        <label htmlFor="license-plate" className="font-medium inline-block mb-2">License Plate</label>
         <TextInput id="license-plate" type="text" name="licensePlate" placeholder={`License Plate`} 
-        value={vehicleForm.values.licensePlate} onChange={vehicleForm.handleChange}></TextInput>
+        value={vehicleForm.values.licensePlate} 
+        onChange={vehicleForm.handleChange}
+        onBlur={vehicleForm.handleBlur}
+        ></TextInput>
       </div>
 
       <div className="mb-5">
-        <label htmlFor="nickname" className="font-medium">Nickname</label>
+        <label htmlFor="nickname" className="font-medium inline-block mb-2">Nickname</label>
         <TextInput id="nickname" type="text" name="nickname" placeholder={`Nickname`} 
-        value={vehicleForm.values.nickname} onChange={vehicleForm.handleChange}></TextInput>
+        value={vehicleForm.values.nickname} 
+        onChange={vehicleForm.handleChange}
+        onBlur={vehicleForm.handleBlur}
+        ></TextInput>
       </div>
 
       <div className="mb-5">
-        <label htmlFor="volume" className="font-medium">Volume</label>
+        <label htmlFor="volume" className="font-medium inline-block mb-2">Volume</label>
         <TextInput id="volume" type="number" name="volume" placeholder={`Volume`} 
-        value={vehicleForm.values.volume} onChange={vehicleForm.handleChange}></TextInput>
+        value={vehicleForm.values.volume} 
+        onChange={vehicleForm.handleChange}
+        onBlur={vehicleForm.handleBlur}
+        ></TextInput>
       </div>
 
       <div className="mb-5 flex items-center">
@@ -127,33 +138,33 @@ export default function VehicleForm() {
       </button>
 
       <button type="button" className="mt-3 btn btn-accent w-full" onClick={onClear}>
-        <span>Clear form</span>
+        <span>Clear change(s)</span>
       </button>
 
       <div>
-        {loading ? (
+        {formState.loading ? (
         <>
           <div className="my-5 flex justify-center">
             <Spinner></Spinner>
           </div>
         </>
         ) : <></>}
-        {successMessage ? (
+        {formState.success ? (
         <>
           <div className="my-5 alert alert-success text-green-700">
             <div>
               <BiCheckDouble className="flex-shrink-0 w-6 h-6"></BiCheckDouble>
-              <span>{successMessage}</span>
+              <span>{formState.success}</span>
             </div>
           </div>
         </>
         ) : (<></>)}
-        {errorMessage ? (
+        {formState.error ? (
         <>
           <div className="my-5 alert alert-error text-red-700">
             <div>
               <BiError className="flex-shrink-0 w-6 h-6"></BiError>
-              <span>{errorMessage}</span>
+              <span>{formState.error}</span>
             </div>
           </div>
         </>

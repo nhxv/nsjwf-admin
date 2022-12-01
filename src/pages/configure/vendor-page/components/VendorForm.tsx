@@ -9,9 +9,11 @@ import { useVendorConfigStore } from "../../../../stores/vendor-config.store";
 import { FormType } from "../../../../commons/form-type.enum";
 
 export default function VendorForm() {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [successMessage, setSuccessMessage] = useState<string>("");
-  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [formState, setFormState] = useState({
+    success: "",
+    error: "",
+    loading: false,
+  });
   const { vendor, formType } = useVendorConfigStore((state) => {
     return state;
   });
@@ -28,44 +30,44 @@ export default function VendorForm() {
       discontinued: (formType === FormType.EDIT ? vendor.discontinued : false),
     },
     onSubmit: async (data) => {
-      setLoading(true);
+      setFormState(prev => ({...prev, loading: true}));
 
       if (formType === FormType.EDIT) {
         // edit mode
         try {
           const res = await api.put<VendorResponse>(`/vendors/${vendor.id}`, data);
-          setLoading(false);
-          setSuccessMessage("Updated successfully.")
+          setFormState(prev => ({
+            ...prev, success: "Updated successfully.", loading: false
+          }));
           setTimeout(() => {
-            setSuccessMessage("");
+            setFormState(prev => ({...prev, success: ""}));
             clearVendorConfig();
-          }, 1000);
-          vendorForm.resetForm();
-        } catch (e) {
-          setLoading(false);
-          const error = JSON.parse(JSON.stringify(e));
-          setErrorMessage(error.message);
-          setTimeout(() => {
-            setErrorMessage("");
           }, 2000);
-          vendorForm.resetForm();
+        } catch (e) {
+          const error = JSON.parse(JSON.stringify(
+            e.response ? e.response.data.error : e
+          ));
+          setFormState(prev => ({...prev, error: error.message, loading: false}));
+          setTimeout(() => {
+            setFormState(prev => ({...prev, error: ""}));
+          }, 2000);
         }
-      } else if (formType === FormType.ADD) {
+      } else if (formType === FormType.CREATE) {
         // add mode
         try {
           const res = await api.post<VendorResponse>(`/vendors`, data);
-          setLoading(false);
-          setSuccessMessage("Added successfully.")
+          setFormState(prev => ({...prev, success: "Added successfully.", loading: false}));
           setTimeout(() => {
-            setSuccessMessage("");
+            setFormState(prev => ({...prev, success: ""}));
           }, 2000);
           vendorForm.resetForm();
         } catch (e) {
-          setLoading(false);
-          const error = JSON.parse(JSON.stringify(e));
-          setErrorMessage(error.message);
+          const error = JSON.parse(JSON.stringify(
+            e.response ? e.response.data.error : e
+          ));
+          setFormState(prev => ({...prev, error: error.message, loading: false}));
           setTimeout(() => {
-            setErrorMessage("");
+            setFormState(prev => ({...prev, error: ""}));
           }, 2000);
           vendorForm.resetForm();
         }
@@ -91,33 +93,48 @@ export default function VendorForm() {
   <>
     <form onSubmit={vendorForm.handleSubmit}>
       <div className="mb-5">
-        <label htmlFor="name" className="font-medium">Name</label>
+        <label htmlFor="name" className="font-medium inline-block mb-2">Name</label>
         <TextInput id="name" type="text" name="name" placeholder={`Name`} 
-        value={vendorForm.values.name} onChange={vendorForm.handleChange}></TextInput>
+        value={vendorForm.values.name} 
+        onChange={vendorForm.handleChange}
+        onBlur={vendorForm.handleBlur}
+        ></TextInput>
       </div>
 
       <div className="mb-5">
-        <label htmlFor="address" className="font-medium">Address</label>
+        <label htmlFor="address" className="font-medium inline-block mb-2">Address</label>
         <TextInput id="address" type="text" name="address" placeholder={`Address`} 
-        value={vendorForm.values.address} onChange={vendorForm.handleChange}></TextInput>
+        value={vendorForm.values.address} 
+        onChange={vendorForm.handleChange}
+        onBlur={vendorForm.handleBlur}
+        ></TextInput>
       </div>
 
       <div className="mb-5">
-        <label htmlFor="phone" className="font-medium">Phone</label>
+        <label htmlFor="phone" className="font-medium inline-block mb-2">Phone</label>
         <TextInput id="phone" type="text" name="phone" placeholder={`Phone`} 
-        value={vendorForm.values.phone} onChange={vendorForm.handleChange}></TextInput>
+        value={vendorForm.values.phone} 
+        onChange={vendorForm.handleChange}
+        onBlur={vendorForm.handleBlur}
+        ></TextInput>
       </div>
 
       <div className="mb-5">
-        <label htmlFor="email" className="font-medium">Email</label>
+        <label htmlFor="email" className="font-medium inline-block mb-2">Email</label>
         <TextInput id="email" type="email" name="email" placeholder={`Email`} 
-        value={vendorForm.values.email} onChange={vendorForm.handleChange}></TextInput>
+        value={vendorForm.values.email} 
+        onChange={vendorForm.handleChange}
+        onBlur={vendorForm.handleBlur}
+        ></TextInput>
       </div>
 
       <div className="mb-5">
-        <label htmlFor="presentative" className="font-medium">Presentative</label>
+        <label htmlFor="presentative" className="font-medium inline-block mb-2">Presentative</label>
         <TextInput id="presentative" type="presentative" name="presentative" placeholder={`Presentative`} 
-        value={vendorForm.values.presentative} onChange={vendorForm.handleChange}></TextInput>
+        value={vendorForm.values.presentative} 
+        onChange={vendorForm.handleChange}
+        onBlur={vendorForm.handleBlur}
+        ></TextInput>
       </div>
       
       <div className="mb-5 flex items-center">
@@ -131,32 +148,32 @@ export default function VendorForm() {
         <span>{formType} vendor</span>
       </button>
       <button type="button" className="mt-3 btn btn-accent w-full" onClick={onClear}>
-        <span>Clear form</span>
+        <span>Clear change(s)</span>
       </button>
       <div>
-        {loading ? (
+        {formState.loading ? (
         <>
           <div className="my-5 flex justify-center">
             <Spinner></Spinner>
           </div>
         </>
         ) : <></>}
-        {successMessage ? (
+        {formState.success ? (
         <>
           <div className="my-5 alert alert-success text-green-700">
             <div>
               <BiCheckDouble className="flex-shrink-0 w-6 h-6"></BiCheckDouble>
-              <span>{successMessage}</span>
+              <span>{formState.success}</span>
             </div>
           </div>
         </>
         ) : (<></>)}
-        {errorMessage ? (
+        {formState.error ? (
         <>
           <div className="my-5 alert alert-error text-red-700">
             <div>
               <BiError className="flex-shrink-0 w-6 h-6"></BiError>
-              <span>{errorMessage}</span>
+              <span>{formState.error}</span>
             </div>
           </div>
         </>

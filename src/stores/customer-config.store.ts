@@ -18,7 +18,7 @@ export const useCustomerConfigStore = create<CustomerConfigState>((set) => ({
     presentative: "", 
     discontinued: false
   },
-  formType: FormType.ADD,
+  formType: FormType.CREATE,
   editCustomerConfig: (editedCustomer) => {
     set((state) => ({customer: {
       ...state.customer, 
@@ -43,6 +43,6 @@ export const useCustomerConfigStore = create<CustomerConfigState>((set) => ({
       presentative: "", 
       discontinued: false
     }}));
-    set({formType: FormType.ADD});
+    set({formType: FormType.CREATE});
   }
 }));

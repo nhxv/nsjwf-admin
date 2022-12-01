@@ -9,9 +9,11 @@ import { useProductConfigStore } from "../../../../stores/product-config.store";
 import { FormType } from "../../../../commons/form-type.enum";
 
 export default function ProductForm() {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [successMessage, setSuccessMessage] = useState<string>("");
-  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [formState, setFormState] = useState({
+    success: "",
+    error: "",
+    loading: false,
+  });
   const { product, formType } = useProductConfigStore((state) => {
     return state;
   });
@@ -24,44 +26,44 @@ export default function ProductForm() {
       discontinued: (formType === FormType.EDIT ? product.discontinued : false),
     },
     onSubmit: async (data) => {
-      setLoading(true);
+      setFormState(prev => ({...prev, loading: true}));
 
       if (formType === FormType.EDIT) {
         // edit mode
         try {
           const res = await api.put<ProductResponse>(`/products/${product.id}`, data);
-          setLoading(false);
-          setSuccessMessage("Updated successfully.")
+          setFormState(prev => ({
+            ...prev, success: "Updated successfully.", loading: false
+          }));
           setTimeout(() => {
-            setSuccessMessage("");
+            setFormState(prev => ({...prev, success: ""}));
             clearProductConfig();
           }, 2000);
-          productForm.resetForm();
         } catch (e) {
-          setLoading(false);
-          const error = JSON.parse(JSON.stringify(e));
-          setErrorMessage(error.message);
+          const error = JSON.parse(JSON.stringify(
+            e.response ? e.response.data.error : e
+          ));
+          setFormState(prev => ({...prev, error: error.message, loading: false}));
           setTimeout(() => {
-            setErrorMessage("");
+            setFormState(prev => ({...prev, error: ""}));
           }, 2000);
-          productForm.resetForm();
         }
-      } else if (formType === FormType.ADD) {
+      } else if (formType === FormType.CREATE) {
         // add mode
         try {
           const res = await api.post<ProductResponse>(`/products`, data);
-          setLoading(false);
-          setSuccessMessage("Added successfully.")
+          setFormState(prev => ({...prev, success: "Added successfully.", loading: false}));
           setTimeout(() => {
-            setSuccessMessage("");
+            setFormState(prev => ({...prev, success: ""}));
           }, 2000);
           productForm.resetForm();
         } catch (e) {
-          setLoading(false);
-          const error = JSON.parse(JSON.stringify(e));
-          setErrorMessage(error.message);
+          const error = JSON.parse(JSON.stringify(
+            e.response ? e.response.data.error : e
+          ));
+          setFormState(prev => ({...prev, error: error.message, loading: false}));
           setTimeout(() => {
-            setErrorMessage("");
+            setFormState(prev => ({...prev, error: ""}));
           }, 2000);
           productForm.resetForm();
         }
@@ -83,9 +85,12 @@ export default function ProductForm() {
   <>
     <form onSubmit={productForm.handleSubmit}>
       <div className="mb-5">
-        <label htmlFor="name" className="font-medium">Name</label>
+        <label htmlFor="name" className="font-medium inline-block mb-2">Name</label>
         <TextInput id="name" type="text" name="name" placeholder={`Name`} 
-        value={productForm.values.name} onChange={productForm.handleChange}></TextInput>
+        value={productForm.values.name} 
+        onChange={productForm.handleChange}
+        onBlur={productForm.handleBlur}
+        ></TextInput>
       </div>
       <div className="mb-5 flex items-center">
         <input id="discontinued" name="discontinued" type="checkbox" 
@@ -98,32 +103,32 @@ export default function ProductForm() {
         <span>{formType} product</span>
       </button>
       <button type="button" className="mt-3 btn btn-accent w-full" onClick={onClear}>
-        <span>Clear form</span>
+        <span>Clear change(s)</span>
       </button>
       <div>
-        {loading ? (
+        {formState.loading ? (
         <>
           <div className="my-5 flex justify-center">
             <Spinner></Spinner>
           </div>
         </>
         ) : <></>}
-        {successMessage ? (
+        {formState.success ? (
         <>
           <div className="my-5 alert alert-success text-green-700">
             <div>
               <BiCheckDouble className="flex-shrink-0 w-6 h-6"></BiCheckDouble>
-              <span>{successMessage}</span>
+              <span>{formState.success}</span>
             </div>
           </div>
         </>
         ) : (<></>)}
-        {errorMessage ? (
+        {formState.error ? (
         <>
           <div className="my-5 alert alert-error text-red-700">
             <div>
               <BiError className="flex-shrink-0 w-6 h-6"></BiError>
-              <span>{errorMessage}</span>
+              <span>{formState.error}</span>
             </div>
           </div>
         </>
