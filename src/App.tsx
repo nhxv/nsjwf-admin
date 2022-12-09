@@ -8,13 +8,14 @@ import SignInPage from "./pages/SignInPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import ProfilePage from "./pages/ProfilePage";
 
-import CustomerOrderPage from "./pages/finance/customer/CustomerOrderPage";
-import CustomerPaymentPage from "./pages/finance/customer/CustomerPaymentPage";
-import CustomerListingPage from "./pages/finance/customer/CustomerListingPage";
+import CustomerOrderPage from "./pages/finance/customer/customer-order-page/CustomerOrderPage";
+import BackorderPage from "./pages/finance/customer/backorder-page/BackorderPage";
+import BackorderListPage from "./pages/finance/customer/backorder-list-page/BackorderListPage";
+import VendorOrderPage from "./pages/finance/vendor/vendor-order-page/VendorOrderPage";
 
 import StockPage from "./pages/logistics/stock-page/StockPage";
-import InboundPage from "./pages/logistics/InboundPage";
-import OutboundPage from "./pages/logistics/OutboundPage";
+import InboundPage from "./pages/logistics/inbound-page/InboundPage";
+import OutboundPage from "./pages/logistics/outbound-page/OutboundPage";
 
 import ProductPage from "./pages/configure/product-page/ProductPage";
 import VendorPage from "./pages/configure/vendor-page/VendorPage";
@@ -39,9 +40,18 @@ export default function App() {
           <Route element={<AdminOutlet />}>
 
             {/* Customer routes */}
-            <Route path="/finance/customer-listing" element={<CustomerListingPage />}></Route>
-            <Route path="/finance/customer-order" element={<CustomerOrderPage />}></Route>
-            <Route path="/finance/customer-payment" element={<CustomerPaymentPage />}></Route>
+            <Route path="/finance/customer-order" element={<CustomerOrderPage />}>
+              <Route path=":code" element={<CustomerOrderPage />}></Route>
+            </Route>
+            <Route path="/finance/backorder" element={<BackorderPage />}>
+              <Route path=":id" element={<BackorderPage />}></Route>
+            </Route>
+            <Route path="/finance/backorder-list" element={<BackorderListPage />}></Route>
+
+            {/* Vendor routes */}
+            <Route path="/finance/vendor-order" element={<VendorOrderPage />}>
+              <Route path=":code" element={<VendorOrderPage />}></Route>
+            </Route>
           </Route>
 
           {/* Logistics routes */}

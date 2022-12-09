@@ -153,14 +153,14 @@ export default function VendorForm() {
       <div>
         {formState.loading ? (
         <>
-          <div className="my-5 flex justify-center">
+          <div className="mt-5 flex justify-center">
             <Spinner></Spinner>
           </div>
         </>
         ) : <></>}
         {formState.success ? (
         <>
-          <div className="my-5 alert alert-success text-green-700">
+          <div className="mt-5 alert alert-success text-green-700 flex justify-center">
             <div>
               <BiCheckDouble className="flex-shrink-0 w-6 h-6"></BiCheckDouble>
               <span>{formState.success}</span>
@@ -170,7 +170,7 @@ export default function VendorForm() {
         ) : (<></>)}
         {formState.error ? (
         <>
-          <div className="my-5 alert alert-error text-red-700">
+          <div className="mt-5 alert alert-error text-red-700 flex justify-center">
             <div>
               <BiError className="flex-shrink-0 w-6 h-6"></BiError>
               <span>{formState.error}</span>

@@ -27,7 +27,7 @@ export default function ProductStockForm({ initialData, stocks, onClear }) {
           reqData.push(item);
         }
         const res = await api.put(
-          `/product-stock/${ProductStockChangeReason.UNKNOWN}`, 
+          `/product-stock/${ProductStockChangeReason.SELF_EDIT}`, 
           reqData
         );
         setFormState(prev => ({...prev, success: "Update stock successfully.", loading: false}));

@@ -29,7 +29,7 @@ export default function SignInPage() {
         signIn(resData);
         setFormState(prev => ({...prev, loading: false}));
         signInForm.resetForm();
-        navigate("/logistics/stock");
+        navigate("/logistics/outbound");
       })
       .catch(e => {
         const error = JSON.parse(JSON.stringify(

@@ -30,8 +30,15 @@ export default function ResetPage() {
           setMessage("");
         }, 2000);
       }, 2000);
-    } catch (error) {
-      console.log(error);
+    } catch (e) {
+      const error = JSON.parse(JSON.stringify(
+        e.response ? e.response.data.error : e
+      ));
+      console.log(error.message);
+      setMessage(error.message);
+      setTimeout(() => {
+        setMessage("");
+      }, 2000);
     }
   }
 
@@ -60,6 +67,11 @@ export default function ResetPage() {
             <span>Reset stock</span>
             <BiReset className="w-6 h-6 ml-1"></BiReset>
           </button>
+        </div>
+
+        <div className="mb-8 flex flex-col justify-center items-center">
+          <h2 className="font-medium underline underline-offset-4">Order</h2>
+          <p className="mt-2">(Nothing to click here.)</p>
         </div>
       </div>
     </>

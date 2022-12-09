@@ -16,9 +16,10 @@ export default function Layout({ children }) {
     {
       name: "Finance",
       subItems: [
-        {itemName: "Customer Listing", href: "/finance/customer-listing", visible: [Role.MASTER, Role.ADMIN]},
         {itemName: "Customer Order", href: "/finance/customer-order", visible: [Role.MASTER, Role.ADMIN]},
-        {itemName: "Customer Payment", href: "/finance/customer-payment", visible: [Role.MASTER, Role.ADMIN]},
+        {itemName: "Draft Backorder", href: "/finance/backorder", visible: [Role.MASTER, Role.ADMIN]},
+        {itemName: "View Backorder", href: "/finance/backorder-list", visible: [Role.MASTER, Role.ADMIN]},
+        {itemName: "Vendor Order", href: "/finance/vendor-order", visible: [Role.MASTER, Role.ADMIN]},
       ],
       visible: [Role.MASTER, Role.ADMIN],
     },

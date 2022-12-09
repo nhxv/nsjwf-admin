@@ -65,7 +65,7 @@ export default function CustomerSearch() {
         <div className="mb-5 flex">
           <SearchInput id="customer-search" name="keyword" placeholder="Search by customer's name" 
           value={searchForm.values.keyword} onChange={searchForm.handleChange} />
-          <button type="submit" className="btn btn-accent border-gray-400 ml-2">
+          <button type="submit" className="btn btn-accent border-2 ml-2">
             <BiSearch className="w-6 h-6"></BiSearch>
           </button>
         </div>

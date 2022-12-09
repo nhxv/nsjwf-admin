@@ -7,6 +7,7 @@ import Spinner from "../../../../components/Spinner";
 import TextInput from "../../../../components/TextInput";
 import { useCustomerConfigStore } from "../../../../stores/customer-config.store";
 import { FormType } from "../../../../commons/form-type.enum";
+import Checkbox from "../../../../components/Checkbox";
 
 export default function CustomerForm() {
   const [formState, setFormState] = useState({
@@ -138,11 +139,11 @@ export default function CustomerForm() {
       </div>
       
       <div className="mb-5 flex items-center">
-        <input id="discontinued" name="discontinued" type="checkbox" 
-        onChange={() => customerForm.setFieldValue("discontinued", !customerForm.values.discontinued)} 
-        checked={!customerForm.values.discontinued} 
-        className="checkbox checkbox-primary border-gray-400 rounded-md"/>
-        <label htmlFor="discontinued" className="ml-2">In Use</label>
+        <Checkbox id="discontinued" name="discontinued"
+        onChange={() => customerForm.setFieldValue("discontinued", !customerForm.values.discontinued)}
+        checked={!customerForm.values.discontinued}
+        label="In use"
+        ></Checkbox>
       </div>
       <button type="submit" className="mt-1 btn btn-primary w-full text-white">
         <span>{formType} customer</span>
@@ -160,7 +161,7 @@ export default function CustomerForm() {
         ) : <></>}
         {formState.success ? (
         <>
-          <div className="my-5 alert alert-success text-green-700">
+          <div className="mt-5 alert alert-success text-green-700 flex justify-center">
             <div>
               <BiCheckDouble className="flex-shrink-0 w-6 h-6"></BiCheckDouble>
               <span>{formState.success}</span>
@@ -170,7 +171,7 @@ export default function CustomerForm() {
         ) : (<></>)}
         {formState.error ? (
         <>
-          <div className="my-5 alert alert-error text-red-700">
+          <div className="mt-5 alert alert-error text-red-700 flex justify-center">
             <div>
               <BiError className="flex-shrink-0 w-6 h-6"></BiError>
               <span>{formState.error}</span>

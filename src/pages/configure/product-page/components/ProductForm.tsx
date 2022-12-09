@@ -7,6 +7,7 @@ import Spinner from "../../../../components/Spinner";
 import TextInput from "../../../../components/TextInput";
 import { useProductConfigStore } from "../../../../stores/product-config.store";
 import { FormType } from "../../../../commons/form-type.enum";
+import Checkbox from "../../../../components/Checkbox";
 
 export default function ProductForm() {
   const [formState, setFormState] = useState({
@@ -93,11 +94,11 @@ export default function ProductForm() {
         ></TextInput>
       </div>
       <div className="mb-5 flex items-center">
-        <input id="discontinued" name="discontinued" type="checkbox" 
+        <Checkbox id="discontinued" name="discontinued"
         onChange={() => productForm.setFieldValue("discontinued", !productForm.values.discontinued)} 
-        checked={!productForm.values.discontinued} 
-        className="checkbox checkbox-primary border-gray-400 rounded-md"/>
-        <label htmlFor="discontinued" className="ml-2">In use</label>
+        checked={!productForm.values.discontinued}
+        label="In use" 
+        ></Checkbox>
       </div>
       <button type="submit" className="mt-1 btn btn-primary w-full text-white">
         <span>{formType} product</span>
@@ -108,14 +109,14 @@ export default function ProductForm() {
       <div>
         {formState.loading ? (
         <>
-          <div className="my-5 flex justify-center">
+          <div className="mt-5 flex justify-center">
             <Spinner></Spinner>
           </div>
         </>
         ) : <></>}
         {formState.success ? (
         <>
-          <div className="my-5 alert alert-success text-green-700">
+          <div className="mt-5 alert alert-success text-green-700 flex justify-center">
             <div>
               <BiCheckDouble className="flex-shrink-0 w-6 h-6"></BiCheckDouble>
               <span>{formState.success}</span>
@@ -125,7 +126,7 @@ export default function ProductForm() {
         ) : (<></>)}
         {formState.error ? (
         <>
-          <div className="my-5 alert alert-error text-red-700">
+          <div className="mt-5 alert alert-error text-red-700 flex justify-center">
             <div>
               <BiError className="flex-shrink-0 w-6 h-6"></BiError>
               <span>{formState.error}</span>

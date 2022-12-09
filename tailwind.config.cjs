@@ -11,7 +11,7 @@ module.exports = {
       center: true,
     },
     screens: {
-      "xs": "360px",
+      "xs": "420px",
       ...defaultTheme.screens,
     },
     extend: {},

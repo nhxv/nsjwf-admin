@@ -11,7 +11,7 @@ export default function SearchInput({id, name, placeholder, value, onChange }) {
         <BiSearch className="w-6 h-6 text-gray-400" />
       </div>
       <input type="text" id={id} name={name} value={value} onChange={onChange}
-      className="input border border-gray-400 focus:outline-none focus:border-primary pl-10 w-full" 
+      className="input border-2 border-gray-300 focus:outline-none focus:border-primary pl-10 w-full" 
       placeholder={placeholder} />
     </div>    
   </>
