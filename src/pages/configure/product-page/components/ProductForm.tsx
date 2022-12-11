@@ -86,7 +86,10 @@ export default function ProductForm() {
   <>
     <form onSubmit={productForm.handleSubmit}>
       <div className="mb-5">
-        <label htmlFor="name" className="font-medium inline-block mb-2">Name</label>
+        <label htmlFor="name" className="font-medium inline-block mb-2">
+          <span>Name</span>
+          <span className="text-red-500">*</span>
+        </label>
         <TextInput id="name" type="text" name="name" placeholder={`Name`} 
         value={productForm.values.name} 
         onChange={productForm.handleChange}

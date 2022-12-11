@@ -193,7 +193,7 @@ export default function CustomerOrderForm({
                 </div>
 
                 <div className="w-6/12">
-                  <TextInput id={`price${index}`} type="number" 
+                  <TextInput id={`price${index}`} type="text" 
                     name={`price${index}`} placeholder="Price" 
                     value={customerOrderForm.values[`price${index}`]}
                     onChange={customerOrderForm.handleChange}

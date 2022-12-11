@@ -91,7 +91,10 @@ export default function VehicleForm() {
   <>
     <form onSubmit={vehicleForm.handleSubmit}>
       <div className="mb-5">
-        <label htmlFor="license-plate" className="font-medium inline-block mb-2">License Plate</label>
+        <label htmlFor="license-plate" className="font-medium inline-block mb-2">
+          <span>License Plate</span>
+          <span className="text-red-500">*</span>
+        </label>
         <TextInput id="license-plate" type="text" name="licensePlate" placeholder={`License Plate`} 
         value={vehicleForm.values.licensePlate} 
         onChange={vehicleForm.handleChange}
