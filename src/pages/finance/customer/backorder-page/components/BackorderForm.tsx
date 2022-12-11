@@ -189,7 +189,7 @@ export default function BackorderForm({
                 </div>
 
                 <div className="w-6/12">
-                  <TextInput id={`price${index}`} type="number" 
+                  <TextInput id={`price${index}`} type="text" 
                     name={`price${index}`} placeholder="Price" 
                     value={backorderForm.values[`price${index}`]}
                     onChange={backorderForm.handleChange}

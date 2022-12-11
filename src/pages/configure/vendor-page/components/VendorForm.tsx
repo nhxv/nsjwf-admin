@@ -93,7 +93,10 @@ export default function VendorForm() {
   <>
     <form onSubmit={vendorForm.handleSubmit}>
       <div className="mb-5">
-        <label htmlFor="name" className="font-medium inline-block mb-2">Name</label>
+        <label htmlFor="name" className="font-medium inline-block mb-2">
+          <span>Name</span>
+          <span className="text-red-500">*</span>
+        </label>
         <TextInput id="name" type="text" name="name" placeholder={`Name`} 
         value={vendorForm.values.name} 
         onChange={vendorForm.handleChange}

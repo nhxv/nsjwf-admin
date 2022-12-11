@@ -194,7 +194,7 @@ export default function VendorOrderForm({
                 </div>
 
                 <div className="w-6/12">
-                  <TextInput id={`price${index}`} type="number" 
+                  <TextInput id={`price${index}`} type="text" 
                     name={`price${index}`} placeholder="Price" 
                     value={vendorOrderForm.values[`price${index}`]}
                     onChange={vendorOrderForm.handleChange}
