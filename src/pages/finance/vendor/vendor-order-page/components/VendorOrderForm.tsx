@@ -90,6 +90,7 @@ export default function VendorOrderForm({
           setFormState(prev => ({
             ...prev, 
             success: "Updated order successfully.",
+            error: "",
             loading: false,
           }));
           setTimeout(() => {
@@ -102,6 +103,7 @@ export default function VendorOrderForm({
           setFormState(prev => ({
             ...prev, 
             success: "Created order successfully.",
+            error: "",
             loading: false,
           }));
           setTimeout(() => {
@@ -114,10 +116,6 @@ export default function VendorOrderForm({
           e.response ? e.response.data.error : e
         ));
         setFormState(prev => ({...prev, error: error.message, loading: false}));
-        setTimeout(() => {
-          setFormState(prev => ({...prev, error: ""}));
-          onClear();
-        }, 2000);
       }
     }
   });

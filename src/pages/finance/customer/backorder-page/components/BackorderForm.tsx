@@ -26,7 +26,7 @@ export default function BackorderForm({
     enableReinitialize: true,
     initialValues: initialData,
     onSubmit: async (data) => {
-      setFormState(prev => ({...prev, loading: true}));
+      setFormState(prev => ({...prev, error: "", success: "", loading: true}));
       try {
         let reqData = {};
         let productOrders = new Map();
@@ -96,6 +96,7 @@ export default function BackorderForm({
           setFormState(prev => ({
             ...prev, 
             success: "Updated order successfully.",
+            error: "",
             loading: false,
           }));
           setTimeout(() => {
@@ -108,6 +109,7 @@ export default function BackorderForm({
           setFormState(prev => ({
             ...prev, 
             success: "Created order successfully.",
+            error: "",
             loading: false,
           }));
           setTimeout(() => {
@@ -120,10 +122,6 @@ export default function BackorderForm({
           e.response ? e.response.data.error : e
         ));
         setFormState(prev => ({...prev, error: error.message, loading: false}));
-        setTimeout(() => {
-          setFormState(prev => ({...prev, error: ""}));
-          onClear();
-        }, 2000);
       }
     }
   });

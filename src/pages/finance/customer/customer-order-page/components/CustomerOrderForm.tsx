@@ -91,6 +91,7 @@ export default function CustomerOrderForm({
           setFormState(prev => ({
             ...prev, 
             success: "Updated order successfully.",
+            error: "",
             loading: false,
           }));
           setTimeout(() => {
@@ -103,6 +104,7 @@ export default function CustomerOrderForm({
           setFormState(prev => ({
             ...prev, 
             success: "Created order successfully.",
+            error: "",
             loading: false,
           }));
           setTimeout(() => {
@@ -115,10 +117,6 @@ export default function CustomerOrderForm({
           e.response ? e.response.data.error : e
         ));
         setFormState(prev => ({...prev, error: error.message, loading: false}));
-        setTimeout(() => {
-          setFormState(prev => ({...prev, error: ""}));
-          onClear();
-        }, 2000);
       }
     }
   });
