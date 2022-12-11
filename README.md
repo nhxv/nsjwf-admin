@@ -30,3 +30,6 @@ Add vercel.json to the root folder of the project:
             {"source": "/(.*)", "destination": "/"}
         ]
     }
+
+## Related
+https://github.com/nhxv/sjwh-admin-api

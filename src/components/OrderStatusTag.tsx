@@ -10,7 +10,7 @@ export default function OrderStatusTag({ status }) {
     status === OrderStatus.SHIPPING ||
     status === BackorderStatus.PENDING) ? (
     <>
-      <span className={`p-3 rounded-btn bg-yellow-100 text-yellow-600 font-medium`}>
+      <span className={`p-3 text-sm rounded-full bg-yellow-100 text-yellow-600 font-medium`}>
         {status}
       </span>
     </>
@@ -19,13 +19,13 @@ export default function OrderStatusTag({ status }) {
       {status === OrderStatus.DELIVERED || 
       status === BackorderStatus.ARCHIVED ? (
       <>
-        <span className={`p-3 rounded-btn bg-green-100 text-green-600 font-medium`}>
+        <span className={`p-3 text-sm rounded-full bg-green-100 text-green-600 font-medium`}>
           {status}
         </span>      
       </>
       ) : (
       <>
-        <span className={`p-3 rounded-btn bg-red-100 text-red-600 font-medium`}>
+        <span className={`p-3 text-sm rounded-full bg-red-100 text-red-600 font-medium`}>
           {status}
         </span>   
       </>

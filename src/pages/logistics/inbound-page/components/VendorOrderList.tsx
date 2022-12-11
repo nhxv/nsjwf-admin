@@ -2,9 +2,13 @@ import { useNavigate } from "react-router-dom";
 import { OrderStatus } from "../../../../commons/order-status.enum";
 import OrderStatusTag from "../../../../components/OrderStatusTag";
 import { convertTime } from "../../../../commons/time.util";
+import { BiPrinter } from "react-icons/bi";
+import { useAuthStore } from "../../../../stores/auth.store";
+import { Role } from "../../../../commons/role.enum";
 
 export default function VendorOrderList({orders}) {
   const navigate = useNavigate();
+  const role = useAuthStore(state => state.role);
 
   const onUpdateOrder = (code: string) => {
     navigate(`/finance/vendor-order/${code}`);
@@ -16,27 +20,28 @@ export default function VendorOrderList({orders}) {
       return (
       <div key={order.code} className="bg-white p-6 rounded-box shadow-md mb-8">
         {/* basic order info */}
-        <div className="flex flex-col xs:flex-row justify-between">
+        {/* basic order info */}
+        <div className="flex flex-row justify-between">
           <div>
-            <div className="mb-2">
-              <span className="block font-medium">Order ID:</span> 
-              <span>{order.code}</span>
+            <div>
+              <span>#{order.code}</span>
             </div>
+            <div>
+              <span className="font-semibold text-xl">{order.vendorName}</span>
+            </div>  
+            <div className="mb-6">
+              <span className="text-gray-400 text-sm">Expected at {convertTime(new Date(order.expectedAt))}</span>
+            </div>   
             <div className="mb-2">
-              <span className="block font-medium">Vendor:</span>
-              <span>{order.vendorName}</span>
-            </div>
+              <OrderStatusTag status={order.status}></OrderStatusTag>
+            </div>                 
           </div>
 
-          <div>
-            <div className="mb-2">
-              <span className="block font-medium">Expected at:</span>
-              <span>{convertTime(new Date(order.expectedAt))}</span>
-            </div>
-            <div className="mt-6">
-              <OrderStatusTag status={order.status}></OrderStatusTag>
-            </div>
-          </div>
+          {/* <div>
+            <button type="button" className="p-3 rounded-full bg-gray-100 hover:bg-gray-200 focus:bg-gray-200 text-gray-500">
+              <BiPrinter className="w-6 h-6"></BiPrinter>
+            </button>
+          </div> */}
         </div>
         <div className="divider"></div>
         {/* products in order */}
@@ -60,7 +65,7 @@ export default function VendorOrderList({orders}) {
           </div>
           )
         })}
-        {order.status !== OrderStatus.DELIVERED ? (
+        {order.status !== OrderStatus.DELIVERED && (role === Role.MASTER || role === Role.ADMIN) ? (
         <>
           <div className="divider"></div>
           <button className="btn btn-primary w-full text-white" onClick={() => onUpdateOrder(order.code)}>Update order</button>

@@ -5,6 +5,8 @@ import TextInput from "../../../../components/TextInput";
 import Spinner from "../../../../components/Spinner";
 import { BiCheckDouble, BiError } from "react-icons/bi";
 import { ProductStockChangeReason } from "../../../../commons/product-stock-change-reason.enum";
+import { useAuthStore } from "../../../../stores/auth.store";
+import { Role } from "../../../../commons/role.enum";
 
 export default function ProductStockForm({ initialData, stocks, onClear }) {
   const [formState, setFormState] = useState({
@@ -12,11 +14,15 @@ export default function ProductStockForm({ initialData, stocks, onClear }) {
     error: "",
     loading: false,
   });
+  const role = useAuthStore(state => state.role);
 
   const productStockForm = useFormik({
     enableReinitialize: true,
     initialValues: initialData,
     onSubmit: async (data) => {
+      if (role !== Role.MASTER && role !== Role.ADMIN) {
+        return;
+      }
       setFormState(prev => ({...prev, loading: true}));
       try {
         const reqData = [];
@@ -67,21 +73,25 @@ export default function ProductStockForm({ initialData, stocks, onClear }) {
                 name={`stock${stock.id}`} placeholder="Qty" 
                 value={productStockForm.values[`stock${stock.id}`]}
                 onChange={productStockForm.handleChange}
-                onBlur={productStockForm.handleBlur}
-              ></TextInput>
+                onBlur={productStockForm.handleBlur}></TextInput> 
             </div>
           </div>
           <div className="divider"></div>
         </div>
         )
       })}
-      <button type="submit" className="btn btn-primary text-white w-full mt-1">
-        <span>Update stock</span>
-      </button>
-      <button type="button" className="btn btn-accent text-black w-full mt-3" 
-      onClick={onClearForm}>
-        <span>Clear change(s)</span>
-      </button>
+      {role === Role.MASTER || role === Role.ADMIN ? (
+      <>
+        <button type="submit" className="btn btn-primary text-white w-full mt-1">
+          <span>Update stock</span>
+        </button>
+        <button type="button" className="btn btn-accent text-black w-full mt-3" 
+        onClick={onClearForm}>
+          <span>Clear change(s)</span>
+        </button>      
+      </>
+      ) : (<></>)}
+
       <div>
         {formState.loading ? (
         <>
