@@ -7,6 +7,7 @@ import Spinner from "../../../../components/Spinner";
 import TextInput from "../../../../components/TextInput";
 import { useVendorConfigStore } from "../../../../stores/vendor-config.store";
 import { FormType } from "../../../../commons/form-type.enum";
+import Checkbox from "../../../../components/Checkbox";
 
 export default function VendorForm() {
   const [formState, setFormState] = useState({
@@ -147,11 +148,11 @@ export default function VendorForm() {
       </div>
       
       <div className="mb-5 flex items-center">
-        <input id="discontinued" name="discontinued" type="checkbox" 
+        <Checkbox id="discontinued" name="discontinued"
         onChange={() => vendorForm.setFieldValue("discontinued", !vendorForm.values.discontinued)} 
-        checked={!vendorForm.values.discontinued} 
-        className="checkbox checkbox-primary border-gray-400 rounded-md"/>
-        <label htmlFor="discontinued" className="ml-2">In use</label>
+        checked={!vendorForm.values.discontinued}
+        label="In use" 
+        ></Checkbox>
       </div>
       <button type="submit" className="mt-1 btn btn-primary w-full text-white">
         <span>{formType} vendor</span>

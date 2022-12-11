@@ -7,6 +7,7 @@ import Spinner from "../../../../components/Spinner";
 import TextInput from "../../../../components/TextInput";
 import { useVehicleConfigStore } from "../../../../stores/vehicle-config.store";
 import { FormType } from "../../../../commons/form-type.enum";
+import Checkbox from "../../../../components/Checkbox";
 
 export default function VehicleForm() {
   const [formState, setFormState] = useState({
@@ -114,19 +115,19 @@ export default function VehicleForm() {
       </div>
 
       <div className="mb-5 flex items-center">
-        <input id="available" name="available" type="checkbox" 
+        <Checkbox id="available" name="available"
         onChange={() => vehicleForm.setFieldValue("available", !vehicleForm.values.available)} 
-        checked={vehicleForm.values.available} 
-        className="checkbox checkbox-primary border-gray-400 rounded-md"/>
-        <label htmlFor="discontinued" className="ml-2">Available</label>
+        checked={vehicleForm.values.available}
+        label="In use" 
+        ></Checkbox>        
       </div>
       
       <div className="mb-5 flex items-center">
-        <input id="discontinued" name="discontinued" type="checkbox" 
+        <Checkbox id="discontinued" name="discontinued"
         onChange={() => vehicleForm.setFieldValue("discontinued", !vehicleForm.values.discontinued)} 
-        checked={!vehicleForm.values.discontinued} 
-        className="checkbox checkbox-primary border-gray-400 rounded-md"/>
-        <label htmlFor="discontinued" className="ml-2">In use</label>
+        checked={!vehicleForm.values.discontinued}
+        label="In use" 
+        ></Checkbox>
       </div>
 
       <button type="submit" className="mt-1 btn btn-primary w-full text-white">
