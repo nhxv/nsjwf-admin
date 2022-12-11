@@ -31,14 +31,21 @@ export default function CustomerForm() {
       discontinued: (formType === FormType.EDIT ? customer.discontinued : false),
     },
     onSubmit: async (data) => {
-      setFormState(prev => ({...prev, loading: true}));
-
+      setFormState(prev => ({
+        ...prev, 
+        error: "", 
+        success: "", 
+        loading: true
+      }));
       if (formType === FormType.EDIT) {
         // edit mode
         try {
           const res = await api.put<CustomerResponse>(`/customers/${customer.id}`, data);
           setFormState(prev => ({
-            ...prev, success: "Updated successfully.", loading: false
+            ...prev, 
+            success: "Updated successfully.", 
+            error: "", 
+            loading: false
           }));
           setTimeout(() => {
             setFormState(prev => ({...prev, success: ""}));
@@ -48,16 +55,18 @@ export default function CustomerForm() {
           const error = JSON.parse(JSON.stringify(
             e.response ? e.response.data.error : e
           ));
-          setFormState(prev => ({...prev, error: error.message, loading: false}));
-          setTimeout(() => {
-            setFormState(prev => ({...prev, error: ""}));
-          }, 2000);
+          setFormState(prev => ({...prev, error: error.message, success: "", loading: false}));
         }
       } else if (formType === FormType.CREATE) {
         // add mode
         try {
           const res = await api.post<CustomerResponse>(`/customers`, data);
-          setFormState(prev => ({...prev, success: "Added successfully", loading: false}));
+          setFormState(prev => ({
+            ...prev, 
+            success: "Added successfully", 
+            error: "", 
+            loading: false
+          }));
           setTimeout(() => {
             setFormState(prev => ({...prev, success: ""}));
           }, 2000);
@@ -66,11 +75,7 @@ export default function CustomerForm() {
           const error = JSON.parse(JSON.stringify(
             e.response ? e.response.data.error : e
           ));
-          setFormState(prev => ({...prev, error: error.message, loading: false}));
-          setTimeout(() => {
-            setFormState(prev => ({...prev, error: ""}));
-          }, 2000);
-          customerForm.resetForm();
+          setFormState(prev => ({...prev, error: error.message, success: "", loading: false}));
         }
       }
     }
@@ -87,6 +92,7 @@ export default function CustomerForm() {
 
   const onClear = () => {
     clearCustomerConfig();
+    setFormState(prev => ({...prev, success: "", error: "", loading: false}));
     customerForm.resetForm();
   }
 

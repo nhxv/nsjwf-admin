@@ -1,4 +1,4 @@
-import { useFormik } from "formik";
+import { prepareDataForValidation, useFormik } from "formik";
 import { useEffect, useState } from "react";
 import { BiCheckDouble, BiError } from "react-icons/bi";
 import { VendorResponse } from "../../../../models/vendor-response.model";
@@ -30,14 +30,21 @@ export default function VendorForm() {
       discontinued: (formType === FormType.EDIT ? vendor.discontinued : false),
     },
     onSubmit: async (data) => {
-      setFormState(prev => ({...prev, loading: true}));
-
+      setFormState(prev => ({
+        ...prev, 
+        error: "", 
+        success: "", 
+        loading: true
+      }));
       if (formType === FormType.EDIT) {
         // edit mode
         try {
           const res = await api.put<VendorResponse>(`/vendors/${vendor.id}`, data);
           setFormState(prev => ({
-            ...prev, success: "Updated successfully.", loading: false
+            ...prev, 
+            success: "Updated successfully.", 
+            error: "", 
+            loading: false,
           }));
           setTimeout(() => {
             setFormState(prev => ({...prev, success: ""}));
@@ -47,16 +54,18 @@ export default function VendorForm() {
           const error = JSON.parse(JSON.stringify(
             e.response ? e.response.data.error : e
           ));
-          setFormState(prev => ({...prev, error: error.message, loading: false}));
-          setTimeout(() => {
-            setFormState(prev => ({...prev, error: ""}));
-          }, 2000);
+          setFormState(prev => ({...prev, error: error.message, success: "", loading: false}));
         }
       } else if (formType === FormType.CREATE) {
         // add mode
         try {
           const res = await api.post<VendorResponse>(`/vendors`, data);
-          setFormState(prev => ({...prev, success: "Added successfully.", loading: false}));
+          setFormState(prev => ({
+            ...prev, 
+            success: "Added successfully.", 
+            error: "", 
+            loading: false
+          }));
           setTimeout(() => {
             setFormState(prev => ({...prev, success: ""}));
           }, 2000);
@@ -65,11 +74,7 @@ export default function VendorForm() {
           const error = JSON.parse(JSON.stringify(
             e.response ? e.response.data.error : e
           ));
-          setFormState(prev => ({...prev, error: error.message, loading: false}));
-          setTimeout(() => {
-            setFormState(prev => ({...prev, error: ""}));
-          }, 2000);
-          vendorForm.resetForm();
+          setFormState(prev => ({...prev, error: error.message, success: "", loading: false}));
         }
       }
     }
@@ -86,6 +91,7 @@ export default function VendorForm() {
 
   const onClear = () => {
     clearVendorConfig();
+    setFormState(prev => ({...prev, success: "", error: "", loading: false}));
     vendorForm.resetForm();
   }
 

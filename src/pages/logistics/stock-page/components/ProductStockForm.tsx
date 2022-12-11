@@ -23,7 +23,7 @@ export default function ProductStockForm({ initialData, stocks, onClear }) {
       if (role !== Role.MASTER && role !== Role.ADMIN) {
         return;
       }
-      setFormState(prev => ({...prev, loading: true}));
+      setFormState(prev => ({...prev, success: "", error: "", loading: true}));
       try {
         const reqData = [];
         for (const property in data) {
@@ -36,7 +36,12 @@ export default function ProductStockForm({ initialData, stocks, onClear }) {
           `/product-stock/${ProductStockChangeReason.SELF_EDIT}`, 
           reqData
         );
-        setFormState(prev => ({...prev, success: "Update stock successfully.", loading: false}));
+        setFormState(prev => ({
+          ...prev, 
+          success: "Update stock successfully.", 
+          error: "", 
+          loading: false
+        }));
         setTimeout(() => {
           setFormState(prev => ({...prev, success: ""}));
           onClear();
@@ -45,11 +50,7 @@ export default function ProductStockForm({ initialData, stocks, onClear }) {
         const error = JSON.parse(JSON.stringify(
           e.response ? e.response.data.error : e
         ));
-        setFormState(prev => ({...prev, error: error.message, loading: false}));
-        setTimeout(() => {
-          setFormState(prev => ({...prev, error: ""}));
-          onClear();
-        }, 2000);
+        setFormState(prev => ({...prev, error: error.message, success: "", loading: false}));
       }
     }
   });
@@ -95,14 +96,14 @@ export default function ProductStockForm({ initialData, stocks, onClear }) {
       <div>
         {formState.loading ? (
         <>
-          <div className="my-5 flex justify-center">
+          <div className="mt-5 flex justify-center">
             <Spinner></Spinner>
           </div>
         </>
         ) : (<></>)}
         {formState.success ? (
         <>
-          <div className="my-5 alert alert-success text-green-700">
+          <div className="mt-5 alert alert-success text-green-700 flex justify-center">
             <div>
               <BiCheckDouble className="flex-shrink-0 w-6 h-6"></BiCheckDouble>
               <span>{formState.success}</span>
@@ -112,7 +113,7 @@ export default function ProductStockForm({ initialData, stocks, onClear }) {
         ) : (<></>)}
         {formState.error ? (
         <>
-          <div className="my-5 alert alert-error text-red-700">
+          <div className="mt-5 alert alert-error text-red-700 flex justify-center">
             <div>
               <BiError className="flex-shrink-0 w-6 h-6"></BiError>
               <span>{formState.error}</span>

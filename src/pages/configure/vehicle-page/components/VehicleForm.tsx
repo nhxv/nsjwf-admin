@@ -29,14 +29,13 @@ export default function VehicleForm() {
       volume: (formType === FormType.EDIT ? vehicle.volume : 0),
     },
     onSubmit: async (data) => {
-      setFormState(prev => ({...prev, loading: true}));
-
+      setFormState(prev => ({...prev, error: "", success: "", loading: true}));
       if (formType === FormType.EDIT) {
         // edit mode
         try {
           const res = await api.put<VehicleResponse>(`/vehicles/${vehicle.id}`, data);
           setFormState(prev => ({
-            ...prev, success: "Updated successfully.", loading: false
+            ...prev, success: "Updated successfully.", error: "", loading: false
           }));
           setTimeout(() => {
             setFormState(prev => ({...prev, success: ""}));
@@ -46,16 +45,13 @@ export default function VehicleForm() {
           const error = JSON.parse(JSON.stringify(
             e.response ? e.response.data.error : e
           ));
-          setFormState(prev => ({...prev, error: error.message, loading: false}));
-          setTimeout(() => {
-            setFormState(prev => ({...prev, error: ""}));
-          }, 2000);
+          setFormState(prev => ({...prev, error: error.message, success: "", loading: false}));
         }
       } else if (formType === FormType.CREATE) {
         // add mode
         try {
           const res = await api.post<VehicleResponse>(`/vehicles`, data);
-          setFormState(prev => ({...prev, success: "Added successfully.", loading: false}));
+          setFormState(prev => ({...prev, success: "Added successfully.", error: "", loading: false}));
           setTimeout(() => {
             setFormState(prev => ({...prev, success: ""}));
           }, 2000);
@@ -64,11 +60,7 @@ export default function VehicleForm() {
           const error = JSON.parse(JSON.stringify(
             e.response ? e.response.data.error : e
           ));
-          setFormState(prev => ({...prev, error: error.message, loading: false}));
-          setTimeout(() => {
-            setFormState(prev => ({...prev, error: ""}));
-          }, 2000);
-          vehicleForm.resetForm();
+          setFormState(prev => ({...prev, error: error.message, success: "", loading: false}));
         }
       }
     }
@@ -84,6 +76,7 @@ export default function VehicleForm() {
 
   const onClear = () => {
     clearVehicleConfig();
+    setFormState(prev => ({...prev, success: "", error: "", loading: false}));
     vehicleForm.resetForm();
   }
 
