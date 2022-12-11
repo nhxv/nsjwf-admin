@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { BackorderStatus } from "../../../../../commons/backorder-status.enum";
 import OrderStatusTag from "../../../../../components/OrderStatusTag";
 import { convertTime } from "../../../../../commons/time.util";
+import { BiPrinter } from "react-icons/bi";
 
 export default function BackorderList({ orders }) {
   const navigate = useNavigate();
@@ -16,27 +17,24 @@ export default function BackorderList({ orders }) {
       return (
       <div key={order.id} className="bg-white p-6 rounded-box shadow-md mb-8">
         {/* basic order info */}
-        <div className="flex flex-col xs:flex-row justify-between">
+        <div className="flex flex-row justify-between">
           <div>
+            <div>
+              <span className="font-semibold text-xl">{order.customerName}</span>
+            </div>  
+            <div className="mb-6">
+              <span className="text-gray-400 text-sm">Expected at {convertTime(new Date(order.expectedAt))}</span>
+            </div>   
             <div className="mb-2">
-              <span className="block font-medium">Order ID:</span> 
-              <span>{order.id}</span>
-            </div>
-            <div className="mb-2">
-              <span className="block font-medium">Customer:</span>
-              <span>{order.customerName}</span>
-            </div>
+              <OrderStatusTag status={order.isArchived ? BackorderStatus.ARCHIVED : BackorderStatus.PENDING}></OrderStatusTag>
+            </div>                 
           </div>
 
-          <div>
-            <div className="mb-2">
-              <span className="block font-medium">Expected at:</span>
-              <span>{convertTime(new Date(order.expectedAt))}</span>
-            </div>
-            <div className="mt-6">
-              <OrderStatusTag status={order.isArchived ? BackorderStatus.ARCHIVED : BackorderStatus.PENDING}></OrderStatusTag>
-            </div>
-          </div>
+          {/* <div>
+            <button type="button" className="p-3 rounded-full bg-gray-100 hover:bg-gray-200 focus:bg-gray-200 text-gray-500">
+              <BiPrinter className="w-6 h-6"></BiPrinter>
+            </button>
+          </div> */}
         </div>
         <div className="divider"></div>
         {/* products in order */}
