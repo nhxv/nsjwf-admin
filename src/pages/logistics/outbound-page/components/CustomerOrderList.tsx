@@ -6,7 +6,7 @@ import { useAuthStore } from "../../../../stores/auth.store";
 import { Role } from "../../../../commons/role.enum";
 import CustomerOrderPrint from "./CustomerOrderPrint";
 
-export default function CustomerOrderList({orders}) {
+export default function CustomerOrderList({orders, printMode }) {
   const navigate = useNavigate();
   const role = useAuthStore(state => state.role);
 
@@ -35,8 +35,7 @@ export default function CustomerOrderList({orders}) {
               <OrderStatusTag status={order.status}></OrderStatusTag>
             </div>                 
           </div>
-
-          <CustomerOrderPrint order={order} />
+          {printMode ? (<CustomerOrderPrint order={order} />) : (<></>)}
         </div>
         <div className="divider"></div>
         {/* products in order */}
