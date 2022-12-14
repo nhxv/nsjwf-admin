@@ -118,7 +118,7 @@ export default function VehicleForm() {
         <Checkbox id="available" name="available"
         onChange={() => vehicleForm.setFieldValue("available", !vehicleForm.values.available)} 
         checked={vehicleForm.values.available}
-        label="In use" 
+        label="Available" 
         ></Checkbox>        
       </div>
       
