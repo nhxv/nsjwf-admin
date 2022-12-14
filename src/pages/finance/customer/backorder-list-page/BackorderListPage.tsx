@@ -55,9 +55,8 @@ export default function BackorderListPage() {
   return (
     <>
       <section className="min-h-screen">
-        <h1 className="text-center font-bold text-xl my-4">Backorder list</h1>
         <div className="flex flex-col items-center">
-          <div className="mb-8">
+          <div className="my-6">
             <SelectInput name="status" id="status" 
             options={Object.values(BackorderStatus)}
             onChange={onSelect}

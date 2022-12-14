@@ -18,6 +18,26 @@ export default function OutboundPage() {
   const [customerOrderList, setCustomerOrderList] = useState([]);
 
   useEffect(() => {
+    getCustomerOrders();
+    // re-render after 1 min
+    const reRender = setInterval(() => {
+      getCustomerOrders();
+    }, 60000);
+
+    return () => {
+      clearInterval(reRender);
+    }
+  }, [status]);
+
+  useEffect(() => {
+    if (!isFirstRender) {
+      setListState(prev => (
+        {...prev, listLoading: false}
+      ));
+    }
+  }, [customerOrderList]);
+
+  const getCustomerOrders = () => {
     api.get(`/customer-orders/basic-list/${status}`)
     .then((res) => {
       if (res.data.length === 0) {
@@ -37,15 +57,7 @@ export default function OutboundPage() {
         {...prev, listError: error.message, listLoading: false}
       ));
     });
-  }, [status]);
-
-  useEffect(() => {
-    if (!isFirstRender) {
-      setListState(prev => (
-        {...prev, listLoading: false}
-      ));
-    }
-  }, [customerOrderList]);
+  }
 
   const onSelect = (e) => {
     setStatus(e.target.value);
@@ -55,14 +67,19 @@ export default function OutboundPage() {
   return (
     <>
       <section className="min-h-screen">
-        <h1 className="text-center font-bold text-xl my-4">Outbound</h1>
+        {/* <h1 className="text-center font-bold text-xl my-4">Outbound</h1> */}
         <div className="flex flex-col items-center">
-          <div className="mb-8">
-            <SelectInput name="status" id="status" 
-            options={Object.values(OrderStatus)}
-            onChange={onSelect}
-            value={status}
-            ></SelectInput>
+          <div className="my-6 w-11/12 sm:w-8/12 md:w-6/12 flex justify-between">
+            <div className="md:w-3/12 sm:w-4/12 w-6/12">
+              <SelectInput name="status" id="status" 
+              options={Object.values(OrderStatus)}
+              onChange={onSelect}
+              value={status}
+              ></SelectInput>
+            </div>
+            <div className="md:w-3/12 sm:w-4/12 w-6/12 text-end">
+              <button type="button" className="btn btn-accent text-black">Print all</button>
+            </div>
           </div>
 
           {listState.listLoading ? (
