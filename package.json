@@ -19,6 +19,7 @@
     "react-dom": "^18.2.0",
     "react-icons": "^4.6.0",
     "react-router-dom": "^6.4.3",
+    "react-to-print": "^2.14.10",
     "yup": "^0.32.11",
     "zustand": "^4.1.4"
   },

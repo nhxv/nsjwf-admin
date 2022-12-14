@@ -55,9 +55,8 @@ export default function InboundPage() {
   return (
     <>
       <section className="min-h-screen">
-        <h1 className="text-center font-bold text-xl my-4">Inbound</h1>
         <div className="flex flex-col items-center">
-          <div className="mb-8">
+          <div className="my-6">
             <SelectInput name="status" id="status" 
             options={Object.values(OrderStatus).filter(
               status => status !== OrderStatus.PICKING && status !== OrderStatus.CHECKING

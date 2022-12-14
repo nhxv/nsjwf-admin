@@ -2,9 +2,9 @@ import { useNavigate } from "react-router-dom";
 import { OrderStatus } from "../../../../commons/order-status.enum";
 import OrderStatusTag from "../../../../components/OrderStatusTag";
 import { convertTime } from "../../../../commons/time.util";
-import { BiPrinter } from "react-icons/bi";
 import { useAuthStore } from "../../../../stores/auth.store";
 import { Role } from "../../../../commons/role.enum";
+import CustomerOrderPrint from "./CustomerOrderPrint";
 
 export default function CustomerOrderList({orders}) {
   const navigate = useNavigate();
@@ -36,11 +36,7 @@ export default function CustomerOrderList({orders}) {
             </div>                 
           </div>
 
-          <div>
-            <button type="button" className="p-3 rounded-full bg-gray-100 hover:bg-gray-200 focus:bg-gray-200 text-gray-500">
-              <BiPrinter className="w-6 h-6"></BiPrinter>
-            </button>
-          </div>
+          <CustomerOrderPrint order={order} />
         </div>
         <div className="divider"></div>
         {/* products in order */}
@@ -67,7 +63,8 @@ export default function CustomerOrderList({orders}) {
         {order.status !== OrderStatus.DELIVERED && (role ===  Role.MASTER || role === Role.ADMIN) ? (
         <>
           <div className="divider"></div>
-          <button className="btn btn-primary w-full text-white mt-2" onClick={() => onUpdateOrder(order.code)}>Update order</button>
+          <button className="btn btn-primary text-white w-full mt-2" 
+          onClick={() => onUpdateOrder(order.code)}>Update order</button>
         </>): (<></>)}
       </div>)})
     }
