@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import api from "../../../stores/api";
 import { OrderStatus } from "../../../commons/order-status.enum";
 import SelectInput from "../../../components/SelectInput";
@@ -6,6 +6,10 @@ import Spinner from "../../../components/Spinner";
 import { BiError, BiBot } from "react-icons/bi"; 
 import CustomerOrderList from "./components/CustomerOrderList";
 import useFirstRender from "../../../commons/hooks/first-render.hook";
+import { useAuthStore } from "../../../stores/auth.store";
+import { Role } from "../../../commons/role.enum";
+import { useReactToPrint } from "react-to-print";
+import PackingSlipToPrint from "./components/PackingSlipToPrint";
 
 export default function OutboundPage() {
   const isFirstRender = useFirstRender();
@@ -16,6 +20,11 @@ export default function OutboundPage() {
   });
   const [status, setStatus] = useState(OrderStatus.PICKING);
   const [customerOrderList, setCustomerOrderList] = useState([]);
+  const role = useAuthStore((state) => state.role);
+  const batchToPrintRef = useRef<HTMLDivElement>(null);
+  const handleBatchPrint = useReactToPrint({
+    content: () => batchToPrintRef.current,
+  });
 
   useEffect(() => {
     getCustomerOrders();
@@ -64,23 +73,42 @@ export default function OutboundPage() {
     setListState({listError: "", listEmpty: "", listLoading: true});
   }
 
+  const onBatchPrint = () => {
+    console.log(customerOrderList);
+    handleBatchPrint();
+  }
+
   return (
     <>
       <section className="min-h-screen">
-        {/* <h1 className="text-center font-bold text-xl my-4">Outbound</h1> */}
         <div className="flex flex-col items-center">
-          <div className="my-6 w-11/12 sm:w-8/12 md:w-6/12 flex justify-between">
-            <div className="md:w-3/12 sm:w-4/12 w-6/12">
+          <div className={`my-6 w-11/12 sm:w-8/12 md:w-6/12 flex ${role === Role.ADMIN || role === Role.MASTER ? "justify-between" : "justify-center"}`}>
+            <div>
               <SelectInput name="status" id="status" 
               options={Object.values(OrderStatus)}
               onChange={onSelect}
               value={status}
               ></SelectInput>
             </div>
-            <div className="md:w-3/12 sm:w-4/12 w-6/12 text-end">
-              <button type="button" className="btn btn-accent text-black">Print all</button>
+            {(role === Role.ADMIN || role === Role.MASTER) && 
+            (!listState.listEmpty && !listState.listError && !listState.listLoading) ? (            
+            <div className="text-end">
+              <button type="button" className="btn btn-accent text-black"
+              onClick={onBatchPrint}>Print all</button>
             </div>
+            ): (<></>)}
           </div>
+          {(role === Role.ADMIN || role === Role.MASTER) ? (
+          <div className="hidden">
+            <div ref={batchToPrintRef}>
+              {customerOrderList.map((order, index) => (
+              <div key={`customer-order-${index}`}>
+                <PackingSlipToPrint printRef={null} order={order} />
+              </div>
+              ))}
+            </div>
+          </div>      
+          ): (<></>)}
 
           {listState.listLoading ? (
           <>
@@ -113,7 +141,8 @@ export default function OutboundPage() {
               ) : (
               <>
               <div className="w-11/12 sm:w-8/12 md:w-6/12">
-                <CustomerOrderList orders={customerOrderList} />
+                <CustomerOrderList orders={customerOrderList} 
+                printMode={(role === Role.MASTER || role === Role.ADMIN) ? true : false} />
               </div>
               </>
               )}
