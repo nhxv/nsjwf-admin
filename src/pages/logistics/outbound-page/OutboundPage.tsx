@@ -172,8 +172,7 @@ export default function OutboundPage() {
               ) : (
               <>
               <div className="w-11/12 sm:w-8/12 md:w-6/12">
-                <CustomerOrderList orders={customerOrderList} 
-                printMode={(role === Role.ADMIN || role === Role.MASTER) && status !== OrderStatus.DELIVERED ? true : false} />
+                <CustomerOrderList orders={customerOrderList} printMode={(role === Role.ADMIN || role === Role.MASTER) && status !== OrderStatus.DELIVERED ? true : false} />
               </div>
               </>
               )}
