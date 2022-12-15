@@ -107,7 +107,6 @@ export default function CustomerForm() {
         <TextInput id="name" type="text" name="name" placeholder={`Name`} 
         value={customerForm.values.name} 
         onChange={customerForm.handleChange}
-        onBlur={customerForm.handleBlur}
         ></TextInput>
       </div>
 
@@ -116,7 +115,6 @@ export default function CustomerForm() {
         <TextInput id="address" type="text" name="address" placeholder={`Address`} 
         value={customerForm.values.address} 
         onChange={customerForm.handleChange}
-        onBlur={customerForm.handleBlur}
         ></TextInput>
       </div>
 
@@ -125,7 +123,6 @@ export default function CustomerForm() {
         <TextInput id="phone" type="text" name="phone" placeholder={`Phone`} 
         value={customerForm.values.phone} 
         onChange={customerForm.handleChange}
-        onBlur={customerForm.handleBlur}
         ></TextInput>
       </div>
 
@@ -134,7 +131,6 @@ export default function CustomerForm() {
         <TextInput id="email" type="email" name="email" placeholder={`Email`} 
         value={customerForm.values.email} 
         onChange={customerForm.handleChange}
-        onBlur={customerForm.handleBlur}
         ></TextInput>
       </div>
 
@@ -143,7 +139,6 @@ export default function CustomerForm() {
         <TextInput id="presentative" type="presentative" name="presentative" placeholder={`Presentative`} 
         value={customerForm.values.presentative} 
         onChange={customerForm.handleChange}
-        onBlur={customerForm.handleBlur}
         ></TextInput>
       </div>
       
