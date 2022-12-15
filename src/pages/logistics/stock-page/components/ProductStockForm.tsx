@@ -73,8 +73,7 @@ export default function ProductStockForm({ initialData, stocks, onClear }) {
               <TextInput id={`stock${stock.id}`} type="number" 
                 name={`stock${stock.id}`} placeholder="Qty" 
                 value={productStockForm.values[`stock${stock.id}`]}
-                onChange={productStockForm.handleChange}
-                onBlur={productStockForm.handleBlur}></TextInput> 
+                onChange={productStockForm.handleChange}></TextInput> 
             </div>
           </div>
           <div className="divider"></div>

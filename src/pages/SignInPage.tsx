@@ -7,6 +7,7 @@ import { SignInResponse } from "../models/sign-in-response.model";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../stores/auth.store";
 import api from "../stores/api";
+import { Role } from "../commons/role.enum";
 
 export default function SignInPage() {
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ export default function SignInPage() {
     loading: false,
   });
   const signIn = useAuthStore((state) => state.signIn);
+  const role = useAuthStore(state => state.role);
 
   const signInForm = useFormik({
     initialValues: {
@@ -29,7 +31,11 @@ export default function SignInPage() {
         signIn(resData);
         setFormState(prev => ({...prev, loading: false}));
         signInForm.resetForm();
-        navigate("/logistics/outbound");
+        if (resData.roleId === Role.MASTER || resData.roleId === Role.ADMIN) {
+          navigate("/finance/customer-order");
+        } else if (resData.roleId === Role.OPERATOR) {
+          navigate("/logistics/outbound");
+        }
       })
       .catch(e => {
         const error = JSON.parse(JSON.stringify(
@@ -58,7 +64,6 @@ export default function SignInPage() {
             <TextInput id="username" name="username" type="text" placeholder={`Username`} 
             value={signInForm.values.username} 
             onChange={signInForm.handleChange}
-            onBlur={signInForm.handleBlur}
             ></TextInput>
           </div>
           <div className="my-5">
@@ -66,7 +71,6 @@ export default function SignInPage() {
             <TextInput id="password" type="password" name="password" placeholder={`Password`}
             value={signInForm.values.password} 
             onChange={signInForm.handleChange}
-            onBlur={signInForm.handleBlur}
             ></TextInput>
           </div>
           <button type="submit" className="btn btn-primary text-white w-full mt-3">Sign in</button>

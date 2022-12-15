@@ -6,6 +6,8 @@ import api from "../../../../../stores/api";
 import { useFormik } from "formik";
 import SelectInput from "../../../../../components/SelectInput";
 import Checkbox from "../../../../../components/Checkbox";
+import NumberInput from "../../../../../components/NumberInput";
+import DateInput from "../../../../../components/DateInput";
 
 export default function BackorderForm({
   edit,
@@ -126,8 +128,8 @@ export default function BackorderForm({
     }
   });
 
-  const handlePriceBlur = (e, inputId: string) => {
-    backorderForm.handleBlur(e);
+  const handlePriceChange = (e, inputId: string) => {
+    backorderForm.setFieldValue(inputId, e.target.value);
     updatePrice(e, inputId);
   }
 
@@ -149,11 +151,11 @@ export default function BackorderForm({
 
         <div className="mb-8">
           <label htmlFor="expect" className="font-medium inline-block mb-2">Expected delivery date</label>
-          <TextInput id="expect" type="date"
+          <DateInput id="expect" min="2022-01-01" max="2100-12-31"
           name="expect" placeholder="Expected Delivery Date" 
           value={backorderForm.values[`expectedAt`]}
           onChange={(e) => backorderForm.setFieldValue("expectedAt", e.target.value)}
-          onBlur={backorderForm.handleBlur}></TextInput>
+          ></DateInput>
         </div> 
 
         <div className="flex justify-between items-center mb-4">
@@ -178,20 +180,19 @@ export default function BackorderForm({
               </div>
               <div className="flex w-7/12">
                 <div className="w-6/12 mr-2">
-                  <TextInput id={`quantity${index}`} type="number" 
+                  <NumberInput id={`quantity${index}`} 
                     name={`quantity${index}`} placeholder="Qty" 
                     value={backorderForm.values[`quantity${index}`]}
-                    onChange={backorderForm.handleChange}
-                    onBlur={(e) => handlePriceBlur(e, `quantity${index}`)}
-                  ></TextInput>
+                    onChange={(e) => handlePriceChange(e, `quantity${index}`)}
+                    min="0" max="99999"
+                  ></NumberInput>
                 </div>
 
                 <div className="w-6/12">
                   <TextInput id={`price${index}`} type="text" 
                     name={`price${index}`} placeholder="Price" 
                     value={backorderForm.values[`price${index}`]}
-                    onChange={backorderForm.handleChange}
-                    onBlur={(e) => handlePriceBlur(e, `price${index}`)}
+                    onChange={(e) => handlePriceChange(e, `price${index}`)}
                   ></TextInput>
                 </div>
               </div>

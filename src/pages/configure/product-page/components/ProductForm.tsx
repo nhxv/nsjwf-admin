@@ -99,7 +99,6 @@ export default function ProductForm() {
         <TextInput id="name" type="text" name="name" placeholder={`Name`} 
         value={productForm.values.name} 
         onChange={productForm.handleChange}
-        onBlur={productForm.handleBlur}
         ></TextInput>
       </div>
       <div className="mb-5 flex items-center">

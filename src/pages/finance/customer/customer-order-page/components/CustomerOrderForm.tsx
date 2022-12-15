@@ -7,6 +7,8 @@ import { useFormik } from "formik";
 import SelectInput from "../../../../../components/SelectInput";
 import Checkbox from "../../../../../components/Checkbox";
 import { OrderStatus } from "../../../../../commons/order-status.enum";
+import NumberInput from "../../../../../components/NumberInput";
+import DateInput from "../../../../../components/DateInput";
 
 export default function CustomerOrderForm({
   edit,
@@ -121,8 +123,8 @@ export default function CustomerOrderForm({
     }
   });
 
-  const handlePriceBlur = (e, inputId: string) => {
-    customerOrderForm.handleBlur(e);
+  const handlePriceChange = (e, inputId: string) => {
+    customerOrderForm.setFieldValue(inputId, e.target.value);
     updatePrice(e, inputId);
   }
 
@@ -153,11 +155,11 @@ export default function CustomerOrderForm({
 
         <div className="mb-8">
           <label htmlFor="expect" className="font-medium inline-block mb-2">Expected delivery date</label>
-          <TextInput id="expect" type="date"
+          <DateInput id="expect" min="2022-01-01" max="2100-12-31"
           name="expect" placeholder="Expected Delivery Date" 
           value={customerOrderForm.values[`expectedAt`]}
           onChange={(e) => customerOrderForm.setFieldValue("expectedAt", e.target.value)}
-          onBlur={customerOrderForm.handleBlur}></TextInput>
+          ></DateInput>
         </div>        
 
         <div className="flex justify-between items-center mb-4">
@@ -182,20 +184,19 @@ export default function CustomerOrderForm({
               </div>
               <div className="flex w-7/12">
                 <div className="w-6/12 mr-2">
-                  <TextInput id={`quantity${index}`} type="number" 
+                  <NumberInput id={`quantity${index}`} 
                     name={`quantity${index}`} placeholder="Qty" 
                     value={customerOrderForm.values[`quantity${index}`]}
-                    onChange={customerOrderForm.handleChange}
-                    onBlur={(e) => handlePriceBlur(e, `quantity${index}`)}
-                  ></TextInput>
+                    onChange={(e) => handlePriceChange(e, `quantity${index}`)}
+                    min="0" max="99999"
+                  ></NumberInput>
                 </div>
 
                 <div className="w-6/12">
                   <TextInput id={`price${index}`} type="text" 
                     name={`price${index}`} placeholder="Price" 
                     value={customerOrderForm.values[`price${index}`]}
-                    onChange={customerOrderForm.handleChange}
-                    onBlur={(e) => handlePriceBlur(e, `price${index}`)}
+                    onChange={(e) => handlePriceChange(e, `price${index}`)}
                   ></TextInput>
                 </div>
               </div>

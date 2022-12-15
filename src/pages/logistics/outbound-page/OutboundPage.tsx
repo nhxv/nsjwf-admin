@@ -3,13 +3,15 @@ import api from "../../../stores/api";
 import { OrderStatus } from "../../../commons/order-status.enum";
 import SelectInput from "../../../components/SelectInput";
 import Spinner from "../../../components/Spinner";
-import { BiError, BiBot } from "react-icons/bi"; 
+import { BiError, BiBot, BiLayer, BiDownload } from "react-icons/bi"; 
 import CustomerOrderList from "./components/CustomerOrderList";
 import useFirstRender from "../../../commons/hooks/first-render.hook";
 import { useAuthStore } from "../../../stores/auth.store";
 import { Role } from "../../../commons/role.enum";
 import { useReactToPrint } from "react-to-print";
 import PackingSlipToPrint from "./components/PackingSlipToPrint";
+import csvDownload from "json-to-csv-export";
+import { convertTime } from "../../../commons/time.util";
 
 export default function OutboundPage() {
   const isFirstRender = useFirstRender();
@@ -74,8 +76,25 @@ export default function OutboundPage() {
   }
 
   const onBatchPrint = () => {
-    console.log(customerOrderList);
     handleBatchPrint();
+  }
+
+  const onDownloadReport = () => {
+    const customerOrderData = customerOrderList
+    .filter(customerOrder => !customerOrder.isTest)
+    .map(customerOrder => ({
+      code: `#${customerOrder.code}`,
+      customer: customerOrder.customerName,
+      sale: customerOrder.productCustomerOrders.reduce((prev, curr) => prev + curr.quantity*curr.unitPrice, 0),
+      date: convertTime(new Date(customerOrder.updatedAt)),
+    }));
+    const dataToConvert = {
+      data: customerOrderData,
+      filename: `${convertTime(new Date()).split("-").join("")}_report`,
+      delimiter: ",",
+      headers: ["Order Code", "Customer", "Sale", "Date"],
+    }
+    csvDownload(dataToConvert);
   }
 
   return (
@@ -90,13 +109,25 @@ export default function OutboundPage() {
               value={status}
               ></SelectInput>
             </div>
-            {(role === Role.ADMIN || role === Role.MASTER) && 
+            {(role === Role.ADMIN || role === Role.MASTER) && status !== OrderStatus.DELIVERED &&
             (!listState.listEmpty && !listState.listError && !listState.listLoading) ? (            
             <div className="text-end">
-              <button type="button" className="btn btn-accent text-black"
-              onClick={onBatchPrint}>Print all</button>
+              <button type="button" className="btn btn-accent text-black" onClick={onBatchPrint}>
+                <span className="mr-2">Print all</span>
+                <BiLayer className="w-6 h-6"></BiLayer>
+              </button>
             </div>
             ): (<></>)}
+
+            {(role === Role.ADMIN || role === Role.MASTER) && status === OrderStatus.DELIVERED &&
+            (!listState.listEmpty && !listState.listError && !listState.listLoading) ? (            
+            <div className="text-end">
+              <button type="button" className="btn btn-accent text-black" onClick={onDownloadReport}>
+                <span className="mr-2">Report</span>
+                <BiDownload className="w-6 h-6"></BiDownload>
+              </button>
+            </div>
+            ): (<></>)}            
           </div>
           {(role === Role.ADMIN || role === Role.MASTER) ? (
           <div className="hidden">
@@ -142,7 +173,7 @@ export default function OutboundPage() {
               <>
               <div className="w-11/12 sm:w-8/12 md:w-6/12">
                 <CustomerOrderList orders={customerOrderList} 
-                printMode={(role === Role.MASTER || role === Role.ADMIN) ? true : false} />
+                printMode={(role === Role.ADMIN || role === Role.MASTER) && status === OrderStatus.DELIVERED ? true : false} />
               </div>
               </>
               )}

@@ -1,10 +1,11 @@
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { 
   BiMenuAltLeft,
   BiDotsHorizontalRounded, 
 } from "react-icons/bi";
 import { useAuthStore } from "../stores/auth.store";
 import { Role } from "../commons/role.enum";
+import BottomNav from "./BottomNav";
 
 export default function Layout({ children }) {
   const signOut = useAuthStore((state) => state.signOut);
@@ -99,7 +100,7 @@ export default function Layout({ children }) {
           </nav>
 
           {/* Main content */}
-          <main>
+          <main className="mb-20">
             {children}
           </main>
         </div>
@@ -138,6 +139,7 @@ export default function Layout({ children }) {
           </div> 
         </aside>
       </div>
+      <BottomNav/>
     </div>
   </>
   )

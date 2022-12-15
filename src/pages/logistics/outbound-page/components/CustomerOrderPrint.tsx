@@ -55,9 +55,7 @@ export default function CustomerOrderPrint({ order }) {
           </label>
           <NumberInput id="pallet" name="pallet" placeholder={`Number of Pallet`} 
           value={pallet.count} min={1} max={100} 
-          onChange={onChange}
-          onBlur={() => {}}
-          ></NumberInput>
+          onChange={onChange}></NumberInput>
         </div>        
         <div className="modal-action bg-gray-100 px-4 py-6">
           <label htmlFor={`modal-${order.code}`} className="btn btn-primary text-white w-full"
