@@ -107,7 +107,6 @@ export default function VendorForm() {
         <TextInput id="name" type="text" name="name" placeholder={`Name`} 
         value={vendorForm.values.name} 
         onChange={vendorForm.handleChange}
-        onBlur={vendorForm.handleBlur}
         ></TextInput>
       </div>
 
@@ -116,7 +115,6 @@ export default function VendorForm() {
         <TextInput id="address" type="text" name="address" placeholder={`Address`} 
         value={vendorForm.values.address} 
         onChange={vendorForm.handleChange}
-        onBlur={vendorForm.handleBlur}
         ></TextInput>
       </div>
 
@@ -125,7 +123,6 @@ export default function VendorForm() {
         <TextInput id="phone" type="text" name="phone" placeholder={`Phone`} 
         value={vendorForm.values.phone} 
         onChange={vendorForm.handleChange}
-        onBlur={vendorForm.handleBlur}
         ></TextInput>
       </div>
 
@@ -134,7 +131,6 @@ export default function VendorForm() {
         <TextInput id="email" type="email" name="email" placeholder={`Email`} 
         value={vendorForm.values.email} 
         onChange={vendorForm.handleChange}
-        onBlur={vendorForm.handleBlur}
         ></TextInput>
       </div>
 
@@ -143,7 +139,6 @@ export default function VendorForm() {
         <TextInput id="presentative" type="presentative" name="presentative" placeholder={`Presentative`} 
         value={vendorForm.values.presentative} 
         onChange={vendorForm.handleChange}
-        onBlur={vendorForm.handleBlur}
         ></TextInput>
       </div>
       

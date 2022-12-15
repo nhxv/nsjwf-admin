@@ -8,6 +8,7 @@ import TextInput from "../../../../components/TextInput";
 import { useVehicleConfigStore } from "../../../../stores/vehicle-config.store";
 import { FormType } from "../../../../commons/form-type.enum";
 import Checkbox from "../../../../components/Checkbox";
+import NumberInput from "../../../../components/NumberInput";
 
 export default function VehicleForm() {
   const [formState, setFormState] = useState({
@@ -92,7 +93,6 @@ export default function VehicleForm() {
         <TextInput id="license-plate" type="text" name="licensePlate" placeholder={`License Plate`} 
         value={vehicleForm.values.licensePlate} 
         onChange={vehicleForm.handleChange}
-        onBlur={vehicleForm.handleBlur}
         ></TextInput>
       </div>
 
@@ -101,17 +101,15 @@ export default function VehicleForm() {
         <TextInput id="nickname" type="text" name="nickname" placeholder={`Nickname`} 
         value={vehicleForm.values.nickname} 
         onChange={vehicleForm.handleChange}
-        onBlur={vehicleForm.handleBlur}
         ></TextInput>
       </div>
 
       <div className="mb-5">
         <label htmlFor="volume" className="font-medium inline-block mb-2">Volume</label>
-        <TextInput id="volume" type="number" name="volume" placeholder={`Volume`} 
-        value={vehicleForm.values.volume} 
+        <NumberInput id="volume" name="volume" placeholder={`Volume`} 
+        value={vehicleForm.values.volume} min="0" max="999999" 
         onChange={vehicleForm.handleChange}
-        onBlur={vehicleForm.handleBlur}
-        ></TextInput>
+        ></NumberInput>
       </div>
 
       <div className="mb-5 flex items-center">
