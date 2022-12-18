@@ -24,12 +24,12 @@ module.exports = {
     themes: [
       {
         mytheme: {
-          "primary": "#2563eb", // bg-blue-600
+          "primary": "#059669", // bg-emerald-600
           "secondary": "#1f2937", // bg-gray-800
           "accent": "#d1d5db", // bg-gray-400
           "base-100": "#fff",
           "info": "#dbeafe", // bg-blue-100
-          "success": "#dcfce7", // bg-green-100
+          "success": "#d1fae5", // bg-emerald-100
           "warning": "#fef9c3", // bg-yellow-100
           "error": "#fee2e2", // bg-red-100
 
