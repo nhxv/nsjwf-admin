@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useFormik } from "formik";
 import api from "../../../../stores/api";
-import SearchInput from "../../../../components/SearchInput";
+import SearchInput from "../../../../components/forms/SearchInput";
 import Spinner from "../../../../components/Spinner";
 import { BiSearch, BiTrash, BiEdit } from "react-icons/bi";
 import { useCustomerConfigStore } from "../../../../stores/customer-config.store";

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { BiError } from "react-icons/bi";
-import TextInput from "../components/TextInput";
+import TextInput from "../components/forms/TextInput";
 import Spinner from "../components/Spinner";
 import { useFormik } from "formik";
 import { SignInResponse } from "../models/sign-in-response.model";
@@ -32,9 +32,9 @@ export default function SignInPage() {
         setFormState(prev => ({...prev, loading: false}));
         signInForm.resetForm();
         if (resData.roleId === Role.MASTER || resData.roleId === Role.ADMIN) {
-          navigate("/finance/customer-order");
+          navigate("/customer/draft-customer-order");
         } else if (resData.roleId === Role.OPERATOR) {
-          navigate("/logistics/outbound");
+          navigate("/customer/view-customer-order");
         }
       })
       .catch(e => {
