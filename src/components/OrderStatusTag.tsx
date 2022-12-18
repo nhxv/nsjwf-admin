@@ -8,6 +8,7 @@ export default function OrderStatusTag({ status }) {
     {(status === OrderStatus.PICKING || 
     status === OrderStatus.CHECKING || 
     status === OrderStatus.SHIPPING ||
+    status === OrderStatus.DELIVERED ||
     status === BackorderStatus.PENDING) ? (
     <>
       <span className={`p-3 text-sm rounded-full bg-yellow-100 text-yellow-600 font-medium`}>
@@ -16,10 +17,10 @@ export default function OrderStatusTag({ status }) {
     </>
     ) : (
     <>
-      {status === OrderStatus.DELIVERED || 
+      {status === OrderStatus.COMPLETED || 
       status === BackorderStatus.ARCHIVED ? (
       <>
-        <span className={`p-3 text-sm rounded-full bg-green-100 text-green-600 font-medium`}>
+        <span className={`p-3 text-sm rounded-full bg-emerald-100 text-emerald-600 font-medium`}>
           {status}
         </span>      
       </>

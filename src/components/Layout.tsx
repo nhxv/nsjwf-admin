@@ -15,21 +15,27 @@ export default function Layout({ children }) {
   // sidebar content
   const categories = [
     {
-      name: "Finance",
+      name: "Customer",
       subItems: [
-        {itemName: "Customer Order", href: "/finance/customer-order", visible: [Role.MASTER, Role.ADMIN]},
-        {itemName: "Draft Backorder", href: "/finance/backorder", visible: [Role.MASTER, Role.ADMIN]},
-        {itemName: "View Backorder", href: "/finance/backorder-list", visible: [Role.MASTER, Role.ADMIN]},
-        {itemName: "Vendor Order", href: "/finance/vendor-order", visible: [Role.MASTER, Role.ADMIN]},
+        {itemName: "Draft Order", href: "/customer/draft-customer-order", visible: [Role.MASTER, Role.ADMIN]},
+        {itemName: "View Order", href: "/customer/view-customer-order", visible: [Role.MASTER, Role.ADMIN, Role.OPERATOR]},
+        {itemName: "Draft Backorder", href: "/customer/draft-backorder", visible: [Role.MASTER, Role.ADMIN]},
+        {itemName: "View Backorder", href: "/customer/view-backorder", visible: [Role.MASTER, Role.ADMIN]},
       ],
-      visible: [Role.MASTER, Role.ADMIN],
+      visible: [Role.MASTER, Role.ADMIN, Role.OPERATOR],
     },
     {
-      name: "Logistics",
+      name: "Vendor",
       subItems: [
-        {itemName: "Stock", href: "/logistics/stock", visible: [Role.MASTER, Role.ADMIN, Role.OPERATOR]},
-        {itemName: "Inbound", href: "/logistics/inbound", visible: [Role.MASTER, Role.ADMIN, Role.OPERATOR]},
-        {itemName: "Outbound", href: "/logistics/outbound", visible: [Role.MASTER, Role.ADMIN, Role.OPERATOR]},
+        {itemName: "Draft Order", href: "/vendor/draft-vendor-order", visible: [Role.MASTER, Role.ADMIN]},
+        {itemName: "View Order", href: "/vendor/view-vendor-order", visible: [Role.MASTER, Role.ADMIN, Role.OPERATOR]},
+      ],
+      visible: [Role.MASTER, Role.ADMIN, Role.OPERATOR],
+    },
+    {
+      name: "Stock",
+      subItems: [
+        {itemName: "View Stock", href: "/stock/view-stock", visible: [Role.MASTER, Role.ADMIN, Role.OPERATOR]},
       ],
       visible: [Role.MASTER, Role.ADMIN, Role.OPERATOR],
     },

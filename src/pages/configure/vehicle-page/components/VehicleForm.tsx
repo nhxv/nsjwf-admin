@@ -4,11 +4,11 @@ import { BiCheckDouble, BiError } from "react-icons/bi";
 import { VehicleResponse } from "../../../../models/vehicle-response.model";
 import api from "../../../../stores/api";
 import Spinner from "../../../../components/Spinner";
-import TextInput from "../../../../components/TextInput";
+import TextInput from "../../../../components/forms/TextInput";
 import { useVehicleConfigStore } from "../../../../stores/vehicle-config.store";
 import { FormType } from "../../../../commons/form-type.enum";
-import Checkbox from "../../../../components/Checkbox";
-import NumberInput from "../../../../components/NumberInput";
+import Checkbox from "../../../../components/forms/Checkbox";
+import NumberInput from "../../../../components/forms/NumberInput";
 
 export default function VehicleForm() {
   const [formState, setFormState] = useState({

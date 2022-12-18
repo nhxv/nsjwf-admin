@@ -4,10 +4,10 @@ import { BiCheckDouble, BiError } from "react-icons/bi";
 import { VendorResponse } from "../../../../models/vendor-response.model";
 import api from "../../../../stores/api";
 import Spinner from "../../../../components/Spinner";
-import TextInput from "../../../../components/TextInput";
+import TextInput from "../../../../components/forms/TextInput";
 import { useVendorConfigStore } from "../../../../stores/vendor-config.store";
 import { FormType } from "../../../../commons/form-type.enum";
-import Checkbox from "../../../../components/Checkbox";
+import Checkbox from "../../../../components/forms/Checkbox";
 
 export default function VendorForm() {
   const [formState, setFormState] = useState({
