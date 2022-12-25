@@ -42,50 +42,19 @@ export default function CustomerOrderForm({
           if (property.includes("price")) {
             const productIndex = +property.replace("price", "");
             const product = products[productIndex];
-            if (data[property] === 0) {
-              if (edit && initialData[property] > 0) {
-                // remove item from order
-                productOrders.set(productIndex, {
-                  "productName": product.name,
-                  "unitPrice": data[property],
-                  "isRemove": true, 
-                });
-              }
-            } else {
-              productOrders.set(productIndex, {
-                "productName": product.name, 
-                "unitPrice": data[property],
-                "isRemove": false, 
-              });
-            }
+            productOrders.set(productIndex, {
+              "productName": product.name,
+              "unitPrice": data[property],
+            });
           } else if (property.includes("quantity")) {
             const productIndex = +property.replace("quantity", "");
-            if (data[property] === 0) {
-              if (edit && initialData[property] > 0) {
-                // remove item from order
-                productOrders.set(productIndex, {
-                  ...productOrders.get(productIndex),
-                  "quantity": data[property],
-                  "isRemove": true, 
-                });
-              }
-            } else {
-              productOrders.set(productIndex, {
-                ...productOrders.get(productIndex), 
-                "quantity": data[property],
-              });
-            }
+            productOrders.set(productIndex, {
+              ...productOrders.get(productIndex), 
+              "quantity": data[property],
+            });
           }
         }
-        const productCustomerOrders = [];
-
-        for (const productOrder of productOrders.values()) {
-          if (productOrder.isRemove || (productOrder.quantity !== 0 && productOrder.unitPrice !== 0)) {
-            productCustomerOrders.push(productOrder);
-          }
-        }
-
-        reqData["productCustomerOrders"] = productCustomerOrders;
+        reqData["productCustomerOrders"] = [...productOrders.values()];
         if (edit) {
           // edit order
           reqData["code"] = data["code"];
@@ -136,7 +105,7 @@ export default function CustomerOrderForm({
     <>
       <form onSubmit={customerOrderForm.handleSubmit}>
         <div className="mb-4">
-          <label htmlFor="customer" className="font-medium inline-block mb-2">Order from customer</label>
+          <label htmlFor="customer" className="custom-label inline-block mb-2">Order from customer</label>
           <SelectInput name="customer" id="customer" 
           options={customers.map(customer => customer.name)}
           onChange={(e) => customerOrderForm.setFieldValue("customerName", e.target.value)}
@@ -145,7 +114,7 @@ export default function CustomerOrderForm({
         </div>
 
         <div className="mb-4">
-          <label htmlFor="status" className="font-medium inline-block mb-2">Status</label>
+          <label htmlFor="status" className="custom-label inline-block mb-2">Status</label>
           <SelectInput name="status" id="status" 
           options={Object.values(OrderStatus).filter(status => status !== OrderStatus.CANCELED)}
           onChange={(e) => customerOrderForm.setFieldValue("status", e.target.value)}
@@ -154,7 +123,7 @@ export default function CustomerOrderForm({
         </div>
 
         <div className="mb-8">
-          <label htmlFor="expect" className="font-medium inline-block mb-2">Expected delivery date</label>
+          <label htmlFor="expect" className="custom-label inline-block mb-2">Expected delivery date</label>
           <DateInput id="expect" min="2022-01-01" max="2100-12-31"
           name="expect" placeholder="Expected Delivery Date" 
           value={customerOrderForm.values[`expectedAt`]}
@@ -164,14 +133,14 @@ export default function CustomerOrderForm({
 
         <div className="flex justify-between items-center mb-4">
           <div className="w-5/12">
-            <span className="font-medium">Product</span>
+            <span className="custom-label">Product</span>
           </div>
           <div className="flex w-7/12">
             <div className="w-6/12 mr-2">
-              <span className="font-medium">Qty</span>
+              <span className="custom-label">Qty</span>
             </div>
             <div className="w-6/12">
-              <span className="font-medium">Unit price</span>
+              <span className="custom-label">Unit price</span>
             </div>
           </div>
         </div>
@@ -188,7 +157,7 @@ export default function CustomerOrderForm({
                     name={`quantity${index}`} placeholder="Qty" 
                     value={customerOrderForm.values[`quantity${index}`]}
                     onChange={(e) => handlePriceChange(e, `quantity${index}`)}
-                    min="0" max="99999"
+                    min="0" max="99999" disabled={false}
                   ></NumberInput>
                 </div>
 
@@ -259,5 +228,5 @@ export default function CustomerOrderForm({
         </div>
       </form>        
     </>
-    )
+  )
 }

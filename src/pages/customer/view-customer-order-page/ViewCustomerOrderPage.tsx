@@ -104,13 +104,15 @@ export default function ViewCustomerOrderPage() {
           <div className={`my-6 w-11/12 sm:w-8/12 md:w-6/12 flex ${role === Role.ADMIN || role === Role.MASTER ? "justify-between" : "justify-center"}`}>
             <div>
               <SelectInput name="status" id="status" 
-              options={Object.values(OrderStatus).filter(status => status !== OrderStatus.CANCELED)}
+              options={Object.values(OrderStatus).filter(
+                status => status !== OrderStatus.CANCELED && status !== OrderStatus.COMPLETED
+              )}
               onChange={onSelect}
               value={status}
               ></SelectInput>
             </div>
-            {(role === Role.ADMIN || role === Role.MASTER) && status !== OrderStatus.COMPLETED &&
-            (!listState.listEmpty && !listState.listError && !listState.listLoading) ? (            
+            {(role === Role.ADMIN || role === Role.MASTER) &&
+            (!listState.listEmpty && !listState.listError && !listState.listLoading) ? (         
             <div className="text-end">
               <button type="button" className="btn btn-accent text-black" onClick={onBatchPrint}>
                 <span className="mr-2">Print all</span>
@@ -119,7 +121,7 @@ export default function ViewCustomerOrderPage() {
             </div>
             ): (<></>)}
 
-            {(role === Role.ADMIN || role === Role.MASTER) && status === OrderStatus.COMPLETED &&
+            {/* {(role === Role.ADMIN || role === Role.MASTER) &&
             (!listState.listEmpty && !listState.listError && !listState.listLoading) ? (            
             <div className="text-end">
               <button type="button" className="btn btn-accent text-black" onClick={onDownloadReport}>
@@ -127,7 +129,7 @@ export default function ViewCustomerOrderPage() {
                 <BiDownload className="w-6 h-6"></BiDownload>
               </button>
             </div>
-            ): (<></>)}            
+            ): (<></>)}*/}
           </div>
           {(role === Role.ADMIN || role === Role.MASTER) ? (
           <div className="hidden">

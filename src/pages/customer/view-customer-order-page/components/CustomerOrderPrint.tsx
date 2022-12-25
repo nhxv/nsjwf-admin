@@ -49,12 +49,12 @@ export default function CustomerOrderPrint({ order }) {
           </label>
         </div>
         <div className="mb-5 mx-4">
-          <label htmlFor="name" className="font-medium inline-block mb-2">
+          <label htmlFor="name" className="custom-label inline-block mb-2">
             <span>Number of pallet</span>
             <span className="text-red-500">*</span>
           </label>
           <NumberInput id="pallet" name="pallet" placeholder={`Number of Pallet`} 
-          value={pallet.count} min={1} max={100} 
+          value={pallet.count} min={1} max={100} disabled={false}
           onChange={onChange}></NumberInput>
         </div>        
         <div className="modal-action bg-gray-100 px-4 py-6">
