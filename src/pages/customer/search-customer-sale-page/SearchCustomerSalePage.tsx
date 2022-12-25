@@ -66,15 +66,15 @@ export default function SearchCustomerSalePage() {
       <h1 className="text-center font-bold text-xl my-4">Search sale</h1>
       <div className="flex flex-col items-center mb-8">
         <form onSubmit={searchForm.handleSubmit} className="w-11/12 sm:w-8/12 md:w-6/12 bg-white p-6 rounded-box shadow-md">
-          <div className="flex mb-6">
-            <div className="w-4/12 mr-2">
+          <div className="flex flex-col mb-6">
+            <div className="mb-4">
               <DateInput id="date" min="2022-01-01" max="2100-12-31"
               name="date" placeholder="Date" 
               value={searchForm.values[`date`]}
               onChange={(e) => searchForm.setFieldValue("date", e.target.value)}
               ></DateInput>              
             </div>
-            <div className="w-8/12">
+            <div className="">
               <SearchInput id="search" name="keyword" placeholder="Customer's name" 
               value={searchForm.values.keyword} onChange={searchForm.handleChange} />              
             </div>
