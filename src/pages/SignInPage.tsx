@@ -50,7 +50,7 @@ export default function SignInPage() {
   return (
     <>
       <div className="flex flex-col justify-center items-center min-h-screen p-6 bg-base-200">
-        <form onSubmit={signInForm.handleSubmit} className="max-w-5/12 bg-white p-6 rounded-box shadow-md">
+        <form onSubmit={signInForm.handleSubmit} className="max-w-5/12 bg-base-100 p-6 rounded-box shadow-md">
           {formState.error ? (
           <div className="alert alert-error text-red-700 mb-5">
             <div>
@@ -60,14 +60,14 @@ export default function SignInPage() {
           </div>
           )  : <></>}
           <div className="mb-5">
-            <label htmlFor="username" className="font-medium inline-block mb-2">Username</label>
+            <label htmlFor="username" className="custom-label inline-block mb-2">Username</label>
             <TextInput id="username" name="username" type="text" placeholder={`Username`} 
             value={signInForm.values.username} 
             onChange={signInForm.handleChange}
             ></TextInput>
           </div>
           <div className="my-5">
-            <label htmlFor="password" className="font-medium inline-block mb-2">Password</label>
+            <label htmlFor="password" className="custom-label inline-block mb-2">Password</label>
             <TextInput id="password" type="password" name="password" placeholder={`Password`}
             value={signInForm.values.password} 
             onChange={signInForm.handleChange}

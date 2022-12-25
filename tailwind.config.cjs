@@ -28,6 +28,8 @@ module.exports = {
           "secondary": "#1f2937", // bg-gray-800
           "accent": "#d1d5db", // bg-gray-400
           "base-100": "#fff",
+          "base-200": "#f3f4f6", // bg-gray-100
+          "base-300": "#e5e7eb", // bg-gray-200
           "info": "#dbeafe", // bg-blue-100
           "success": "#d1fae5", // bg-emerald-100
           "warning": "#fef9c3", // bg-yellow-100

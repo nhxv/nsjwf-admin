@@ -24,6 +24,13 @@ import CustomerPage from "./pages/configure/customer-page/CustomerPage";
 import VehiclePage from "./pages/configure/vehicle-page/VehiclePage";
 import ResetPage from "./pages/test/ResetPage";
 import DraftStockPage from "./pages/stock/draft-stock-page/DraftStockPage";
+import CreateCustomerReturnPage from "./pages/customer/create-customer-return-page/CreateCustomerReturnPage";
+import SearchCustomerSalePage from "./pages/customer/search-customer-sale-page/SearchCustomerSalePage";
+import ViewCustomerReturnPage from "./pages/customer/view-customer-return-page/ViewCustomerReturnPage";
+import CreateVendorReturnPage from "./pages/vendor/create-vendor-return-page/CreateVendorReturnPage";
+import SearchVendorSalePage from "./pages/vendor/search-vendor-sale-page/SearchVendorSalePage";
+import ViewVendorReturnPage from "./pages/vendor/view-vendor-return-page/ViewVendorReturnPage";
+import ReportCustomerSalePage from "./pages/customer/report-customer-sale-page/ReportCustomerSalePage";
 
 
 export default function App() {
@@ -47,20 +54,29 @@ export default function App() {
               <Route path=":id" element={<DraftBackorderPage />}></Route>
             </Route>
             <Route path="/customer/view-backorder" element={<ViewBackorderPage />}></Route>
+            <Route path="/customer/create-customer-return/:code" element={<CreateCustomerReturnPage />}></Route>
+            <Route path="/customer/search-customer-sale" element={<SearchCustomerSalePage />}></Route>
+            <Route path="/customer/view-customer-return" element={<ViewCustomerReturnPage />}></Route>
+            <Route path="/customer/report-daily" element={<ReportCustomerSalePage />}></Route>
           </Route>
+
           <Route path="/customer/view-customer-order" element={<ViewCustomerOrderPage />}></Route>
+
 
           {/* Vendor routes */}
           <Route element={<AdminOutlet />}>
             <Route path="/vendor/draft-vendor-order" element={<DraftVendorOrderPage />}>
               <Route path=":code" element={<DraftVendorOrderPage />}></Route>
             </Route>
+            <Route path="/vendor/create-vendor-return/:code" element={<CreateVendorReturnPage />}></Route>
+            <Route path="/vendor/search-vendor-sale" element={<SearchVendorSalePage />}></Route>
+            <Route path="/vendor/view-vendor-return" element={<ViewVendorReturnPage />}></Route>
           </Route>
           <Route path="/vendor/view-vendor-order" element={<ViewVendorOrderPage />}></Route>
 
           {/* Stock routes */}
           <Route element={<AdminOutlet />}>
-            <Route path="/stock/draft-stock" element={<DraftStockPage />}></Route>
+            <Route path="/stock/change-stock" element={<DraftStockPage />}></Route>
           </Route>
           <Route path="/stock/view-stock" element={<ViewStockPage />}></Route>
 

@@ -92,7 +92,7 @@ export default function ProductForm() {
   <>
     <form onSubmit={productForm.handleSubmit}>
       <div className="mb-5">
-        <label htmlFor="name" className="font-medium inline-block mb-2">
+        <label htmlFor="name" className="custom-label inline-block mb-2">
           <span>Name</span>
           <span className="text-red-500">*</span>
         </label>

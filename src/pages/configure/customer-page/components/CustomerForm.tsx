@@ -100,7 +100,7 @@ export default function CustomerForm() {
   <>
     <form onSubmit={customerForm.handleSubmit}>
       <div className="mb-5">
-        <label htmlFor="name" className="font-medium inline-block mb-2">
+        <label htmlFor="name" className="custom-label inline-block mb-2">
           <span>Name</span>
           <span className="text-red-500">*</span>
         </label>
@@ -111,7 +111,7 @@ export default function CustomerForm() {
       </div>
 
       <div className="mb-5">
-        <label htmlFor="address" className="font-medium inline-block mb-2">Address</label>
+        <label htmlFor="address" className="custom-label inline-block mb-2">Address</label>
         <TextInput id="address" type="text" name="address" placeholder={`Address`} 
         value={customerForm.values.address} 
         onChange={customerForm.handleChange}
@@ -119,7 +119,7 @@ export default function CustomerForm() {
       </div>
 
       <div className="mb-5">
-        <label htmlFor="phone" className="font-medium inline-block mb-2">Phone</label>
+        <label htmlFor="phone" className="custom-label inline-block mb-2">Phone</label>
         <TextInput id="phone" type="text" name="phone" placeholder={`Phone`} 
         value={customerForm.values.phone} 
         onChange={customerForm.handleChange}
@@ -127,7 +127,7 @@ export default function CustomerForm() {
       </div>
 
       <div className="mb-5">
-        <label htmlFor="email" className="font-medium inline-block mb-2">Email</label>
+        <label htmlFor="email" className="custom-label inline-block mb-2">Email</label>
         <TextInput id="email" type="email" name="email" placeholder={`Email`} 
         value={customerForm.values.email} 
         onChange={customerForm.handleChange}
@@ -135,7 +135,7 @@ export default function CustomerForm() {
       </div>
 
       <div className="mb-5">
-        <label htmlFor="presentative" className="font-medium inline-block mb-2">Presentative</label>
+        <label htmlFor="presentative" className="custom-label inline-block mb-2">Presentative</label>
         <TextInput id="presentative" type="presentative" name="presentative" placeholder={`Presentative`} 
         value={customerForm.values.presentative} 
         onChange={customerForm.handleChange}
