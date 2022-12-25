@@ -99,7 +99,7 @@ export default function VendorSearch() {
                     <p>{vendor.discontinued ? "Discontinued" : "In use"}</p>
                   </div>
 
-                  <button className="btn btn-info text-blue-600 w-full md:w-fit mt-4 md:mt-0"
+                  <button className="btn btn-success text-emerald-600 w-full md:w-fit mt-4 md:mt-0"
                   onClick={() => onEdit(vendor)}>
                     <BiEdit className="w-6 h-6"></BiEdit>
                   </button>

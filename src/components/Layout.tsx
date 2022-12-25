@@ -21,6 +21,10 @@ export default function Layout({ children }) {
         {itemName: "View Order", href: "/customer/view-customer-order", visible: [Role.MASTER, Role.ADMIN, Role.OPERATOR]},
         {itemName: "Draft Backorder", href: "/customer/draft-backorder", visible: [Role.MASTER, Role.ADMIN]},
         {itemName: "View Backorder", href: "/customer/view-backorder", visible: [Role.MASTER, Role.ADMIN]},
+        {itemName: "Search Sale", href: "/customer/search-customer-sale", visible: [Role.MASTER, Role.ADMIN]},
+        {itemName: "View Return", href: "/customer/view-customer-return", visible: [Role.MASTER, Role.ADMIN]},
+        {itemName: "Report Daily", href: "/customer/report-daily", visible: [Role.MASTER, Role.ADMIN]},
+
       ],
       visible: [Role.MASTER, Role.ADMIN, Role.OPERATOR],
     },
@@ -29,6 +33,8 @@ export default function Layout({ children }) {
       subItems: [
         {itemName: "Draft Order", href: "/vendor/draft-vendor-order", visible: [Role.MASTER, Role.ADMIN]},
         {itemName: "View Order", href: "/vendor/view-vendor-order", visible: [Role.MASTER, Role.ADMIN, Role.OPERATOR]},
+        {itemName: "Search sale", href: "/vendor/search-vendor-sale", visible: [Role.MASTER, Role.ADMIN]},
+        {itemName: "View Return", href: "/vendor/view-vendor-return", visible: [Role.MASTER, Role.ADMIN]},
       ],
       visible: [Role.MASTER, Role.ADMIN, Role.OPERATOR],
     },
@@ -114,7 +120,7 @@ export default function Layout({ children }) {
         {/* Sidebar */}
         <aside className="drawer-side">
           <label htmlFor="my-drawer-3" className="drawer-overlay"></label>
-          <div className="bg-base-100 h-screen max-h-screen w-60 overflow-y-auto">
+          <div className="bg-base-100 h-screen max-h-screen w-60 overflow-y-auto shadow-md">
             <ul className="menu p-4">
               {categories.map((category, index) => {
                 return (

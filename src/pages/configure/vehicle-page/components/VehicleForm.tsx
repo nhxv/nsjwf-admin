@@ -86,7 +86,7 @@ export default function VehicleForm() {
   <>
     <form onSubmit={vehicleForm.handleSubmit}>
       <div className="mb-5">
-        <label htmlFor="license-plate" className="font-medium inline-block mb-2">
+        <label htmlFor="license-plate" className="custom-label inline-block mb-2">
           <span>License Plate</span>
           <span className="text-red-500">*</span>
         </label>
@@ -97,7 +97,7 @@ export default function VehicleForm() {
       </div>
 
       <div className="mb-5">
-        <label htmlFor="nickname" className="font-medium inline-block mb-2">Nickname</label>
+        <label htmlFor="nickname" className="custom-label inline-block mb-2">Nickname</label>
         <TextInput id="nickname" type="text" name="nickname" placeholder={`Nickname`} 
         value={vehicleForm.values.nickname} 
         onChange={vehicleForm.handleChange}
@@ -105,9 +105,9 @@ export default function VehicleForm() {
       </div>
 
       <div className="mb-5">
-        <label htmlFor="volume" className="font-medium inline-block mb-2">Volume</label>
+        <label htmlFor="volume" className="custom-label inline-block mb-2">Volume</label>
         <NumberInput id="volume" name="volume" placeholder={`Volume`} 
-        value={vehicleForm.values.volume} min="0" max="999999" 
+        value={vehicleForm.values.volume} min="0" max="999999" disabled={false} 
         onChange={vehicleForm.handleChange}
         ></NumberInput>
       </div>

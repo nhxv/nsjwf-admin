@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { BackorderStatus } from "../../../../commons/backorder-status.enum";
-import OrderStatusTag from "../../../../components/OrderStatusTag";
+import StatusTag from "../../../../components/StatusTag";
 import { convertTime } from "../../../../commons/time.util";
 
 export default function BackorderList({ orders }) {
@@ -25,15 +25,9 @@ export default function BackorderList({ orders }) {
               <span className="text-gray-400 text-sm">Expected at {convertTime(new Date(order.expectedAt))}</span>
             </div>   
             <div className="mb-2">
-              <OrderStatusTag status={order.isArchived ? BackorderStatus.ARCHIVED : BackorderStatus.PENDING}></OrderStatusTag>
+              <StatusTag status={order.isArchived ? BackorderStatus.ARCHIVED : BackorderStatus.PENDING}></StatusTag>
             </div>                 
           </div>
-
-          {/* <div>
-            <button type="button" className="p-3 rounded-full bg-gray-100 hover:bg-gray-200 focus:bg-gray-200 text-gray-500">
-              <BiPrinter className="w-6 h-6"></BiPrinter>
-            </button>
-          </div> */}
         </div>
         <div className="divider"></div>
         {/* products in order */}

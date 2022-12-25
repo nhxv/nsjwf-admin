@@ -73,6 +73,11 @@ export default function ResetPage() {
           <h2 className="font-medium underline underline-offset-4">Order</h2>
           <p className="mt-2">(Nothing to click here.)</p>
         </div>
+
+        <div className="mb-8 flex flex-col justify-center items-center">
+          <h2 className="font-medium underline underline-offset-4">Return</h2>
+          <p className="mt-2">(Nothing to click here.)</p>
+        </div>
       </div>
     </>
     )

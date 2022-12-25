@@ -42,52 +42,22 @@ export default function VendorOrderForm({
           if (property.includes("price")) {
             const productIndex = +property.replace("price", "");
             const product = products[productIndex];
-            if (data[property] === 0) {
-              if (edit && initialData[property] > 0) {
-                // remove item from order
-                productOrders.set(productIndex, {
-                  "productName": product.name,
-                  "unitPrice": data[property],
-                  "isRemove": true, 
-                });
-              }
-            } else {
-              productOrders.set(productIndex, {
-                "productName": product.name, 
-                "unitPrice": data[property],
-                "isRemove": false, 
-              });
-            }
+            productOrders.set(productIndex, {
+              "productName": product.name,
+              "unitPrice": data[property],
+            });
           } else if (property.includes("quantity")) {
             const productIndex = +property.replace("quantity", "");
-            if (data[property] === 0) {
-              if (edit && initialData[property] > 0) {
-                // remove item from order
-                productOrders.set(productIndex, {
-                  ...productOrders.get(productIndex),
-                  "quantity": data[property],
-                  "isRemove": true, 
-                });
-              }
-            } else {
-              productOrders.set(productIndex, {
-                ...productOrders.get(productIndex), 
-                "quantity": data[property],
-              });
-            }
-          }
+            productOrders.set(productIndex, {
+              ...productOrders.get(productIndex), 
+              "quantity": data[property],
+            });
+          }          
         }
-        const productVendorOrders = [];
-
-        for (const productOrder of productOrders.values()) {
-          if (productOrder.isRemove || (productOrder.quantity !== 0 && productOrder.unitPrice !== 0)) {
-            productVendorOrders.push(productOrder);
-          }
-        }
-
-        reqData["productVendorOrders"] = productVendorOrders;
+        reqData["productVendorOrders"] = [...productOrders.values()];
         if (edit) {
           reqData["code"] = data["code"];
+          console.log(reqData);
           const res = await api.put(`/vendor-orders/${reqData["code"]}`, reqData);
           setFormState(prev => ({
             ...prev, 
@@ -135,7 +105,7 @@ export default function VendorOrderForm({
     <>
       <form onSubmit={vendorOrderForm.handleSubmit}>
         <div className="mb-4">
-          <label htmlFor="vendor" className="font-medium inline-block mb-2">Order to vendor</label>
+          <label htmlFor="vendor" className="custom-label inline-block mb-2">Order to vendor</label>
           <SelectInput name="vendor" id="vendor" 
           options={vendors.map(vendor => vendor.name)}
           onChange={(e) => vendorOrderForm.setFieldValue("vendorName", e.target.value)}
@@ -144,7 +114,7 @@ export default function VendorOrderForm({
         </div>
 
         <div className="mb-4">
-          <label htmlFor="status" className="font-medium inline-block mb-2">Status</label>
+          <label htmlFor="status" className="custom-label inline-block mb-2">Status</label>
           <SelectInput name="status" id="status" 
           options={Object.values(OrderStatus).filter(
             status => status !== OrderStatus.PICKING && 
@@ -158,7 +128,7 @@ export default function VendorOrderForm({
         </div> 
 
         <div className="mb-8">
-          <label htmlFor="expect" className="font-medium block mb-2">Expected delivery date</label>
+          <label htmlFor="expect" className="custom-label block mb-2">Expected delivery date</label>
           <DateInput id="expect" min="2022-01-01" max="2100-12-31"
           name="expect" placeholder="Expected Delivery Date" 
           value={vendorOrderForm.values[`expectedAt`]}
@@ -168,14 +138,14 @@ export default function VendorOrderForm({
 
         <div className="flex justify-between items-center mb-4">
           <div className="w-5/12">
-            <span className="font-medium">Product</span>
+            <span className="custom-label">Product</span>
           </div>
           <div className="flex w-7/12">
             <div className="w-6/12 mr-2">
-              <span className="font-medium">Qty</span>
+              <span className="custom-label">Qty</span>
             </div>
             <div className="w-6/12">
-              <span className="font-medium">Unit price</span>
+              <span className="custom-label">Unit price</span>
             </div>
           </div>
         </div>
@@ -192,7 +162,7 @@ export default function VendorOrderForm({
                     name={`quantity${index}`} placeholder="Qty" 
                     value={vendorOrderForm.values[`quantity${index}`]}
                     onChange={(e) => handlePriceChange(e, `quantity${index}`)}
-                    min="0" max="99999"
+                    min="0" max="99999" disabled={false}
                   ></NumberInput>
                 </div>
 

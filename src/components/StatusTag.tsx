@@ -1,8 +1,7 @@
-import { useState} from "react";
 import { BackorderStatus } from "../commons/backorder-status.enum";
 import { OrderStatus } from "../commons/order-status.enum";
 
-export default function OrderStatusTag({ status }) {
+export default function StatusTag({ status }) {
   return (
   <>
     {(status === OrderStatus.PICKING || 
