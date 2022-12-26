@@ -15,7 +15,10 @@
     @apply text-base font-medium
   }
   .btn {
-    @apply text-base font-semibold
+    @apply text-base font-semibold border-2
+  }
+  .btn-alt {
+    @apply border-primary hover:border-primary focus:border-primary text-primary hover:bg-success focus:bg-success
   }
   .btn-ghost {
     @apply bg-transparent hover:bg-gray-200 focus:bg-gray-200

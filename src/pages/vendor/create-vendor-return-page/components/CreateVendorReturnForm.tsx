@@ -3,23 +3,25 @@ import { useFormik } from "formik";
 import api from "../../../../stores/api";
 import NumberInput from "../../../../components/forms/NumberInput";
 import Spinner from "../../../../components/Spinner";
-import { BiError, BiCheckDouble } from "react-icons/bi";
+import { BiError, BiCheckDouble, BiRightArrowAlt, BiLeftArrowAlt } from "react-icons/bi";
 import { convertTime } from "../../../../commons/time.util";
+import TextInput from "../../../../components/forms/TextInput";
 
 export default function CreateVendorReturnForm({
   initialData, 
   products,
   sold, 
   updatePrice,
-  updateSale,
   total, 
   onClear
 }) {
   const [formState, setFormState] = useState({
     success: "",
     error: "",
+    page: 0,
     loading: false,
   });
+  const [finalPrice, setFinalPrice] = useState(0);
 
   const vendorReturnForm = useFormik({
     enableReinitialize: true,
@@ -31,7 +33,8 @@ export default function CreateVendorReturnForm({
         let productReturns = new Map();
         reqData["vendorName"] = data["vendorName"];
         reqData["orderCode"] = data["orderCode"];
-        reqData["saleOff"] = data["saleOff"];
+        reqData["recommendedPrice"] = total;
+        reqData["finalPrice"] = finalPrice;
         const properties = Object.keys(data).sort();
         for (const property of properties) {
           if (property.includes("quantity")) {
@@ -73,13 +76,22 @@ export default function CreateVendorReturnForm({
     updatePrice(e, inputId);
   }
 
-  const handleSaleChange = (e, inputId: string) => {
-    vendorReturnForm.setFieldValue(inputId, e.target.value);
-    updateSale(e);
-  }
-
   const onClearForm = () => {
     onClear();
+  }
+
+  const onNextPage = () => {
+    setFinalPrice(total);
+    setFormState(prev => ({...prev, page: 1}));
+  }
+
+  const onPreviousPage = () => {
+    setFinalPrice(total);
+    setFormState(prev => ({...prev, page: 0}));
+  }
+
+  const handleFinalPriceChange = (e) => {
+    setFinalPrice(e.target.value);
   }
 
   return (
@@ -124,7 +136,8 @@ export default function CreateVendorReturnForm({
                     name={`quantity${index}`} placeholder="Qty" 
                     value={vendorReturnForm.values[`quantity${index}`]}
                     onChange={(e) => handlePriceChange(e, `quantity${index}`)}
-                    min="0" max={product.quantity} disabled={product.quantity === 0 ? true : false}
+                    min="0" max={product.quantity} 
+                    disabled={product.quantity === 0 || formState.page === 1 ? true : false}
                   ></NumberInput>
                 </div>
 
@@ -138,31 +151,47 @@ export default function CreateVendorReturnForm({
           </div>
           )
         })}
-        <div className="mb-5 flex flex-col">
-          <label htmlFor="sale" className="custom-label mb-2">Sale (%)</label>
+        {formState.page === 1 ? (        
+        <div className="flex flex-col mb-5">
+          <label htmlFor="total" className="custom-label mb-2">Refund ($)</label>
           <div className="w-24">
-            <NumberInput id="saleOff" name="saleOff" placeholder={"%"} 
-            value={vendorReturnForm.values["saleOff"]} 
-            onChange={(e) => handleSaleChange(e, "saleOff")}
-            min="0" max={"100"} disabled={false}
-            ></NumberInput>
-          </div>         
-        </div>
-
-        <div className="flex items-center mb-5">
-          <div>
-            <span>Refund:</span>
+            <TextInput id={`total`} type="text" name={`total`} placeholder="Total" 
+              value={finalPrice} onChange={(e) => handleFinalPriceChange(e)}
+            ></TextInput>
           </div>
-          <span className="text-xl font-medium ml-2">${total}</span>
-        </div>
 
-        <button type="submit" className="btn btn-primary text-white w-full mt-1">
-          <span>Create return</span>
-        </button>
-        <button type="button" className="btn btn-accent text-black w-full mt-3" 
-        onClick={onClearForm}>
-          <span>Clear change(s)</span>
-        </button>
+        </div>) :(<></>)}
+
+        <div className="flex flex-col">
+          <div className="mt-1">
+            {formState.page === 0 ? 
+            (<>
+            <button type="button" className="btn btn-primary text-white w-full" onClick={onNextPage}>
+              <span>Confirm price</span>
+              <span><BiRightArrowAlt className="w-7 h-7 ml-1"></BiRightArrowAlt></span>
+            </button>
+            </>) : 
+            (<>
+            {formState.page === 1 ? (
+            <div className="flex justify-between">
+              <button type="button" className="btn btn-alt w-[49%]" onClick={onPreviousPage}>
+                <span><BiLeftArrowAlt className="w-7 h-7 mr-1"></BiLeftArrowAlt></span>
+                <span>Go back</span>
+              </button>
+              <button type="submit" className="btn btn-primary text-white w-[49%]">
+                <span>Create</span>
+                <span><BiRightArrowAlt className="w-7 h-7 ml-1"></BiRightArrowAlt></span>
+              </button>
+            </div>
+            ) : (<></>)}
+            </>)}
+          </div>
+          <div>
+            <button type="button" className="btn btn-accent text-black w-full mt-3" onClick={onClearForm}>
+              <span>Clear change(s)</span>
+            </button>
+          </div>
+        </div>
         <div>
           {formState.loading ? (
           <>
