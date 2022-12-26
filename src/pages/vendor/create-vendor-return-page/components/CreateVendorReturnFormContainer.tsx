@@ -20,14 +20,12 @@ export default function CreateVendorReturnFormContainer({}) {
     sold: null,
     products: [],
     prices: [],
-    saleOff: 0,
   });
   const total = useMemo(() => {
     if (dataState.prices.length > 0) {
-      const sum = dataState.prices.reduce((prev, current) => prev + current[0]*current[1], 0);
-      return sum - sum*(dataState.saleOff)/100;
+      return dataState.prices.reduce((prev, current) => prev + current[0]*current[1], 0);
     } else return 0;
-  }, [dataState.prices, dataState.saleOff]);
+  }, [dataState.prices]);
 
   useEffect(() => {
     api.get(`/vendor-sale-returns/${params.code}`)
@@ -44,7 +42,6 @@ export default function CreateVendorReturnFormContainer({}) {
           ...prev, 
           vendorName: saleReturn.vendor_name,
           orderCode: saleReturn.sale_code,
-          saleOff: dataState.saleOff,
           ...productFieldData
         }
       ));
@@ -89,10 +86,6 @@ export default function CreateVendorReturnFormContainer({}) {
     setDataState(prev => ({...prev, prices: updatedPrices}));
   }
 
-  const updateSale = (e) => {
-    setDataState(prev => ({...prev, saleOff: e.target.value}));
-  }
-
   return (
   <>
     <div className="flex flex-col items-center">
@@ -132,7 +125,6 @@ export default function CreateVendorReturnFormContainer({}) {
               products={dataState.products}
               sold={dataState.sold} 
               updatePrice={updatePrice}
-              updateSale={updateSale}
               total={total}
               onClear={onClear} />
             </div>   
