@@ -33,16 +33,20 @@ export default function CustomerOrderPrint({ order, displayError }) {
       console.log("default printer brr");
       console.log(defaultPrinter);
       browserPrint.setPrinter(defaultPrinter);
-      errorMessage = "fail when try to print";
-      console.log(errorMessage);
-      browserPrint.print(`hello`).then((res) => {
-        errorMessage = "can print? as if.";
-        displayError(errorMessage);
-        console.log(res);
-      }).catch(e => {
+      const printerStatus = await browserPrint.checkPrinterStatus();
+      console.log(printerStatus);
+      if (printerStatus.isReadyToPrint) {
+        errorMessage = "fail when is ready to print";
         console.log(errorMessage);
-        displayError(errorMessage);
-      })
+        browserPrint.print(`hello`).then((res) => {
+          errorMessage = "can print? as if.";
+          displayError(errorMessage);
+          console.log(res);
+        }).catch(e => {
+          console.log(errorMessage);
+          displayError(errorMessage);
+        });
+      }
     } catch (e) {
       console.log("hello general error");
       displayError(errorMessage);
