@@ -39,17 +39,12 @@ export default function CustomerOrderPrint({ order, displayError }) {
         errorMessage = "fail when is ready to print";
         console.log(errorMessage);
         const zpl = `^XA
-        ^BY2,2,100
-        ^FO20,20^BC^FD${"0123456789"}^FS
+        ^FO50,50^ADN,36,20^FD${"New San Jose Wholesale Foods"}
+        ^FS
         ^XZ`;
-        browserPrint.print(zpl).then((res) => {
-          errorMessage = "can print? as if.";
-          displayError(errorMessage);
-          console.log(res);
-        }).catch(e => {
-          console.log(errorMessage);
-          displayError(errorMessage);
-        });
+        for (let i = 0; i < pallet.count; i++) {
+          browserPrint.print(zpl);
+        }
       }
     } catch (e) {
       console.log("hello general error");
