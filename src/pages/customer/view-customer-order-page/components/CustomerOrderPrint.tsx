@@ -22,26 +22,25 @@ export default function CustomerOrderPrint({ order, displayError }) {
     if (pallet.count < 1 || pallet.list.length < 1) {
       return;
     }
+    let errorMessage = "";
     try {
-      console.log("try setup printer");
+      errorMessage = "fail when try setup printer";
       const browserPrint = new ZebraBrowserPrintWrapper();
-      console.log("try to get default printer");
+      errorMessage = "fail when try to get default printer";
       const defaultPrinter = await browserPrint.getDefaultPrinter();
       browserPrint.setPrinter(defaultPrinter);
-      console.log("done set printer");
       const printerStatus = await browserPrint.checkPrinterStatus();
       if (printerStatus.isReadyToPrint) {
-        console.log("ready to print");
         const zpl = `^XA^BY2,2,100^FO20,20^BC^FD${123}^FS^XZ`;
+        errorMessage = "fail when ready to print";
         browserPrint.print(zpl);
       } else {
         console.log("hello status error");
-        displayError(printerStatus.errors);
+        displayError(errorMessage);
       }
     } catch (e) {
       console.log("hello general error");
-      console.log(e);
-      displayError(e);
+      displayError(errorMessage);
       throw new Error(e);
     }
     // handlePalletPrint();
