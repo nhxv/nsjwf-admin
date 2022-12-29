@@ -25,8 +25,10 @@ export default function CustomerOrderPrint({ order, displayError }) {
     try {
       console.log("try setup printer");
       const browserPrint = new ZebraBrowserPrintWrapper();
+      console.log("try to get default printer");
       const defaultPrinter = await browserPrint.getDefaultPrinter();
       browserPrint.setPrinter(defaultPrinter);
+      console.log("done set printer");
       const printerStatus = await browserPrint.checkPrinterStatus();
       if (printerStatus.isReadyToPrint) {
         console.log("ready to print");
@@ -38,6 +40,7 @@ export default function CustomerOrderPrint({ order, displayError }) {
       }
     } catch (e) {
       console.log("hello general error");
+      console.log(e);
       displayError(e);
       throw new Error(e);
     }
