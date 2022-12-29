@@ -38,7 +38,11 @@ export default function CustomerOrderPrint({ order, displayError }) {
       if (printerStatus.isReadyToPrint) {
         errorMessage = "fail when is ready to print";
         console.log(errorMessage);
-        browserPrint.print(`hello`).then((res) => {
+        const zpl = `^XA
+        ^BY2,2,100
+        ^FO20,20^BC^FD${"0123456789"}^FS
+        ^XZ`;
+        browserPrint.print(zpl).then((res) => {
           errorMessage = "can print? as if.";
           displayError(errorMessage);
           console.log(res);
