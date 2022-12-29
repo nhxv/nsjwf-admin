@@ -25,13 +25,15 @@ export default function CustomerOrderPrint({ order, displayError }) {
     let errorMessage = "";
     try {
       errorMessage = "fail when try setup printer";
+      console.log(errorMessage);
       const browserPrint = new ZebraBrowserPrintWrapper();
       errorMessage = "fail when try to get default printer";
+      console.log(errorMessage);
       const defaultPrinter = await browserPrint.getDefaultPrinter();
       browserPrint.setPrinter(defaultPrinter);
       errorMessage = "fail after set printer?";
-      const zpl = `^XA^BY2,2,100^FO20,20^BC^FD${123}^FS^XZ`;
-      browserPrint.print(zpl);
+      console.log(errorMessage);
+      browserPrint.print("hello world");
     } catch (e) {
       console.log("hello general error");
       displayError(errorMessage);
