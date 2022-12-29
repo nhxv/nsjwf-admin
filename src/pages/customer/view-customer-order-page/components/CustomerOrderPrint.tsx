@@ -4,6 +4,7 @@ import { BiPrinter, BiX } from "react-icons/bi";
 import NumberInput from "../../../../components/forms/NumberInput";
 import PalletLabelToPrint from "./PalletLabelToPrint";
 import PackingSlipToPrint from "./PackingSlipToPrint";
+import ZebraBrowserPrintWrapper from "zebra-browser-print-wrapper";
 
 export default function CustomerOrderPrint({ order }) {
   const [pallet, setPallet] = useState({count: 1, list: [null]});
@@ -17,11 +18,21 @@ export default function CustomerOrderPrint({ order }) {
     content: () => orderToPrintRef.current,
   });
 
-  const onPalletPrint = () => {
+  const onPalletPrint = async () => {
     if (pallet.count < 1 || pallet.list.length < 1) {
       return;
     }
-    handlePalletPrint();
+    try {
+      const browserPrint = new ZebraBrowserPrintWrapper();
+      const defaultPrinter = await browserPrint.getDefaultPrinter();
+      const printerStatus = await browserPrint.checkPrinterStatus();
+      if (printerStatus.isReadyToPrint) {
+        browserPrint.print("print this label");
+      }
+    } catch (e) {
+      throw new Error(e);
+    }
+    // handlePalletPrint();
   }
 
   const onChange = (e) => {
