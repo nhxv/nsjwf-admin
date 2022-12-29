@@ -10,8 +10,6 @@ import { useAuthStore } from "../../../stores/auth.store";
 import { Role } from "../../../commons/role.enum";
 import { useReactToPrint } from "react-to-print";
 import PackingSlipToPrint from "./components/PackingSlipToPrint";
-import csvDownload from "json-to-csv-export";
-import { convertTime } from "../../../commons/time.util";
 
 export default function ViewCustomerOrderPage() {
   const isFirstRender = useFirstRender();
@@ -79,24 +77,6 @@ export default function ViewCustomerOrderPage() {
     handleBatchPrint();
   }
 
-  const onDownloadReport = () => {
-    const customerOrderData = customerOrderList
-    .filter(customerOrder => !customerOrder.isTest)
-    .map(customerOrder => ({
-      code: `#${customerOrder.code}`,
-      customer: customerOrder.customerName,
-      sale: customerOrder.productCustomerOrders.reduce((prev, curr) => prev + curr.quantity*curr.unitPrice, 0),
-      date: convertTime(new Date(customerOrder.updatedAt)),
-    }));
-    const dataToConvert = {
-      data: customerOrderData,
-      filename: `${convertTime(new Date()).split("-").join("")}_report`,
-      delimiter: ",",
-      headers: ["Order Code", "Customer", "Sale", "Date"],
-    }
-    csvDownload(dataToConvert);
-  }
-
   return (
     <>
       <section className="min-h-screen">
@@ -120,16 +100,6 @@ export default function ViewCustomerOrderPage() {
               </button>
             </div>
             ): (<></>)}
-
-            {/* {(role === Role.ADMIN || role === Role.MASTER) &&
-            (!listState.listEmpty && !listState.listError && !listState.listLoading) ? (            
-            <div className="text-end">
-              <button type="button" className="btn btn-accent text-black" onClick={onDownloadReport}>
-                <span className="mr-2">Report</span>
-                <BiDownload className="w-6 h-6"></BiDownload>
-              </button>
-            </div>
-            ): (<></>)}*/}
           </div>
           {(role === Role.ADMIN || role === Role.MASTER) ? (
           <div className="hidden">

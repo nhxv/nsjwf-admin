@@ -4,8 +4,10 @@ import { BiPrinter, BiX } from "react-icons/bi";
 import NumberInput from "../../../../components/forms/NumberInput";
 import PalletLabelToPrint from "./PalletLabelToPrint";
 import PackingSlipToPrint from "./PackingSlipToPrint";
+import ZebraBrowserPrintWrapper from "zebra-browser-print-wrapper";
+import { convertTime } from "../../../../commons/time.util";
 
-export default function CustomerOrderPrint({ order }) {
+export default function CustomerOrderPrint({ order, displayError }) {
   const [pallet, setPallet] = useState({count: 1, list: [null]});
   const palletLabelToPrintRef = useRef<HTMLDivElement>(null);
   const handlePalletPrint = useReactToPrint({
@@ -17,11 +19,28 @@ export default function CustomerOrderPrint({ order }) {
     content: () => orderToPrintRef.current,
   });
 
-  const onPalletPrint = () => {
+  const onPalletPrint = async (order) => {
     if (pallet.count < 1 || pallet.list.length < 1) {
       return;
     }
-    handlePalletPrint();
+    try {
+      const browserPrint = new ZebraBrowserPrintWrapper();
+      const defaultPrinter = await browserPrint.getDefaultPrinter();
+      browserPrint.setPrinter(defaultPrinter);
+      const printerStatus = await browserPrint.checkPrinterStatus();
+      if (printerStatus.isReadyToPrint) {
+        for (let i = 0; i < pallet.count; i++) {
+          const code = `^FO50,50^ADN,36,20^FD${order.code}^FS`;
+          const customerName = `^FO100,50^ADN,36,20^FD${order.customerName}^FS`;
+          const date = `^FO150,50^ADN,36,20^FD${convertTime(new Date(order.expectedAt))}^FS`;
+          const page = `^FO200,50^ADN,36,20^FD${i+1}^FS`;
+          const zpl = `^XA` + code + customerName + date + page + `^XZ`;
+          browserPrint.print(zpl);
+        }
+      }
+    } catch (e) {
+      throw new Error(e);
+    }
   }
 
   const onChange = (e) => {
@@ -36,7 +55,7 @@ export default function CustomerOrderPrint({ order }) {
   <>
     <div className="hidden">
       <PackingSlipToPrint printRef={orderToPrintRef} order={order} />
-      <PalletLabelToPrint printRef={palletLabelToPrintRef} pallet={pallet} order={order} />
+      {/* <PalletLabelToPrint printRef={palletLabelToPrintRef} pallet={pallet} order={order} /> */}
     </div>
 
     {/* Pallet modal */}
@@ -59,7 +78,7 @@ export default function CustomerOrderPrint({ order }) {
         </div>        
         <div className="modal-action bg-gray-100 px-4 py-6">
           <label htmlFor={`modal-${order.code}`} className="btn btn-primary text-white w-full"
-          onClick={onPalletPrint}>Print label</label>
+          onClick={() => onPalletPrint(order)}>Print label</label>
         </div>
       </div>
     </div>

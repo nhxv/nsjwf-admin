@@ -5,10 +5,12 @@ import { convertTime } from "../../../../commons/time.util";
 import { useAuthStore } from "../../../../stores/auth.store";
 import { Role } from "../../../../commons/role.enum";
 import CustomerOrderPrint from "./CustomerOrderPrint";
+import { useState } from "react";
 
 export default function CustomerOrderList({orders, printMode }) {
   const navigate = useNavigate();
   const role = useAuthStore(state => state.role);
+  const [error, setError] = useState("");
 
   const onUpdateOrder = (code: string) => {
     navigate(`/customer/draft-customer-order/${code}`);
@@ -18,8 +20,13 @@ export default function CustomerOrderList({orders, printMode }) {
     navigate(`/customer/create-customer-return/${code}`);
   }
 
+  const displayPrintError = (error) => {
+    setError(error);
+  }
+
   return (
   <>
+    {error ? (<p className="text-red-500 font-semibold text-2xl mb-4">{error}</p>) : (<></>)}
     {orders.map((order) => {
       return (
       <div key={order.code} className="bg-white p-6 rounded-box shadow-md mb-8">
@@ -39,7 +46,7 @@ export default function CustomerOrderList({orders, printMode }) {
               <StatusTag status={order.status}></StatusTag>
             </div>                 
           </div>
-          {printMode ? (<CustomerOrderPrint order={order} />) : (<></>)}
+          {printMode ? (<CustomerOrderPrint order={order} displayError={displayPrintError} />) : (<></>)}
         </div>
         <div className="divider"></div>
         {/* products in order */}
