@@ -30,9 +30,12 @@ export default function CustomerOrderPrint({ order, displayError }) {
         const zpl = `^XA^BY2,2,100^FO20,20^BC^FD${123}^FS^XZ`;
         browserPrint.print(zpl);
       } else {
+        console.log("hello status error");
         displayError(printerStatus.errors);
       }
     } catch (e) {
+      console.log("hello general error");
+      displayError(e);
       throw new Error(e);
     }
     // handlePalletPrint();
