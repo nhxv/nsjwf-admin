@@ -29,15 +29,9 @@ export default function CustomerOrderPrint({ order, displayError }) {
       errorMessage = "fail when try to get default printer";
       const defaultPrinter = await browserPrint.getDefaultPrinter();
       browserPrint.setPrinter(defaultPrinter);
-      const printerStatus = await browserPrint.checkPrinterStatus();
-      if (printerStatus.isReadyToPrint) {
-        const zpl = `^XA^BY2,2,100^FO20,20^BC^FD${123}^FS^XZ`;
-        errorMessage = "fail when ready to print";
-        browserPrint.print(zpl);
-      } else {
-        console.log("hello status error");
-        displayError(errorMessage);
-      }
+      errorMessage = "fail after set printer?";
+      const zpl = `^XA^BY2,2,100^FO20,20^BC^FD${123}^FS^XZ`;
+      browserPrint.print(zpl);
     } catch (e) {
       console.log("hello general error");
       displayError(errorMessage);
