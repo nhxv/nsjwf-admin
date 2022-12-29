@@ -27,7 +27,10 @@ export default function CustomerOrderPrint({ order }) {
       const defaultPrinter = await browserPrint.getDefaultPrinter();
       const printerStatus = await browserPrint.checkPrinterStatus();
       if (printerStatus.isReadyToPrint) {
-        browserPrint.print("print this label");
+        const zpl = `^XA^BY2,2,100^FO20,20^BC^FD${123}^FS^XZ`;
+        browserPrint.print(zpl);
+      } else {
+        console.log("Error/s", printerStatus.errors);
       }
     } catch (e) {
       throw new Error(e);
