@@ -26,7 +26,7 @@ export default function CustomerOrderList({orders, printMode }) {
 
   return (
   <>
-    {error ? (<p className="text-red-500 font-semibold text-2xl mb-4">Error has occured.</p>) : (<></>)}
+    {error ? (<p className="text-red-500 font-semibold text-2xl mb-4">{error}</p>) : (<></>)}
     {orders.map((order) => {
       return (
       <div key={order.code} className="bg-white p-6 rounded-box shadow-md mb-8">
