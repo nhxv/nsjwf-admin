@@ -31,9 +31,10 @@ export default function CustomerOrderPrint({ order, displayError }) {
       console.log(errorMessage);
       const defaultPrinter = await browserPrint.getDefaultPrinter();
       browserPrint.setPrinter(defaultPrinter);
-      errorMessage = "fail after set printer?";
+      errorMessage = "fail when try to print";
       console.log(errorMessage);
-      browserPrint.print("hello world");
+      const result = await browserPrint.print("hello world");
+      console.log(result);
     } catch (e) {
       console.log("hello general error");
       displayError(errorMessage);
