@@ -23,10 +23,13 @@ export default function CustomerOrderPrint({ order, displayError }) {
       return;
     }
     try {
+      console.log("try setup printer");
       const browserPrint = new ZebraBrowserPrintWrapper();
       const defaultPrinter = await browserPrint.getDefaultPrinter();
+      browserPrint.setPrinter(defaultPrinter);
       const printerStatus = await browserPrint.checkPrinterStatus();
       if (printerStatus.isReadyToPrint) {
+        console.log("ready to print");
         const zpl = `^XA^BY2,2,100^FO20,20^BC^FD${123}^FS^XZ`;
         browserPrint.print(zpl);
       } else {
