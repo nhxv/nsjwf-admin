@@ -34,7 +34,8 @@ export default function CustomerOrderPrint({ order, displayError }) {
       errorMessage = "fail when try to print";
       console.log(errorMessage);
       browserPrint.print("hello world").then((res) => {
-        console.log("can write?");
+        errorMessage = "can print? as if.";
+        displayError(errorMessage);
         console.log(res);
       }).catch(e => {
         console.log(errorMessage);
