@@ -33,8 +33,13 @@ export default function CustomerOrderPrint({ order, displayError }) {
       browserPrint.setPrinter(defaultPrinter);
       errorMessage = "fail when try to print";
       console.log(errorMessage);
-      const result = await browserPrint.print("hello world");
-      console.log(result);
+      browserPrint.print("hello world").then((res) => {
+        console.log("can write?");
+        console.log(res);
+      }).catch(e => {
+        console.log(errorMessage);
+        displayError(errorMessage);
+      })
     } catch (e) {
       console.log("hello general error");
       displayError(errorMessage);
