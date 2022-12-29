@@ -30,16 +30,11 @@ export default function CustomerOrderPrint({ order, displayError }) {
       const printerStatus = await browserPrint.checkPrinterStatus();
       if (printerStatus.isReadyToPrint) {
         for (let i = 0; i < pallet.count; i++) {
-          const zpl = `^XA
-          ^FO50,50^ADN,36,20^FD${order.code}
-          ^FS
-          ^FO50,50^ADN,36,20^FD${order.customerName}
-          ^FS
-          ^FO50,50^ADN,36,20^FD${convertTime(new Date(order.expectedAt))}
-          ^FS
-          ^FO50,50^ADN,36,20^FD${i+1}
-          ^FS
-          ^XZ`;
+          const code = `^FO50,50^ADN,36,20^FD${order.code}^FS`;
+          const customerName = `^FO50,50^ADN,36,20^FD${order.customerName}^FS`
+          const date = `^FO50,50^ADN,36,20^FD${convertTime(new Date(order.expectedAt))}^FS`
+          const page = `^FO50,50^ADN,36,20^FD${i+1}^FS`;
+          const zpl = `^XA ` + code + customerName + date + page + ` ^XZ`;
           browserPrint.print(zpl);
         }
       }
