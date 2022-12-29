@@ -38,6 +38,7 @@ export default function CustomerOrderPrint({ order, displayError }) {
           ^FO50,50^ADN,36,20^FD${convertTime(new Date(order.expectedAt))}
           ^FS
           ^FO50,50^ADN,36,20^FD${i+1}
+          ^FS
           ^XZ`;
           browserPrint.print(zpl);
         }
