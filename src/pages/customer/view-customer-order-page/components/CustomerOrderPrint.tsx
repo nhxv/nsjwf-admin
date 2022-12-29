@@ -6,7 +6,7 @@ import PalletLabelToPrint from "./PalletLabelToPrint";
 import PackingSlipToPrint from "./PackingSlipToPrint";
 import ZebraBrowserPrintWrapper from "zebra-browser-print-wrapper";
 
-export default function CustomerOrderPrint({ order }) {
+export default function CustomerOrderPrint({ order, displayError }) {
   const [pallet, setPallet] = useState({count: 1, list: [null]});
   const palletLabelToPrintRef = useRef<HTMLDivElement>(null);
   const handlePalletPrint = useReactToPrint({
@@ -30,7 +30,7 @@ export default function CustomerOrderPrint({ order }) {
         const zpl = `^XA^BY2,2,100^FO20,20^BC^FD${123}^FS^XZ`;
         browserPrint.print(zpl);
       } else {
-        console.log("Error/s", printerStatus.errors);
+        displayError(printerStatus.errors);
       }
     } catch (e) {
       throw new Error(e);
