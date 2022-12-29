@@ -35,7 +35,23 @@ export default function CustomerOrderPrint({ order, displayError }) {
       browserPrint.setPrinter(defaultPrinter);
       errorMessage = "fail when try to print";
       console.log(errorMessage);
-      browserPrint.print("hello world").then((res) => {
+      browserPrint.print(`^XA
+      ^DFR:SAMPLE.GRF^FS
+      ^FO20,30^GB750,1100,4^FS
+      ^FO20,30^GB750,200,4^FS
+      ^FO20,30^GB750,400,4^FS
+      ^FO20,30^GB750,700,4^FS
+      ^FO20,226^GB325,204,4^FS
+      ^FO30,40^ADN,36,20^FDShip to:^FS
+      ^FO30,260^ADN,18,10^FDPart number #^FS
+      ^FO360,260^ADN,18,10^FDDescription:^FS
+      ^FO30,750^ADN,36,20^FDFrom:^FS
+      ^FO150,125^ADN,36,20^FN1^FS (ship to)
+      ^FO60,330^ADN,36,20^FN2^FS(part num)
+      ^FO400,330^ADN,36,20^FN3^FS(description)
+      ^FO70,480^BY4^B3N,,200^FN4^FS(barcode)
+      ^FO150,800^ADN,36,20^FN5^FS (from)
+      ^XZ`).then((res) => {
         errorMessage = "can print? as if.";
         displayError(errorMessage);
         console.log(res);
