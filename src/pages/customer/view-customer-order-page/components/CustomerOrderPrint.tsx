@@ -5,6 +5,7 @@ import NumberInput from "../../../../components/forms/NumberInput";
 import PalletLabelToPrint from "./PalletLabelToPrint";
 import PackingSlipToPrint from "./PackingSlipToPrint";
 import ZebraBrowserPrintWrapper from "zebra-browser-print-wrapper";
+import { convertTime } from "../../../../commons/time.util";
 
 export default function CustomerOrderPrint({ order, displayError }) {
   const [pallet, setPallet] = useState({count: 1, list: [null]});
@@ -18,40 +19,32 @@ export default function CustomerOrderPrint({ order, displayError }) {
     content: () => orderToPrintRef.current,
   });
 
-  const onPalletPrint = async () => {
+  const onPalletPrint = async (order) => {
     if (pallet.count < 1 || pallet.list.length < 1) {
       return;
     }
-    let errorMessage = "";
     try {
-      errorMessage = "fail when try setup printer";
-      console.log(errorMessage);
       const browserPrint = new ZebraBrowserPrintWrapper();
-      errorMessage = "fail when try to get default printer";
-      console.log(errorMessage);
       const defaultPrinter = await browserPrint.getDefaultPrinter();
-      console.log("default printer brr");
-      console.log(defaultPrinter);
       browserPrint.setPrinter(defaultPrinter);
       const printerStatus = await browserPrint.checkPrinterStatus();
-      console.log(printerStatus);
       if (printerStatus.isReadyToPrint) {
-        errorMessage = "fail when is ready to print";
-        console.log(errorMessage);
-        const zpl = `^XA
-        ^FO50,50^ADN,36,20^FD${"New San Jose Wholesale Foods"}
-        ^FS
-        ^XZ`;
         for (let i = 0; i < pallet.count; i++) {
+          const zpl = `^XA
+          ^FO50,50^ADN,36,20^FD${order.code}
+          ^FS
+          ^FO50,50^ADN,36,20^FD${order.customerName}
+          ^FS
+          ^FO50,50^ADN,36,20^FD${convertTime(new Date(order.expectedAt))}
+          ^FS
+          ^FO50,50^ADN,36,20^FD${i+1}
+          ^XZ`;
           browserPrint.print(zpl);
         }
       }
     } catch (e) {
-      console.log("hello general error");
-      displayError(errorMessage);
       throw new Error(e);
     }
-    // handlePalletPrint();
   }
 
   const onChange = (e) => {
@@ -89,7 +82,7 @@ export default function CustomerOrderPrint({ order, displayError }) {
         </div>        
         <div className="modal-action bg-gray-100 px-4 py-6">
           <label htmlFor={`modal-${order.code}`} className="btn btn-primary text-white w-full"
-          onClick={onPalletPrint}>Print label</label>
+          onClick={() => onPalletPrint(order)}>Print label</label>
         </div>
       </div>
     </div>
