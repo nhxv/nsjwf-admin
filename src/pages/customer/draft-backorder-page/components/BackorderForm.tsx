@@ -14,6 +14,7 @@ export default function BackorderForm({
   initialData, 
   customers, 
   products,
+  employees,
   updatePrice,
   total,
   onClear
@@ -33,6 +34,7 @@ export default function BackorderForm({
         let reqData = {};
         let productOrders = new Map();
         reqData["customerName"] = data["customerName"];
+        reqData["assignTo"] = data["employeeName"];
         reqData["isArchived"] = data["isArchived"];
         reqData["isTest"] = data["isTest"];
         reqData["expectedAt"] = data["expectedAt"];
@@ -117,6 +119,15 @@ export default function BackorderForm({
           value={backorderForm.values["customerName"]}
           ></SelectInput>
         </div>
+
+        <div className="mb-4">
+          <label htmlFor="employee" className="custom-label inline-block mb-2">Assign to</label>
+          <SelectInput name="employee" id="employee" 
+          options={employees.map(employee => employee.nickname)}
+          onChange={(e) => backorderForm.setFieldValue("employeeName", e.target.value)}
+          value={backorderForm.values["employeeName"]}
+          ></SelectInput>
+        </div>        
 
         <div className="mb-8">
           <label htmlFor="expect" className="custom-label inline-block mb-2">Expected delivery date</label>

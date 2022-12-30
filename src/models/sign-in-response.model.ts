@@ -1,6 +1,6 @@
 export class SignInResponse {
   constructor(
-    public username: string,
+    public nickname: string,
     public roleId: number,
     public token: string,
   ) {}

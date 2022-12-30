@@ -57,7 +57,6 @@ export default function VendorOrderForm({
         reqData["productVendorOrders"] = [...productOrders.values()];
         if (edit) {
           reqData["code"] = data["code"];
-          console.log(reqData);
           const res = await api.put(`/vendor-orders/${reqData["code"]}`, reqData);
           setFormState(prev => ({
             ...prev, 

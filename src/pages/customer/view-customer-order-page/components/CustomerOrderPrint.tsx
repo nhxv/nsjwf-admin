@@ -7,7 +7,7 @@ import PackingSlipToPrint from "./PackingSlipToPrint";
 import ZebraBrowserPrintWrapper from "zebra-browser-print-wrapper";
 import { convertTime } from "../../../../commons/time.util";
 
-export default function CustomerOrderPrint({ order, displayError }) {
+export default function CustomerOrderPrint({ order }) {
   const [pallet, setPallet] = useState({count: 1, list: [null]});
   const palletLabelToPrintRef = useRef<HTMLDivElement>(null);
   const handlePalletPrint = useReactToPrint({
