@@ -2,7 +2,7 @@ import { SignInResponse } from './../models/sign-in-response.model';
 import create from "zustand";
 
 interface AuthState {
-  username: string,
+  nickname: string,
   role: number,
   token: string,
   signIn: (data: SignInResponse) => void,
@@ -10,25 +10,25 @@ interface AuthState {
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
-  username: localStorage.getItem("username"),
+  nickname: localStorage.getItem("nickname"),
   role: +localStorage.getItem("role"),
   token: localStorage.getItem("token"),
   signIn: (resData: SignInResponse) => {
-    localStorage.removeItem("username");
+    localStorage.removeItem("nickname");
     localStorage.removeItem("role");
     localStorage.removeItem("token");
-    localStorage.setItem("username", JSON.stringify(resData.username));
+    localStorage.setItem("nickname", JSON.stringify(resData.nickname));
     localStorage.setItem("role", JSON.stringify(resData.roleId));
     localStorage.setItem("token", resData.token);
-    set({ username: localStorage.getItem("username") });
+    set({ nickname: localStorage.getItem("nickname") });
     set({ role: +localStorage.getItem("role") });
     set({ token: localStorage.getItem("token") });
   },
   signOut: () => {
-    localStorage.removeItem("username");
+    localStorage.removeItem("nickname");
     localStorage.removeItem("role");
     localStorage.removeItem("token");
-    set({ username: null });
+    set({ nickname: null });
     set({ role: null });
     set({ token: null });
   },

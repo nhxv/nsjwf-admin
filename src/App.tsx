@@ -31,6 +31,8 @@ import CreateVendorReturnPage from "./pages/vendor/create-vendor-return-page/Cre
 import SearchVendorSalePage from "./pages/vendor/search-vendor-sale-page/SearchVendorSalePage";
 import ViewVendorReturnPage from "./pages/vendor/view-vendor-return-page/ViewVendorReturnPage";
 import ReportCustomerSalePage from "./pages/customer/report-customer-sale-page/ReportCustomerSalePage";
+import ViewTaskPage from "./pages/task/view-task-page/ViewTaskPage";
+import ReportTaskPage from "./pages/task/report-task-page/ReportTaskPage";
 
 
 export default function App() {
@@ -57,11 +59,9 @@ export default function App() {
             <Route path="/customer/create-customer-return/:code" element={<CreateCustomerReturnPage />}></Route>
             <Route path="/customer/search-customer-sale" element={<SearchCustomerSalePage />}></Route>
             <Route path="/customer/view-customer-return" element={<ViewCustomerReturnPage />}></Route>
-            <Route path="/customer/report-daily" element={<ReportCustomerSalePage />}></Route>
+            <Route path="/customer/report-sale" element={<ReportCustomerSalePage />}></Route>
+            <Route path="/customer/view-customer-order" element={<ViewCustomerOrderPage />}></Route>
           </Route>
-
-          <Route path="/customer/view-customer-order" element={<ViewCustomerOrderPage />}></Route>
-
 
           {/* Vendor routes */}
           <Route element={<AdminOutlet />}>
@@ -71,14 +71,18 @@ export default function App() {
             <Route path="/vendor/create-vendor-return/:code" element={<CreateVendorReturnPage />}></Route>
             <Route path="/vendor/search-vendor-sale" element={<SearchVendorSalePage />}></Route>
             <Route path="/vendor/view-vendor-return" element={<ViewVendorReturnPage />}></Route>
+            <Route path="/vendor/view-vendor-order" element={<ViewVendorOrderPage />}></Route>
           </Route>
-          <Route path="/vendor/view-vendor-order" element={<ViewVendorOrderPage />}></Route>
 
           {/* Stock routes */}
           <Route element={<AdminOutlet />}>
             <Route path="/stock/change-stock" element={<DraftStockPage />}></Route>
           </Route>
           <Route path="/stock/view-stock" element={<ViewStockPage />}></Route>
+          
+          {/* Task routes */}
+          <Route path="/task/view-task" element={<ViewTaskPage />}></Route>
+          <Route path="/task/report-task" element={<ReportTaskPage />}></Route>
 
           {/* Configure routes */}
           <Route element={<AdminOutlet />}>

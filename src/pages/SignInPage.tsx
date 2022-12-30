@@ -34,7 +34,7 @@ export default function SignInPage() {
         if (resData.roleId === Role.MASTER || resData.roleId === Role.ADMIN) {
           navigate("/customer/draft-customer-order");
         } else if (resData.roleId === Role.OPERATOR) {
-          navigate("/customer/view-customer-order");
+          navigate("/task/view-task");
         }
       })
       .catch(e => {

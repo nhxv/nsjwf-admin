@@ -15,6 +15,7 @@ export default function CustomerOrderForm({
   initialData, 
   customers, 
   products,
+  employees,
   updatePrice,
   total,
   onClear
@@ -34,6 +35,7 @@ export default function CustomerOrderForm({
         let reqData = {};
         let productOrders = new Map();
         reqData["customerName"] = data["customerName"];
+        reqData["assignTo"] = data["employeeName"];
         reqData["status"] = data["status"];
         reqData["isTest"] = data["isTest"];
         reqData["expectedAt"] = data["expectedAt"];
@@ -110,6 +112,15 @@ export default function CustomerOrderForm({
           options={customers.map(customer => customer.name)}
           onChange={(e) => customerOrderForm.setFieldValue("customerName", e.target.value)}
           value={customerOrderForm.values["customerName"]}
+          ></SelectInput>
+        </div>
+
+        <div className="mb-4">
+          <label htmlFor="employee" className="custom-label inline-block mb-2">Assign to</label>
+          <SelectInput name="employee" id="employee" 
+          options={employees.map(employee => employee.nickname)}
+          onChange={(e) => customerOrderForm.setFieldValue("employeeName", e.target.value)}
+          value={customerOrderForm.values["employeeName"]}
           ></SelectInput>
         </div>
 
