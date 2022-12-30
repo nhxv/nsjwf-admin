@@ -57,7 +57,7 @@ export default function CustomerOrderList({orders, printMode }) {
         {order.productCustomerOrders.map(productOrder => {
           return (
           <div key={productOrder.productName} className="flex justify-center items-center py-3 bg-gray-100 rounded-btn mb-2">
-            <div className="w-6/12 ml-2">
+            <div className="w-6/12 ml-3">
               <span>{productOrder.productName}</span>
             </div>
             <div className="w-3/12 text-center">

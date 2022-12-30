@@ -42,6 +42,7 @@ export default function Layout({ children }) {
       name: "Stock",
       subItems: [
         {itemName: "View", href: "/stock/view-stock", visible: [Role.MASTER, Role.ADMIN, Role.OPERATOR]},
+        {itemName: "Change", href: "/stock/change-stock", visible: [Role.MASTER, Role.ADMIN]},
       ],
       visible: [Role.MASTER, Role.ADMIN, Role.OPERATOR],
     },
