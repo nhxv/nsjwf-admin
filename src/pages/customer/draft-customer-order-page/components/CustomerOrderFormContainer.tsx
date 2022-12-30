@@ -21,6 +21,7 @@ export default function CustomerOrderFormContainer() {
   const [dataState, setDataState] = useState({
     products: [],
     customers: [],
+    employees: [],
     prices: [],
   });
   const total = useMemo(() => {
@@ -32,19 +33,23 @@ export default function CustomerOrderFormContainer() {
   useEffect(() => {
     const productPromise = api.get(`/products/all`);
     const customerPromise = api.get(`/customers/all`);
+    const employeePromise = api.get(`/accounts/employees`);
     if (params.code) {
       // edit mode
       const orderPromise = api.get(`/customer-orders/${params.code}`);
-      Promise.all([productPromise, customerPromise, orderPromise])
+      Promise.all([productPromise, customerPromise, employeePromise, orderPromise])
       .then((res) => {
         const productRes = res[0];
         const customerRes = res[1];
-        const orderRes = res[2];        
+        const employeeRes = res[2];
+        const orderRes = res[3];        
         if (
           !productRes ||
           productRes.data.length === 0 ||
-          !customerRes || 
+          !customerRes ||
           customerRes.data.length === 0 ||
+          !employeeRes ||
+          employeeRes.data.length === 0 ||
           !orderRes.data
         ) {
             setFormState(prev => (
@@ -70,6 +75,7 @@ export default function CustomerOrderFormContainer() {
             {
               ...prev, 
               customerName: orderRes.data.customer_name,
+              employeeName: orderRes.data.assign_to,
               status: orderRes.data.status, 
               isTest: orderRes.data.is_test,
               code: orderRes.data.code,
@@ -82,6 +88,7 @@ export default function CustomerOrderFormContainer() {
               ...prev,
               products: productRes.data,
               customers: customerRes.data,
+              employees: employeeRes.data,
               prices: updatedPrices
             }
           ));            
@@ -97,15 +104,18 @@ export default function CustomerOrderFormContainer() {
         });
     } else {
       // create mode
-      Promise.all([productPromise, customerPromise])
+      Promise.all([productPromise, customerPromise, employeePromise])
       .then((res) => {
       const productRes = res[0];
       const customerRes = res[1];
+      const employeeRes = res[2];
       if (
         !productRes ||
         productRes.data.length === 0 ||
         !customerRes || 
-        customerRes.data?.length === 0
+        customerRes.data?.length === 0 ||
+        !employeeRes ||
+        employeeRes.data?.length === 0
       ) {
         setFormState(prev => (
         {...prev, emptyMessage: "Such hollow, much empty...", loading: false}
@@ -126,6 +136,7 @@ export default function CustomerOrderFormContainer() {
           {
             ...prev, 
             customerName: customerRes.data[0].name,
+            employeeName: employeeRes.data[0].nickname,
             status: OrderStatus.PICKING, 
             isTest: true,
             expectedAt: convertTime(nextDay),
@@ -136,6 +147,7 @@ export default function CustomerOrderFormContainer() {
           ...prev,
           products: productRes.data,
           customers: customerRes.data,
+          employees: employeeRes.data,
           prices: updatedPrices}));  
       }
       })
@@ -215,6 +227,7 @@ export default function CustomerOrderFormContainer() {
               initialData={initialFields} 
               customers={dataState.customers} 
               products={dataState.products}
+              employees={dataState.employees}
               updatePrice={updatePrice}
               total={total}
               onClear={onClear} />

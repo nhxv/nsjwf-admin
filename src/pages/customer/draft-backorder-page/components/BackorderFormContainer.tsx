@@ -20,6 +20,7 @@ export default function BackorderFormContainer() {
   const [dataState, setDataState] = useState({
     products: [],
     customers: [],
+    employees: [],
     prices: [],
   });
   const total = useMemo(() => {
@@ -31,19 +32,23 @@ export default function BackorderFormContainer() {
   useEffect(() => {
     const productPromise = api.get(`/products/all`);
     const customerPromise = api.get(`/customers/all`);
+    const employeePromise = api.get(`/accounts/employees`);
     if (params.id) {
       // edit mode
       const orderPromise = api.get(`/backorders/${params.id}`);
-      Promise.all([productPromise, customerPromise, orderPromise])
+      Promise.all([productPromise, customerPromise, employeePromise, orderPromise])
       .then((res) => {
         const productRes = res[0];
         const customerRes = res[1];
-        const orderRes = res[2];        
+        const employeeRes = res[2];
+        const orderRes = res[3];     
         if (
           !productRes ||
           productRes.data.length === 0 ||
-          !customerRes || 
+          !customerRes ||
           customerRes.data.length === 0 ||
+          !employeeRes ||
+          employeeRes.data.length === 0 ||
           !orderRes.data
         ) {
             setFormState(prev => (
@@ -69,6 +74,7 @@ export default function BackorderFormContainer() {
             {
               ...prev, 
               customerName: orderRes.data.customer_name,
+              employeeName: orderRes.data.assign_to,
               isArchived: orderRes.data.is_archived, 
               isTest: orderRes.data.is_test,
               id: orderRes.data.id,
@@ -81,6 +87,7 @@ export default function BackorderFormContainer() {
               ...prev,
               products: productRes.data,
               customers: customerRes.data,
+              employees: employeeRes.data,
               prices: updatedPrices,
             }
           ));            
@@ -96,15 +103,18 @@ export default function BackorderFormContainer() {
         });
     } else {
       // create mode
-      Promise.all([productPromise, customerPromise])
+      Promise.all([productPromise, customerPromise, employeePromise])
       .then((res) => {
       const productRes = res[0];
       const customerRes = res[1];
+      const employeeRes = res[2];
       if (
         !productRes ||
         productRes.data.length === 0 ||
         !customerRes || 
-        customerRes.data?.length === 0
+        customerRes.data?.length === 0 ||
+        !employeeRes ||
+        employeeRes.data?.length === 0
       ) {
         setFormState(prev => (
         {...prev, emptyMessage: "Such hollow, much empty...", loading: false}
@@ -125,6 +135,7 @@ export default function BackorderFormContainer() {
           {
             ...prev, 
             customerName: customerRes.data[0].name,
+            employeeName: employeeRes.data[0].nickname,
             isArchived: false, 
             isTest: true,
             expectedAt: convertTime(nextDay),
@@ -135,7 +146,8 @@ export default function BackorderFormContainer() {
           ...prev,
           products: productRes.data,
           customers: customerRes.data,
-          prices: updatedPrices}));  
+          employees: employeeRes.data,
+          prices: updatedPrices}));
       }
       })
       .catch((e) => {
@@ -214,6 +226,7 @@ export default function BackorderFormContainer() {
               initialData={initialFields} 
               customers={dataState.customers} 
               products={dataState.products}
+              employees={dataState.employees}
               updatePrice={updatePrice}
               total={total}
               onClear={onClear} />
