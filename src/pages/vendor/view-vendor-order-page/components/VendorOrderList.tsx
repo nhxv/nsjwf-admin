@@ -48,7 +48,7 @@ export default function VendorOrderList({orders}) {
         {order.productVendorOrders.map(productOrder => {
           return (
           <div key={productOrder.productName} className="flex justify-center items-center py-3 bg-gray-100 rounded-btn mb-2">
-            <div className="w-10/12 ml-2">
+            <div className="w-10/12 ml-3">
               <span>{productOrder.productName}</span>
             </div>
             <div className="w-2/12 text-center">

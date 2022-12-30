@@ -39,7 +39,7 @@ export default function CustomerReturnList({returns}) {
         {customerReturn.productCustomerReturns.map(productReturn => {
           return (
           <div key={productReturn.productName} className="flex justify-center items-center py-3 bg-gray-100 rounded-btn mb-2">
-            <div className="w-6/12 ml-2">
+            <div className="w-6/12 ml-3">
               <span>{productReturn.productName}</span>
             </div>
             <div className="w-3/12 text-center">
