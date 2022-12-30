@@ -4,6 +4,7 @@ import { BiError, BiBot } from "react-icons/bi";
 import api from "../../../../stores/api";
 import useFirstRender from "../../../../commons/hooks/first-render.hook";
 import ProductStockForm from "./ProductStockForm";
+import { ProductStockChangeReason } from "../../../../commons/product-stock-change-reason.enum";
 
 export default function ProductStockFormContainer() {
   const isFirstRender = useFirstRender();
@@ -30,7 +31,7 @@ export default function ProductStockFormContainer() {
         for (const s of res.data) {
           formFieldData[`stock${s.id}`] = s.quantity;
         }
-        setInitialFields(prev => ({...prev, ...formFieldData}));
+        setInitialFields(prev => ({...prev, reason: ProductStockChangeReason.DAMAGED, ...formFieldData}));
       }
     })
     .catch ((e) => {

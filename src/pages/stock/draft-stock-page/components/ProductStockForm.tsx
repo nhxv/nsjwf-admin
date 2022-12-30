@@ -7,6 +7,7 @@ import { BiCheckDouble, BiError } from "react-icons/bi";
 import { ProductStockChangeReason } from "../../../../commons/product-stock-change-reason.enum";
 import { useAuthStore } from "../../../../stores/auth.store";
 import { Role } from "../../../../commons/role.enum";
+import SelectInput from "../../../../components/forms/SelectInput";
 
 export default function ProductStockForm({ initialData, stocks, onClear }) {
   const [formState, setFormState] = useState({
@@ -20,22 +21,22 @@ export default function ProductStockForm({ initialData, stocks, onClear }) {
     enableReinitialize: true,
     initialValues: initialData,
     onSubmit: async (data) => {
-      if (role !== Role.MASTER && role !== Role.ADMIN) {
-        return;
-      }
       setFormState(prev => ({...prev, success: "", error: "", loading: true}));
       try {
-        const reqData = [];
+        const reqData = {};
+        const stock = [];
         for (const property in data) {
-          const item = {id: -1, quantity: -1};
-          item.id = +property.replace("stock", "");
-          item.quantity = data[property];
-          reqData.push(item);
+          if (property.includes("stock")) {
+            const item = {id: -1, quantity: -1};
+            item.id = +property.replace("stock", "");
+            item.quantity = data[property];
+            stock.push(item);
+          }
         }
-        const res = await api.put(
-          `/product-stock/${ProductStockChangeReason.SELF_EDIT}`, 
-          reqData
-        );
+        reqData["stock"] = stock;
+        reqData["reason"] = data["reason"];
+        console.log(reqData);
+        const res = await api.put(`/product-stock`, reqData);
         setFormState(prev => ({
           ...prev, 
           success: "Update stock successfully.", 
@@ -47,6 +48,7 @@ export default function ProductStockForm({ initialData, stocks, onClear }) {
           onClear();
         }, 2000);
       } catch (e) {
+        console.log(e);
         const error = JSON.parse(JSON.stringify(
           e.response ? e.response.data.error : e
         ));
@@ -62,6 +64,31 @@ export default function ProductStockForm({ initialData, stocks, onClear }) {
   return (
   <>
     <form onSubmit={productStockForm.handleSubmit}>
+      <div className="mb-8">
+        <label htmlFor="reason" className="custom-label inline-block mb-2">Reason</label>
+        <SelectInput name="reason" id="reason" 
+        options={Object.values(ProductStockChangeReason).filter(reason => 
+          reason !== ProductStockChangeReason.CUSTOMER_ORDER_CREATE &&
+          reason !== ProductStockChangeReason.CUSTOMER_ORDER_EDIT &&
+          reason !== ProductStockChangeReason.CUSTOMER_RETURN_RECEIVED &&
+          reason !== ProductStockChangeReason.VENDOR_ORDER_COMPLETED &&
+          reason !== ProductStockChangeReason.VENDOR_RETURN_RECEIVED &&
+          reason !== ProductStockChangeReason.EMPLOYEE_BORROW
+        )}
+        onChange={(e) => productStockForm.setFieldValue("reason", e.target.value)}
+        value={productStockForm.values["reason"]}
+        ></SelectInput>
+      </div>
+
+      <div className="flex justify-between items-center mb-4">
+        <div className="w-6/12">
+          <span className="custom-label">Product</span>
+        </div>
+        <div className="w-4/12 md:w-3/12">
+          <span className="custom-label">Qty</span>
+        </div>
+      </div>
+
       {stocks.map((stock) => {
         return (
         <div key={stock.id}>
