@@ -84,7 +84,7 @@ export default function Layout({ children }) {
 
   return(
   <>
-    <div className="bg-gray-200">
+    <div className="bg-gray-200 max-h-screen h-screen">
       <div className="drawer">
         <input id="my-drawer-3" type="checkbox" className="drawer-toggle" /> 
         <div className="drawer-content flex flex-col">
