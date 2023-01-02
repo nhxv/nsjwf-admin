@@ -35,7 +35,6 @@ export default function ProductStockForm({ initialData, stocks, onClear }) {
         }
         reqData["stock"] = stock;
         reqData["reason"] = data["reason"];
-        console.log(reqData);
         const res = await api.put(`/product-stock`, reqData);
         setFormState(prev => ({
           ...prev, 

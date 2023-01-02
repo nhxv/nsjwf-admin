@@ -28,3 +28,7 @@
 input {
   -webkit-appearance: none;
 }
+
+.steps .step-primary + .step-primary:before, .steps .step-primary:after {
+  color: white;
+}

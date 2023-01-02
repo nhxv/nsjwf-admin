@@ -5,8 +5,9 @@ import api from "../../../../stores/api";
 import { BiError } from "react-icons/bi";
 import Spinner from "../../../../components/Spinner";
 import { useState, useEffect } from "react";
+import { OrderStatus } from "../../../../commons/order-status.enum";
 
-export default function Task({ order, reload }) {
+export default function Task({ order, reload, status }) {
   const [formState, setFormState] = useState({
     error: "",
     loading: false,
@@ -46,9 +47,18 @@ export default function Task({ order, reload }) {
       <div>
         <span className="font-semibold text-xl">{order.customerName}</span>
       </div>  
-      <div className="mb-6">
-        <span className="text-gray-400 text-sm">Expected at {convertTime(new Date(order.expectedAt))}</span>
-      </div>   
+      {status === OrderStatus.CHECKING || status === OrderStatus.DELIVERED ? (
+      <>
+        <div>
+          <span className="text-gray-400 text-sm">Expected at {convertTime(new Date(order.expectedAt))}</span>
+        </div>   
+        <div className="mb-6">
+          <span className="text-gray-400 text-sm">by {order.assignTo}</span>
+        </div>       
+      </>) : (        
+        <div className="mb-6">
+          <span className="text-gray-400 text-sm">Expected at {convertTime(new Date(order.expectedAt))}</span>
+        </div>)}
       <div className="mb-2">
         <StatusTag status={order.status}></StatusTag>
       </div>                 
@@ -76,8 +86,12 @@ export default function Task({ order, reload }) {
     </div>
     )
   })}
-  <div className="divider"></div>
-  <button className="btn btn-primary w-full text-white" onClick={() => onFinishTask(order.code)}>Done {order.status.toLowerCase()}</button>
+  {status === OrderStatus.PICKING || status === OrderStatus.SHIPPING ? (
+  <>
+    <div className="divider"></div>
+    <button className="btn btn-primary w-full text-white" onClick={() => onFinishTask(order.code)}>Done {order.status.toLowerCase()}</button>
+  </>) : (<></>)}
+
   <div>
     {formState.loading ? (
     <>
