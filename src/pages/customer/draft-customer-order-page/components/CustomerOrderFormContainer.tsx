@@ -26,7 +26,7 @@ export default function CustomerOrderFormContainer() {
   });
   const total = useMemo(() => {
     if (dataState.prices.length > 0) {
-      return dataState.prices.reduce((prev, current) => prev + current[0]*current[1], 0);
+      return +dataState.prices.reduce((prev, current) => prev + current[0]*current[1], 0).toFixed(2);
     } else return 0;
   }, [dataState.prices]);
 

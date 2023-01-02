@@ -8,7 +8,7 @@ import { Role } from "../../../commons/role.enum";
 
 export default function ViewStockPage() {
   const [stock, setStock] = useState(null);
-  const [childState, setChildState] = useState({
+  const [dataState, setDataState] = useState({
     error: "",
     empty: "",
     loading: true,
@@ -20,19 +20,19 @@ export default function ViewStockPage() {
     api.get(`/product-stock`)
     .then((res) => {
       if (res.data.length === 0) {
-        setChildState(prev => (
+        setDataState(prev => (
           {...prev, empty: "Such hollow, much empty...", loading: false}
         ));
       } else {
         setStock(res.data);
-        setChildState(prev => ({...prev, empty: "", loading: false}));
+        setDataState(prev => ({...prev, empty: "", loading: false}));
       }
     })
     .catch((e) => {
       const error = JSON.parse(JSON.stringify(
         e.response ? e.response.data.error : e
       ));
-      setChildState(prev => (
+      setDataState(prev => (
         {...prev, error: error.message, loading: false}
       ));
     })
@@ -47,7 +47,7 @@ export default function ViewStockPage() {
       <section className="min-h-screen">
         <h1 className="text-center font-bold text-xl my-4">View stock</h1>
         <div className="flex flex-col items-center">
-          {childState.loading ? (
+          {dataState.loading ? (
           <>
             <div className="flex justify-center">
               <Spinner></Spinner>
@@ -55,23 +55,23 @@ export default function ViewStockPage() {
           </>
           ) : (
           <>
-            {childState.error ? (
+            {dataState.error ? (
             <>
               <div className="w-11/12 sm:w-8/12 md:w-6/12 alert alert-error text-red-700 flex justify-center">
                 <div>
                   <BiError className="flex-shrink-0 w-6 h-6"></BiError>
-                  <span>{childState.error}</span>
+                  <span>{dataState.error}</span>
                 </div>
               </div>           
             </>
             ) : (
             <>
-              {childState.empty ? (
+              {dataState.empty ? (
               <>
                 <div className="w-11/12 sm:w-8/12 md:w-6/12 alert bg-gray-300 text-black flex justify-center">
                   <div>
                     <BiBot className="flex-shrink-0 w-6 h-6"></BiBot>
-                    <span>{childState.empty}</span>
+                    <span>{dataState.empty}</span>
                   </div>
                 </div>             
               </>
