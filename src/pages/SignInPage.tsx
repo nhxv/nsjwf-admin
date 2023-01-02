@@ -49,7 +49,6 @@ export default function SignInPage() {
 
   return (
     <>
-
       <div className="flex flex-col justify-center items-center h-screen max-h-screen p-6 bg-gray-200">
         <form onSubmit={signInForm.handleSubmit} className="max-w-5/12 bg-base-100 p-6 rounded-box shadow-md">
           {formState.error ? (

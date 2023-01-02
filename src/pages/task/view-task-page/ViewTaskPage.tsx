@@ -24,8 +24,13 @@ export default function ViewTaskPage() {
   const [reload, setReload] = useState(false);
 
   useEffect(() => {
-    api.get(`/customer-orders/tasks/search?nickname=${nickname}&status=${status}`)
-    .then((res) => {
+    let orderPromise = null;
+    if (status === OrderStatus.PICKING || status === OrderStatus.SHIPPING) {
+      orderPromise = api.get(`/customer-orders/tasks/search?nickname=${nickname}&status=${status}`);
+    } else if (status === OrderStatus.CHECKING || OrderStatus.DELIVERED) {
+      orderPromise = api.get(`/customer-orders/basic-list/${status}`);
+    }
+    orderPromise.then((res) => {
       if (res.data.length === 0) {
         setListState(prev => ({
           ...prev, 
@@ -52,7 +57,7 @@ export default function ViewTaskPage() {
 
     // re-render after 1 min
     const reRender = setInterval(() => {
-      getTaskList();
+      getOrderList(orderPromise);
     }, 60000);
 
     return () => {
@@ -68,9 +73,8 @@ export default function ViewTaskPage() {
     }
   }, [dataState]);
 
-  const getTaskList = () => {
-    api.get(`/customer-orders/tasks/search?nickname=${nickname}&status=${status}`)
-    .then((res) => {
+  const getOrderList = (orderPromise) => {
+    orderPromise.then((res) => {
       if (res.data.length === 0) {
         setListState(prev => ({
           ...prev, 
@@ -147,27 +151,71 @@ export default function ViewTaskPage() {
     setListState(prev => ({...prev, listLoading: true}));
   }
 
-  const onCloseToast = () => {
-    setDataState(prev => ({...prev, toast: ""}));
+  // const onCloseToast = () => {
+  //   setDataState(prev => ({...prev, toast: ""}));
+  // }
+
+  const capitalizeFirst = (str: string) => {
+    return str.charAt(0).toUpperCase() + str.slice(1);
   }
+  
+  const setStep = (step: string) => {
+    const s = step.toUpperCase();
+    if (s === OrderStatus.PICKING) {
+      setStatus(OrderStatus.PICKING);
+    } else if (s === OrderStatus.CHECKING) {
+      setStatus(OrderStatus.CHECKING);
+    } else if (s === OrderStatus.SHIPPING) {
+      setStatus(OrderStatus.SHIPPING);
+    } else if (s === OrderStatus.DELIVERED) {
+      setStatus(OrderStatus.DELIVERED);
+    }
+    if (s !== status) {
+      setListState({listError: "", listEmpty: "", listLoading: true});
+    }
+  }
+
+  const checkStep = (step: string) => {
+    const s = step.toUpperCase();
+    if (s === status) {
+      return true;
+    } else if (s === OrderStatus.PICKING) {
+      return true;
+    } else if (
+      s === OrderStatus.CHECKING && 
+      (status === OrderStatus.SHIPPING || status === OrderStatus.DELIVERED)) {
+      return true;
+    } else if (s === OrderStatus.SHIPPING && status === OrderStatus.DELIVERED) {
+      return true;
+    }
+    return false;
+  }  
 
   return (
     <>
       <section className="min-h-screen">
         <div className="flex flex-col items-center">
-          <div className="my-6">
-            <SelectInput name="status" id="status" 
-            options={Object.values(OrderStatus).filter(
-              status => 
-              status !== OrderStatus.CHECKING &&
-              status !== OrderStatus.DELIVERED && 
-              status !== OrderStatus.COMPLETED &&
-              status !== OrderStatus.CANCELED
-            )}
-            onChange={onSelect}
-            value={status}
-            ></SelectInput>
-          </div>
+          <div className={`my-6 w-11/12 sm:w-8/12 md:w-6/12 flex justify-center`}>
+            <div className="w-11/12">
+              {/* <SelectInput name="status" id="status" 
+              options={Object.values(OrderStatus).filter(
+                status => status !== OrderStatus.CANCELED && status !== OrderStatus.COMPLETED
+              )}
+              onChange={onSelect}
+              value={status}
+              ></SelectInput> */}
+              <ul className="steps w-full">
+                {Object.values(OrderStatus)
+                .filter(s => s !== OrderStatus.CANCELED && s !== OrderStatus.COMPLETED)
+                .map((s) => (
+                <li key={s} className={`cursor-pointer step text-sm font-medium 
+                  ${checkStep(s) ? "text-primary step-primary" : ""}`}
+                  onClick={() => setStep(s)}
+                >{capitalizeFirst(s.toLowerCase())}</li>
+                ))}
+              </ul>
+            </div>
+          </div>          
 
           {listState.listLoading ? (
           <>
@@ -200,7 +248,7 @@ export default function ViewTaskPage() {
               ) : (
               <>
               <div className="w-11/12 sm:w-8/12 md:w-6/12">
-                <TaskList orders={dataState.tasks} reload={forceReload} />
+                <TaskList orders={dataState.tasks} reload={forceReload} status={status} />
               </div>
               {/* {dataState.toast ? (              
               <div className="toast toast-center bottom-20 w-11/12 md:w-6/12 lg:w-3/12">
