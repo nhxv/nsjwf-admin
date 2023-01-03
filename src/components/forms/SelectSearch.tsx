@@ -13,6 +13,7 @@ export default function SelectSearch({ name, form, field, options, value }) {
   const onChangeValue = (v) => {
     form.setFieldValue(field, v);
     setSelected(v);
+    setQuery("");
   }      
 
   return (
