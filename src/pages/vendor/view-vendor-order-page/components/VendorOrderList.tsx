@@ -17,7 +17,7 @@ export default function VendorOrderList({orders}) {
   <>
     {orders.map((order) => {
       return (
-      <div key={order.code} className="bg-white p-6 rounded-box shadow-md mb-8">
+      <div key={order.code} className="bg-base-100 p-6 rounded-box shadow-md mb-8">
         {/* basic order info */}
         <div className="flex flex-row justify-between">
           <div>
@@ -28,7 +28,7 @@ export default function VendorOrderList({orders}) {
               <span className="font-semibold text-xl">{order.vendorName}</span>
             </div>  
             <div className="mb-6">
-              <span className="text-gray-400 text-sm">Expected at {convertTime(new Date(order.expectedAt))}</span>
+              <span className="text-neutral text-sm">Expected at {convertTime(new Date(order.expectedAt))}</span>
             </div>   
             <div className="mb-2">
               <StatusTag status={order.status}></StatusTag>
@@ -47,7 +47,7 @@ export default function VendorOrderList({orders}) {
         </div>
         {order.productVendorOrders.map(productOrder => {
           return (
-          <div key={productOrder.productName} className="flex justify-center items-center py-3 bg-gray-100 rounded-btn mb-2">
+          <div key={productOrder.productName} className="flex justify-center items-center py-3 bg-base-200 rounded-btn mb-2">
             <div className="w-10/12 ml-3">
               <span>{productOrder.productName}</span>
             </div>

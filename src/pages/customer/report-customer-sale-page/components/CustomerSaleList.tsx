@@ -1,11 +1,11 @@
-import { convertTime } from "../../../../commons/time.util"
+import { convertTime } from "../../../../commons/time.util";
 
 export default function CustomerSaleList({reports}) {
   return (
     <>
       {reports.map((report) => {
         return (
-        <div key={report.order_code} className="bg-white p-6 rounded-box shadow-md mb-8">
+        <div key={report.order_code} className="bg-base-100 p-6 rounded-box shadow-md mb-8">
           {/* basic report info */}
           <div className="flex flex-row justify-between">
             <div>
@@ -16,7 +16,7 @@ export default function CustomerSaleList({reports}) {
                 <span className="font-semibold text-xl">{report.customer_name}</span>
               </div>  
               <div className="">
-                <span className="text-gray-400 text-sm">Completed at {convertTime(new Date(report.date))}</span>
+                <span className="text-neutral text-sm">Completed at {convertTime(new Date(report.date))}</span>
               </div>                  
             </div>
           </div>
@@ -30,12 +30,12 @@ export default function CustomerSaleList({reports}) {
               <span className="font-medium">Qty</span>
             </div>
             <div className="w-3/12 text-center">
-              <span className="font-medium">Unit Price</span>
+              <span className="font-medium">Price</span>
             </div>
           </div>
           {report.productCustomerOrders.map(productOrder => {
             return (
-            <div key={productOrder.product_name} className="flex justify-center items-center py-3 bg-gray-100 rounded-btn mb-2">
+            <div key={productOrder.product_name} className="flex justify-center items-center py-3 bg-base-200 rounded-btn mb-2">
               <div className="w-6/12 ml-3">
                 <span>{productOrder.product_name}</span>
               </div>

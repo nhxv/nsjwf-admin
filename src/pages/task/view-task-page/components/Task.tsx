@@ -1,11 +1,10 @@
-import StatusTag from "../../../../components/StatusTag";
-import { convertTime } from "../../../../commons/time.util";
-import { useAuthStore } from "../../../../stores/auth.store";
-import api from "../../../../stores/api";
-import { BiError } from "react-icons/bi";
-import Spinner from "../../../../components/Spinner";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { OrderStatus } from "../../../../commons/order-status.enum";
+import { convertTime } from "../../../../commons/time.util";
+import Alert from "../../../../components/Alert";
+import Spinner from "../../../../components/Spinner";
+import StatusTag from "../../../../components/StatusTag";
+import api from "../../../../stores/api";
 
 export default function Task({ order, reload, status }) {
   const [formState, setFormState] = useState({
@@ -90,26 +89,19 @@ export default function Task({ order, reload, status }) {
   <>
     <div className="divider"></div>
     <button className="btn btn-primary w-full text-white" onClick={() => onFinishTask(order.code)}>Done {order.status.toLowerCase()}</button>
-  </>) : (<></>)}
+  </>) : null}
 
   <div>
     {formState.loading ? (
-    <>
-      <div className="mt-5 flex justify-center">
-        <Spinner></Spinner>
-      </div>
-    </>
-    ) : (<></>)}
+    <div className="mt-5">
+      <Spinner></Spinner>
+    </div>
+    ) : null}
     {formState.error ? (
-    <>
-      <div className="mt-5 alert alert-error text-red-700 flex justify-center">
-        <div>
-          <BiError className="flex-shrink-0 w-6 h-6"></BiError>
-          <span>{formState.error}</span>
-        </div>
-      </div>        
-    </>
-    ) : (<></>)}
+    <div className="mt-5">
+      <Alert message={formState.error} type="error"></Alert>
+    </div>   
+    ) : null}
   </div>
 </div>)
 }

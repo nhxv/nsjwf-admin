@@ -1,9 +1,10 @@
-import { HiOutlineTruck } from "react-icons/hi";
-import { BiCube, BiError, BiBot } from "react-icons/bi";
 import { useEffect, useState } from "react";
+import { BiCube } from "react-icons/bi";
+import { HiOutlineTruck } from "react-icons/hi";
+import Alert from "../../../components/Alert";
+import Spinner from "../../../components/Spinner";
 import api from "../../../stores/api";
 import { useAuthStore } from "../../../stores/auth.store";
-import Spinner from "../../../components/Spinner";
 
 export default function ReportTaskPage() {
   const [dataState, setDataState] = useState({
@@ -58,27 +59,22 @@ export default function ReportTaskPage() {
     <div className="flex justify-center">
       <div className="w-11/12 sm:w-8/12 md:w-7/12 lg:w-6/12">
         {dataState.loading ? (
-        <>
-          <div className="flex justify-center my-8">
-            <Spinner></Spinner>
-          </div>          
-        </>) : (
+        <div className="my-8">
+          <Spinner></Spinner>
+        </div>  
+        ) : (
         <>
           {dataState.error ? (
-          <>
-            <div className="alert alert-error text-red-700 flex justify-center my-8">
-              <BiError className="flex-shrink-0 w-6 h-6"></BiError>
-              <span>{dataState.error}</span>
-            </div>          
-          </>) : (
+          <div className="my-8">
+            <Alert message={dataState.error} type="error"></Alert>
+          </div>
+          ) : (
           <>
             {dataState.empty ? (
-            <>
-              <div className="alert bg-gray-300 text-black flex justify-center my-8">
-                <BiBot className="flex-shrink-0 w-6 h-6"></BiBot>
-                <span>{dataState.empty}</span>
-              </div>            
-            </>) : (
+            <div className="my-8">
+              <Alert message={dataState.empty} type="empty"></Alert>
+            </div>
+            ) : (
             <>
               {dataState.report.map((stat) => (
               <div key={stat.label}>
@@ -94,8 +90,8 @@ export default function ReportTaskPage() {
                     </div>
                   </div>
 
-                  <div className="md:w-[49%] w-full mb-4 bg-emerald-600 flex items-center text-white rounded-box p-5 shadow-md">
-                    <span className="p-2 rounded-full bg-emerald-700 mr-4">
+                  <div className="md:w-[49%] w-full mb-4 bg-primary flex items-center text-white rounded-box p-5 shadow-md">
+                    <span className="p-2 rounded-full bg-emerald-800 mr-4">
                       <HiOutlineTruck className="w-8 h-8"></HiOutlineTruck>
                     </span>
                     <div className="flex flex-col">

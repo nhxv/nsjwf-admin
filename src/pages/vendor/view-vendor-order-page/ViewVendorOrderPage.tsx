@@ -1,11 +1,10 @@
-import { useState, useEffect } from "react";
-import api from "../../../stores/api";
-import { OrderStatus } from "../../../commons/order-status.enum";
-import SelectInput from "../../../components/forms/SelectInput";
-import Spinner from "../../../components/Spinner";
-import { BiError, BiBot } from "react-icons/bi"; 
-import VendorOrderList from "./components/VendorOrderList";
+import { useEffect, useState } from "react";
 import useFirstRender from "../../../commons/hooks/first-render.hook";
+import { OrderStatus } from "../../../commons/order-status.enum";
+import Alert from "../../../components/Alert";
+import Spinner from "../../../components/Spinner";
+import api from "../../../stores/api";
+import VendorOrderList from "./components/VendorOrderList";
 
 export default function ViewVendorOrderPage() {
   const isFirstRender = useFirstRender();
@@ -87,7 +86,7 @@ export default function ViewVendorOrderPage() {
                   s !== OrderStatus.CHECKING &&
                   s !== OrderStatus.DELIVERED
                 ).map((s) => (
-                <li key={s} className={`cursor-pointer step text-sm font-medium 
+                <li key={s} className={`cursor-pointer step text-sm sm:text-base font-medium 
                   ${checkStep(s) ? "text-primary step-primary" : ""}`}
                   onClick={() => setStep(s)}
                 >{capitalizeFirst(s.toLowerCase())}</li>
@@ -97,43 +96,21 @@ export default function ViewVendorOrderPage() {
           </div>
 
           {listState.listLoading ? (
-          <>
-            <div className="flex justify-center">
-              <Spinner></Spinner>
-            </div>            
-          </>
+          <Spinner></Spinner>          
           ) : (
-          <>
+          <div className="w-11/12 sm:w-8/12 md:w-6/12">
             {listState.listError ? (
-            <>
-            <div className="w-11/12 sm:w-8/12 md:w-6/12 alert alert-error text-red-700 flex justify-center">
-              <div>
-                <BiError className="flex-shrink-0 w-6 h-6"></BiError>
-                <span>{listState.listError}</span>
-              </div>
-            </div>              
-            </>
+            <Alert message={listState.listError} type="error"></Alert>
             ) : (
             <>
               {listState.listEmpty ? (
-              <>
-                <div className="w-11/12 sm:w-8/12 md:w-6/12 alert bg-gray-300 text-black flex justify-center">
-                  <div>
-                    <BiBot className="flex-shrink-0 w-6 h-6"></BiBot>
-                    <span>{listState.listEmpty}</span>
-                  </div>
-                </div>                
-              </>
+              <Alert message={listState.listEmpty} type="empty"></Alert>
               ) : (
-              <>
-              <div className="w-11/12 sm:w-8/12 md:w-6/12">
-                <VendorOrderList orders={vendorOrderList} />
-              </div>
-              </>
+              <VendorOrderList orders={vendorOrderList} />
               )}
             </>
             )}
-          </>)}    
+          </div>)}    
         </div>
       </section>
     </>

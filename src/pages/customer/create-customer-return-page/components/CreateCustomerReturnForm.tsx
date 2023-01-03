@@ -1,11 +1,12 @@
-import { useState } from "react";
 import { useFormik } from "formik";
-import api from "../../../../stores/api";
-import NumberInput from "../../../../components/forms/NumberInput";
-import Spinner from "../../../../components/Spinner";
-import { BiError, BiCheckDouble, BiRightArrowAlt, BiLeftArrowAlt } from "react-icons/bi";
+import { useState } from "react";
+import { BiLeftArrowAlt, BiRightArrowAlt } from "react-icons/bi";
 import { convertTime } from "../../../../commons/time.util";
+import Alert from "../../../../components/Alert";
+import Spinner from "../../../../components/Spinner";
+import NumberInput from "../../../../components/forms/NumberInput";
 import TextInput from "../../../../components/forms/TextInput";
+import api from "../../../../stores/api";
 
 export default function CreateCustomerReturnForm({
   initialData, 
@@ -105,7 +106,7 @@ export default function CreateCustomerReturnForm({
             <span className="font-semibold text-xl">{sold.customer_name}</span>
           </div>
           <div className="">
-            <span className="text-gray-400 text-sm">Created at {convertTime(new Date(sold.sold_at))}</span>
+            <span className="text-neutral text-sm">Created at {convertTime(new Date(sold.sold_at))}</span>
           </div>           
         </div>
            
@@ -160,13 +161,13 @@ export default function CreateCustomerReturnForm({
             ></TextInput>
           </div>
 
-        </div>) :(<></>)}
+        </div>) : null}
 
         <div className="flex flex-col">
           <div className="mt-1">
             {formState.page === 0 ? 
             (<>
-            <button type="button" className="btn btn-primary text-white w-full" onClick={onNextPage}>
+            <button type="button" className="btn btn-primary w-full" onClick={onNextPage}>
               <span>Confirm price</span>
               <span><BiRightArrowAlt className="w-7 h-7 ml-1"></BiRightArrowAlt></span>
             </button>
@@ -178,48 +179,36 @@ export default function CreateCustomerReturnForm({
                 <span><BiLeftArrowAlt className="w-7 h-7 mr-1"></BiLeftArrowAlt></span>
                 <span>Go back</span>
               </button>
-              <button type="submit" className="btn btn-primary text-white w-[49%]">
+              <button type="submit" className="btn btn-primary w-[49%]">
                 <span>Create</span>
                 <span><BiRightArrowAlt className="w-7 h-7 ml-1"></BiRightArrowAlt></span>
               </button>
             </div>
-            ) : (<></>)}
+            ) : null}
             </>)}
           </div>
           <div>
-            <button type="button" className="btn btn-accent text-black w-full mt-3" onClick={onClearForm}>
+            <button type="button" className="btn btn-accent w-full mt-3" onClick={onClearForm}>
               <span>Clear change(s)</span>
             </button>
           </div>
         </div>
         <div>
           {formState.loading ? (
-          <>
-            <div className="mt-5 flex justify-center">
-              <Spinner></Spinner>
-            </div>
-          </>
-          ) : (<></>)}
+          <div className="mt-5">
+            <Spinner></Spinner>
+          </div>
+          ) : null}
           {formState.success ? (
-          <>
-            <div className="mt-5 alert alert-success text-green-700 flex justify-center">
-              <div>
-                <BiCheckDouble className="flex-shrink-0 w-6 h-6"></BiCheckDouble>
-                <span>{formState.success}</span>
-              </div>
-            </div>
-          </>
-          ) : (<></>)}
+          <div className="mt-5">
+            <Alert message={formState.success} type="success"></Alert>
+          </div>
+          ) : null}
           {formState.error ? (
-          <>
-            <div className="mt-5 alert alert-error text-red-700 flex justify-center">
-              <div>
-                <BiError className="flex-shrink-0 w-6 h-6"></BiError>
-                <span>{formState.error}</span>
-              </div>
-            </div>        
-          </>
-          ) : (<></>)}
+          <div className="mt-5">
+            <Alert message={formState.error} type="error"></Alert>
+          </div>  
+          ) : null}
         </div>
       </form>        
     </>

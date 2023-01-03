@@ -74,9 +74,7 @@ export default function VendorSearch() {
     <div className="w-11/12 sm:w-6/12 md:w-5/12 mb-8">
       <div className="flex flex-col justify-center items-center">
         {searchState.loading ? (
-          <>
-            <Spinner></Spinner>
-          </>
+        <Spinner></Spinner>
         ) : (
         <>
           {searchState.found && searchState.found.length > 0 ? (
@@ -84,22 +82,22 @@ export default function VendorSearch() {
               {searchState.found.map((vendor) => (
               <div key={vendor.id} className="w-full">
                 <div className="flex flex-col md:flex-row md:justify-between 
-                p-6 bg-white rounded-box shadow-md mb-4 w-full">
+                p-6 bg-base-100 rounded-box shadow-md mb-4 w-full">
                   <div>
                     <p className="font-medium">{vendor.name}</p>
-                    <small className="text-sm text-gray-400">Address:</small>
+                    <small className="text-sm text-neutral">Address:</small>
                     <p>{vendor.address ? vendor.address : "Unknown"}</p>
-                    <small className="text-sm text-gray-400">Phone:</small>
+                    <small className="text-sm text-neutral">Phone:</small>
                     <p>{vendor.phone ? vendor.phone : "Unknown"}</p>
-                    <small className="text-sm text-gray-400">Email:</small>
+                    <small className="text-sm text-neutral">Email:</small>
                     <p>{vendor.email ? vendor.email : "Unknown"}</p>
-                    <small className="text-sm text-gray-400">Presentative:</small>
+                    <small className="text-sm text-neutral">Presentative:</small>
                     <p>{vendor.presentative ? vendor.presentative : "Unknown"}</p>
-                    <small className="text-sm text-gray-400">Status:</small>
+                    <small className="text-sm text-neutral">Status:</small>
                     <p>{vendor.discontinued ? "Discontinued" : "In use"}</p>
                   </div>
 
-                  <button className="btn btn-success text-emerald-600 w-full md:w-fit mt-4 md:mt-0"
+                  <button className="btn btn-info text-primary w-full md:w-fit mt-4 md:mt-0"
                   onClick={() => onEdit(vendor)}>
                     <BiEdit className="w-6 h-6"></BiEdit>
                   </button>
@@ -116,22 +114,16 @@ export default function VendorSearch() {
             ) : (
             <>
             {searchState.error ? (
-            <>
-              <p className=" text-gray-500">{searchState.error}</p>
-            </>
+            <p className="text-neutral">{searchState.error}</p>
             ) : (
             <> 
               {searchState.empty ? (
-                <>
-                  <p className=" text-gray-500">{searchState.empty}</p>
-                </>
+              <p className="text-neutral">{searchState.empty}</p>
               ) : (
               <>
                 {searchState.greet ? (
-                <>
-                  <p className=" text-gray-500">{searchState.greet}</p>
-                </>
-                ) : (<></>)}
+                <p className="text-neutral">{searchState.greet}</p>
+                ) : null}
               </>
               )}
             </>

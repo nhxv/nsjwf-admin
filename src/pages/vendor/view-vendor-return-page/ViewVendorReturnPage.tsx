@@ -1,9 +1,10 @@
-import Spinner from "../../../components/Spinner";
-import { BiError, BiBot } from "react-icons/bi";
+import { useEffect, useState } from "react";
+import { BiBot } from "react-icons/bi";
 import useFirstRender from "../../../commons/hooks/first-render.hook";
-import { useState, useEffect } from "react";
-import VendorReturnList from "./components/VendorReturnList";
+import Alert from "../../../components/Alert";
+import Spinner from "../../../components/Spinner";
 import api from "../../../stores/api";
+import VendorReturnList from "./components/VendorReturnList";
 
 export default function ViewVendorReturnPage() {
   const isFirstRender = useFirstRender();
@@ -50,43 +51,21 @@ export default function ViewVendorReturnPage() {
     <h1 className="text-center font-bold text-xl my-4">Vendor return</h1>
     <div className="flex flex-col items-center">     
       {listState.listLoading ? (
-      <>
-        <div className="flex justify-center">
-          <Spinner></Spinner>
-        </div>            
-      </>
+      <Spinner></Spinner>
       ) : (
-      <>
+      <div className="w-11/12 sm:w-8/12 md:w-6/12">
         {listState.listError ? (
-        <>
-        <div className="w-11/12 sm:w-8/12 md:w-6/12 alert alert-error text-red-700 flex justify-center">
-          <div>
-            <BiError className="flex-shrink-0 w-6 h-6"></BiError>
-            <span>{listState.listError}</span>
-          </div>
-        </div>              
-        </>
+        <Alert message={listState.listError} type="error"></Alert>
         ) : (
         <>
           {listState.listEmpty ? (
-          <>
-            <div className="w-11/12 sm:w-8/12 md:w-6/12 alert bg-gray-300 text-black flex justify-center">
-              <div>
-                <BiBot className="flex-shrink-0 w-6 h-6"></BiBot>
-                <span>{listState.listEmpty}</span>
-              </div>
-            </div>                
-          </>
+          <Alert message={listState.listEmpty} type="empty"></Alert>
           ) : (
-          <>
-          <div className="w-11/12 sm:w-8/12 md:w-6/12">
-            <VendorReturnList returns={vendorReturnList} />
-          </div>
-          </>
+          <VendorReturnList returns={vendorReturnList} />
           )}
         </>
         )}
-      </>)}
+      </div>)}
     </div>    
   </section>
   </>

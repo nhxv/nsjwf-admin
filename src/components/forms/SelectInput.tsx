@@ -15,20 +15,20 @@ export default function SelectInput({name, form, field, options, value}) {
     <div className="w-full">
       <Listbox value={selected} onChange={onChangeValue} name={name}>
         <div className="relative mt-1">
-          <Listbox.Button className="relative w-full cursor-default rounded-btn bg-white py-3 pl-3.5 pr-10 text-left border-2 border-gray-300 text-sm font-semibold">
+          <Listbox.Button className="relative w-full cursor-default rounded-btn focus:border-primary ui-open:border-primary bg-base-100 py-3 pl-3.5 pr-10 text-left border-2 border-base-300 text-sm font-semibold">
             <span className="block truncate">{selected}</span>
             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2.5">
               <BiChevronDown
-                className="h-6 w-6 text-black"
+                className="h-6 w-6"
                 aria-hidden="true"
               />
             </span>
           </Listbox.Button>
-          <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-2 text-sm shadow-md border border-gray-300 focus:outline-none z-10">
+          <Listbox.Options className="absolute mt-1 max-h-70 w-full overflow-auto rounded-btn bg-base-100 py-2 shadow-md border border-base-300 focus:outline-none z-10">
             {options.map((option) => (
               <Listbox.Option
                 key={option}
-                className="relative cursor-default select-none py-3 px-4 mx-2 rounded-btn ui-active:bg-emerald-100 ui-active:text-primary"
+                className="relative cursor-default select-none py-3 px-4 mx-2 rounded-btn ui-active:bg-info ui-active:text-info-content"
                 value={option}
               >
               <span className="block truncate ui-selected:font-semibold ui-selected:text-primary">

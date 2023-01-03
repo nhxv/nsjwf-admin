@@ -77,7 +77,7 @@ export default function CustomerOrderPrint({ order }) {
       <div className="modal">
         <div className="modal-box p-0 md:w-4/12 sm:w-6/12 w-8/12">
         <div className="flex justify-end px-4 mt-4">
-          <label htmlFor={`modal-${order.code}`} className="btn btn-circle btn-ghost btn-sm bg-gray-100">
+          <label htmlFor={`modal-${order.code}`} className="btn btn-circle btn-ghost btn-sm bg-base-200">
             <BiX className="h-6 w-6"></BiX>
           </label>
         </div>
@@ -90,8 +90,8 @@ export default function CustomerOrderPrint({ order }) {
           value={pallet.count} min={1} max={100} disabled={false}
           onChange={onChange}></NumberInput>
         </div>        
-        <div className="modal-action bg-gray-100 px-4 py-6">
-          <label htmlFor={`modal-${order.code}`} className="btn btn-primary text-white w-full"
+        <div className="modal-action bg-base-200 px-4 py-6">
+          <label htmlFor={`modal-${order.code}`} className="btn btn-primary w-full"
           onClick={() => onPalletPrint(order)}>Print label</label>
         </div>
       </div>
@@ -99,17 +99,17 @@ export default function CustomerOrderPrint({ order }) {
 
     {/* Print menu */}     
     <div className="dropdown dropdown-end z-0">
-      <label tabIndex={0} className="btn btn-ghost btn-circle bg-gray-100 text-gray-500">
+      <label tabIndex={0} className="btn btn-ghost btn-circle bg-base-200 text-neutral">
         <BiPrinter className="inline-block w-6 h-6"></BiPrinter>
       </label>
-      <ul tabIndex={0} className="dropdown-content menu p-2 shadow-md border border-gray-300 bg-base-100 rounded-box w-36">
+      <ul tabIndex={0} className="dropdown-content menu p-2 shadow-md border border-base-300 bg-base-100 rounded-box w-36">
         <li>
-          <a onClick={handleOrderPrint}>
+          <a onClick={handleOrderPrint} className="hover:bg-base-200 focus:bg-base-200">
             <span>Packing Slip</span>
           </a>
         </li>
         <li>
-          <label htmlFor={`modal-${order.code}`}>
+          <label htmlFor={`modal-${order.code}`} className="hover:bg-base-200 focus:bg-base-200">
             <span>Pallet Label</span>
           </label>     
         </li>
