@@ -147,13 +147,13 @@ export default function Layout({ children }) {
                         <NavLink to={item.href} className={navData => navData.isActive ? `text-white active` : ``}>
                           {item.itemName}
                         </NavLink>
-                      </li>) : <></>}
+                      </li>) : null}
                     </div>
                     )
                   })}
                   {(index !== categories.length - 1) && (categories[index + 1].visible.includes(role)) ? 
-                  (<li></li>) : (<></>)}
-                </>) : (<></>)}
+                  (<li></li>) : null}
+                </>) : null}
                 </div>)
               })}
             </ul>

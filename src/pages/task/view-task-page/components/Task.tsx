@@ -36,7 +36,7 @@ export default function Task({ order, reload, status }) {
   }
 
   return (      
-  <div key={order.code} className="bg-white p-6 rounded-box shadow-md mb-8">
+  <div key={order.code} className="bg-base-100 p-6 rounded-box shadow-md mb-8">
   {/* basic order info */}
   <div className="flex flex-row justify-between">
     <div>
@@ -49,14 +49,14 @@ export default function Task({ order, reload, status }) {
       {status === OrderStatus.CHECKING || status === OrderStatus.DELIVERED ? (
       <>
         <div>
-          <span className="text-gray-400 text-sm">Expected at {convertTime(new Date(order.expectedAt))}</span>
+          <span className="text-neutral text-sm">Expected at {convertTime(new Date(order.expectedAt))}</span>
         </div>   
         <div className="mb-6">
-          <span className="text-gray-400 text-sm">by {order.assignTo}</span>
+          <span className="text-neutral text-sm">by {order.assignTo}</span>
         </div>       
       </>) : (        
         <div className="mb-6">
-          <span className="text-gray-400 text-sm">Expected at {convertTime(new Date(order.expectedAt))}</span>
+          <span className="text-neutral text-sm">Expected at {convertTime(new Date(order.expectedAt))}</span>
         </div>)}
       <div className="mb-2">
         <StatusTag status={order.status}></StatusTag>
@@ -75,7 +75,7 @@ export default function Task({ order, reload, status }) {
   </div>
   {order.productCustomerOrders.map(productOrder => {
     return (
-    <div key={productOrder.productName} className="flex justify-center items-center py-3 bg-gray-100 rounded-btn mb-2">
+    <div key={productOrder.productName} className="flex justify-center items-center py-3 bg-base-200 rounded-btn mb-2">
       <div className="w-10/12 ml-3">
         <span>{productOrder.productName}</span>
       </div>
