@@ -9,6 +9,7 @@ import Checkbox from "../../../../components/forms/Checkbox";
 import { OrderStatus } from "../../../../commons/order-status.enum";
 import NumberInput from "../../../../components/forms/NumberInput";
 import DateInput from "../../../../components/forms/DateInput";
+import SelectSearch from "../../../../components/forms/SelectSearch";
 
 export default function VendorOrderForm({
   edit,
@@ -104,15 +105,15 @@ export default function VendorOrderForm({
     <>
       <form onSubmit={vendorOrderForm.handleSubmit}>
         <div className="mb-4">
-          <label htmlFor="vendor" className="custom-label inline-block mb-2">Order to vendor</label>
-          <SelectInput name="vendor" form={vendorOrderForm} field={"vendorName"} 
+          <label className="custom-label inline-block mb-2">Order to vendor</label>
+          <SelectSearch name="vendor" form={vendorOrderForm} field={"vendorName"} 
           options={vendors.map(vendor => vendor.name)}
           value={vendorOrderForm.values["vendorName"]}
-          ></SelectInput>
+          ></SelectSearch>
         </div>
 
         <div className="mb-4">
-          <label htmlFor="status" className="custom-label inline-block mb-2">Status</label>
+          <label className="custom-label inline-block mb-2">Status</label>
           <SelectInput name="status" form={vendorOrderForm} field={"status"} 
           options={Object.values(OrderStatus).filter(
             status => status !== OrderStatus.PICKING && 
