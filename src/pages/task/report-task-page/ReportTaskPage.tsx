@@ -80,8 +80,8 @@ export default function ReportTaskPage() {
               <div key={stat.label}>
                 <h1 className="text-center font-bold text-xl my-4">{stat.label}</h1>
                 <div className="flex flex-col md:flex-row justify-between">
-                  <div className="md:w-[49%] w-full mb-4 bg-black flex items-center text-white rounded-box p-5 shadow-md">
-                    <span className="p-2 rounded-full bg-gray-700 mr-4">
+                  <div className="md:w-[49%] w-full mb-4 bg-yellow-500 flex items-center text-black rounded-box p-5 shadow-md">
+                    <span className="p-2 rounded-full bg-yellow-600 mr-4">
                       <BiCube className="w-8 h-8"></BiCube>
                     </span>
                     <div className="flex flex-col">
