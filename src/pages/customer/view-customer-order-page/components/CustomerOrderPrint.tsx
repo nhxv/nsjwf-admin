@@ -24,12 +24,12 @@ export default function CustomerOrderPrint({ order }) {
       return;
     }
     try {
-      const browserPrint = new ZebraBrowserPrintWrapper();
-      const defaultPrinter = await browserPrint.getDefaultPrinter();
-      browserPrint.setPrinter(defaultPrinter);
-      const printerStatus = await browserPrint.checkPrinterStatus();
-      if (printerStatus.isReadyToPrint) {
-        for (let i = 0; i < pallet.count; i++) {
+      for (let i = 0; i < pallet.count; i++) {
+        const browserPrint = new ZebraBrowserPrintWrapper();
+        const defaultPrinter = await browserPrint.getDefaultPrinter();
+        browserPrint.setPrinter(defaultPrinter);
+        const printerStatus = await browserPrint.checkPrinterStatus();
+        if (printerStatus.isReadyToPrint) {
           const code = `^FO100,10^ADN,36,20^FD${`#`}${order.code}^FS`;
           const customerName = `^FO100,50^ADN,36,20^FD${order.customerName}^FS`;
           const date = `^FO100,90^ADN,36,20^FD${convertTime(new Date(order.expectedAt))}^FS`;
@@ -38,6 +38,20 @@ export default function CustomerOrderPrint({ order }) {
           browserPrint.print(zpl);
         }
       }
+      // const browserPrint = new ZebraBrowserPrintWrapper();
+      // const defaultPrinter = await browserPrint.getDefaultPrinter();
+      // browserPrint.setPrinter(defaultPrinter);
+      // const printerStatus = await browserPrint.checkPrinterStatus();
+      // if (printerStatus.isReadyToPrint) {
+      //   for (let i = 0; i < pallet.count; i++) {
+      //     const code = `^FO100,10^ADN,36,20^FD${`#`}${order.code}^FS`;
+      //     const customerName = `^FO100,50^ADN,36,20^FD${order.customerName}^FS`;
+      //     const date = `^FO100,90^ADN,36,20^FD${convertTime(new Date(order.expectedAt))}^FS`;
+      //     const page = `^FO100,130^ADN,36,20^FD${`Page `}${i+1}${` of ${pallet.count}`}^FS`;
+      //     const zpl = `^XA` + code + customerName + date + page + `^XZ`;
+      //     browserPrint.print(zpl);
+      //   }
+      // }
     } catch (e) {
       throw new Error(e);
     }
