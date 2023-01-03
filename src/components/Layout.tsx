@@ -90,7 +90,7 @@ export default function Layout({ children }) {
         <div className="drawer-content flex flex-col">
           
           {/* Navbar */}
-          <nav className="w-full navbar bg-base-100 shadow-md top-0 sticky z-10">
+          <nav className="w-full navbar bg-base-100 shadow-md top-0 sticky z-20">
             <div className="navbar-start">
               <label htmlFor="my-drawer-3" className="btn btn-square btn-ghost">
                 <BiMenuAltLeft className="inline-block w-8 h-8"></BiMenuAltLeft>

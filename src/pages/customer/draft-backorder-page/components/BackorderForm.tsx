@@ -8,6 +8,7 @@ import SelectInput from "../../../../components/forms/SelectInput";
 import Checkbox from "../../../../components/forms/Checkbox";
 import NumberInput from "../../../../components/forms/NumberInput";
 import DateInput from "../../../../components/forms/DateInput";
+import SelectSearch from "../../../../components/forms/SelectSearch";
 
 export default function BackorderForm({
   edit,
@@ -112,19 +113,17 @@ export default function BackorderForm({
     <>
       <form onSubmit={backorderForm.handleSubmit}>
         <div className="mb-4">
-          <label htmlFor="customer" className="custom-label inline-block mb-2">Backorder from customer</label>
-          <SelectInput name="customer" id="customer" 
+          <label className="custom-label inline-block mb-2">Backorder from customer</label>
+          <SelectSearch name="customer" form={backorderForm} field={"customerName"}
           options={customers.map(customer => customer.name)}
-          onChange={(e) => backorderForm.setFieldValue("customerName", e.target.value)}
           value={backorderForm.values["customerName"]}
-          ></SelectInput>
+          ></SelectSearch>
         </div>
 
         <div className="mb-4">
           <label htmlFor="employee" className="custom-label inline-block mb-2">Assign to</label>
-          <SelectInput name="employee" id="employee" 
+          <SelectInput name="employee" form={backorderForm} field={"employeeName"} 
           options={employees.map(employee => employee.nickname)}
-          onChange={(e) => backorderForm.setFieldValue("employeeName", e.target.value)}
           value={backorderForm.values["employeeName"]}
           ></SelectInput>
         </div>        

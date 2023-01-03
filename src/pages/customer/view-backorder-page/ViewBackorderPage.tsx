@@ -47,21 +47,47 @@ export default function ViewBackorderPage() {
     }
   }, [backorderList]);
 
-  const onSelect = (e) => {
-    setStatus(e.target.value);
-    setListState({listError: "", listEmpty: "", listLoading: true});
+  const capitalizeFirst = (str: string) => {
+    return str.charAt(0).toUpperCase() + str.slice(1);
   }
+  
+  const setStep = (step: string) => {
+    const s = step.toUpperCase();
+    if (s === BackorderStatus.PENDING) {
+      setStatus(BackorderStatus.PENDING);
+    } else if (s === BackorderStatus.ARCHIVED) {
+      setStatus(BackorderStatus.ARCHIVED);
+    }
+    if (s !== status) {
+      setListState({listError: "", listEmpty: "", listLoading: true});
+    }
+  }
+
+  const checkStep = (step: string) => {
+    const s = step.toUpperCase();
+    if (s === status) {
+      return true;
+    } else if (s === BackorderStatus.PENDING) {
+      return true;
+    }
+    return false;
+  }  
 
   return (
     <>
       <section className="min-h-screen">
         <div className="flex flex-col items-center">
-          <div className="my-6">
-            <SelectInput name="status" id="status" 
-            options={Object.values(BackorderStatus)}
-            onChange={onSelect}
-            value={status}
-            ></SelectInput>
+        <div className={`my-6 w-11/12 sm:w-8/12 md:w-6/12 flex justify-center`}>
+            <div className="w-11/12">
+              <ul className="steps w-full">
+                {Object.values(BackorderStatus).map((s) => (
+                <li key={s} className={`cursor-pointer step text-sm font-medium 
+                  ${checkStep(s) ? "text-primary step-primary" : ""}`}
+                  onClick={() => setStep(s)}
+                >{capitalizeFirst(s.toLowerCase())}</li>
+                ))}
+              </ul>
+            </div>
           </div>
 
           {listState.listLoading ? (

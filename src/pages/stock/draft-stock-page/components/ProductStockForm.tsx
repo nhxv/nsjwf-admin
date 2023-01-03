@@ -65,7 +65,7 @@ export default function ProductStockForm({ initialData, stocks, onClear }) {
     <form onSubmit={productStockForm.handleSubmit}>
       <div className="mb-8">
         <label htmlFor="reason" className="custom-label inline-block mb-2">Reason</label>
-        <SelectInput name="reason" id="reason" 
+        <SelectInput name="reason" form={productStockForm} field={"reason"} 
         options={Object.values(ProductStockChangeReason).filter(reason => 
           reason !== ProductStockChangeReason.CUSTOMER_ORDER_CREATE &&
           reason !== ProductStockChangeReason.CUSTOMER_ORDER_EDIT &&
@@ -74,7 +74,6 @@ export default function ProductStockForm({ initialData, stocks, onClear }) {
           reason !== ProductStockChangeReason.VENDOR_RETURN_RECEIVED &&
           reason !== ProductStockChangeReason.EMPLOYEE_BORROW
         )}
-        onChange={(e) => productStockForm.setFieldValue("reason", e.target.value)}
         value={productStockForm.values["reason"]}
         ></SelectInput>
       </div>

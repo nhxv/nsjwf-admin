@@ -130,7 +130,7 @@ export default function ViewCustomerOrderPage() {
                 {Object.values(OrderStatus)
                 .filter(s => s !== OrderStatus.CANCELED && s !== OrderStatus.COMPLETED)
                 .map((s) => (
-                <li key={s} className={`cursor-pointer step text-sm font-medium 
+                <li key={s} className={`cursor-pointer step font-medium 
                   ${checkStep(s) ? "text-primary step-primary" : ""}`}
                   onClick={() => setStep(s)}
                 >{capitalizeFirst(s.toLowerCase())}</li>

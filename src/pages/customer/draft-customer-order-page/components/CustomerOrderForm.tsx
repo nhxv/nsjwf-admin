@@ -9,6 +9,7 @@ import Checkbox from "../../../../components/forms/Checkbox";
 import { OrderStatus } from "../../../../commons/order-status.enum";
 import NumberInput from "../../../../components/forms/NumberInput";
 import DateInput from "../../../../components/forms/DateInput";
+import SelectSearch from "../../../../components/forms/SelectSearch";
 
 export default function CustomerOrderForm({
   edit,
@@ -107,28 +108,24 @@ export default function CustomerOrderForm({
     <>
       <form onSubmit={customerOrderForm.handleSubmit}>
         <div className="mb-4">
-          <label htmlFor="customer" className="custom-label inline-block mb-2">Order from customer</label>
-          <SelectInput name="customer" id="customer" 
+          <label className="custom-label inline-block mb-2">Order from customer</label>
+          <SelectSearch name="customer" form={customerOrderForm} field={"customerName"} 
           options={customers.map(customer => customer.name)}
-          onChange={(e) => customerOrderForm.setFieldValue("customerName", e.target.value)}
-          value={customerOrderForm.values["customerName"]}
-          ></SelectInput>
+          value={customerOrderForm.values["customerName"]} />
         </div>
 
         <div className="mb-4">
           <label htmlFor="employee" className="custom-label inline-block mb-2">Assign to</label>
-          <SelectInput name="employee" id="employee" 
+          <SelectInput name="employee" form={customerOrderForm} field={"employeeName"}
           options={employees.map(employee => employee.nickname)}
-          onChange={(e) => customerOrderForm.setFieldValue("employeeName", e.target.value)}
           value={customerOrderForm.values["employeeName"]}
           ></SelectInput>
         </div>
 
         <div className="mb-4">
           <label htmlFor="status" className="custom-label inline-block mb-2">Status</label>
-          <SelectInput name="status" id="status" 
+          <SelectInput name="status" form={customerOrderForm} field={"status"} 
           options={Object.values(OrderStatus).filter(status => status !== OrderStatus.CANCELED)}
-          onChange={(e) => customerOrderForm.setFieldValue("status", e.target.value)}
           value={customerOrderForm.values["status"]}
           ></SelectInput>
         </div>

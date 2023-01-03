@@ -1,4 +1,5 @@
 import { useAuthStore } from "../stores/auth.store";
+import Select from "../components/forms/SelectInput";
 
 
 export default function ProfilePage() {

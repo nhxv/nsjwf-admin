@@ -105,23 +105,21 @@ export default function VendorOrderForm({
       <form onSubmit={vendorOrderForm.handleSubmit}>
         <div className="mb-4">
           <label htmlFor="vendor" className="custom-label inline-block mb-2">Order to vendor</label>
-          <SelectInput name="vendor" id="vendor" 
+          <SelectInput name="vendor" form={vendorOrderForm} field={"vendorName"} 
           options={vendors.map(vendor => vendor.name)}
-          onChange={(e) => vendorOrderForm.setFieldValue("vendorName", e.target.value)}
           value={vendorOrderForm.values["vendorName"]}
           ></SelectInput>
         </div>
 
         <div className="mb-4">
           <label htmlFor="status" className="custom-label inline-block mb-2">Status</label>
-          <SelectInput name="status" id="status" 
+          <SelectInput name="status" form={vendorOrderForm} field={"status"} 
           options={Object.values(OrderStatus).filter(
             status => status !== OrderStatus.PICKING && 
             status !== OrderStatus.CHECKING && 
             status !== OrderStatus.DELIVERED &&
             status !== OrderStatus.CANCELED
           )}
-          onChange={(e) => vendorOrderForm.setFieldValue("status", e.target.value)}
           value={vendorOrderForm.values["status"]}
           ></SelectInput>
         </div> 

@@ -47,11 +47,6 @@ export default function ViewVendorOrderPage() {
     }
   }, [vendorOrderList]);
 
-  const onSelect = (e) => {
-    setStatus(e.target.value);
-    setListState({listError: "", listEmpty: "", listLoading: true});
-  }
-
   const capitalizeFirst = (str: string) => {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
