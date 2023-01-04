@@ -1,14 +1,15 @@
+import { useFormik } from "formik";
 import { useState } from "react";
-import { BiError, BiCheckDouble } from "react-icons/bi";
+import { OrderStatus } from "../../../../commons/order-status.enum";
+import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
+import Checkbox from "../../../../components/forms/Checkbox";
+import DateInput from "../../../../components/forms/DateInput";
+import NumberInput from "../../../../components/forms/NumberInput";
+import SelectInput from "../../../../components/forms/SelectInput";
+import SelectSearch from "../../../../components/forms/SelectSearch";
 import TextInput from "../../../../components/forms/TextInput";
 import api from "../../../../stores/api";
-import { useFormik } from "formik";
-import SelectInput from "../../../../components/forms/SelectInput";
-import Checkbox from "../../../../components/forms/Checkbox";
-import { OrderStatus } from "../../../../commons/order-status.enum";
-import NumberInput from "../../../../components/forms/NumberInput";
-import DateInput from "../../../../components/forms/DateInput";
 
 export default function CustomerOrderForm({
   edit,
@@ -107,28 +108,27 @@ export default function CustomerOrderForm({
     <>
       <form onSubmit={customerOrderForm.handleSubmit}>
         <div className="mb-4">
-          <label htmlFor="customer" className="custom-label inline-block mb-2">Order from customer</label>
-          <SelectInput name="customer" id="customer" 
+          <label className="custom-label inline-block mb-2">
+            <span>Order from customer</span>
+            <span className="text-red-500">*</span>
+          </label>
+          <SelectSearch name="customer" form={customerOrderForm} field={"customerName"} 
           options={customers.map(customer => customer.name)}
-          onChange={(e) => customerOrderForm.setFieldValue("customerName", e.target.value)}
-          value={customerOrderForm.values["customerName"]}
-          ></SelectInput>
+          value={customerOrderForm.values["customerName"]} />
         </div>
 
         <div className="mb-4">
           <label htmlFor="employee" className="custom-label inline-block mb-2">Assign to</label>
-          <SelectInput name="employee" id="employee" 
+          <SelectInput name="employee" form={customerOrderForm} field={"employeeName"}
           options={employees.map(employee => employee.nickname)}
-          onChange={(e) => customerOrderForm.setFieldValue("employeeName", e.target.value)}
           value={customerOrderForm.values["employeeName"]}
           ></SelectInput>
         </div>
 
         <div className="mb-4">
           <label htmlFor="status" className="custom-label inline-block mb-2">Status</label>
-          <SelectInput name="status" id="status" 
+          <SelectInput name="status" form={customerOrderForm} field={"status"} 
           options={Object.values(OrderStatus).filter(status => status !== OrderStatus.CANCELED)}
-          onChange={(e) => customerOrderForm.setFieldValue("status", e.target.value)}
           value={customerOrderForm.values["status"]}
           ></SelectInput>
         </div>
@@ -201,41 +201,29 @@ export default function CustomerOrderForm({
           label="Test"           
           ></Checkbox>
         </div>              
-        <button type="submit" className="btn btn-primary text-white w-full mt-1">
+        <button type="submit" className="btn btn-primary w-full mt-1">
           <span>{edit ? "Update" : "Create"} order</span>
         </button>
-        <button type="button" className="btn btn-accent text-black w-full mt-3" 
+        <button type="button" className="btn btn-accent w-full mt-3" 
         onClick={onClearForm}>
           <span>Clear change(s)</span>
         </button>
         <div>
           {formState.loading ? (
-          <>
-            <div className="mt-5 flex justify-center">
-              <Spinner></Spinner>
-            </div>
-          </>
-          ) : (<></>)}
+          <div className="mt-5">
+            <Spinner></Spinner>
+          </div>
+          ) : null}
           {formState.success ? (
-          <>
-            <div className="mt-5 alert alert-success text-green-700 flex justify-center">
-              <div>
-                <BiCheckDouble className="flex-shrink-0 w-6 h-6"></BiCheckDouble>
-                <span>{formState.success}</span>
-              </div>
-            </div>
-          </>
-          ) : (<></>)}
+          <div className="mt-5">
+            <Alert message={formState.success} type="success"></Alert>
+          </div>
+          ) : null}
           {formState.error ? (
-          <>
-            <div className="mt-5 alert alert-error text-red-700 flex justify-center">
-              <div>
-                <BiError className="flex-shrink-0 w-6 h-6"></BiError>
-                <span>{formState.error}</span>
-              </div>
-            </div>        
-          </>
-          ) : (<></>)}
+          <div className="mt-5">
+            <Alert message={formState.error} type="error"></Alert>
+          </div> 
+          ) : null}
         </div>
       </form>        
     </>

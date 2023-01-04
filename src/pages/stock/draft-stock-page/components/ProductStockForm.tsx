@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react";
-import api from "../../../../stores/api";
 import { useFormik } from "formik";
-import TextInput from "../../../../components/forms/TextInput";
-import Spinner from "../../../../components/Spinner";
-import { BiCheckDouble, BiError } from "react-icons/bi";
+import { useState } from "react";
 import { ProductStockChangeReason } from "../../../../commons/product-stock-change-reason.enum";
-import { useAuthStore } from "../../../../stores/auth.store";
 import { Role } from "../../../../commons/role.enum";
+import Alert from "../../../../components/Alert";
+import Spinner from "../../../../components/Spinner";
 import SelectInput from "../../../../components/forms/SelectInput";
+import TextInput from "../../../../components/forms/TextInput";
+import api from "../../../../stores/api";
+import { useAuthStore } from "../../../../stores/auth.store";
 
 export default function ProductStockForm({ initialData, stocks, onClear }) {
   const [formState, setFormState] = useState({
@@ -65,7 +65,7 @@ export default function ProductStockForm({ initialData, stocks, onClear }) {
     <form onSubmit={productStockForm.handleSubmit}>
       <div className="mb-8">
         <label htmlFor="reason" className="custom-label inline-block mb-2">Reason</label>
-        <SelectInput name="reason" id="reason" 
+        <SelectInput name="reason" form={productStockForm} field={"reason"} 
         options={Object.values(ProductStockChangeReason).filter(reason => 
           reason !== ProductStockChangeReason.CUSTOMER_ORDER_CREATE &&
           reason !== ProductStockChangeReason.CUSTOMER_ORDER_EDIT &&
@@ -74,7 +74,6 @@ export default function ProductStockForm({ initialData, stocks, onClear }) {
           reason !== ProductStockChangeReason.VENDOR_RETURN_RECEIVED &&
           reason !== ProductStockChangeReason.EMPLOYEE_BORROW
         )}
-        onChange={(e) => productStockForm.setFieldValue("reason", e.target.value)}
         value={productStockForm.values["reason"]}
         ></SelectInput>
       </div>
@@ -108,44 +107,32 @@ export default function ProductStockForm({ initialData, stocks, onClear }) {
       })}
       {role === Role.MASTER || role === Role.ADMIN ? (
       <>
-        <button type="submit" className="btn btn-primary text-white w-full mt-1">
+        <button type="submit" className="btn btn-primary w-full mt-1">
           <span>Update stock</span>
         </button>
-        <button type="button" className="btn btn-accent text-black w-full mt-3" 
+        <button type="button" className="btn btn-accent w-full mt-3" 
         onClick={onClearForm}>
           <span>Clear change(s)</span>
         </button>      
       </>
-      ) : (<></>)}
+      ) : null}
 
       <div>
         {formState.loading ? (
-        <>
-          <div className="mt-5 flex justify-center">
-            <Spinner></Spinner>
-          </div>
-        </>
-        ) : (<></>)}
+        <div className="mt-5">
+          <Spinner></Spinner>
+        </div>
+        ) : null}
         {formState.success ? (
-        <>
-          <div className="mt-5 alert alert-success text-green-700 flex justify-center">
-            <div>
-              <BiCheckDouble className="flex-shrink-0 w-6 h-6"></BiCheckDouble>
-              <span>{formState.success}</span>
-            </div>
-          </div>
-        </>
-        ) : (<></>)}
+        <div className="mt-5">
+          <Alert message={formState.success} type="success"></Alert>
+        </div>
+        ) : null}
         {formState.error ? (
-        <>
-          <div className="mt-5 alert alert-error text-red-700 flex justify-center">
-            <div>
-              <BiError className="flex-shrink-0 w-6 h-6"></BiError>
-              <span>{formState.error}</span>
-            </div>
-          </div>        
-        </>
-        ) : (<></>)}
+        <div className="mt-5">
+          <Alert message={formState.error} type="error"></Alert>
+        </div>        
+        ) : null}
       </div>
     </form>        
   </>

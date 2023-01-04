@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../stores/auth.store";
 import api from "../stores/api";
 import { Role } from "../commons/role.enum";
+import Alert from "../components/Alert";
 
 export default function SignInPage() {
   const navigate = useNavigate();
@@ -49,16 +50,13 @@ export default function SignInPage() {
 
   return (
     <>
-      <div className="flex flex-col justify-center items-center h-screen max-h-screen p-6 bg-gray-200">
+      <div className="flex flex-col justify-center items-center min-h-screen p-6 bg-base-200">
         <form onSubmit={signInForm.handleSubmit} className="max-w-5/12 bg-base-100 p-6 rounded-box shadow-md">
           {formState.error ? (
-          <div className="alert alert-error text-red-700 mb-5">
-            <div>
-              <BiError className="flex-shrink-0 h-6 w-6"></BiError>
-              <span>{formState.error}</span>
-            </div>
+          <div className="mb-5">
+            <Alert message={formState.error} type="error"></Alert>
           </div>
-          )  : <></>}
+          )  : null}
           <div className="mb-5">
             <label htmlFor="username" className="custom-label inline-block mb-2">Username</label>
             <TextInput id="username" name="username" type="text" placeholder={`Username`} 
@@ -73,15 +71,13 @@ export default function SignInPage() {
             onChange={signInForm.handleChange}
             ></TextInput>
           </div>
-          <button type="submit" className="btn btn-primary text-white w-full mt-3">Sign in</button>
+          <button type="submit" className="btn btn-primary w-full mt-3">Sign in</button>
         </form>
         {formState.loading ? (
-        <>
-          <div className="mt-4">
-            <Spinner></Spinner>
-          </div>
-        </>
-        ) : <></>}
+        <div className="mt-4">
+          <Spinner></Spinner>
+        </div>
+        ) : null}
       </div>
     </>
   )

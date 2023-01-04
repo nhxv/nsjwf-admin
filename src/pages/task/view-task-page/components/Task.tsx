@@ -1,11 +1,10 @@
-import StatusTag from "../../../../components/StatusTag";
-import { convertTime } from "../../../../commons/time.util";
-import { useAuthStore } from "../../../../stores/auth.store";
-import api from "../../../../stores/api";
-import { BiError } from "react-icons/bi";
-import Spinner from "../../../../components/Spinner";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { OrderStatus } from "../../../../commons/order-status.enum";
+import { convertTime } from "../../../../commons/time.util";
+import Alert from "../../../../components/Alert";
+import Spinner from "../../../../components/Spinner";
+import StatusTag from "../../../../components/StatusTag";
+import api from "../../../../stores/api";
 
 export default function Task({ order, reload, status }) {
   const [formState, setFormState] = useState({
@@ -37,7 +36,7 @@ export default function Task({ order, reload, status }) {
   }
 
   return (      
-  <div key={order.code} className="bg-white p-6 rounded-box shadow-md mb-8">
+  <div key={order.code} className="bg-base-100 p-6 rounded-box shadow-md mb-8">
   {/* basic order info */}
   <div className="flex flex-row justify-between">
     <div>
@@ -50,14 +49,14 @@ export default function Task({ order, reload, status }) {
       {status === OrderStatus.CHECKING || status === OrderStatus.DELIVERED ? (
       <>
         <div>
-          <span className="text-gray-400 text-sm">Expected at {convertTime(new Date(order.expectedAt))}</span>
+          <span className="text-neutral text-sm">Expected at {convertTime(new Date(order.expectedAt))}</span>
         </div>   
         <div className="mb-6">
-          <span className="text-gray-400 text-sm">by {order.assignTo}</span>
+          <span className="text-neutral text-sm">by {order.assignTo}</span>
         </div>       
       </>) : (        
         <div className="mb-6">
-          <span className="text-gray-400 text-sm">Expected at {convertTime(new Date(order.expectedAt))}</span>
+          <span className="text-neutral text-sm">Expected at {convertTime(new Date(order.expectedAt))}</span>
         </div>)}
       <div className="mb-2">
         <StatusTag status={order.status}></StatusTag>
@@ -76,7 +75,7 @@ export default function Task({ order, reload, status }) {
   </div>
   {order.productCustomerOrders.map(productOrder => {
     return (
-    <div key={productOrder.productName} className="flex justify-center items-center py-3 bg-gray-100 rounded-btn mb-2">
+    <div key={productOrder.productName} className="flex justify-center items-center py-3 bg-base-200 rounded-btn mb-2">
       <div className="w-10/12 ml-3">
         <span>{productOrder.productName}</span>
       </div>
@@ -90,26 +89,19 @@ export default function Task({ order, reload, status }) {
   <>
     <div className="divider"></div>
     <button className="btn btn-primary w-full text-white" onClick={() => onFinishTask(order.code)}>Done {order.status.toLowerCase()}</button>
-  </>) : (<></>)}
+  </>) : null}
 
   <div>
     {formState.loading ? (
-    <>
-      <div className="mt-5 flex justify-center">
-        <Spinner></Spinner>
-      </div>
-    </>
-    ) : (<></>)}
+    <div className="mt-5">
+      <Spinner></Spinner>
+    </div>
+    ) : null}
     {formState.error ? (
-    <>
-      <div className="mt-5 alert alert-error text-red-700 flex justify-center">
-        <div>
-          <BiError className="flex-shrink-0 w-6 h-6"></BiError>
-          <span>{formState.error}</span>
-        </div>
-      </div>        
-    </>
-    ) : (<></>)}
+    <div className="mt-5">
+      <Alert message={formState.error} type="error"></Alert>
+    </div>   
+    ) : null}
   </div>
 </div>)
 }

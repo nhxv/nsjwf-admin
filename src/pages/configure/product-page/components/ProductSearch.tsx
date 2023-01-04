@@ -84,13 +84,13 @@ export default function ProductSearch() {
             {searchState.found.map((product) => (
             <div key={product.id} className="w-full">
               <div className="flex flex-col md:flex-row md:justify-between 
-              p-6 bg-white rounded-box shadow-md mb-4 w-full">
+              p-6 bg-base-100 rounded-box shadow-md mb-4 w-full">
                 <div>
                   <p className="font-medium">{product.name}</p>
-                  <p className="text-sm text-gray-400">{product.discontinued ? "Discontinued" : "In use"}</p>
+                  <p className="text-sm text-neutral">{product.discontinued ? "Discontinued" : "In use"}</p>
                 </div>
 
-                <button className="btn btn-success text-emerald-600 w-full md:w-fit mt-4 md:mt-0"
+                <button className="btn btn-info text-primary w-full md:w-fit mt-4 md:mt-0"
                 onClick={() => onEdit(product)}>
                   <BiEdit className="w-6 h-6"></BiEdit>
                 </button>
@@ -107,22 +107,16 @@ export default function ProductSearch() {
           ) : (
             <>
               {searchState.error ? (
-              <>
-                <p className=" text-gray-500">{searchState.error}</p>
-              </>
+              <p className="text-neutral">{searchState.error}</p>
               ) : (
               <> 
                 {searchState.empty ? (
-                  <>
-                    <p className=" text-gray-500">{searchState.empty}</p>
-                  </>
+                <p className="text-neutral">{searchState.empty}</p>
                 ) : (
                 <>
                   {searchState.greet ? (
-                  <>
-                    <p className=" text-gray-500">{searchState.greet}</p>
-                  </>
-                  ) : (<></>)}
+                  <p className="text-neutral">{searchState.greet}</p>
+                  ) : null}
                 </>
                 )}
               </>

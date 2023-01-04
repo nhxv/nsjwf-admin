@@ -84,13 +84,13 @@ export default function Layout({ children }) {
 
   return(
   <>
-    <div className="bg-gray-200 max-h-screen h-screen">
+    <div className="min-h-screen bg-base-200">
       <div className="drawer">
         <input id="my-drawer-3" type="checkbox" className="drawer-toggle" /> 
         <div className="drawer-content flex flex-col">
           
           {/* Navbar */}
-          <nav className="w-full navbar bg-base-100 shadow-md top-0 sticky z-10">
+          <nav className="w-full navbar bg-base-100 shadow-md top-0 sticky z-20">
             <div className="navbar-start">
               <label htmlFor="my-drawer-3" className="btn btn-square btn-ghost">
                 <BiMenuAltLeft className="inline-block w-8 h-8"></BiMenuAltLeft>
@@ -104,14 +104,14 @@ export default function Layout({ children }) {
                 <label tabIndex={0} className="btn btn-square btn-ghost">
                   <BiDotsHorizontalRounded className="inline-block w-8 h-8"></BiDotsHorizontalRounded>
                 </label>
-                <ul tabIndex={0} className="dropdown-content menu p-2 shadow-md bg-base-100 rounded-box border border-gray-300 w-52">
+                <ul tabIndex={0} className="dropdown-content menu p-2 shadow-md bg-base-100 rounded-box border border-base-300 w-52">
                   <li>
-                    <a onClick={onProfile}>
+                    <a onClick={onProfile} className="hover:bg-base-200 focus:bg-base-200">
                       <span>My profile</span>
                     </a>
                   </li>
-                  <li onClick={onSignOut}>
-                    <a>
+                  <li>
+                    <a onClick={onSignOut} className="hover:bg-base-200 focus:bg-base-200">
                       <span>Sign out</span>
                     </a>
                   </li>
@@ -129,7 +129,7 @@ export default function Layout({ children }) {
         {/* Sidebar */}
         <aside className="drawer-side">
           <label htmlFor="my-drawer-3" className="drawer-overlay"></label>
-          <div className="bg-base-100 h-screen max-h-screen w-60 overflow-y-auto shadow-md">
+          <div className="bg-base-100 min-h-screen w-60 overflow-y-auto shadow-md">
             <ul className="menu p-4">
               {categories.map((category, index) => {
                 return (
@@ -147,13 +147,13 @@ export default function Layout({ children }) {
                         <NavLink to={item.href} className={navData => navData.isActive ? `text-white active` : ``}>
                           {item.itemName}
                         </NavLink>
-                      </li>) : <></>}
+                      </li>) : null}
                     </div>
                     )
                   })}
                   {(index !== categories.length - 1) && (categories[index + 1].visible.includes(role)) ? 
-                  (<li></li>) : (<></>)}
-                </>) : (<></>)}
+                  (<li></li>) : null}
+                </>) : null}
                 </div>)
               })}
             </ul>

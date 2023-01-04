@@ -8,6 +8,7 @@ import TextInput from "../../../../components/forms/TextInput";
 import { useVendorConfigStore } from "../../../../stores/vendor-config.store";
 import { FormType } from "../../../../commons/form-type.enum";
 import Checkbox from "../../../../components/forms/Checkbox";
+import Alert from "../../../../components/Alert";
 
 export default function VendorForm() {
   const [formState, setFormState] = useState({
@@ -149,7 +150,7 @@ export default function VendorForm() {
         label="In use" 
         ></Checkbox>
       </div>
-      <button type="submit" className="mt-1 btn btn-primary w-full text-white">
+      <button type="submit" className="mt-1 btn btn-primary w-full">
         <span>{formType} vendor</span>
       </button>
       <button type="button" className="mt-3 btn btn-accent w-full" onClick={onClear}>
@@ -157,32 +158,20 @@ export default function VendorForm() {
       </button>
       <div>
         {formState.loading ? (
-        <>
-          <div className="mt-5 flex justify-center">
-            <Spinner></Spinner>
-          </div>
-        </>
-        ) : <></>}
+        <div className="mt-5">
+          <Spinner></Spinner>
+        </div>
+        ) : null}
         {formState.success ? (
-        <>
-          <div className="mt-5 alert alert-success text-green-700 flex justify-center">
-            <div>
-              <BiCheckDouble className="flex-shrink-0 w-6 h-6"></BiCheckDouble>
-              <span>{formState.success}</span>
-            </div>
-          </div>
-        </>
-        ) : (<></>)}
+        <div className="mt-5">
+          <Alert message={formState.success} type="success"></Alert>
+        </div>
+        ) : null}
         {formState.error ? (
-        <>
-          <div className="mt-5 alert alert-error text-red-700 flex justify-center">
-            <div>
-              <BiError className="flex-shrink-0 w-6 h-6"></BiError>
-              <span>{formState.error}</span>
-            </div>
-          </div>
-        </>
-        ) : (<></>)}
+        <div className="mt-5">
+          <Alert message={formState.error} type="error"></Alert>
+        </div>
+        ) : null}
       </div>
     </form>
   </>

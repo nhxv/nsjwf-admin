@@ -1,7 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { convertTime } from "../../../../commons/time.util";
 import { useAuthStore } from "../../../../stores/auth.store";
-import { Role } from "../../../../commons/role.enum";
 
 export default function VendorReturnList({returns}) {
   const navigate = useNavigate();
@@ -11,7 +9,7 @@ export default function VendorReturnList({returns}) {
   <>
     {returns.map((vendorReturn) => {
       return (
-      <div key={vendorReturn.orderCode} className="bg-white p-6 rounded-box shadow-md mb-8">
+      <div key={vendorReturn.orderCode} className="bg-base-100 p-6 rounded-box shadow-md mb-8">
         {/* basic order info */}
         <div className="flex flex-row justify-between">
           <div>
@@ -38,7 +36,7 @@ export default function VendorReturnList({returns}) {
         </div>
         {vendorReturn.productVendorReturns.map(productReturn => {
           return (
-          <div key={productReturn.productName} className="flex justify-center items-center py-3 bg-gray-100 rounded-btn mb-2">
+          <div key={productReturn.productName} className="flex justify-center items-center py-3 bg-base-200 rounded-btn mb-2">
             <div className="w-6/12 ml-3">
               <span>{productReturn.productName}</span>
             </div>

@@ -3,7 +3,7 @@ export default function DateInput({ id, name, placeholder, value, onChange, min,
   <>
     <input id={id} type="date" name={name} placeholder={placeholder} 
     value={value} onChange={onChange} min={min} max={max}
-    className="input border-gray-300 border-2 focus:outline-none focus:border-primary w-full" />
+    className="input border-base-300 border-2 focus:outline-none focus:border-primary w-full" />
   </>
   )
 }

@@ -5,6 +5,7 @@ import api from "../../../../stores/api";
 import Spinner from "../../../../components/Spinner";
 import { BiError, BiBot } from "react-icons/bi";
 import CreateVendorReturnForm from "./CreateVendorReturnForm";
+import Alert from "../../../../components/Alert";
 
 export default function CreateVendorReturnFormContainer({}) {
   const isFirstRender = useFirstRender();
@@ -90,36 +91,18 @@ export default function CreateVendorReturnFormContainer({}) {
   <>
     <div className="flex flex-col items-center">
       {formState.loading ? (
-      <>
-        <div className="flex justify-center">
-          <Spinner></Spinner>
-        </div>              
-      </>
+      <Spinner></Spinner>            
       ) : (
-      <>
+      <div className="w-11/12 sm:w-8/12 md:w-6/12">
         {formState.errorMessage ? (
-        <>
-          <div className="w-11/12 sm:w-8/12 md:w-6/12 alert alert-error text-red-700 flex justify-center">
-            <div>
-              <BiError className="flex-shrink-0 w-6 h-6"></BiError>
-              <span>{formState.errorMessage}</span>
-            </div>
-          </div>           
-        </>
+        <Alert message={formState.errorMessage} type="error"></Alert>
         ) : (
         <>
           {formState.emptyMessage ? (
-          <>
-            <div className="w-11/12 sm:w-8/12 md:w-6/12 alert bg-gray-300 text-black flex justify-center">
-              <div>
-                <BiBot className="flex-shrink-0 w-6 h-6"></BiBot>
-                <span>{formState.emptyMessage}</span>
-              </div>
-            </div>             
-          </>
+          <Alert message={formState.emptyMessage} type="empty"></Alert>
           ) : (
           <>
-            <div className="w-11/12 sm:w-8/12 md:w-6/12 bg-white p-6 rounded-box shadow-md mb-12">
+            <div className=" bg-base-100 p-6 rounded-box shadow-md mb-12">
               <CreateVendorReturnForm
               initialData={initialFields}
               products={dataState.products}
@@ -132,7 +115,7 @@ export default function CreateVendorReturnFormContainer({}) {
           )}
         </>
         )}
-      </>
+      </div>
       )}
     </div>  
   </>

@@ -9,6 +9,8 @@ import Checkbox from "../../../../components/forms/Checkbox";
 import { OrderStatus } from "../../../../commons/order-status.enum";
 import NumberInput from "../../../../components/forms/NumberInput";
 import DateInput from "../../../../components/forms/DateInput";
+import SelectSearch from "../../../../components/forms/SelectSearch";
+import Alert from "../../../../components/Alert";
 
 export default function VendorOrderForm({
   edit,
@@ -104,24 +106,25 @@ export default function VendorOrderForm({
     <>
       <form onSubmit={vendorOrderForm.handleSubmit}>
         <div className="mb-4">
-          <label htmlFor="vendor" className="custom-label inline-block mb-2">Order to vendor</label>
-          <SelectInput name="vendor" id="vendor" 
+          <label className="custom-label inline-block mb-2">
+            <span>Order to vendor</span>
+            <span className="text-red-500">*</span>
+          </label>
+          <SelectSearch name="vendor" form={vendorOrderForm} field={"vendorName"} 
           options={vendors.map(vendor => vendor.name)}
-          onChange={(e) => vendorOrderForm.setFieldValue("vendorName", e.target.value)}
           value={vendorOrderForm.values["vendorName"]}
-          ></SelectInput>
+          ></SelectSearch>
         </div>
 
         <div className="mb-4">
-          <label htmlFor="status" className="custom-label inline-block mb-2">Status</label>
-          <SelectInput name="status" id="status" 
+          <label className="custom-label inline-block mb-2">Status</label>
+          <SelectInput name="status" form={vendorOrderForm} field={"status"} 
           options={Object.values(OrderStatus).filter(
             status => status !== OrderStatus.PICKING && 
             status !== OrderStatus.CHECKING && 
             status !== OrderStatus.DELIVERED &&
             status !== OrderStatus.CANCELED
           )}
-          onChange={(e) => vendorOrderForm.setFieldValue("status", e.target.value)}
           value={vendorOrderForm.values["status"]}
           ></SelectInput>
         </div> 
@@ -194,41 +197,29 @@ export default function VendorOrderForm({
           label="Test"           
           ></Checkbox>
         </div>              
-        <button type="submit" className="btn btn-primary text-white w-full mt-1">
+        <button type="submit" className="btn btn-primary w-full mt-1">
           <span>{edit ? "Update" : "Create"} order</span>
         </button>
-        <button type="button" className="btn btn-accent text-black w-full mt-3" 
+        <button type="button" className="btn btn-accent w-full mt-3" 
         onClick={onClearForm}>
           <span>Clear change(s)</span>
         </button>
         <div>
           {formState.loading ? (
-          <>
-            <div className="mt-5 flex justify-center">
-              <Spinner></Spinner>
-            </div>
-          </>
-          ) : (<></>)}
+          <div className="mt-5">
+            <Spinner></Spinner>
+          </div>
+          ) : null}
           {formState.success ? (
-          <>
-            <div className="mt-5 alert alert-success text-green-700 flex justify-center">
-              <div>
-                <BiCheckDouble className="flex-shrink-0 w-6 h-6"></BiCheckDouble>
-                <span>{formState.success}</span>
-              </div>
-            </div>
-          </>
-          ) : (<></>)}
+          <div className="mt-5">
+            <Alert message={formState.success} type="success"></Alert>
+          </div>
+          ) : null}
           {formState.error ? (
-          <>
-            <div className="mt-5 alert alert-error text-red-700 flex justify-center">
-              <div>
-                <BiError className="flex-shrink-0 w-6 h-6"></BiError>
-                <span>{formState.error}</span>
-              </div>
-            </div>        
-          </>
-          ) : (<></>)}
+          <div className="mt-5">
+            <Alert message={formState.error} type="error"></Alert>
+          </div>        
+          ) : null}
         </div>
       </form>        
     </>

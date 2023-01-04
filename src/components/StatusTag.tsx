@@ -10,7 +10,7 @@ export default function StatusTag({ status }) {
     status === OrderStatus.DELIVERED ||
     status === BackorderStatus.PENDING) ? (
     <>
-      <span className={`p-3 text-sm rounded-full bg-yellow-100 text-yellow-600 font-medium`}>
+      <span className={`p-2.5 text-sm rounded-full bg-warning text-warning-content font-medium`}>
         {status}
       </span>
     </>
@@ -19,7 +19,7 @@ export default function StatusTag({ status }) {
       {status === OrderStatus.COMPLETED || 
       status === BackorderStatus.ARCHIVED ? (
       <>
-        <span className={`p-3 text-sm rounded-full bg-emerald-100 text-emerald-600 font-medium`}>
+        <span className={`p-2.5 text-sm rounded-full bg-success text-success-content font-medium`}>
           {status}
         </span>      
       </>
