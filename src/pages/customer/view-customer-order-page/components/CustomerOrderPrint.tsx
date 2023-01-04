@@ -1,11 +1,9 @@
 import { useReactToPrint } from "react-to-print";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import { BiPrinter, BiX } from "react-icons/bi";
 import NumberInput from "../../../../components/forms/NumberInput";
 import PalletLabelToPrint from "./PalletLabelToPrint";
 import PackingSlipToPrint from "./PackingSlipToPrint";
-import ZebraBrowserPrintWrapper from "zebra-browser-print-wrapper";
-import { convertTime } from "../../../../commons/time.util";
 
 export default function CustomerOrderPrint({ order }) {
   const [pallet, setPallet] = useState({count: 1, list: [null]});
@@ -24,24 +22,6 @@ export default function CustomerOrderPrint({ order }) {
       return;
     }
     handlePalletPrint();
-    // try {
-    //   for (let i = 0; i < pallet.count; i++) {
-    //     const browserPrint = new ZebraBrowserPrintWrapper();
-    //     const defaultPrinter = await browserPrint.getDefaultPrinter();
-    //     browserPrint.setPrinter(defaultPrinter);
-    //     const printerStatus = await browserPrint.checkPrinterStatus();
-    //     if (printerStatus.isReadyToPrint) {
-    //       const code = `^FO100,0^ADN,36,20^FD${`#`}${order.code}^FS`;
-    //       const customerName = `^FO100,50^ADN,36,20^FD${order.customerName}^FS`;
-    //       const date = `^FO100,100^ADN,36,20^FD${convertTime(new Date(order.expectedAt))}^FS`;
-    //       const page = `^FO100,150^ADN,36,20^FD${`Page `}${i+1}${` of ${pallet.count}`}^FS`;
-    //       const zpl = `^XA^LH0,0` + code + customerName + date + page + `^XZ`;
-    //       browserPrint.print(zpl);
-    //     }
-    //   }
-    // } catch (e) {
-    //   throw new Error(e);
-    // }
   }
 
   const onChange = (e) => {
