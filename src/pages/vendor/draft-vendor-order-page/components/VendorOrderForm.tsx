@@ -106,7 +106,10 @@ export default function VendorOrderForm({
     <>
       <form onSubmit={vendorOrderForm.handleSubmit}>
         <div className="mb-4">
-          <label className="custom-label inline-block mb-2">Order to vendor</label>
+          <label className="custom-label inline-block mb-2">
+            <span>Order to vendor</span>
+            <span className="text-red-500">*</span>
+          </label>
           <SelectSearch name="vendor" form={vendorOrderForm} field={"vendorName"} 
           options={vendors.map(vendor => vendor.name)}
           value={vendorOrderForm.values["vendorName"]}

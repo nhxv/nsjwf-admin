@@ -126,7 +126,7 @@ export default function VendorOrderFormContainer() {
         setInitialFields(prev => (
           {
             ...prev, 
-            vendorName: vendorRes.data[0].name,
+            vendorName: ``,
             status: OrderStatus.SHIPPING, 
             isTest: true,
             expectedAt: convertTime(nextDay), 

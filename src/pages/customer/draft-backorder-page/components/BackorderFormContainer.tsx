@@ -134,7 +134,7 @@ export default function BackorderFormContainer() {
         setInitialFields(prev => (
           {
             ...prev, 
-            customerName: customerRes.data[0].name,
+            customerName: ``,
             employeeName: employeeRes.data[0].nickname,
             isArchived: false, 
             isTest: true,

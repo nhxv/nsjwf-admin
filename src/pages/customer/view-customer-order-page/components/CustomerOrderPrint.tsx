@@ -19,42 +19,29 @@ export default function CustomerOrderPrint({ order }) {
     content: () => orderToPrintRef.current,
   });
 
-  const onPalletPrint = async (order) => {
+  const onPalletPrint = () => {
     if (pallet.count < 1 || pallet.list.length < 1) {
       return;
     }
-    try {
-      for (let i = 0; i < pallet.count; i++) {
-        const browserPrint = new ZebraBrowserPrintWrapper();
-        const defaultPrinter = await browserPrint.getDefaultPrinter();
-        browserPrint.setPrinter(defaultPrinter);
-        const printerStatus = await browserPrint.checkPrinterStatus();
-        if (printerStatus.isReadyToPrint) {
-          const code = `^FO100,0^ADN,36,20^FD${`#`}${order.code}^FS`;
-          const customerName = `^FO100,50^ADN,36,20^FD${order.customerName}^FS`;
-          const date = `^FO100,100^ADN,36,20^FD${convertTime(new Date(order.expectedAt))}^FS`;
-          const page = `^FO100,150^ADN,36,20^FD${`Page `}${i+1}${` of ${pallet.count}`}^FS`;
-          const zpl = `^XA^LH0,0` + code + customerName + date + page + `^XZ`;
-          browserPrint.print(zpl);
-        }
-      }
-      // const browserPrint = new ZebraBrowserPrintWrapper();
-      // const defaultPrinter = await browserPrint.getDefaultPrinter();
-      // browserPrint.setPrinter(defaultPrinter);
-      // const printerStatus = await browserPrint.checkPrinterStatus();
-      // if (printerStatus.isReadyToPrint) {
-      //   for (let i = 0; i < pallet.count; i++) {
-      //     const code = `^FO100,10^ADN,36,20^FD${`#`}${order.code}^FS`;
-      //     const customerName = `^FO100,50^ADN,36,20^FD${order.customerName}^FS`;
-      //     const date = `^FO100,90^ADN,36,20^FD${convertTime(new Date(order.expectedAt))}^FS`;
-      //     const page = `^FO100,130^ADN,36,20^FD${`Page `}${i+1}${` of ${pallet.count}`}^FS`;
-      //     const zpl = `^XA` + code + customerName + date + page + `^XZ`;
-      //     browserPrint.print(zpl);
-      //   }
-      // }
-    } catch (e) {
-      throw new Error(e);
-    }
+    handlePalletPrint();
+    // try {
+    //   for (let i = 0; i < pallet.count; i++) {
+    //     const browserPrint = new ZebraBrowserPrintWrapper();
+    //     const defaultPrinter = await browserPrint.getDefaultPrinter();
+    //     browserPrint.setPrinter(defaultPrinter);
+    //     const printerStatus = await browserPrint.checkPrinterStatus();
+    //     if (printerStatus.isReadyToPrint) {
+    //       const code = `^FO100,0^ADN,36,20^FD${`#`}${order.code}^FS`;
+    //       const customerName = `^FO100,50^ADN,36,20^FD${order.customerName}^FS`;
+    //       const date = `^FO100,100^ADN,36,20^FD${convertTime(new Date(order.expectedAt))}^FS`;
+    //       const page = `^FO100,150^ADN,36,20^FD${`Page `}${i+1}${` of ${pallet.count}`}^FS`;
+    //       const zpl = `^XA^LH0,0` + code + customerName + date + page + `^XZ`;
+    //       browserPrint.print(zpl);
+    //     }
+    //   }
+    // } catch (e) {
+    //   throw new Error(e);
+    // }
   }
 
   const onChange = (e) => {
@@ -69,7 +56,7 @@ export default function CustomerOrderPrint({ order }) {
   <>
     <div className="hidden">
       <PackingSlipToPrint printRef={orderToPrintRef} order={order} />
-      {/* <PalletLabelToPrint printRef={palletLabelToPrintRef} pallet={pallet} order={order} /> */}
+      <PalletLabelToPrint printRef={palletLabelToPrintRef} pallet={pallet} order={order} />
     </div>
 
     {/* Pallet modal */}
@@ -92,7 +79,7 @@ export default function CustomerOrderPrint({ order }) {
         </div>        
         <div className="modal-action bg-base-200 px-4 py-6">
           <label htmlFor={`modal-${order.code}`} className="btn btn-primary w-full"
-          onClick={() => onPalletPrint(order)}>Print label</label>
+          onClick={onPalletPrint}>Print label</label>
         </div>
       </div>
     </div>

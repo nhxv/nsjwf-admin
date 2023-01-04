@@ -108,7 +108,10 @@ export default function CustomerOrderForm({
     <>
       <form onSubmit={customerOrderForm.handleSubmit}>
         <div className="mb-4">
-          <label className="custom-label inline-block mb-2">Order from customer</label>
+          <label className="custom-label inline-block mb-2">
+            <span>Order from customer</span>
+            <span className="text-red-500">*</span>
+          </label>
           <SelectSearch name="customer" form={customerOrderForm} field={"customerName"} 
           options={customers.map(customer => customer.name)}
           value={customerOrderForm.values["customerName"]} />

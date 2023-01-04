@@ -113,7 +113,10 @@ export default function BackorderForm({
     <>
       <form onSubmit={backorderForm.handleSubmit}>
         <div className="mb-4">
-          <label className="custom-label inline-block mb-2">Backorder from customer</label>
+          <label className="custom-label inline-block mb-2">
+            <span>Backorder from customer</span>
+            <span className="text-red-500">*</span>
+          </label>
           <SelectSearch name="customer" form={backorderForm} field={"customerName"}
           options={customers.map(customer => customer.name)}
           value={backorderForm.values["customerName"]}
@@ -206,7 +209,7 @@ export default function BackorderForm({
             label="Convert to normal order"           
             ></Checkbox>
           </div>
-        </>) : (<></>)}
+        </>) : null}
                
         <button type="submit" className="btn btn-primary w-full mt-1">
           <span>{edit ? "Update" : "Create"} backorder</span>
