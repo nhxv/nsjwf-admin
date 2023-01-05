@@ -7,3 +7,11 @@ export const convertTime = (date: Date) => {
     timeZone: "America/Los_Angeles"
   }).replace(/(\d+)\/(\d+)\/(\d+)/, '$3-$1-$2');
 }
+
+export const convertTimeToText = (date: Date) => {
+  return date.toLocaleDateString("en-us", {
+    month: "short",
+    day: "2-digit",
+    year: "numeric"
+  });
+}
