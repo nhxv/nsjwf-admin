@@ -1,8 +1,8 @@
-import { convertTime } from "../../../../commons/time.util";
+import { convertTimeToText } from "../../../../commons/time.util";
 
 export default function PackingSlipToPrint({ printRef, order }) {
   return (
-  <div ref={printRef} className="px-6 py-2 break-after-page">
+  <div ref={printRef} className="px-6 py-4 break-after-page">
     <div className="flex flex-col">
       <div className="mb-4">
         <div className="flex justify-between items-center">
@@ -13,8 +13,8 @@ export default function PackingSlipToPrint({ printRef, order }) {
             <p className="block text-[0.5rem]">Tel: (408) 279-3888 • (408) 279-3889 • (408) 279-0413 • Fax: (408) 279-3890</p>
           </div>
           <div>
-            <p className="text-xs"><span className="font-semibold">Invoice No.:</span> {`327353`}</p>
-            <p className="text-xs"><span className="font-semibold">Ship at:</span> {convertTime(new Date(order.expectedAt))}</p>
+            <p className="text-xs">Invoice No.: <span className="font-semibold">{`327353`}</span></p>
+            <p className="text-xs">Ship at: <span className="font-semibold">{convertTimeToText(new Date(order.expectedAt))}</span></p>
           </div>
         </div>
 
@@ -24,13 +24,13 @@ export default function PackingSlipToPrint({ printRef, order }) {
         <div className="text-4xl font-bold block">{order.customerName}</div>
       </div>
       <div className="flex pb-1 w-9/12 border-black border-b-4 ml-24">
-        <div className="font-semibold w-8/12">Item Description</div>
-        <div className="font-semibold w-4/12 text-center">Quantity</div>
+        <div className="font-semibold w-[32px] text-center">Qty</div>
+        <div className="font-semibold ml-8">Item Description</div>
       </div>
       {order.productCustomerOrders.map(productOrder => (
       <div key={productOrder.productName} className="flex py-2 w-9/12 border-black border-b ml-24">
-        <div className="w-8/12">{productOrder.productName}</div>
-        <div className="w-4/12 text-center font-semibold">{productOrder.quantity}</div>
+        <div className="w-[32px] text-sm text-center font-semibold">{productOrder.quantity}</div>        
+        <div className="ml-8 text-sm">{productOrder.productName}</div>
       </div>
       ))}
     </div>
