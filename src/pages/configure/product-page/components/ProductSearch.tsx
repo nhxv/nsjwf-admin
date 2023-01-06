@@ -64,8 +64,9 @@ export default function ProductSearch() {
       <form onSubmit={searchForm.handleSubmit} className="flex flex-col justify-center">
         <div className="mb-5 flex">
           <SearchInput id="product-search" name="keyword" placeholder="Search by product's name" 
-          value={searchForm.values.keyword} onChange={searchForm.handleChange} />
-          <button type="submit" className="btn btn-accent border-2 ml-2">
+          value={searchForm.values.keyword} onChange={searchForm.handleChange}
+          onClear={() => searchForm.setFieldValue("keyword", "")} />
+          <button type="submit" className="btn btn-accent btn-circle ml-2">
             <BiSearch className="w-6 h-6"></BiSearch>
           </button>
         </div>

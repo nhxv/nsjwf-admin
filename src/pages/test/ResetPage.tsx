@@ -47,11 +47,9 @@ export default function ResetPage() {
       <div className="flex flex-col items-center p-6 min-h-screen">
         <h1 className="font-bold text-xl mb-8">Version 1</h1>
         {message ? (
-          <>
-            <div className="mockup-code bg-gray-800 mb-8">
-              <pre data-prefix=">" className="text-white"><code>{message}</code></pre>
-            </div>
-          </>
+          <div className="mockup-code bg-black mb-8">
+            <pre data-prefix=">" className="text-white"><code>{message}</code></pre>
+          </div>
         ) : (<></>)}
         <div className="mb-8 flex flex-col justify-center items-center">
           <h2 className="font-medium underline underline-offset-4">Configure</h2>
