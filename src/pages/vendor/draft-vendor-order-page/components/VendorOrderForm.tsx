@@ -1,16 +1,15 @@
+import { useFormik } from "formik";
 import { useState } from "react";
-import { BiError, BiCheckDouble } from "react-icons/bi";
+import { OrderStatus } from "../../../../commons/order-status.enum";
+import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
+import Checkbox from "../../../../components/forms/Checkbox";
+import DateInput from "../../../../components/forms/DateInput";
+import NumberInput from "../../../../components/forms/NumberInput";
+import SelectInput from "../../../../components/forms/SelectInput";
+import SelectSearch from "../../../../components/forms/SelectSearch";
 import TextInput from "../../../../components/forms/TextInput";
 import api from "../../../../stores/api";
-import { useFormik } from "formik";
-import SelectInput from "../../../../components/forms/SelectInput";
-import Checkbox from "../../../../components/forms/Checkbox";
-import { OrderStatus } from "../../../../commons/order-status.enum";
-import NumberInput from "../../../../components/forms/NumberInput";
-import DateInput from "../../../../components/forms/DateInput";
-import SelectSearch from "../../../../components/forms/SelectSearch";
-import Alert from "../../../../components/Alert";
 
 export default function VendorOrderForm({
   edit,
@@ -42,16 +41,16 @@ export default function VendorOrderForm({
         const properties = Object.keys(data).sort();
         for (const property of properties) {
           if (property.includes("price")) {
-            const productIndex = +property.replace("price", "");
-            const product = products[productIndex];
-            productOrders.set(productIndex, {
+            const id = +property.replace("price", "");
+            const product = products.find(p => p.id === id);
+            productOrders.set(product.id, {
               "productName": product.name,
               "unitPrice": data[property],
             });
           } else if (property.includes("quantity")) {
-            const productIndex = +property.replace("quantity", "");
-            productOrders.set(productIndex, {
-              ...productOrders.get(productIndex), 
+            const id = +property.replace("quantity", "");
+            productOrders.set(id, {
+              ...productOrders.get(id), 
               "quantity": data[property],
             });
           }          
@@ -151,28 +150,28 @@ export default function VendorOrderForm({
             </div>
           </div>
         </div>
-        {products.map((product, index) => {
+        {products.map((product) => {
           return (
-          <div key={index}>
+          <div key={product.id}>
             <div className="flex justify-between items-center mb-4">
               <div className="w-5/12">
                 <span>{product.name}</span>
               </div>
               <div className="flex w-7/12">
                 <div className="w-6/12 mr-2">
-                  <NumberInput id={`quantity${index}`} 
-                    name={`quantity${index}`} placeholder="Qty" 
-                    value={vendorOrderForm.values[`quantity${index}`]}
-                    onChange={(e) => handlePriceChange(e, `quantity${index}`)}
+                  <NumberInput id={`quantity${product.id}`} 
+                    name={`quantity${product.id}`} placeholder="Qty" 
+                    value={vendorOrderForm.values[`quantity${product.id}`]}
+                    onChange={(e) => handlePriceChange(e, `quantity${product.id}`)}
                     min="0" max="99999" disabled={false}
                   ></NumberInput>
                 </div>
 
                 <div className="w-6/12">
-                  <TextInput id={`price${index}`} type="text" 
-                    name={`price${index}`} placeholder="Price" 
-                    value={vendorOrderForm.values[`price${index}`]}
-                    onChange={(e) => handlePriceChange(e, `price${index}`)}
+                  <TextInput id={`price${product.id}`} type="text" 
+                    name={`price${product.id}`} placeholder="Price" 
+                    value={vendorOrderForm.values[`price${product.id}`]}
+                    onChange={(e) => handlePriceChange(e, `price${product.id}`)}
                   ></TextInput>
                 </div>
               </div>

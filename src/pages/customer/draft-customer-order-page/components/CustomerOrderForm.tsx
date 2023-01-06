@@ -43,16 +43,16 @@ export default function CustomerOrderForm({
         const properties = Object.keys(data).sort();
         for (const property of properties) {
           if (property.includes("price")) {
-            const productIndex = +property.replace("price", "");
-            const product = products[productIndex];
-            productOrders.set(productIndex, {
+            const id = +property.replace("price", "");
+            const product = products.find(p => p.id === id);
+            productOrders.set(product.id, {
               "productName": product.name,
               "unitPrice": data[property],
             });
           } else if (property.includes("quantity")) {
-            const productIndex = +property.replace("quantity", "");
-            productOrders.set(productIndex, {
-              ...productOrders.get(productIndex), 
+            const id = +property.replace("quantity", "");
+            productOrders.set(id, {
+              ...productOrders.get(id), 
               "quantity": data[property],
             });
           }
@@ -107,7 +107,7 @@ export default function CustomerOrderForm({
   return (
     <>
       <form onSubmit={customerOrderForm.handleSubmit}>
-        <div className="mb-4">
+        <div className="mb-5">
           <label className="custom-label inline-block mb-2">
             <span>Order from customer</span>
             <span className="text-red-500">*</span>
@@ -117,7 +117,7 @@ export default function CustomerOrderForm({
           value={customerOrderForm.values["customerName"]} />
         </div>
 
-        <div className="mb-4">
+        <div className="mb-5">
           <label htmlFor="employee" className="custom-label inline-block mb-2">Assign to</label>
           <SelectInput name="employee" form={customerOrderForm} field={"employeeName"}
           options={employees.map(employee => employee.nickname)}
@@ -125,7 +125,7 @@ export default function CustomerOrderForm({
           ></SelectInput>
         </div>
 
-        <div className="mb-4">
+        <div className="mb-5">
           <label htmlFor="status" className="custom-label inline-block mb-2">Status</label>
           <SelectInput name="status" form={customerOrderForm} field={"status"} 
           options={Object.values(OrderStatus).filter(status => status !== OrderStatus.CANCELED)}
@@ -155,32 +155,31 @@ export default function CustomerOrderForm({
             </div>
           </div>
         </div>
-        {products.map((product, index) => {
+        {products.map((product) => {
           return (
-          <div key={index}>
+          <div key={product.id}>
             <div className="flex justify-between items-center mb-4">
               <div className="w-5/12">
                 <span>{product.name}</span>
               </div>
               <div className="flex w-7/12">
                 <div className="w-6/12 mr-2">
-                  <NumberInput id={`quantity${index}`} 
-                    name={`quantity${index}`} placeholder="Qty" 
-                    value={customerOrderForm.values[`quantity${index}`]}
-                    onChange={(e) => handlePriceChange(e, `quantity${index}`)}
+                  <NumberInput id={`quantity${product.id}`} 
+                    name={`quantity${product.id}`} placeholder="Qty" 
+                    value={customerOrderForm.values[`quantity${product.id}`]}
+                    onChange={(e) => handlePriceChange(e, `quantity${product.id}`)}
                     min="0" max="99999" disabled={false}
                   ></NumberInput>
                 </div>
 
                 <div className="w-6/12">
-                  <TextInput id={`price${index}`} type="text" 
-                    name={`price${index}`} placeholder="Price" 
-                    value={customerOrderForm.values[`price${index}`]}
-                    onChange={(e) => handlePriceChange(e, `price${index}`)}
+                  <TextInput id={`price${product.id}`} type="text" 
+                    name={`price${product.id}`} placeholder="Price" 
+                    value={customerOrderForm.values[`price${product.id}`]}
+                    onChange={(e) => handlePriceChange(e, `price${product.id}`)}
                   ></TextInput>
                 </div>
               </div>
-
             </div>
             <div className="divider"></div>
           </div>

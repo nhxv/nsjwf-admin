@@ -76,7 +76,8 @@ export default function SearchVendorSalePage() {
             </div>
             <div className="">
               <SearchInput id="search" name="keyword" placeholder="Vendor's name" 
-              value={searchForm.values.keyword} onChange={searchForm.handleChange} />              
+              value={searchForm.values.keyword} onChange={searchForm.handleChange}
+              onClear={() => searchForm.setFieldValue("keyword", "")} />              
             </div>
           </div>
           <div>

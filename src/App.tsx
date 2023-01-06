@@ -19,8 +19,6 @@ import ViewVendorOrderPage from "./pages/vendor/view-vendor-order-page/ViewVendo
 import ViewStockPage from "./pages/stock/view-stock-page/ViewStockPage";
 
 import ProductPage from "./pages/configure/product-page/ProductPage";
-import VendorPage from "./pages/configure/vendor-page/VendorPage";
-import CustomerPage from "./pages/configure/customer-page/CustomerPage";
 import VehiclePage from "./pages/configure/vehicle-page/VehiclePage";
 import ResetPage from "./pages/test/ResetPage";
 import DraftStockPage from "./pages/stock/draft-stock-page/DraftStockPage";
@@ -33,6 +31,10 @@ import ViewVendorReturnPage from "./pages/vendor/view-vendor-return-page/ViewVen
 import ReportCustomerSalePage from "./pages/customer/report-customer-sale-page/ReportCustomerSalePage";
 import ViewTaskPage from "./pages/task/view-task-page/ViewTaskPage";
 import ReportTaskPage from "./pages/task/report-task-page/ReportTaskPage";
+import DraftVendorPage from "./pages/configure/draft-vendor-page/DraftVendorPage";
+import ViewVendorPage from "./pages/configure/view-vendor-page/ViewVendorPage";
+import DraftCustomerPage from "./pages/configure/draft-customer-page/DraftCustomerPage";
+import ViewCustomerPage from "./pages/configure/view-customer-page/ViewCustomerPage";
 
 
 export default function App() {
@@ -87,8 +89,14 @@ export default function App() {
           {/* Configure routes */}
           <Route element={<AdminOutlet />}>
             <Route path="/configure/product" element={<ProductPage />}></Route>
-            <Route path="/configure/customer" element={<CustomerPage />}></Route>
-            <Route path="/configure/vendor" element={<VendorPage />}></Route>
+            <Route path="/configure/draft-customer" element={<DraftCustomerPage />}>
+              <Route path=":id" element={<DraftCustomerPage />}></Route>
+            </Route>
+            <Route path="/configure/view-customer" element={<ViewCustomerPage />}></Route>
+            <Route path="/configure/draft-vendor" element={<DraftVendorPage />}>
+              <Route path=":id" element={<DraftVendorPage />}></Route>
+            </Route>
+            <Route path="/configure/view-vendor" element={<ViewVendorPage />}></Route>
             <Route path="/configure/vehicle" element={<VehiclePage />}></Route>
           </Route>
 

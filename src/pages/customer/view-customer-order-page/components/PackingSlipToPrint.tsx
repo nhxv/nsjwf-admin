@@ -19,18 +19,18 @@ export default function PackingSlipToPrint({ printRef, order }) {
         </div>
 
       </div>
-      <div className="mb-8 ml-24">
+      <div className="mb-6 ml-24">
         <div className="block text-2xl">Packing Slip</div>
         <div className="text-4xl font-bold block">{order.customerName}</div>
       </div>
       <div className="flex pb-1 w-9/12 border-black border-b-4 ml-24">
-        <div className="font-semibold w-[32px] text-center">Qty</div>
-        <div className="font-semibold ml-8">Item Description</div>
+        <div className="font-semibold text-sm w-[32px] text-center">Qty</div>
+        <div className="font-semibold text-sm ml-8">Item Description</div>
       </div>
       {order.productCustomerOrders.map(productOrder => (
       <div key={productOrder.productName} className="flex py-2 w-9/12 border-black border-b ml-24">
-        <div className="w-[32px] text-sm text-center font-semibold">{productOrder.quantity}</div>        
-        <div className="ml-8 text-sm">{productOrder.productName}</div>
+        <div className="w-[32px] text-xs text-center font-semibold">{productOrder.quantity}</div>        
+        <div className="ml-8 text-xs">{productOrder.productName}</div>
       </div>
       ))}
     </div>
