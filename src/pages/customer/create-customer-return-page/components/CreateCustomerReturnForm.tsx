@@ -19,8 +19,8 @@ export default function CreateCustomerReturnForm({
   const [formState, setFormState] = useState({
     success: "",
     error: "",
-    page: 0,
     loading: false,
+    page: 0,
   });
   const [finalPrice, setFinalPrice] = useState(0);
 
@@ -160,7 +160,6 @@ export default function CreateCustomerReturnForm({
               value={finalPrice} onChange={(e) => handleFinalPriceChange(e)}
             ></TextInput>
           </div>
-
         </div>) : null}
 
         <div className="flex flex-col">
@@ -173,18 +172,18 @@ export default function CreateCustomerReturnForm({
             </button>
             </>) : 
             (<>
-            {formState.page === 1 ? (
-            <div className="flex justify-between">
-              <button type="button" className="btn btn-alt w-[49%]" onClick={onPreviousPage}>
-                <span><BiLeftArrowAlt className="w-7 h-7 mr-1"></BiLeftArrowAlt></span>
-                <span>Go back</span>
-              </button>
-              <button type="submit" className="btn btn-primary w-[49%]">
-                <span>Create</span>
-                <span><BiRightArrowAlt className="w-7 h-7 ml-1"></BiRightArrowAlt></span>
-              </button>
-            </div>
-            ) : null}
+              {formState.page === 1 ? (
+              <div className="flex justify-between">
+                <button type="button" className="btn btn-alt w-[49%]" onClick={onPreviousPage}>
+                  <span><BiLeftArrowAlt className="w-7 h-7 mr-1"></BiLeftArrowAlt></span>
+                  <span>Go back</span>
+                </button>
+                <button type="submit" className="btn btn-primary w-[49%]">
+                  <span>Create</span>
+                  <span><BiRightArrowAlt className="w-7 h-7 ml-1"></BiRightArrowAlt></span>
+                </button>
+              </div>
+              ) : null}
             </>)}
           </div>
           <div>

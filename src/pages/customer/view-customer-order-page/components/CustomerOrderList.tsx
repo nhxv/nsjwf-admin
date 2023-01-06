@@ -38,7 +38,7 @@ export default function CustomerOrderList({orders, printMode }) {
               <StatusTag status={order.status}></StatusTag>
             </div>              
           </div>
-          {printMode ? (<CustomerOrderPrint order={order} />) : (<></>)}
+          {printMode ? (<CustomerOrderPrint order={order} />) : null}
         </div>  
         <div className="divider"></div>
         {/* products in order */}

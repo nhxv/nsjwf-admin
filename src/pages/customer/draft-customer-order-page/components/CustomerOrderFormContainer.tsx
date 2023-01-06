@@ -27,7 +27,7 @@ export default function CustomerOrderFormContainer() {
   });
   const total = useMemo(() => {
     if (dataState.prices.length > 0) {
-      return +dataState.prices.reduce((prev, current) => prev + current[0]*current[1], 0).toFixed(2);
+      return +dataState.prices.reduce((prev, current) => prev + current.quantity*current.price, 0).toFixed(2);
     } else return 0;
   }, [dataState.prices]);
 
@@ -61,16 +61,20 @@ export default function CustomerOrderFormContainer() {
           const updatedPrices = [];
           const productFieldData = {};
           const productOrders = orderRes.data.productCustomerOrders;
-          for (let i = 0; i < productRes.data.length; i++) {
-            const productOrder = productOrders.find(po => po.product_name === productRes.data[i].name);
+          for (const product of productRes.data) {
+            const productOrder = productOrders.find(po => po.product_name === product.name);
             if (productOrder) {
-              productFieldData[`quantity${i}`] = productOrder.quantity;
-              productFieldData[`price${i}`] = productOrder.unit_price;
+              productFieldData[`quantity${product.id}`] = productOrder.quantity;
+              productFieldData[`price${product.id}`] = productOrder.unit_price;
             } else {
-              productFieldData[`quantity${i}`] = 0;
-              productFieldData[`price${i}`] = 0;
+              productFieldData[`quantity${product.id}`] = 0;
+              productFieldData[`price${product.id}`] = 0;
             }
-            updatedPrices.push([productFieldData[`quantity${i}`], productFieldData[`price${i}`]]);
+            updatedPrices.push({
+              id: product.id,
+              quantity: productFieldData[`quantity${product.id}`], 
+              price: productFieldData[`price${product.id}`],
+            });
           }
           setInitialFields(prev => (
             {
@@ -125,10 +129,14 @@ export default function CustomerOrderFormContainer() {
         // setup initial field values
         let updatedPrices = [];
         const productFieldData = {};
-        for (let i = 0; i < productRes.data.length; i++) {
-          productFieldData[`quantity${i}`] = 0;
-          productFieldData[`price${i}`] = 0;
-          updatedPrices.push([productFieldData[`quantity${i}`], productFieldData[`price${i}`]]);
+        for (const product of productRes.data) {
+          productFieldData[`quantity${product.id}`] = 0;
+          productFieldData[`price${product.id}`] = 0;
+          updatedPrices.push({
+            id: product.id,
+            quantity: productFieldData[`quantity${product.id}`], 
+            price: productFieldData[`price${product.id}`],
+          });
         }
         const today = new Date();
         const nextDay = new Date(today);
@@ -149,7 +157,8 @@ export default function CustomerOrderFormContainer() {
           products: productRes.data,
           customers: customerRes.data,
           employees: employeeRes.data,
-          prices: updatedPrices}));  
+          prices: updatedPrices
+        }));  
       }
       })
       .catch((e) => {
@@ -180,11 +189,13 @@ export default function CustomerOrderFormContainer() {
   const updatePrice = (e, inputId: string) => {
     let updatedPrices = [...dataState.prices];
     if (inputId.includes("quantity")) {
-      const index = +inputId.replace("quantity", "");
-      updatedPrices[index][0] = +e.target.value;
+      const id = +inputId.replace("quantity", "");
+      const index = updatedPrices.findIndex(p => p.id === id);
+      updatedPrices[index].quantity = +e.target.value;
     } else if (inputId.includes("price")) {
-      const index = +inputId.replace("price", "");
-      updatedPrices[index][1] = +e.target.value;
+      const id = +inputId.replace("price", "");
+      const index = updatedPrices.findIndex(p => p.id === id);
+      updatedPrices[index].price = +e.target.value;
     }
     setDataState(prev => ({...prev, prices: updatedPrices}));
   }
