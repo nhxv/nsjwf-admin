@@ -187,7 +187,7 @@ export default function DraftCustomerForm({editedId, editedProducts, initialData
               <div className="flex justify-between items-center">
                 <div className="w-full">
                   <SearchInput id="product-search" name="product-search" placeholder="Search product"
-                  onChange={(e) => onChangeSearch(e)} value={query}
+                  onChange={(e) => onChangeSearch(e)} value={query} onFocus={() => setSearchedProducts(allProducts)}
                   onClear={onClearQuery}></SearchInput>
                 </div>
               </div>
