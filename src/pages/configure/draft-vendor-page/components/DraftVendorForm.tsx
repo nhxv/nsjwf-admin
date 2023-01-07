@@ -111,6 +111,14 @@ export default function DraftVendorForm({editedId, editedProducts, initialData, 
     setSelectedProducts(selectedProducts.filter(product => product.id !== id));
   }
 
+  const handleQuantityChange = (product, e) => {
+    if (e.target.value) {
+      vendorForm.setFieldValue(`quantity${product.id}`, e.target.value);
+    } else {
+      vendorForm.setFieldValue(`quantity${product.id}`, "");
+    }
+  }
+
   const onClearQuery = () => {
     setSearchedProducts([]);
     setQuery("");
@@ -187,7 +195,7 @@ export default function DraftVendorForm({editedId, editedProducts, initialData, 
               <div className="flex justify-between items-center">
                 <div className="w-full">
                   <SearchInput id="product-search" name="product-search" placeholder="Search product"
-                  onChange={(e) => onChangeSearch(e)} value={query}
+                  onChange={(e) => onChangeSearch(e)} value={query} onFocus={() => setSearchedProducts(allProducts)}
                   onClear={onClearQuery}></SearchInput>
                 </div>
               </div>
@@ -228,7 +236,7 @@ export default function DraftVendorForm({editedId, editedProducts, initialData, 
                       <NumberInput id={`quantity${product.id}`} 
                         name={`quantity${product.id}`} placeholder="Qty" 
                         value={vendorForm.values[`quantity${product.id}`]}
-                        onChange={(e) => vendorForm.setFieldValue(`quantity${product.id}`, +e.target.value)}
+                        onChange={(e) => handleQuantityChange(product, e)}
                         min="0" max="99999" disabled={false}
                       ></NumberInput>
                     </div>

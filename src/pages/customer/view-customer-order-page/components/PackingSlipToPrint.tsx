@@ -13,7 +13,7 @@ export default function PackingSlipToPrint({ printRef, order }) {
             <p className="block text-[0.5rem]">Tel: (408) 279-3888 • (408) 279-3889 • (408) 279-0413 • Fax: (408) 279-3890</p>
           </div>
           <div>
-            <p className="text-xs">Invoice No.: <span className="font-semibold">{`327353`}</span></p>
+            <p className="text-xs">Invoice No.: <span className="font-semibold">#{order.code}</span></p>
             <p className="text-xs">Ship at: <span className="font-semibold">{convertTimeToText(new Date(order.expectedAt))}</span></p>
           </div>
         </div>
