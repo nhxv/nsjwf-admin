@@ -24,7 +24,6 @@ export default function DraftVendorFormContainer() {
   useEffect(() => {
     const productPromise = api.get(`/products/all`);
     if (params.id) {
-      console.log("update" + params.id);
       // TODO: update vendor
       const vendorPromise = api.get(`/vendors/all/${params.id}`);
       Promise.all([vendorPromise, productPromise])

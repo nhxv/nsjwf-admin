@@ -24,7 +24,6 @@ export default function DraftCustomerFormContainer() {
   useEffect(() => {
     const productPromise = api.get(`/products/all`);
     if (params.id) {
-      console.log("update" + params.id);
       // TODO: update customer
       const customerPromise = api.get(`/customers/all/${params.id}`);
       Promise.all([customerPromise, productPromise])
