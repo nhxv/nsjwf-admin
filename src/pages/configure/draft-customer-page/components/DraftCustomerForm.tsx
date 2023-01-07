@@ -111,6 +111,14 @@ export default function DraftCustomerForm({editedId, editedProducts, initialData
     setSelectedProducts(selectedProducts.filter(product => product.id !== id));
   }
 
+  const handleQuantityChange = (product, e) => {
+    if (e.target.value) {
+      customerForm.setFieldValue(`quantity${product.id}`, e.target.value);
+    } else {
+      customerForm.setFieldValue(`quantity${product.id}`, "");
+    }
+  }
+
   const onClearQuery = () => {
     setSearchedProducts([]);
     setQuery("");
@@ -228,7 +236,7 @@ export default function DraftCustomerForm({editedId, editedProducts, initialData
                       <NumberInput id={`quantity${product.id}`} 
                         name={`quantity${product.id}`} placeholder="Qty" 
                         value={customerForm.values[`quantity${product.id}`]}
-                        onChange={(e) => customerForm.setFieldValue(`quantity${product.id}`, +e.target.value)}
+                        onChange={(e) => handleQuantityChange(product, e)}
                         min="0" max="99999" disabled={false}
                       ></NumberInput>
                     </div>
