@@ -20,7 +20,8 @@ export default function CustomerOrderFormContainer() {
   });
   const [initialFields, setInitialFields] = useState({});
   const [dataState, setDataState] = useState({
-    products: [],
+    editedProducts: [],
+    allProducts: [],
     customers: [],
     employees: [],
     prices: [],
@@ -59,22 +60,25 @@ export default function CustomerOrderFormContainer() {
         } else {
           // setup initial field values
           const updatedPrices = [];
+          const editedProductsRes = [];
+          const allProductsRes = productRes.data;
           const productFieldData = {};
           const productOrders = orderRes.data.productCustomerOrders;
-          for (const product of productRes.data) {
+          for (const product of allProductsRes) {
             const productOrder = productOrders.find(po => po.product_name === product.name);
             if (productOrder) {
               productFieldData[`quantity${product.id}`] = productOrder.quantity;
               productFieldData[`price${product.id}`] = productOrder.unit_price;
-            } else {
-              productFieldData[`quantity${product.id}`] = 0;
-              productFieldData[`price${product.id}`] = 0;
+              updatedPrices.push({
+                id: product.id,
+                quantity: productFieldData[`quantity${product.id}`], 
+                price: productFieldData[`price${product.id}`],
+              });
+              editedProductsRes.push({
+                id: product.id,
+                name: product.name,
+              });
             }
-            updatedPrices.push({
-              id: product.id,
-              quantity: productFieldData[`quantity${product.id}`], 
-              price: productFieldData[`price${product.id}`],
-            });
           }
           setInitialFields(prev => (
             {
@@ -91,7 +95,8 @@ export default function CustomerOrderFormContainer() {
           setDataState(prev => (
             {
               ...prev,
-              products: productRes.data,
+              editedProducts: editedProductsRes,
+              allProducts: allProductsRes,
               customers: customerRes.data,
               employees: employeeRes.data,
               prices: updatedPrices
@@ -154,7 +159,7 @@ export default function CustomerOrderFormContainer() {
         ));
         setDataState(prev => ({
           ...prev,
-          products: productRes.data,
+          allProducts: productRes.data,
           customers: customerRes.data,
           employees: employeeRes.data,
           prices: updatedPrices
@@ -196,6 +201,11 @@ export default function CustomerOrderFormContainer() {
       const id = +inputId.replace("price", "");
       const index = updatedPrices.findIndex(p => p.id === id);
       updatedPrices[index].price = +e.target.value;
+    } else if (inputId.includes("remove")) {
+      const id = +inputId.replace("remove", "");
+      const index = updatedPrices.findIndex(p => p.id === id);
+      updatedPrices[index].quantity = 0;
+      updatedPrices[index].price = 0;    
     }
     setDataState(prev => ({...prev, prices: updatedPrices}));
   }
@@ -219,7 +229,8 @@ export default function CustomerOrderFormContainer() {
             edit={!!params.code} 
             initialData={initialFields} 
             customers={dataState.customers} 
-            products={dataState.products}
+            editedProducts={(dataState.editedProducts?.length > 0) ? dataState.editedProducts : null} 
+            allProducts={dataState.allProducts}
             employees={dataState.employees}
             updatePrice={updatePrice}
             total={total}

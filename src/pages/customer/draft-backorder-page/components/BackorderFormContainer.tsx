@@ -1,11 +1,12 @@
-import { useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useState, useEffect, useMemo } from "react";
+import BackorderForm from "./BackorderForm";
+import api from "../../../../stores/api";
+import Spinner from "../../../../components/Spinner";
 import useFirstRender from "../../../../commons/hooks/first-render.hook";
+import { useParams } from "react-router-dom";
+import { OrderStatus } from "../../../../commons/order-status.enum";
 import { convertTime } from "../../../../commons/time.util";
 import Alert from "../../../../components/Alert";
-import Spinner from "../../../../components/Spinner";
-import api from "../../../../stores/api";
-import BackorderForm from "./BackorderForm";
 
 export default function BackorderFormContainer() {
   const isFirstRender = useFirstRender();
@@ -18,14 +19,15 @@ export default function BackorderFormContainer() {
   });
   const [initialFields, setInitialFields] = useState({});
   const [dataState, setDataState] = useState({
-    products: [],
+    editedProducts: [],
+    allProducts: [],
     customers: [],
     employees: [],
     prices: [],
   });
   const total = useMemo(() => {
     if (dataState.prices.length > 0) {
-      return +dataState.prices.reduce((prev, current) => prev + current[0]*current[1], 0).toFixed(2);
+      return +dataState.prices.reduce((prev, current) => prev + current.quantity*current.price, 0).toFixed(2);
     } else return 0;
   }, [dataState.prices]);
 
@@ -41,7 +43,7 @@ export default function BackorderFormContainer() {
         const productRes = res[0];
         const customerRes = res[1];
         const employeeRes = res[2];
-        const orderRes = res[3];     
+        const orderRes = res[3];
         if (
           !productRes ||
           productRes.data.length === 0 ||
@@ -57,38 +59,47 @@ export default function BackorderFormContainer() {
         } else {
           // setup initial field values
           const updatedPrices = [];
+          const editedProductsRes = [];
+          const allProductsRes = productRes.data;
           const productFieldData = {};
           const productOrders = orderRes.data.productBackorders;
-          for (let i = 0; i < productRes.data.length; i++) {
-            const productOrder = productOrders.find(po => po.product_name === productRes.data[i].name);
+          for (const product of allProductsRes) {
+            const productOrder = productOrders.find(po => po.product_name === product.name);
             if (productOrder) {
-              productFieldData[`quantity${i}`] = productOrder.quantity;
-              productFieldData[`price${i}`] = productOrder.unit_price;
-            } else {
-              productFieldData[`quantity${i}`] = 0;
-              productFieldData[`price${i}`] = 0;
+              productFieldData[`quantity${product.id}`] = productOrder.quantity;
+              productFieldData[`price${product.id}`] = productOrder.unit_price;
+              updatedPrices.push({
+                id: product.id,
+                quantity: productFieldData[`quantity${product.id}`], 
+                price: productFieldData[`price${product.id}`],
+              });
+              editedProductsRes.push({
+                id: product.id,
+                name: product.name,
+              });
             }
-            updatedPrices.push([productFieldData[`quantity${i}`], productFieldData[`price${i}`]]);
           }
           setInitialFields(prev => (
             {
               ...prev, 
               customerName: orderRes.data.customer_name,
               employeeName: orderRes.data.assign_to,
-              isArchived: orderRes.data.is_archived, 
+              isArchived: orderRes.data.is_archived,
+              status: orderRes.data.status, 
               isTest: orderRes.data.is_test,
               id: orderRes.data.id,
-              expectedAt: convertTime(new Date(orderRes.data.expected_at)), 
-              ...productFieldData,
+              expectedAt: convertTime(new Date(orderRes.data.expected_at)),
+              ...productFieldData
             }
           ));
           setDataState(prev => (
             {
               ...prev,
-              products: productRes.data,
+              editedProducts: editedProductsRes,
+              allProducts: allProductsRes,
               customers: customerRes.data,
               employees: employeeRes.data,
-              prices: updatedPrices,
+              prices: updatedPrices
             }
           ));            
           }
@@ -123,10 +134,14 @@ export default function BackorderFormContainer() {
         // setup initial field values
         let updatedPrices = [];
         const productFieldData = {};
-        for (let i = 0; i < productRes.data.length; i++) {
-          productFieldData[`quantity${i}`] = 0;
-          productFieldData[`price${i}`] = 0;
-          updatedPrices.push([productFieldData[`quantity${i}`], productFieldData[`price${i}`]]);
+        for (const product of productRes.data) {
+          productFieldData[`quantity${product.id}`] = 0;
+          productFieldData[`price${product.id}`] = 0;
+          updatedPrices.push({
+            id: product.id,
+            quantity: productFieldData[`quantity${product.id}`], 
+            price: productFieldData[`price${product.id}`],
+          });
         }
         const today = new Date();
         const nextDay = new Date(today);
@@ -136,7 +151,7 @@ export default function BackorderFormContainer() {
             ...prev, 
             customerName: ``,
             employeeName: employeeRes.data[0].nickname,
-            isArchived: false, 
+            isArchived: false,
             isTest: true,
             expectedAt: convertTime(nextDay),
             ...productFieldData
@@ -144,10 +159,11 @@ export default function BackorderFormContainer() {
         ));
         setDataState(prev => ({
           ...prev,
-          products: productRes.data,
+          allProducts: productRes.data,
           customers: customerRes.data,
           employees: employeeRes.data,
-          prices: updatedPrices}));
+          prices: updatedPrices
+        }));  
       }
       })
       .catch((e) => {
@@ -178,11 +194,18 @@ export default function BackorderFormContainer() {
   const updatePrice = (e, inputId: string) => {
     let updatedPrices = [...dataState.prices];
     if (inputId.includes("quantity")) {
-      const index = +inputId.replace("quantity", "");
-      updatedPrices[index][0] = +e.target.value;
+      const id = +inputId.replace("quantity", "");
+      const index = updatedPrices.findIndex(p => p.id === id);
+      updatedPrices[index].quantity = +e.target.value;
     } else if (inputId.includes("price")) {
-      const index = +inputId.replace("price", "");
-      updatedPrices[index][1] = +e.target.value;
+      const id = +inputId.replace("price", "");
+      const index = updatedPrices.findIndex(p => p.id === id);
+      updatedPrices[index].price = +e.target.value;
+    } else if (inputId.includes("remove")) {
+      const id = +inputId.replace("remove", "");
+      const index = updatedPrices.findIndex(p => p.id === id);
+      updatedPrices[index].quantity = 0;
+      updatedPrices[index].price = 0;    
     }
     setDataState(prev => ({...prev, prices: updatedPrices}));
   }
@@ -206,12 +229,13 @@ export default function BackorderFormContainer() {
             edit={!!params.id} 
             initialData={initialFields} 
             customers={dataState.customers} 
-            products={dataState.products}
+            editedProducts={(dataState.editedProducts?.length > 0) ? dataState.editedProducts : null} 
+            allProducts={dataState.allProducts}
             employees={dataState.employees}
             updatePrice={updatePrice}
             total={total}
             onClear={onClear} />
-          </div>
+          </div>   
           )}
         </>
         )}

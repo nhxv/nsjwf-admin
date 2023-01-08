@@ -9,7 +9,7 @@ import SearchInput from "../../../../components/forms/SearchInput";
 import NumberInput from "../../../../components/forms/NumberInput";
 import api from "../../../../stores/api";
 
-export default function DraftVendorForm({editedId, editedProducts, initialData, allProducts, onClear}) {
+export default function DraftVendorForm({edit, editedProducts, initialData, allProducts, onClear}) {
   const [formState, setFormState] = useState({
     success: "",
     error: "",
@@ -26,6 +26,7 @@ export default function DraftVendorForm({editedId, editedProducts, initialData, 
     onSubmit: async (data) => {
       setFormState(prev => ({...prev, loading: true, error: "", success: ""}));
       const reqData = {};
+      reqData["id"] = data["id"];
       reqData["name"] = data["name"];
       reqData["address"] = data["address"];
       reqData["phone"] = data["phone"];
@@ -36,8 +37,7 @@ export default function DraftVendorForm({editedId, editedProducts, initialData, 
       for (const property in data) {
         if (property.includes("quantity")) {
           const id = +property.replace("quantity", "");
-          const product = allProducts.find(p => p.id === id);
-          const selected = selectedProducts.find(p => p.name === product.name);
+          const selected = selectedProducts.find(p => p.id === id);
           if (selected) {
             productTendencies.push({
               vendorName: data["name"],
@@ -50,8 +50,8 @@ export default function DraftVendorForm({editedId, editedProducts, initialData, 
       reqData["vendorProductTendencies"] = productTendencies;
       try {
         let res = null;
-        if (editedId) {
-          res = await api.put(`/vendors/${editedId}`, reqData);
+        if (edit) {
+          res = await api.put(`/vendors/${reqData["id"]}`, reqData);
         } else {
           res = await api.post(`/vendors`, reqData);
         }
@@ -213,7 +213,7 @@ export default function DraftVendorForm({editedId, editedProducts, initialData, 
             </div>            
             ) : null}
             <div className="mb-5">
-              {selectedProducts && selectedProducts.length > 0 ? (
+              {selectedProducts?.length > 0 ? (
               <>
                 <div className="flex justify-between items-center mt-8 mb-4">
                   <div className="w-5/12">
@@ -263,7 +263,7 @@ export default function DraftVendorForm({editedId, editedProducts, initialData, 
                 <span>Go back</span>
               </button>
               <button type="submit" className="btn btn-primary w-[49%]">
-                <span>{editedId ? "Update" : "Create"}</span>
+                <span>{edit ? "Update" : "Create"}</span>
               </button>
             </div>
           </>
