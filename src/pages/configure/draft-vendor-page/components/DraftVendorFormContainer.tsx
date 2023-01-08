@@ -44,6 +44,7 @@ export default function DraftVendorFormContainer() {
         }
         setInitialFields(prev => ({
           ...prev,
+          id: vendorRes.id,
           name: vendorRes.name,
           address: vendorRes.address,
           phone: vendorRes.phone,
@@ -127,7 +128,7 @@ export default function DraftVendorFormContainer() {
           <>
             <div className="bg-base-100 p-6 rounded-box shadow-md mb-12">
               <DraftVendorForm
-              editedId={params?.id ? params.id : null}
+              edit={!!params?.id}
               editedProducts={(dataState.editedProducts?.length > 0) ? dataState.editedProducts : null}
               initialData={initialFields}
               allProducts={dataState.allProducts}

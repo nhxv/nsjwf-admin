@@ -36,8 +36,7 @@ export default function DraftCustomerForm({editedId, editedProducts, initialData
       for (const property in data) {
         if (property.includes("quantity")) {
           const id = +property.replace("quantity", "");
-          const product = allProducts.find(p => p.id === id);
-          const selected = selectedProducts.find(p => p.name === product.name);
+          const selected = selectedProducts.find(p => p.id === id);
           if (selected) {
             productTendencies.push({
               customerName: data["name"],

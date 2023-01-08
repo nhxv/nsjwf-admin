@@ -11,6 +11,7 @@ export default function SearchInput({ id, name, placeholder, value, onChange, on
       <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
         <BiSearch className="w-6 h-6 text-neutral placeholder:text-base-300 dark:placeholder:text-base-300" />
       </div>
+
       {value || (document.activeElement === searchRef.current) ? (
       <div className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer" onClick={onClear}>
         <BiX className="w-6 h-6 text-neutral placeholder:text-base-300 dark:placeholder:text-base-300" />

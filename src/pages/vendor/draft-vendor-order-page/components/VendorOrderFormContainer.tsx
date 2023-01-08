@@ -1,13 +1,12 @@
-import { useState, useEffect, useMemo } from "react";
-import VendorOrderForm from "./VendorOrderForm";
-import api from "../../../../stores/api";
-import { BiError, BiBot } from "react-icons/bi";
-import Spinner from "../../../../components/Spinner";
-import useFirstRender from "../../../../commons/hooks/first-render.hook";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
+import useFirstRender from "../../../../commons/hooks/first-render.hook";
 import { OrderStatus } from "../../../../commons/order-status.enum";
 import { convertTime } from "../../../../commons/time.util";
 import Alert from "../../../../components/Alert";
+import Spinner from "../../../../components/Spinner";
+import api from "../../../../stores/api";
+import VendorOrderForm from "./VendorOrderForm";
 
 export default function VendorOrderFormContainer() {
   const isFirstRender = useFirstRender();
@@ -20,7 +19,8 @@ export default function VendorOrderFormContainer() {
   });
   const [initialFields, setInitialFields] = useState({});
   const [dataState, setDataState] = useState({
-    products: [],
+    editedProducts: [],
+    allProducts: [],
     vendors: [],
     prices: [],
   });
@@ -54,22 +54,25 @@ export default function VendorOrderFormContainer() {
         } else {
           // setup initial field values
           const updatedPrices = [];
+          const editedProductsRes = [];
+          const allProductsRes = productRes.data;
           const productFieldData = {};
           const productOrders = orderRes.data.productVendorOrders;
-          for (const product of productRes.data) {
+          for (const product of allProductsRes) {
             const productOrder = productOrders.find(po => po.product_name === product.name);
             if (productOrder) {
               productFieldData[`quantity${product.id}`] = productOrder.quantity;
               productFieldData[`price${product.id}`] = productOrder.unit_price;
-            } else {
-              productFieldData[`quantity${product.id}`] = 0;
-              productFieldData[`price${product.id}`] = 0;
+              updatedPrices.push({
+                id: product.id,
+                quantity: productFieldData[`quantity${product.id}`], 
+                price: productFieldData[`price${product.id}`],
+              });
+              editedProductsRes.push({
+                id: product.id,
+                name: product.name,
+              });
             }
-            updatedPrices.push({
-              id: product.id,
-              quantity: productFieldData[`quantity${product.id}`], 
-              price: productFieldData[`price${product.id}`],
-            });
           }
           setInitialFields(prev => (
             {
@@ -85,7 +88,8 @@ export default function VendorOrderFormContainer() {
           setDataState(prev => (
             {
               ...prev,
-              products: productRes.data,
+              editedProducts: editedProductsRes,
+              allProducts: allProductsRes,
               vendors: vendorRes.data,
               prices: updatedPrices
             }
@@ -143,7 +147,7 @@ export default function VendorOrderFormContainer() {
         ));
         setDataState(prev => ({
           ...prev,
-          products: productRes.data,
+          allProducts: productRes.data,
           vendors: vendorRes.data,
           prices: updatedPrices
         }));  
@@ -184,6 +188,11 @@ export default function VendorOrderFormContainer() {
       const id = +inputId.replace("price", "");
       const index = updatedPrices.findIndex(p => p.id === id);
       updatedPrices[index].price = +e.target.value;
+    } else if (inputId.includes("remove")) {
+      const id = +inputId.replace("remove", "");
+      const index = updatedPrices.findIndex(p => p.id === id);
+      updatedPrices[index].quantity = 0;
+      updatedPrices[index].price = 0;    
     }
     setDataState(prev => ({...prev, prices: updatedPrices}));
   }
@@ -194,7 +203,7 @@ export default function VendorOrderFormContainer() {
       {formState.loading ? (
       <Spinner></Spinner>            
       ) : (
-      <div className="w-11/12 sm:w-8/12 md:w-6/12">
+      <div className="w-11/12 sm:w-9/12 md:w-8/12 lg:w-6/12">
         {formState.errorMessage ? (
         <Alert message={formState.errorMessage} type="error"></Alert>
         ) : (
@@ -207,8 +216,9 @@ export default function VendorOrderFormContainer() {
               <VendorOrderForm
               edit={!!params.code} 
               initialData={initialFields} 
-              vendors={dataState.vendors} 
-              products={dataState.products}
+              vendors={dataState.vendors}
+              editedProducts={(dataState.editedProducts?.length > 0) ? dataState.editedProducts : null} 
+              allProducts={dataState.allProducts}
               updatePrice={updatePrice}
               total={total}
               onClear={onClear} />
