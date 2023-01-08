@@ -10,12 +10,15 @@ import SelectInput from "../../../../components/forms/SelectInput";
 import SelectSearch from "../../../../components/forms/SelectSearch";
 import TextInput from "../../../../components/forms/TextInput";
 import api from "../../../../stores/api";
+import { BiRightArrowAlt, BiLeftArrowAlt, BiTrash } from "react-icons/bi";
+import SearchInput from "../../../../components/forms/SearchInput";
 
 export default function VendorOrderForm({
   edit,
   initialData, 
-  vendors, 
-  products,
+  vendors,
+  editedProducts,
+  allProducts,
   updatePrice,
   total,
   onClear
@@ -24,7 +27,11 @@ export default function VendorOrderForm({
     success: "",
     error: "",
     loading: false,
+    page: 0,
   });
+  const [query, setQuery] = useState("");
+  const [selectedProducts, setSelectedProducts] = useState(editedProducts ? editedProducts : []);
+  const [searchedProducts, setSearchedProducts] = useState([]);
 
   const vendorOrderForm = useFormik({
     enableReinitialize: true,
@@ -42,17 +49,22 @@ export default function VendorOrderForm({
         for (const property of properties) {
           if (property.includes("price")) {
             const id = +property.replace("price", "");
-            const product = products.find(p => p.id === id);
-            productOrders.set(product.id, {
-              "productName": product.name,
-              "unitPrice": data[property],
-            });
+            const selected = selectedProducts.find(p => p.id === id);
+            if (selected) {
+              productOrders.set(selected.id, {
+                "productName": selected.name,
+                "unitPrice": data[property],
+              });
+            }
           } else if (property.includes("quantity")) {
             const id = +property.replace("quantity", "");
-            productOrders.set(id, {
-              ...productOrders.get(id), 
-              "quantity": data[property],
-            });
+            const selected = selectedProducts.find(p => p.id === id);
+            if (selected) {
+              productOrders.set(id, {
+                ...productOrders.get(id), 
+                "quantity": data[property],
+              });
+            }
           }          
         }
         reqData["productVendorOrders"] = [...productOrders.values()];
@@ -101,104 +113,201 @@ export default function VendorOrderForm({
     onClear();
   }
 
+  const onNextPage = () => {
+    setFormState(prev => ({...prev, page: 1}));
+  }
+
+  const onPreviousPage = () => {
+    setFormState(prev => ({...prev, page: 0}));
+  }
+
+  const onChangeSearch = (e) => {
+    if (e.target.value) {
+      const searched = allProducts.filter(product => product.name.toLowerCase().replace(/\s+/g, "").includes(e.target.value.toLowerCase().replace(/\s+/g, "")));
+      setSearchedProducts(searched);
+    } else {
+      setSearchedProducts([]);
+    }
+    setQuery(e.target.value);
+  }
+
+  const onAddProduct = (product) => {
+    const found = selectedProducts.find(p => p.name === product.name);
+    if (!found) {
+      setSelectedProducts([product, ...selectedProducts]);
+      vendorOrderForm.setFieldValue(`quantity${product.id}`, 0);
+      vendorOrderForm.setFieldValue(`price${product.id}`, 0);
+      setSearchedProducts([]);
+      setQuery("");
+    }
+  }
+
+  const onRemoveProduct = (id) => {
+    setSearchedProducts([]);
+    setQuery("");
+    vendorOrderForm.setFieldValue(`quantity${id}`, 0);
+    vendorOrderForm.setFieldValue(`price${id}`, 0);
+    updatePrice(0, `remove${id}`);
+    setSelectedProducts(selectedProducts.filter(product => product.id !== id));
+  }
+
+  const onClearQuery = () => {
+    setSearchedProducts([]);
+    setQuery("");
+  }  
+
   return (
     <>
       <form onSubmit={vendorOrderForm.handleSubmit}>
-        <div className="mb-4">
-          <label className="custom-label inline-block mb-2">
-            <span>Order to vendor</span>
-            <span className="text-red-500">*</span>
-          </label>
-          <SelectSearch name="vendor" form={vendorOrderForm} field={"vendorName"} 
-          options={vendors.map(vendor => vendor.name)}
-          value={vendorOrderForm.values["vendorName"]}
-          ></SelectSearch>
-        </div>
-
-        <div className="mb-4">
-          <label className="custom-label inline-block mb-2">Status</label>
-          <SelectInput name="status" form={vendorOrderForm} field={"status"} 
-          options={Object.values(OrderStatus).filter(
-            status => status !== OrderStatus.PICKING && 
-            status !== OrderStatus.CHECKING && 
-            status !== OrderStatus.DELIVERED &&
-            status !== OrderStatus.CANCELED
-          )}
-          value={vendorOrderForm.values["status"]}
-          ></SelectInput>
-        </div> 
-
-        <div className="mb-8">
-          <label htmlFor="expect" className="custom-label block mb-2">Expected delivery date</label>
-          <DateInput id="expect" min="2022-01-01" max="2100-12-31"
-          name="expect" placeholder="Expected Delivery Date" 
-          value={vendorOrderForm.values[`expectedAt`]}
-          onChange={(e) => vendorOrderForm.setFieldValue("expectedAt", e.target.value)}
-          ></DateInput>
-        </div>
-
-        <div className="flex justify-between items-center mb-4">
-          <div className="w-5/12">
-            <span className="custom-label">Product</span>
+        {formState.page === 0 ? (
+        <>
+          {/* 1st Page */}
+          <div className="mb-5">
+            <label className="custom-label inline-block mb-2">
+              <span>Order to vendor</span>
+              <span className="text-red-500">*</span>
+            </label>
+            <SelectSearch name="vendor" form={vendorOrderForm} field={"vendorName"} 
+            options={vendors.map(vendor => vendor.name)}
+            value={vendorOrderForm.values["vendorName"]}
+            ></SelectSearch>
           </div>
-          <div className="flex w-7/12">
-            <div className="w-6/12 mr-2">
-              <span className="custom-label">Qty</span>
-            </div>
-            <div className="w-6/12">
-              <span className="custom-label">Unit price</span>
-            </div>
-          </div>
-        </div>
-        {products.map((product) => {
-          return (
-          <div key={product.id}>
-            <div className="flex justify-between items-center mb-4">
-              <div className="w-5/12">
-                <span>{product.name}</span>
-              </div>
-              <div className="flex w-7/12">
-                <div className="w-6/12 mr-2">
-                  <NumberInput id={`quantity${product.id}`} 
-                    name={`quantity${product.id}`} placeholder="Qty" 
-                    value={vendorOrderForm.values[`quantity${product.id}`]}
-                    onChange={(e) => handlePriceChange(e, `quantity${product.id}`)}
-                    min="0" max="99999" disabled={false}
-                  ></NumberInput>
-                </div>
 
-                <div className="w-6/12">
-                  <TextInput id={`price${product.id}`} type="text" 
-                    name={`price${product.id}`} placeholder="Price" 
-                    value={vendorOrderForm.values[`price${product.id}`]}
-                    onChange={(e) => handlePriceChange(e, `price${product.id}`)}
-                  ></TextInput>
+          <div className="mb-5">
+            <label className="custom-label inline-block mb-2">Status</label>
+            <SelectInput name="status" form={vendorOrderForm} field={"status"} 
+            options={Object.values(OrderStatus).filter(
+              status => status !== OrderStatus.PICKING && 
+              status !== OrderStatus.CHECKING && 
+              status !== OrderStatus.DELIVERED &&
+              status !== OrderStatus.CANCELED
+            )}
+            value={vendorOrderForm.values["status"]}
+            ></SelectInput>
+          </div> 
+
+          <div className="mb-8">
+            <label htmlFor="expect" className="custom-label block mb-2">Expected delivery date</label>
+            <DateInput id="expect" min="2022-01-01" max="2100-12-31"
+            name="expect" placeholder="Expected Delivery Date" 
+            value={vendorOrderForm.values[`expectedAt`]}
+            onChange={(e) => vendorOrderForm.setFieldValue("expectedAt", e.target.value)}
+            ></DateInput>
+          </div>
+
+          <button type="button" className="mt-1 btn btn-primary w-full" onClick={onNextPage}>
+            <span>Set product</span>
+            <span><BiRightArrowAlt className="w-7 h-7 ml-1"></BiRightArrowAlt></span>
+          </button>
+          
+        </>) : (
+        <>
+          {/* 2nd Page */}
+          {formState.page === 1 ? (
+          <>
+            <div className="mb-5">
+              <div className="flex justify-between items-center">
+                <div className="w-full">
+                  <SearchInput id="product-search" name="product-search" placeholder="Search product"
+                  onChange={(e) => onChangeSearch(e)} value={query} onFocus={() => setSearchedProducts(allProducts)}
+                  onClear={onClearQuery}></SearchInput>
                 </div>
               </div>
 
+              {searchedProducts.map((product, index) => (
+              <div key={index} className="cursor-pointer my-2 w-full bg-base-200 p-3 rounded-btn 
+              hover:bg-primary hover:text-primary-content focus:bg-primary focus:text-primary-content" 
+              onClick={() => onAddProduct(product)}>
+                <p>{product.name}</p>
+              </div>
+              ))}
+              {searchedProducts?.length === 0 && query ? (
+              <div className="my-2 w-full bg-base-200 p-3 rounded-btn">
+                <p>Not found.</p>
+              </div>) : null}
             </div>
-            <div className="divider"></div>
-          </div>
-          )
-        })}
+            {selectedProducts?.length > 0 ? (
+            <>
+              <div className="flex justify-between items-center mb-4">
+                <div className="w-5/12">
+                  <span className="custom-label">Product</span>
+                </div>
+                <div className="flex w-7/12">
+                  <div className="w-5/12 mr-2">
+                    <span className="custom-label">Qty</span>
+                  </div>
+                  <div className="w-5/12">
+                    <span className="custom-label">Price</span>
+                  </div>
+                </div>
+              </div>            
+            </>) : (
+            <div className="flex justify-center">
+              <span>Empty template.</span>
+            </div>)}
 
-        <div className="flex items-center mb-5">
-          <div>
-            <span className="">Total price:</span>
-          </div>
-          <span className="text-xl font-medium ml-2">${total}</span>
-        </div>
+            {selectedProducts.map((product) => {
+            return (
+            <div key={product.id}>
+              <div className="flex justify-between items-center mb-4">
+                <div className="w-5/12">
+                  <span>{product.name}</span>
+                </div>
+                <div className="flex w-7/12">
+                  <div className="w-5/12 mr-2">
+                    <NumberInput id={`quantity${product.id}`} 
+                      name={`quantity${product.id}`} placeholder="Qty" 
+                      value={vendorOrderForm.values[`quantity${product.id}`]}
+                      onChange={(e) => handlePriceChange(e, `quantity${product.id}`)}
+                      min="0" max="99999" disabled={false}
+                    ></NumberInput>
+                  </div>
 
-        <div className="mb-5 flex items-center">
-          <Checkbox id="test" name="test"
-          onChange={() => vendorOrderForm.setFieldValue("isTest", !vendorOrderForm.values["isTest"])} 
-          checked={vendorOrderForm.values["isTest"]}
-          label="Test"           
-          ></Checkbox>
-        </div>              
-        <button type="submit" className="btn btn-primary w-full mt-1">
-          <span>{edit ? "Update" : "Create"} order</span>
-        </button>
+                  <div className="w-5/12 mr-2">
+                    <TextInput id={`price${product.id}`} type="text" 
+                      name={`price${product.id}`} placeholder="Price" 
+                      value={vendorOrderForm.values[`price${product.id}`]}
+                      onChange={(e) => handlePriceChange(e, `price${product.id}`)}
+                    ></TextInput>
+                  </div>
+
+                  <div className="w-2/12 flex items-center">
+                  <button type="button" className="btn btn-accent btn-circle" 
+                  onClick={() => onRemoveProduct(product.id)}>
+                    <span><BiTrash className="w-6 h-6"></BiTrash></span>
+                  </button>
+                  </div>
+                </div>
+              </div>
+              <div className="divider"></div>
+            </div>)})}
+
+            <div className="flex items-center my-5">
+              <div>
+                <span className="">Total price:</span>
+              </div>
+              <span className="text-xl font-medium ml-2">${total}</span>
+            </div>
+
+            <div className="mb-5 flex items-center">
+              <Checkbox id="test" name="test"
+              onChange={() => vendorOrderForm.setFieldValue("isTest", !vendorOrderForm.values["isTest"])} 
+              checked={vendorOrderForm.values["isTest"]}
+              label="Test"           
+              ></Checkbox>
+            </div>
+                        
+            <div className="flex justify-between mt-1">
+              <button type="button" className="btn btn-alt w-[49%]" onClick={onPreviousPage}>
+                <span><BiLeftArrowAlt className="w-7 h-7 mr-1"></BiLeftArrowAlt></span>
+                <span>Go back</span>
+              </button>
+              <button type="submit" className="btn btn-primary w-[49%]">
+                <span>{edit ? "Update" : "Create"}</span>
+              </button>
+            </div>            
+          </>) : null}
+        </>)}
         <button type="button" className="btn btn-accent w-full mt-3" 
         onClick={onClearForm}>
           <span>Clear change(s)</span>
