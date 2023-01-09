@@ -1,12 +1,11 @@
-import { useState, useEffect, useMemo } from "react";
-import BackorderForm from "./BackorderForm";
-import api from "../../../../stores/api";
-import Spinner from "../../../../components/Spinner";
-import useFirstRender from "../../../../commons/hooks/first-render.hook";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import { OrderStatus } from "../../../../commons/order-status.enum";
+import useFirstRender from "../../../../commons/hooks/first-render.hook";
 import { convertTime } from "../../../../commons/time.util";
 import Alert from "../../../../components/Alert";
+import Spinner from "../../../../components/Spinner";
+import api from "../../../../stores/api";
+import BackorderForm from "./BackorderForm";
 
 export default function BackorderFormContainer() {
   const isFirstRender = useFirstRender();
@@ -216,7 +215,7 @@ export default function BackorderFormContainer() {
       {formState.loading ? (
       <Spinner></Spinner>
       ) : (
-      <div className="w-11/12 sm:w-8/12 md:w-6/12">
+      <div className="w-12/12 md:w-9/12 lg:w-6/12">
         {formState.errorMessage ? (
         <Alert message={formState.errorMessage} type="error"></Alert>
         ) : (

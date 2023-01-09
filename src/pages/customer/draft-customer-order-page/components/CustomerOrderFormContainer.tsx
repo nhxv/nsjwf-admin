@@ -216,7 +216,7 @@ export default function CustomerOrderFormContainer() {
       {formState.loading ? (
       <Spinner></Spinner>
       ) : (
-      <div className="w-11/12 sm:w-8/12 md:w-6/12">
+      <div className="w-12/12 md:w-9/12 lg:w-6/12">
         {formState.errorMessage ? (
         <Alert message={formState.errorMessage} type="error"></Alert>
         ) : (
