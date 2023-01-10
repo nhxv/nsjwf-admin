@@ -210,6 +210,23 @@ export default function BackorderFormContainer() {
     setDataState(prev => ({...prev, prices: updatedPrices}));
   }
 
+  const loadTemplate = async (customerName: string) => {
+    if (!params.code) {
+      // load template when create
+      try {
+        const response = await api.get(`/customers/tendency/${customerName}`);
+        return response.data.customerProductTendencies;
+      } catch (e) {
+        const error = JSON.parse(JSON.stringify(
+          e.response ? e.response.data.error : e
+        ));
+        setFormState(prev => (
+          {...prev, errorMessage: error.message, loading: false}
+        ));
+      }
+    }
+  }
+
   return (
   <>
     <div className="flex flex-col items-center">
@@ -234,6 +251,7 @@ export default function BackorderFormContainer() {
             employees={dataState.employees}
             updatePrice={updatePrice}
             total={total}
+            loadTemplate={loadTemplate}
             onClear={onClear} />
           </div>   
           )}

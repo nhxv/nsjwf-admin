@@ -15,15 +15,21 @@ export default function ResetPage() {
           setMessage("");
         }, 2000);
       }, 2000);
-    } catch (error) {
-      console.log(error);
+    } catch (e) {
+      const error = JSON.parse(JSON.stringify(
+        e.response ? e.response.data.error : e
+      ));
+      setMessage(error.message);
+      setTimeout(() => {
+        setMessage("");
+      }, 2000);
     }
   }
 
-  const onResetStock = async () => {
+  const onResetOperation = async () => {
     setMessage("I've come to talk with you again...");
     try {
-      const res =  await api.delete(`/test/nuke/stock`);
+      const res =  await api.delete(`/test/nuke/operation`);
       setTimeout(() => {
         setMessage("Done.");
         setTimeout(() => {
@@ -34,7 +40,6 @@ export default function ResetPage() {
       const error = JSON.parse(JSON.stringify(
         e.response ? e.response.data.error : e
       ));
-      console.log(error.message);
       setMessage(error.message);
       setTimeout(() => {
         setMessage("");
@@ -60,21 +65,11 @@ export default function ResetPage() {
         </div>
 
         <div className="mb-8 flex flex-col justify-center items-center">
-          <h2 className="font-medium underline underline-offset-4">Stock</h2>
-          <button className="btn btn-secondary mt-4" onClick={onResetStock}>
-            <span>Reset stock</span>
+          <h2 className="font-medium underline underline-offset-4">Operation</h2>
+          <button className="btn btn-secondary mt-4" onClick={onResetOperation}>
+            <span>Reset operational data</span>
             <BiReset className="w-6 h-6 ml-1"></BiReset>
           </button>
-        </div>
-
-        <div className="mb-8 flex flex-col justify-center items-center">
-          <h2 className="font-medium underline underline-offset-4">Order</h2>
-          <p className="mt-2">(Nothing to click here.)</p>
-        </div>
-
-        <div className="mb-8 flex flex-col justify-center items-center">
-          <h2 className="font-medium underline underline-offset-4">Return</h2>
-          <p className="mt-2">(Nothing to click here.)</p>
         </div>
       </div>
     </>

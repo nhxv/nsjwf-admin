@@ -197,6 +197,23 @@ export default function VendorOrderFormContainer() {
     setDataState(prev => ({...prev, prices: updatedPrices}));
   }
 
+  const loadTemplate = async (vendorName: string) => {
+    if (!params.code) {
+      // load template when create
+      try {
+        const response = await api.get(`/vendors/tendency/${vendorName}`);
+        return response.data.vendorProductTendencies;
+      } catch (e) {
+        const error = JSON.parse(JSON.stringify(
+          e.response ? e.response.data.error : e
+        ));
+        setFormState(prev => (
+          {...prev, errorMessage: error.message, loading: false}
+        ));
+      }
+    }
+  }
+
   return (
   <div>
     <div className="flex flex-col items-center">
@@ -221,6 +238,7 @@ export default function VendorOrderFormContainer() {
               allProducts={dataState.allProducts}
               updatePrice={updatePrice}
               total={total}
+              loadTemplate={loadTemplate}
               onClear={onClear} />
             </div>   
           </>
