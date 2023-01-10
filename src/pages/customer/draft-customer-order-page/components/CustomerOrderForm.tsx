@@ -22,6 +22,7 @@ export default function CustomerOrderForm({
   employees,
   updatePrice,
   total,
+  loadTemplate,
   onClear
 }) {
   const [formState, setFormState] = useState({
@@ -117,7 +118,18 @@ export default function CustomerOrderForm({
     onClear();
   }
 
-  const onNextPage = () => {
+  const onNextPage = async () => {
+    if (!edit) {
+      const template = await loadTemplate(customerOrderForm.values[`customerName`]);
+      const selected = [];
+      for (const product of template) {
+        const found = allProducts.find(p => p.name === product.name);
+        selected.push({id: found.id, name: product.name});
+        customerOrderForm.setFieldValue(`quantity${found.id}`, product.quantity);
+        customerOrderForm.setFieldValue(`price${found.id}`, 0);
+      }
+      setSelectedProducts(selected);
+    }
     setFormState(prev => ({...prev, page: 1}));
   }
 
@@ -247,7 +259,7 @@ export default function CustomerOrderForm({
               </div>            
             </>) : (
             <div className="flex justify-center">
-              <span>Empty template.</span>
+              <span>Empty.</span>
             </div>)}
 
             {selectedProducts.map((product) => {
