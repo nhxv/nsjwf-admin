@@ -21,6 +21,7 @@ export default function VendorOrderForm({
   allProducts,
   updatePrice,
   total,
+  loadTemplate,
   onClear
 }) {
   const [formState, setFormState] = useState({
@@ -113,7 +114,18 @@ export default function VendorOrderForm({
     onClear();
   }
 
-  const onNextPage = () => {
+  const onNextPage = async () => {
+    if (!edit) {
+      const template = await loadTemplate(vendorOrderForm.values[`vendorName`]);
+      const selected = [];
+      for (const product of template) {
+        const found = allProducts.find(p => p.name === product.name);
+        selected.push({id: found.id, name: product.name});
+        vendorOrderForm.setFieldValue(`quantity${found.id}`, product.quantity);
+        vendorOrderForm.setFieldValue(`price${found.id}`, 0);
+      }
+      setSelectedProducts(selected);
+    }
     setFormState(prev => ({...prev, page: 1}));
   }
 
@@ -195,7 +207,8 @@ export default function VendorOrderForm({
             ></DateInput>
           </div>
 
-          <button type="button" className="mt-1 btn btn-primary w-full" onClick={onNextPage}>
+          <button type="button" className="mt-1 btn btn-primary w-full" onClick={onNextPage}
+          disabled={!vendorOrderForm.values[`vendorName`]}>
             <span>Set product</span>
             <span><BiRightArrowAlt className="w-7 h-7 ml-1"></BiRightArrowAlt></span>
           </button>
@@ -215,12 +228,13 @@ export default function VendorOrderForm({
               </div>
 
               {searchedProducts.map((product, index) => (
-              <div key={index} className="cursor-pointer my-2 w-full bg-base-200 p-3 rounded-btn 
+              <div key={index} className="cursor-pointer my-2 w-full p-3 rounded-btn bg-base-200
               hover:bg-primary hover:text-primary-content focus:bg-primary focus:text-primary-content" 
               onClick={() => onAddProduct(product)}>
                 <p>{product.name}</p>
               </div>
               ))}
+
               {searchedProducts?.length === 0 && query ? (
               <div className="my-2 w-full bg-base-200 p-3 rounded-btn">
                 <p>Not found.</p>
@@ -243,7 +257,7 @@ export default function VendorOrderForm({
               </div>            
             </>) : (
             <div className="flex justify-center">
-              <span>Empty template.</span>
+              <span>Empty.</span>
             </div>)}
 
             {selectedProducts.map((product) => {

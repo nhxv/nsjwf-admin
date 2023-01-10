@@ -21,6 +21,7 @@ export default function BackorderForm({
   employees,
   updatePrice,
   total,
+  loadTemplate,
   onClear
 }) {
   const [formState, setFormState] = useState({
@@ -122,7 +123,18 @@ export default function BackorderForm({
     onClear();
   }
 
-  const onNextPage = () => {
+  const onNextPage = async () => {
+    if (!edit) {
+      const template = await loadTemplate(backorderForm.values[`customerName`]);
+      const selected = [];
+      for (const product of template) {
+        const found = allProducts.find(p => p.name === product.name);
+        selected.push({id: found.id, name: product.name});
+        backorderForm.setFieldValue(`quantity${found.id}`, product.quantity);
+        backorderForm.setFieldValue(`price${found.id}`, 0);
+      }
+      setSelectedProducts(selected);
+    }
     setFormState(prev => ({...prev, page: 1}));
   }
 

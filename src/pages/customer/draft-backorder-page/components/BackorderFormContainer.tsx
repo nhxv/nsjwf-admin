@@ -1,11 +1,12 @@
-import { useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useState, useEffect, useMemo } from "react";
+import BackorderForm from "./BackorderForm";
+import api from "../../../../stores/api";
+import Spinner from "../../../../components/Spinner";
 import useFirstRender from "../../../../commons/hooks/first-render.hook";
+import { useParams } from "react-router-dom";
+import { OrderStatus } from "../../../../commons/order-status.enum";
 import { convertTime } from "../../../../commons/time.util";
 import Alert from "../../../../components/Alert";
-import Spinner from "../../../../components/Spinner";
-import api from "../../../../stores/api";
-import BackorderForm from "./BackorderForm";
 
 export default function BackorderFormContainer() {
   const isFirstRender = useFirstRender();
@@ -209,6 +210,23 @@ export default function BackorderFormContainer() {
     setDataState(prev => ({...prev, prices: updatedPrices}));
   }
 
+  const loadTemplate = async (customerName: string) => {
+    if (!params.code) {
+      // load template when create
+      try {
+        const response = await api.get(`/customers/tendency/${customerName}`);
+        return response.data.customerProductTendencies;
+      } catch (e) {
+        const error = JSON.parse(JSON.stringify(
+          e.response ? e.response.data.error : e
+        ));
+        setFormState(prev => (
+          {...prev, errorMessage: error.message, loading: false}
+        ));
+      }
+    }
+  }
+
   return (
   <>
     <div className="flex flex-col items-center">
@@ -233,6 +251,7 @@ export default function BackorderFormContainer() {
             employees={dataState.employees}
             updatePrice={updatePrice}
             total={total}
+            loadTemplate={loadTemplate}
             onClear={onClear} />
           </div>   
           )}
