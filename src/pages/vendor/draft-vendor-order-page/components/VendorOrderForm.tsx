@@ -116,6 +116,7 @@ export default function VendorOrderForm({
 
   const onNextPage = async () => {
     if (!edit) {
+      setFormState(prev => ({...prev, error: "", empty: "", loading: true}));
       const template = await loadTemplate(vendorOrderForm.values[`vendorName`]);
       const selected = [];
       for (const product of template) {
@@ -125,6 +126,7 @@ export default function VendorOrderForm({
         vendorOrderForm.setFieldValue(`price${found.id}`, 0);
       }
       setSelectedProducts(selected);
+      setFormState(prev => ({...prev, error: "", empty: "", loading: false}));
     }
     setFormState(prev => ({...prev, page: 1}));
   }
@@ -226,18 +228,18 @@ export default function VendorOrderForm({
                   onClear={onClearQuery}></SearchInput>
                 </div>
               </div>
-
-              {searchedProducts.map((product, index) => (
-              <div key={index} className="cursor-pointer my-2 w-full p-3 rounded-btn bg-base-200
-              hover:bg-primary hover:text-primary-content focus:bg-primary focus:text-primary-content" 
-              onClick={() => onAddProduct(product)}>
-                <p>{product.name}</p>
-              </div>
-              ))}
-
+              {searchedProducts.length > 0 ? (
+              <div className="my-2 border border-base-300 rounded-btn p-2 shadow-md">
+                {searchedProducts.map((product, index) => (
+                <div key={index} className="cursor-pointer w-full p-3 rounded-btn hover:bg-info hover:text-primary" 
+                onClick={() => onAddProduct(product)}>
+                  <p>{product.name}</p>
+                </div>
+                ))}
+              </div>) : null}
               {searchedProducts?.length === 0 && query ? (
-              <div className="my-2 w-full bg-base-200 p-3 rounded-btn">
-                <p>Not found.</p>
+              <div className="my-2 border border-base-300 rounded-btn p-2 shadow-md">
+                <p className="p-3">Not found.</p>
               </div>) : null}
             </div>
             {selectedProducts?.length > 0 ? (
