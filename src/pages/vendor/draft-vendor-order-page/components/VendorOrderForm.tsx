@@ -231,7 +231,7 @@ export default function VendorOrderForm({
               {searchedProducts.length > 0 ? (
               <div className="my-2 border border-base-300 rounded-btn p-2 shadow-md">
                 {searchedProducts.map((product, index) => (
-                <div key={index} className="cursor-pointer w-full p-3 rounded-btn hover:bg-info hover:text-primary" 
+                <div key={index} className="cursor-pointer w-full p-3 rounded-btn hover:bg-info" 
                 onClick={() => onAddProduct(product)}>
                   <p>{product.name}</p>
                 </div>
