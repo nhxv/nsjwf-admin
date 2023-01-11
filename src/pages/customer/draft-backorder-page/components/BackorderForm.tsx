@@ -210,7 +210,8 @@ export default function BackorderForm({
             ></DateInput>
           </div>
 
-          <button type="button" className="mt-1 btn btn-primary w-full" onClick={onNextPage}>
+          <button type="button" className="mt-1 btn btn-primary w-full" onClick={onNextPage}
+          disabled={!backorderForm.values[`customerName`]}>
             <span>Set product</span>
             <span><BiRightArrowAlt className="w-7 h-7 ml-1"></BiRightArrowAlt></span>
           </button>        
@@ -256,7 +257,7 @@ export default function BackorderForm({
               </div>            
             </>) : (
             <div className="flex justify-center">
-              <span>Empty template.</span>
+              <span>Empty.</span>
             </div>)}
 
             {selectedProducts.map((product) => {
