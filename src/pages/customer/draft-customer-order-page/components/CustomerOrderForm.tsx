@@ -213,7 +213,8 @@ export default function CustomerOrderForm({
             ></DateInput>
           </div>
 
-          <button type="button" className="mt-1 btn btn-primary w-full" onClick={onNextPage}>
+          <button type="button" className="mt-1 btn btn-primary w-full" onClick={onNextPage}
+          disabled={!customerOrderForm.values[`customerName`]}>
             <span>Set product</span>
             <span><BiRightArrowAlt className="w-7 h-7 ml-1"></BiRightArrowAlt></span>
           </button>        
