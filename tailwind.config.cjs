@@ -28,6 +28,7 @@ module.exports = {
           "primary": "#047857", // emerald-700
           "primary-content": "#fff",
           "secondary": "#111827", // gray-900
+          "secondary-content": "#fff",
           "accent": "#d1d5db", // gray-300
           "neutral": "#6b7280", // gray-500
           "base-100": "#fff",

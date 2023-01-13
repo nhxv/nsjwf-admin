@@ -37,6 +37,7 @@ export default function UpdateOrderPriorityPage() {
   }, [employeeTaskList]);
 
   const getEmployeeTaskList = () => {
+    setListState(prev => ({...prev, listError: "", listEmpty: "", listLoading: true}));
     api.get(`/accounts/employee-tasks/${status}`)
     .then((res) => {
       if (res.data.length === 0) {
@@ -46,6 +47,7 @@ export default function UpdateOrderPriorityPage() {
           listLoading: false
         }));
       }
+      setListState(prev => ({...prev, listError: "", listEmpty: "", listLoading: false}));
       setEmployeeTaskList(res.data);
     })
     .catch((e) => {

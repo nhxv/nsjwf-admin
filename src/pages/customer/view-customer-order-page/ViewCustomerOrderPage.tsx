@@ -40,13 +40,12 @@ export default function ViewCustomerOrderPage() {
 
   useEffect(() => {
     if (!isFirstRender) {
-      setListState(prev => (
-        {...prev, listLoading: false}
-      ));
+      setListState(prev => ({...prev, listError: "", listEmpty: "", listLoading: false}));
     }
   }, [customerOrderList]);
 
   const getCustomerOrders = () => {
+    setListState(prev => ({...prev, listError: "", listEmpty: "", listLoading: true}));
     api.get(`/customer-orders/basic-list/${status}`)
     .then((res) => {
       if (res.data.length === 0) {
@@ -56,6 +55,7 @@ export default function ViewCustomerOrderPage() {
           listLoading: false,
         }));
       }
+      setListState(prev => ({...prev, listError: "", listEmpty: "", listLoading: false}));
       setCustomerOrderList(res.data);
     })
     .catch((e) => {
@@ -136,7 +136,7 @@ export default function ViewCustomerOrderPage() {
               ))}
             </div>
           </div>      
-          ): (<></>)}
+          ): null}
 
           {listState.listLoading ? (
           <Spinner></Spinner>

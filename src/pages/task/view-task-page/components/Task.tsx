@@ -22,7 +22,39 @@ export default function Task({ order, reload, status }) {
   const onFinishTask = async (code: string) => {
     setFormState(prev => ({...prev, error: "", loading: true}));
     try {
-      const res = await api.put(`/customer-orders/tasks/${code}`);
+      const res = await api.put(`/customer-orders/tasks/finish/${code}`);
+      if (res) {
+        setFormState(prev => ({...prev, error: "", loading: false}));
+        reload();
+      }
+    } catch (e) {
+      const error = JSON.parse(JSON.stringify(
+        e.response ? e.response.data.error : e
+      ));
+      setFormState(prev => ({...prev, error: error.message, loading: false}));
+    }
+  }
+
+  const onStartTask = async (code: string) => {
+    setFormState(prev => ({...prev, error: "", loading: true}));
+    try {
+      const res = await api.put(`/customer-orders/tasks/start-doing/${code}`);
+      if (res) {
+        setFormState(prev => ({...prev, error: "", loading: false}));
+        reload();
+      }
+    } catch (e) {
+      const error = JSON.parse(JSON.stringify(
+        e.response ? e.response.data.error : e
+      ));
+      setFormState(prev => ({...prev, error: error.message, loading: false}));
+    }
+  }
+
+  const onStopTask = async (code: string) => {
+    setFormState(prev => ({...prev, error: "", loading: true}));
+    try {
+      const res = await api.put(`/customer-orders/tasks/stop-doing/${code}`);
       if (res) {
         setFormState(prev => ({...prev, error: "", loading: false}));
         reload();
@@ -88,7 +120,14 @@ export default function Task({ order, reload, status }) {
   {status === OrderStatus.PICKING || status === OrderStatus.SHIPPING ? (
   <>
     <div className="divider"></div>
-    <button className="btn btn-primary w-full text-white" onClick={() => onFinishTask(order.code)}>Done {order.status.toLowerCase()}</button>
+    {order.isDoing ? (
+    <>
+      <button className="btn btn-primary w-full" onClick={() => onFinishTask(order.code)}>Done {order.status.toLowerCase()}</button>
+      <button className="btn btn-alt w-full mt-3" onClick={() => onStopTask(order.code)}>Stop doing</button>
+    </>) : (
+    <button className="btn btn-primary w-full" onClick={() => onStartTask(order.code)}>Start doing</button>
+    )}
+    
   </>) : null}
 
   <div>

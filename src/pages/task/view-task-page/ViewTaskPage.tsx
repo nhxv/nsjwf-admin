@@ -69,12 +69,13 @@ export default function ViewTaskPage() {
   useEffect(() => {
     if (!isFirstRender) {
       setListState(prev => (
-        {...prev, listLoading: false}
+        {...prev, listError: "", listEmpty: "", listLoading: false}
       ));
     }
   }, [dataState]);
 
   const getOrderList = (orderPromise) => {
+    setListState(prev => ({...prev, listError: "", listEmpty: "", listLoading: true}));
     orderPromise.then((res) => {
       if (res.data.length === 0) {
         setListState(prev => ({
@@ -83,10 +84,7 @@ export default function ViewTaskPage() {
           listLoading: false
         }));
       } else {
-        setListState(prev => ({
-          ...prev, 
-          listLoading: false
-        }));
+        setListState(prev => ({...prev, listError: "", listEmpty: "", listLoading: false}));
         // TODO: notification
         // const oldTaskList = [...dataState.tasks];
         // const newTaskList = [...res.data];
@@ -140,11 +138,6 @@ export default function ViewTaskPage() {
         {...prev, listError: error.message, listLoading: false}
       ));
     });
-  }
-
-  const onSelect = (e) => {
-    setStatus(e.target.value);
-    setListState({listError: "", listEmpty: "", listLoading: true});
   }
 
   const forceReload = () => {
