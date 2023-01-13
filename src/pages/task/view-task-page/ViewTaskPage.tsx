@@ -245,7 +245,6 @@ export default function ViewTaskPage() {
               )}
             </>)}
           </div>
-    
         </div>
       </section>
     </>

@@ -40,7 +40,7 @@ export default function CustomerOrderForm({
     enableReinitialize: true,
     initialValues: initialData,
     onSubmit: async (data) => {
-      setFormState(prev => ({...prev, loading: true}));
+      setFormState(prev => ({...prev, error: "", empty: "", loading: true}));
       try {
         let reqData = {};
         let productOrders = new Map();
@@ -111,7 +111,7 @@ export default function CustomerOrderForm({
 
   const handlePriceChange = (e, inputId: string) => {
     customerOrderForm.setFieldValue(inputId, e.target.value);
-    updatePrice(e, inputId);
+    updatePrice(+e.target.value, inputId);
   }
 
   const onClearForm = () => {
@@ -121,15 +121,19 @@ export default function CustomerOrderForm({
   const onNextPage = async () => {
     if (!edit) {
       setFormState(prev => ({...prev, error: "", empty: "", loading: true}));
+      console.log(customerOrderForm.values[`customerName`]);
       const template = await loadTemplate(customerOrderForm.values[`customerName`]);
-      const selected = [];
-      for (const product of template) {
-        const found = allProducts.find(p => p.name === product.name);
-        selected.push({id: found.id, name: product.name});
-        customerOrderForm.setFieldValue(`quantity${found.id}`, product.quantity);
-        customerOrderForm.setFieldValue(`price${found.id}`, 0);
+      if (template) {
+        const selected = [];
+        for (const product of template) {
+          const found = allProducts.find(p => p.name === product.name);
+          selected.push({id: found.id, name: product.name});
+          customerOrderForm.setFieldValue(`quantity${found.id}`, product.quantity);
+          updatePrice(product.quantity, `quantity${found.id}`);
+          customerOrderForm.setFieldValue(`price${found.id}`, 0);
+        }
+        setSelectedProducts(selected);
       }
-      setSelectedProducts(selected);
       setFormState(prev => ({...prev, error: "", empty: "", loading: false}));
     }
     setFormState(prev => ({...prev, page: 1}));

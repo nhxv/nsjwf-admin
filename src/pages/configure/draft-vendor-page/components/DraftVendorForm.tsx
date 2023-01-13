@@ -52,20 +52,32 @@ export default function DraftVendorForm({edit, editedProducts, initialData, allP
         let res = null;
         if (edit) {
           res = await api.put(`/vendors/${reqData["id"]}`, reqData);
+          if (res) {
+            setFormState(prev => ({...
+              prev, 
+              error: "", 
+              loading: false, 
+              success: "Update vendor successfully."
+            }));
+            setTimeout(() => {
+              setFormState(prev => ({...prev, success: ""}));
+              onClear();
+            }, 2000);
+          }
         } else {
           res = await api.post(`/vendors`, reqData);
-        }
-        if (res) {
-          setFormState(prev => ({...
-            prev, 
-            error: "", 
-            loading: false, 
-            success: "Create vendor successfully."
-          }));
-          setTimeout(() => {
-            setFormState(prev => ({...prev, success: ""}));
-            onClear();
-          }, 2000);
+          if (res) {
+            setFormState(prev => ({...
+              prev, 
+              error: "", 
+              loading: false, 
+              success: "Create vendor successfully."
+            }));
+            setTimeout(() => {
+              setFormState(prev => ({...prev, success: ""}));
+              onClear();
+            }, 2000);
+          }
         }
       } catch (e) {
         const error = JSON.parse(JSON.stringify(

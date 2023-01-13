@@ -191,16 +191,16 @@ export default function BackorderFormContainer() {
     setFormState(prev => ({...prev, loading: true}));
   }
 
-  const updatePrice = (e, inputId: string) => {
+  const updatePrice = (value: number, inputId: string) => {
     let updatedPrices = [...dataState.prices];
     if (inputId.includes("quantity")) {
       const id = +inputId.replace("quantity", "");
       const index = updatedPrices.findIndex(p => p.id === id);
-      updatedPrices[index].quantity = +e.target.value;
+      updatedPrices[index].quantity = value;
     } else if (inputId.includes("price")) {
       const id = +inputId.replace("price", "");
       const index = updatedPrices.findIndex(p => p.id === id);
-      updatedPrices[index].price = +e.target.value;
+      updatedPrices[index].price = value;
     } else if (inputId.includes("remove")) {
       const id = +inputId.replace("remove", "");
       const index = updatedPrices.findIndex(p => p.id === id);
