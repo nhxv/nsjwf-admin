@@ -51,21 +51,34 @@ export default function DraftCustomerForm({editedId, editedProducts, initialData
         let res = null;
         if (editedId) {
           res = await api.put(`/customers/${editedId}`, reqData);
+          if (res) {
+            setFormState(prev => ({...
+              prev, 
+              error: "", 
+              loading: false, 
+              success: "Update customer successfully."
+            }));
+            setTimeout(() => {
+              setFormState(prev => ({...prev, success: ""}));
+              onClear();
+            }, 2000);
+          }
         } else {
           res = await api.post(`/customers`, reqData);
+          if (res) {
+            setFormState(prev => ({...
+              prev, 
+              error: "", 
+              loading: false, 
+              success: "Create customer successfully."
+            }));
+            setTimeout(() => {
+              setFormState(prev => ({...prev, success: ""}));
+              onClear();
+            }, 2000);
+          }
         }
-        if (res) {
-          setFormState(prev => ({...
-            prev, 
-            error: "", 
-            loading: false, 
-            success: "Create customer successfully."
-          }));
-          setTimeout(() => {
-            setFormState(prev => ({...prev, success: ""}));
-            onClear();
-          }, 2000);
-        }
+
       } catch (e) {
         const error = JSON.parse(JSON.stringify(
           e.response ? e.response.data.error : e
