@@ -107,7 +107,7 @@ export default function VendorOrderForm({
 
   const handlePriceChange = (e, inputId: string) => {
     vendorOrderForm.setFieldValue(inputId, e.target.value);
-    updatePrice(e, inputId);
+    updatePrice(+e.target.value, inputId);
   }
 
   const onClearForm = () => {
@@ -118,14 +118,17 @@ export default function VendorOrderForm({
     if (!edit) {
       setFormState(prev => ({...prev, error: "", empty: "", loading: true}));
       const template = await loadTemplate(vendorOrderForm.values[`vendorName`]);
-      const selected = [];
-      for (const product of template) {
-        const found = allProducts.find(p => p.name === product.name);
-        selected.push({id: found.id, name: product.name});
-        vendorOrderForm.setFieldValue(`quantity${found.id}`, product.quantity);
-        vendorOrderForm.setFieldValue(`price${found.id}`, 0);
+      if (template) {
+        const selected = [];
+        for (const product of template) {
+          const found = allProducts.find(p => p.name === product.name);
+          selected.push({id: found.id, name: product.name});
+          vendorOrderForm.setFieldValue(`quantity${found.id}`, product.quantity);
+          updatePrice(product.quantity, `quantity${found.id}`);
+          vendorOrderForm.setFieldValue(`price${found.id}`, 0);
+        }
+        setSelectedProducts(selected);
       }
-      setSelectedProducts(selected);
       setFormState(prev => ({...prev, error: "", empty: "", loading: false}));
     }
     setFormState(prev => ({...prev, page: 1}));

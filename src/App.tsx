@@ -35,6 +35,7 @@ import DraftVendorPage from "./pages/configure/draft-vendor-page/DraftVendorPage
 import ViewVendorPage from "./pages/configure/view-vendor-page/ViewVendorPage";
 import DraftCustomerPage from "./pages/configure/draft-customer-page/DraftCustomerPage";
 import ViewCustomerPage from "./pages/configure/view-customer-page/ViewCustomerPage";
+import UpdateOrderPriorityPage from "./pages/customer/update-order-priority-page/UpdateOrderPriorityPage";
 
 
 export default function App() {
@@ -54,6 +55,7 @@ export default function App() {
             <Route path="/customer/draft-customer-order" element={<DraftCustomerOrderPage />}>
               <Route path=":code" element={<DraftCustomerOrderPage />}></Route>
             </Route>
+            <Route path="/customer/update-order-priority" element={<UpdateOrderPriorityPage />}></Route>
             <Route path="/customer/draft-backorder" element={<DraftBackorderPage />}>
               <Route path=":id" element={<DraftBackorderPage />}></Route>
             </Route>

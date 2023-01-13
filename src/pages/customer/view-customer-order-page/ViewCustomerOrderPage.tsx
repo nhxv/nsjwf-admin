@@ -68,11 +68,6 @@ export default function ViewCustomerOrderPage() {
     });
   }
 
-  const onSelect = (e) => {
-    setStatus(e.target.value);
-    setListState({listError: "", listEmpty: "", listLoading: true});
-  }
-
   const onBatchPrint = () => {
     handleBatchPrint();
   }

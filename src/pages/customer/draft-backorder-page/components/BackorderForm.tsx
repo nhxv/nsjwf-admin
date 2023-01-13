@@ -116,7 +116,7 @@ export default function BackorderForm({
 
   const handlePriceChange = (e, inputId: string) => {
     backorderForm.setFieldValue(inputId, e.target.value);
-    updatePrice(e, inputId);
+    updatePrice(+e.target.value, inputId);
   }
 
   const onClearForm = () => {
@@ -127,14 +127,17 @@ export default function BackorderForm({
     if (!edit) {
       setFormState(prev => ({...prev, error: "", empty: "", loading: true}));
       const template = await loadTemplate(backorderForm.values[`customerName`]);
-      const selected = [];
-      for (const product of template) {
-        const found = allProducts.find(p => p.name === product.name);
-        selected.push({id: found.id, name: product.name});
-        backorderForm.setFieldValue(`quantity${found.id}`, product.quantity);
-        backorderForm.setFieldValue(`price${found.id}`, 0);
+      if (template) {
+        const selected = [];
+        for (const product of template) {
+          const found = allProducts.find(p => p.name === product.name);
+          selected.push({id: found.id, name: product.name});
+          backorderForm.setFieldValue(`quantity${found.id}`, product.quantity);
+          updatePrice(product.quantity, `quantity${found.id}`);
+          backorderForm.setFieldValue(`price${found.id}`, 0);
+        }
+        setSelectedProducts(selected);
       }
-      setSelectedProducts(selected);
       setFormState(prev => ({...prev, error: "", empty: "", loading: false}));
     }
     setFormState(prev => ({...prev, page: 1}));
@@ -232,7 +235,7 @@ export default function BackorderForm({
               {searchedProducts.length > 0 ? (
               <div className="my-2 border border-base-300 rounded-btn p-2 shadow-md">
                 {searchedProducts.map((product, index) => (
-                <div key={index} className="cursor-pointer w-full p-3 rounded-btn hover:bg-info" 
+                <div key={index} className="cursor-pointer w-full p-3 rounded-btn hover:bg-info"
                 onClick={() => onAddProduct(product)}>
                   <p>{product.name}</p>
                 </div>
