@@ -76,7 +76,7 @@ export default function ViewBackorderPage() {
     <>
       <section className="min-h-screen">
         <div className="flex flex-col items-center">
-        <div className={`my-6 w-11/12 sm:w-8/12 md:w-6/12 flex justify-center`}>
+          <div className={`my-6 w-11/12 sm:w-8/12 xl:w-6/12 flex justify-center`}>
             <div className="w-11/12">
               <ul className="steps w-full">
                 {Object.values(BackorderStatus).map((s) => (
@@ -92,7 +92,7 @@ export default function ViewBackorderPage() {
           {listState.listLoading ? (
           <Spinner></Spinner>
           ) : (
-          <div className="w-11/12 sm:w-8/12 md:w-6/12">
+          <div className="w-11/12 sm:w-8/12 xl:w-6/12">
             {listState.listError ? (
             <Alert message={listState.listError} type="error"></Alert>
             ) : (

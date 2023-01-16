@@ -5,7 +5,7 @@ export default function CustomerSaleList({reports}) {
     <>
       {reports.map((report) => {
         return (
-        <div key={report.order_code} className="bg-base-100 p-6 rounded-box shadow-md mb-8">
+        <div key={report.order_code} className="custom-card mb-8">
           {/* basic report info */}
           <div className="flex flex-row justify-between">
             <div>
@@ -35,7 +35,7 @@ export default function CustomerSaleList({reports}) {
           </div>
           {report.productCustomerOrders.map(productOrder => {
             return (
-            <div key={productOrder.product_name} className="flex justify-center items-center py-3 bg-base-200 rounded-btn mb-2">
+            <div key={productOrder.product_name} className="flex justify-center items-center py-2 bg-base-200 rounded-btn mb-2">
               <div className="w-6/12 ml-3">
                 <span>{productOrder.product_name}</span>
               </div>

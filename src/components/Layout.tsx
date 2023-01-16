@@ -121,7 +121,7 @@ export default function Layout({ children }) {
           </nav>
 
           {/* Main content */}
-          <main className="mb-20">
+          <main className="container mb-20">
             {children}
           </main>
         </div>

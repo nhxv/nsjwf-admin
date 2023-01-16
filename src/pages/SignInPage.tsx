@@ -24,12 +24,12 @@ export default function SignInPage() {
       password: "",
     },
     onSubmit: async (data) => {
-      setFormState(prev => ({...prev, loading: true}));
+      setFormState(prev => ({...prev, error: "", loading: true}));
       await api.post<SignInResponse>(`/auth/login`, data)
       .then((res) => {
         const resData: SignInResponse = res.data;
         signIn(resData);
-        setFormState(prev => ({...prev, loading: false}));
+        setFormState(prev => ({...prev, error: "", loading: false}));
         signInForm.resetForm();
         if (resData.roleId === Role.MASTER || resData.roleId === Role.ADMIN) {
           navigate("/customer/draft-customer-order");
@@ -49,8 +49,8 @@ export default function SignInPage() {
 
   return (
     <>
-      <div className="flex flex-col justify-center items-center min-h-screen p-6 bg-base-200">
-        <form onSubmit={signInForm.handleSubmit} className="max-w-5/12 bg-base-100 p-6 rounded-box shadow-md">
+      <div className="flex flex-col justify-center items-center min-h-screen px-4 bg-base-200">
+        <form onSubmit={signInForm.handleSubmit} className="custom-card">
           {formState.error ? (
           <div className="mb-5">
             <Alert message={formState.error} type="error"></Alert>

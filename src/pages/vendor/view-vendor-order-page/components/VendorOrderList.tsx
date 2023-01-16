@@ -17,7 +17,7 @@ export default function VendorOrderList({orders}) {
   <>
     {orders.map((order) => {
       return (
-      <div key={order.code} className="bg-base-100 p-6 rounded-box shadow-md mb-8">
+      <div key={order.code} className="custom-card mb-8">
         {/* basic order info */}
         <div className="flex flex-row justify-between">
           <div>
@@ -47,7 +47,7 @@ export default function VendorOrderList({orders}) {
         </div>
         {order.productVendorOrders.map(productOrder => {
           return (
-          <div key={productOrder.productName} className="flex justify-center items-center py-3 bg-base-200 rounded-btn mb-2">
+          <div key={productOrder.productName} className="flex justify-center items-center py-2 bg-base-200 rounded-btn mb-2">
             <div className="w-10/12 ml-3">
               <span>{productOrder.productName}</span>
             </div>
@@ -60,7 +60,7 @@ export default function VendorOrderList({orders}) {
         {order.status !== OrderStatus.COMPLETED && (role === Role.MASTER || role === Role.ADMIN) ? (
         <>
           <div className="divider"></div>
-          <button className="btn btn-primary w-full text-white" onClick={() => onUpdateOrder(order.code)}>Update order</button>
+          <button className="btn btn-primary w-full" onClick={() => onUpdateOrder(order.code)}>Update order</button>
         </>): (<></>)}
       </div>)})
     }

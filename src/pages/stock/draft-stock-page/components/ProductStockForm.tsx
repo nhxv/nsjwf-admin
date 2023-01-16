@@ -1,13 +1,13 @@
 import { useFormik } from "formik";
 import { useState } from "react";
+import { BiTrash } from "react-icons/bi";
 import { ProductStockChangeReason } from "../../../../commons/product-stock-change-reason.enum";
-import { Role } from "../../../../commons/role.enum";
 import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
+import NumberInput from "../../../../components/forms/NumberInput";
+import SearchInput from "../../../../components/forms/SearchInput";
 import SelectInput from "../../../../components/forms/SelectInput";
-import TextInput from "../../../../components/forms/TextInput";
 import api from "../../../../stores/api";
-import { useAuthStore } from "../../../../stores/auth.store";
 
 export default function ProductStockForm({ initialData, stocks, onClear }) {
   const [formState, setFormState] = useState({
@@ -15,7 +15,10 @@ export default function ProductStockForm({ initialData, stocks, onClear }) {
     error: "",
     loading: false,
   });
-  const role = useAuthStore(state => state.role);
+
+  const [query, setQuery] = useState("");
+  const [selectedProducts, setSelectedProducts] = useState([]);
+  const [searchedProducts, setSearchedProducts] = useState([]);
 
   const productStockForm = useFormik({
     enableReinitialize: true,
@@ -47,7 +50,6 @@ export default function ProductStockForm({ initialData, stocks, onClear }) {
           onClear();
         }, 2000);
       } catch (e) {
-        console.log(e);
         const error = JSON.parse(JSON.stringify(
           e.response ? e.response.data.error : e
         ));
@@ -60,10 +62,42 @@ export default function ProductStockForm({ initialData, stocks, onClear }) {
     onClear();
   }
 
+  const onChangeSearch = (e) => {
+    if (e.target.value) {
+      const searched = stocks.filter(product => product.productName.toLowerCase().replace(/\s+/g, "").includes(e.target.value.toLowerCase().replace(/\s+/g, "")));
+      setSearchedProducts(searched);
+    } else {
+      setSearchedProducts([]);
+    }
+    setQuery(e.target.value);
+  }
+
+  const onAddProduct = (product) => {
+    const found = selectedProducts.find(p => p.productName === product.productName);
+    if (!found) {
+      setSelectedProducts([product, ...selectedProducts]);
+      productStockForm.setFieldValue(`quantity${product.id}`, 0);
+      setSearchedProducts([]);
+      setQuery("");
+    }
+  }
+
+  const onRemoveProduct = (id) => {
+    setSearchedProducts([]);
+    setQuery("");
+    productStockForm.setFieldValue(`quantity${id}`, 0);
+    setSelectedProducts(selectedProducts.filter(product => product.id !== id));
+  }
+
+  const onClearQuery = () => {
+    setSearchedProducts([]);
+    setQuery("");
+  }   
+
   return (
   <>
     <form onSubmit={productStockForm.handleSubmit}>
-      <div className="mb-8">
+      <div className="mb-5">
         <label htmlFor="reason" className="custom-label inline-block mb-2">Reason</label>
         <SelectInput name="reason" form={productStockForm} field={"reason"} 
         options={Object.values(ProductStockChangeReason).filter(reason => 
@@ -78,44 +112,75 @@ export default function ProductStockForm({ initialData, stocks, onClear }) {
         ></SelectInput>
       </div>
 
-      <div className="flex justify-between items-center mb-4">
-        <div className="w-6/12">
-          <span className="custom-label">Product</span>
+      <div className="mb-5">
+        <div className="flex justify-between items-center">
+          <div className="w-full">
+            <SearchInput id="product-search" name="product-search" placeholder="Search product"
+            onChange={(e) => onChangeSearch(e)} value={query} onFocus={() => setSearchedProducts(stocks)}
+            onClear={onClearQuery}></SearchInput>
+          </div>
         </div>
-        <div className="w-4/12 md:w-3/12">
-          <span className="custom-label">Qty</span>
-        </div>
+        {searchedProducts.length > 0 ? (
+        <div className="my-2 border border-base-300 rounded-btn p-2 shadow-md">
+          {searchedProducts.map((product, index) => (
+          <div key={index} className="cursor-pointer w-full p-3 rounded-btn hover:bg-info" 
+          onClick={() => onAddProduct(product)}>
+            <p>{product.productName}</p>
+          </div>
+          ))}
+        </div>) : null}
+        {searchedProducts?.length === 0 && query ? (
+        <div className="my-2 border border-base-300 rounded-btn p-2 shadow-md">
+          <p className="p-3">Not found.</p>
+        </div>) : null}
       </div>
 
-      {stocks.map((stock) => {
-        return (
-        <div key={stock.id}>
-          <div className="flex justify-between items-center mb-4">
-            <div className="w-6/12">
-              <span>{stock.productName}</span>
+      {selectedProducts?.length > 0 ? (
+      <>
+        <div className="flex justify-between items-center mb-2">
+          <div className="w-6/12">
+            <span className="custom-label">Product</span>
+          </div>
+          <div className="w-6/12">
+            <span className="custom-label">Qty</span>
+          </div>
+        </div>            
+      </>) : (
+      <div className="flex justify-center mt-5 mb-2">
+        <span>Empty.</span>
+      </div>)}
+
+      {selectedProducts.map((product) => {
+      return (
+      <div key={product.id}>
+        <div className="flex justify-between items-center">
+          <div className="w-6/12">
+            <span>{product.productName}</span>
+          </div>
+          <div className="flex w-6/12">
+            <div className="w-[49%] mr-2">
+              <NumberInput id={`quantity${product.id}`} 
+                name={`quantity${product.id}`} placeholder="Qty" 
+                value={productStockForm.values[`quantity${product.id}`]}
+                onChange={productStockForm.handleChange}
+                min="0" max="99999" disabled={false}
+              ></NumberInput>
             </div>
-            <div className="w-4/12 md:w-3/12">
-              <TextInput id={`stock${stock.id}`} type="number" 
-                name={`stock${stock.id}`} placeholder="Qty" 
-                value={productStockForm.values[`stock${stock.id}`]}
-                onChange={productStockForm.handleChange}></TextInput> 
+
+            <div className="w-[49%] flex items-center">
+            <button type="button" className="btn btn-accent w-full" 
+            onClick={() => onRemoveProduct(product.id)}>
+              <span><BiTrash className="w-6 h-6 mr-1"></BiTrash></span>
+              <span className="hidden lg:inline-block">Remove</span>
+            </button>
             </div>
           </div>
-          <div className="divider"></div>
         </div>
-        )
-      })}
-      {role === Role.MASTER || role === Role.ADMIN ? (
-      <>
-        <button type="submit" className="btn btn-primary w-full mt-1">
-          <span>Update stock</span>
-        </button>
-        <button type="button" className="btn btn-accent w-full mt-3" 
-        onClick={onClearForm}>
-          <span>Clear change(s)</span>
-        </button>      
-      </>
-      ) : null}
+        <div className="divider my-1"></div>
+      </div>)})}
+
+      <button type="submit" className="my-3 btn btn-primary w-full">Update Stock</button>
+      <button type="button" className="btn btn-accent w-full" onClick={onClearForm}>Clear change(s)</button>
 
       <div>
         {formState.loading ? (

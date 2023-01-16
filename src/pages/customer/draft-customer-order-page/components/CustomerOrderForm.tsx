@@ -10,7 +10,7 @@ import SelectInput from "../../../../components/forms/SelectInput";
 import SelectSearch from "../../../../components/forms/SelectSearch";
 import TextInput from "../../../../components/forms/TextInput";
 import api from "../../../../stores/api";
-import { BiLeftArrowAlt, BiRightArrowAlt, BiTrash } from "react-icons/bi";
+import { BiLeftArrowAlt, BiRightArrowAlt, BiX } from "react-icons/bi";
 import SearchInput from "../../../../components/forms/SearchInput";
 
 export default function CustomerOrderForm({
@@ -121,7 +121,6 @@ export default function CustomerOrderForm({
   const onNextPage = async () => {
     if (!edit) {
       setFormState(prev => ({...prev, error: "", empty: "", loading: true}));
-      console.log(customerOrderForm.values[`customerName`]);
       const template = await loadTemplate(customerOrderForm.values[`customerName`]);
       if (template) {
         const selected = [];
@@ -195,6 +194,15 @@ export default function CustomerOrderForm({
           </div>
 
           <div className="mb-5">
+            <label htmlFor="expect" className="custom-label inline-block mb-2">Expected delivery date</label>
+            <DateInput id="expect" min="2022-01-01" max="2100-12-31"
+            name="expect" placeholder="Expected Delivery Date" 
+            value={customerOrderForm.values[`expectedAt`]}
+            onChange={(e) => customerOrderForm.setFieldValue("expectedAt", e.target.value)}
+            ></DateInput>
+          </div>
+
+          <div className="mb-5">
             <label htmlFor="employee" className="custom-label inline-block mb-2">Assign to</label>
             <SelectInput name="employee" form={customerOrderForm} field={"employeeName"}
             options={employees.map(employee => employee.nickname)}
@@ -210,20 +218,11 @@ export default function CustomerOrderForm({
             ></SelectInput>
           </div>
 
-          <div className="mb-8">
-            <label htmlFor="expect" className="custom-label inline-block mb-2">Expected delivery date</label>
-            <DateInput id="expect" min="2022-01-01" max="2100-12-31"
-            name="expect" placeholder="Expected Delivery Date" 
-            value={customerOrderForm.values[`expectedAt`]}
-            onChange={(e) => customerOrderForm.setFieldValue("expectedAt", e.target.value)}
-            ></DateInput>
-          </div>
-
-          <button type="button" className="mt-1 btn btn-primary w-full" onClick={onNextPage}
-          disabled={!customerOrderForm.values[`customerName`]}>
+          {customerOrderForm.values[`customerName`] ? (          
+          <button type="button" className="btn btn-primary w-full my-3" onClick={onNextPage}>
             <span>Set product</span>
             <span><BiRightArrowAlt className="w-7 h-7 ml-1"></BiRightArrowAlt></span>
-          </button>        
+          </button>) : null}
         </>) : (
         <>
           {formState.page === 1 ? (
@@ -250,9 +249,10 @@ export default function CustomerOrderForm({
                 <p className="p-3">Not found.</p>
               </div>) : null}
             </div>
+            
             {selectedProducts?.length > 0 ? (
             <>
-              <div className="flex justify-between items-center mb-4">
+              <div className="flex justify-between items-center mb-2">
                 <div className="w-5/12">
                   <span className="custom-label">Product</span>
                 </div>
@@ -266,14 +266,14 @@ export default function CustomerOrderForm({
                 </div>
               </div>            
             </>) : (
-            <div className="flex justify-center">
+            <div className="flex justify-center mt-5 mb-2">
               <span>Empty.</span>
             </div>)}
 
             {selectedProducts.map((product) => {
             return (
             <div key={product.id}>
-              <div className="flex justify-between items-center mb-4">
+              <div className="flex justify-between items-center">
                 <div className="w-5/12">
                   <span>{product.name}</span>
                 </div>
@@ -296,14 +296,14 @@ export default function CustomerOrderForm({
                   </div>
 
                   <div className="w-2/12 flex items-center">
-                  <button type="button" className="btn btn-accent btn-circle" 
+                  <button type="button" className="btn btn-accent btn-circle btn-sm" 
                   onClick={() => onRemoveProduct(product.id)}>
-                    <span><BiTrash className="w-6 h-6"></BiTrash></span>
+                    <span><BiX className="w-6 h-6"></BiX></span>
                   </button>
                   </div>
                 </div>
               </div>
-              <div className="divider"></div>
+              <div className="divider my-1"></div>
             </div>)})}
 
             <div className="flex items-center my-5">
@@ -321,7 +321,7 @@ export default function CustomerOrderForm({
               ></Checkbox>
             </div>
 
-            <div className="flex justify-between mt-1">
+            <div className="flex justify-between my-3">
               <button type="button" className="btn btn-alt w-[49%]" onClick={onPreviousPage}>
                 <span><BiLeftArrowAlt className="w-7 h-7 mr-1"></BiLeftArrowAlt></span>
                 <span>Go back</span>
@@ -332,7 +332,7 @@ export default function CustomerOrderForm({
             </div>            
           </>) : null}
         </>)}
-        <button type="button" className="btn btn-accent w-full mt-3" onClick={onClearForm}>
+        <button type="button" className="btn btn-accent w-full" onClick={onClearForm}>
           <span>Clear change(s)</span>
         </button>
         <div>

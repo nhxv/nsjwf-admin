@@ -14,24 +14,25 @@ export default function ProductStockFormContainer() {
     empty: "",
     loading: true,
   });
-
   const [initialFields, setInitialFields] = useState({});
-  const [productStock, setProductStock] = useState<[]>([]);
+  const [productStock, setProductStock] = useState([]);
 
   useEffect(() => {
     api.get(`/product-stock`)
     .then((res) => {
-      setProductStock(res.data);
-      if (res.data.length === 0) {
-        setFormState(prev => (
-          {...prev, empty: "Such hollow, much empty...", loading: false}
-        ));
+      if (res.data?.length === 0) {
+        setFormState(prev => ({...prev, error: "", empty: "Such hollow, much empty...", loading: false}));
       } else {
         const formFieldData = {};
         for (const s of res.data) {
           formFieldData[`stock${s.id}`] = s.quantity;
         }
-        setInitialFields(prev => ({...prev, reason: ProductStockChangeReason.DAMAGED, ...formFieldData}));
+        setInitialFields(prev => ({
+          ...prev, 
+          reason: ProductStockChangeReason.DAMAGED, 
+          ...formFieldData
+        }));
+        setProductStock(res.data);
       }
     })
     .catch ((e) => {
@@ -63,7 +64,7 @@ export default function ProductStockFormContainer() {
       {formState.loading ? (
       <Spinner></Spinner>
       ) : (
-      <div className="w-11/12 sm:w-8/12 md:w-6/12">
+      <div className="container w-11/12 sm:w-8/12 xl:w-6/12">
         {formState.error ? (
         <Alert message={formState.error} type="error"></Alert>
         ) : (
@@ -71,7 +72,7 @@ export default function ProductStockFormContainer() {
           {formState.empty ? (
           <Alert message={formState.empty} type="empty"></Alert>
           ) : (
-          <div className="bg-base-100 p-6 rounded-box shadow-md mb-12">
+          <div className="custom-card mb-12">
             <ProductStockForm 
             initialData={initialFields}
             stocks={productStock} 
