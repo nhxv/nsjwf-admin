@@ -35,7 +35,7 @@ export default function CustomerSaleList({reports}) {
           </div>
           {report.productCustomerOrders.map(productOrder => {
             return (
-            <div key={productOrder.product_name} className="flex justify-center items-center py-2 bg-base-200 rounded-btn mb-2">
+            <div key={productOrder.product_name} className="flex justify-center items-center py-3 bg-base-200 rounded-btn mb-2">
               <div className="w-6/12 ml-3">
                 <span>{productOrder.product_name}</span>
               </div>

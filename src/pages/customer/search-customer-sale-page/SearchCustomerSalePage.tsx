@@ -127,7 +127,7 @@ export default function SearchCustomerSalePage() {
                 </div>
                 {sale.productCustomerOrders.map(productOrder => {
                   return (
-                  <div key={productOrder.productName} className="flex justify-center items-center py-2 bg-base-200 rounded-btn mb-2">
+                  <div key={productOrder.productName} className="flex justify-center items-center py-3 bg-base-200 rounded-btn mb-2">
                     <div className="w-6/12 ml-3">
                       <span>{productOrder.productName}</span>
                     </div>

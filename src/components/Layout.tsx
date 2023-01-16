@@ -1,5 +1,5 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { BiMenuAltLeft,BiDotsHorizontalRounded } from "react-icons/bi";
+import { BiMenuAltLeft,BiDotsHorizontalRounded, BiUser, BiExit } from "react-icons/bi";
 import { useAuthStore } from "../stores/auth.store";
 import { Role } from "../commons/role.enum";
 import BottomNav from "./BottomNav";
@@ -86,13 +86,13 @@ export default function Layout({ children }) {
   <>
     <div className="min-h-screen bg-base-200">
       <div className="drawer">
-        <input id="my-drawer-3" type="checkbox" className="drawer-toggle" /> 
+        <input id="mobile-drawer" type="checkbox" className="drawer-toggle" /> 
         <div className="drawer-content flex flex-col">
           
           {/* Navbar */}
           <nav className="w-full navbar bg-base-100 shadow-md top-0 sticky z-20">
             <div className="navbar-start">
-              <label htmlFor="my-drawer-3" className="btn btn-square btn-ghost">
+              <label htmlFor="mobile-drawer" className="btn btn-square btn-ghost">
                 <BiMenuAltLeft className="inline-block w-8 h-8"></BiMenuAltLeft>
               </label> 
             </div>
@@ -107,11 +107,13 @@ export default function Layout({ children }) {
                 <ul tabIndex={0} className="dropdown-content menu p-2 shadow-md bg-base-100 rounded-box border border-base-300 w-52">
                   <li>
                     <a onClick={onProfile} className="hover:bg-base-200 focus:bg-base-200">
+                      <span><BiUser className="w-6 h-6 mr-1"></BiUser></span>
                       <span>My profile</span>
                     </a>
                   </li>
                   <li>
                     <a onClick={onSignOut} className="hover:bg-base-200 focus:bg-base-200">
+                      <span><BiExit className="w-6 h-6 mr-1"></BiExit></span>
                       <span>Sign out</span>
                     </a>
                   </li>
@@ -121,14 +123,14 @@ export default function Layout({ children }) {
           </nav>
 
           {/* Main content */}
-          <main className="container mb-20">
+          <main className="container mb-16">
             {children}
           </main>
         </div>
 
         {/* Sidebar */}
         <aside className="drawer-side">
-          <label htmlFor="my-drawer-3" className="drawer-overlay"></label>
+          <label htmlFor="mobile-drawer" className="drawer-overlay"></label>
           <div className="bg-base-100 min-h-screen w-60 overflow-y-auto shadow-md">
             <ul className="menu p-4">
               {categories.map((category, index) => {

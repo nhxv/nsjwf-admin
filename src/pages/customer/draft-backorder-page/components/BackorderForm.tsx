@@ -216,7 +216,7 @@ export default function BackorderForm({
           </div>
 
           {backorderForm.values[`customerName`] ? (
-            <button type="button" className="my-3 btn btn-primary w-full" onClick={onNextPage}>
+            <button type="button" className="mt-3 btn btn-primary w-full" onClick={onNextPage}>
               <span>Set product</span>
               <span><BiRightArrowAlt className="w-7 h-7 ml-1"></BiRightArrowAlt></span>
             </button>    
@@ -304,7 +304,7 @@ export default function BackorderForm({
               <div className="divider my-1"></div>
             </div>)})}
 
-            <div className="flex items-center my-5">
+            <div className="flex items-center mt-3 mb-5">
               <div>
                 <span className="">Total price:</span>
               </div>
@@ -319,7 +319,7 @@ export default function BackorderForm({
               ></Checkbox>
             </div>
 
-            <div className="flex justify-between my-3">
+            <div className="flex justify-between mt-3">
               <button type="button" className="btn btn-alt w-[49%]" onClick={onPreviousPage}>
                 <span><BiLeftArrowAlt className="w-7 h-7 mr-1"></BiLeftArrowAlt></span>
                 <span>Go back</span>
@@ -330,7 +330,7 @@ export default function BackorderForm({
             </div>            
           </>) : null}
         </>)}
-        <button type="button" className="btn btn-accent w-full" onClick={onClearForm}>
+        <button type="button" className="mt-3 btn btn-accent w-full" onClick={onClearForm}>
           <span>Clear change(s)</span>
         </button>
         <div>

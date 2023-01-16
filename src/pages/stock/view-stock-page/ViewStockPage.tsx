@@ -87,7 +87,7 @@ export default function ViewStockPage() {
                 <div className="mb-12">
                   <div className="grid grid-cols-12 gap-2">
                     {searchedStocks.map((product) => (
-                    <div key={product.productName} className="col-span-12 sm:col-span-6 xl:col-span-3 flex justify-between items-center p-2 bg-base-100 shadow-md rounded-btn">
+                    <div key={product.productName} className="col-span-12 sm:col-span-6 xl:col-span-3 flex justify-between items-center p-3 bg-base-100 shadow-md rounded-btn">
                       <div><span>{product.productName}</span></div>
                       <div><span>{product.quantity}</span></div>
                     </div>
