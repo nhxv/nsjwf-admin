@@ -17,6 +17,7 @@ export default function Layout({ children }) {
         {itemName: "Draft Order", href: "/customer/draft-customer-order", visible: [Role.MASTER, Role.ADMIN]},
         {itemName: "Update Priority", href: "/customer/update-order-priority", visible: [Role.MASTER, Role.ADMIN]},
         {itemName: "View Order", href: "/customer/view-customer-order", visible: [Role.MASTER, Role.ADMIN]},
+        {itemName: "Overview Order", href: "/customer/overview-customer-order", visible: [Role.MASTER, Role.ADMIN]},
         {itemName: "Draft Backorder", href: "/customer/draft-backorder", visible: [Role.MASTER, Role.ADMIN]},
         {itemName: "View Backorder", href: "/customer/view-backorder", visible: [Role.MASTER, Role.ADMIN]},
         {itemName: "Search Sale", href: "/customer/search-customer-sale", visible: [Role.MASTER, Role.ADMIN]},

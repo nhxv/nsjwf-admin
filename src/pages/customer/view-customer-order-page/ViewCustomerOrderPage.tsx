@@ -20,7 +20,6 @@ export default function ViewCustomerOrderPage() {
   });
   const [status, setStatus] = useState(OrderStatus.PICKING);
   const [customerOrderList, setCustomerOrderList] = useState([]);
-  const role = useAuthStore((state) => state.role);
   const batchToPrintRef = useRef<HTMLDivElement>(null);
   const handleBatchPrint = useReactToPrint({
     content: () => batchToPrintRef.current,
@@ -126,7 +125,7 @@ export default function ViewCustomerOrderPage() {
               </ul>
             </div>
           </div>
-          {(role === Role.ADMIN || role === Role.MASTER) ? (
+
           <div className="hidden">
             <div ref={batchToPrintRef}>
               {customerOrderList.map((order, index) => (
@@ -135,8 +134,7 @@ export default function ViewCustomerOrderPage() {
               </div>
               ))}
             </div>
-          </div>      
-          ): null}
+          </div> 
 
           {listState.listLoading ? (
           <Spinner></Spinner>
@@ -150,9 +148,8 @@ export default function ViewCustomerOrderPage() {
               <Alert message={listState.listEmpty} type="empty"></Alert>
               ) : (
               <div>
-                <CustomerOrderList orders={customerOrderList} printMode={(role === Role.ADMIN || role === Role.MASTER) && status !== OrderStatus.COMPLETED ? true : false} />
-                {(role === Role.ADMIN || role === Role.MASTER) &&
-                (!listState.listEmpty && !listState.listError && !listState.listLoading) ? (         
+                <CustomerOrderList orders={customerOrderList} printMode={status !== OrderStatus.COMPLETED ? true : false} />
+                {(!listState.listEmpty && !listState.listError && !listState.listLoading) ? (         
                 <div className="flex justify-center mb-6">
                   <button type="button" className="btn btn-accent" onClick={onBatchPrint}>
                     <span className="mr-2">Print all orders</span>

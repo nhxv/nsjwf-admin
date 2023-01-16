@@ -18,7 +18,7 @@ export default function CustomerOrderList({orders, printMode }) {
   <>
     {orders.map((order) => {
       return (
-      <div key={order.code} className="bg-base-100 p-6 rounded-box shadow-md mb-8">
+      <div key={order.code} className="custom-card mb-8">
         {/* basic order info */}
         <div className="flex flex-row justify-between">
           <div>

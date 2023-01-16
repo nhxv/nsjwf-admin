@@ -5,6 +5,7 @@ import useFirstRender from "../../../commons/hooks/first-render.hook";
 import Alert from "../../../components/Alert";
 import EmployeeTaskList from "./components/EmployeeTaskList";
 import api from "../../../stores/api";
+import TabGroup from "../../../components/TabGroup";
 
 export default function UpdateOrderPriorityPage() {
   const isFirstRender = useFirstRender();
@@ -63,54 +64,19 @@ export default function UpdateOrderPriorityPage() {
   const capitalizeFirst = (str: string) => {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
-  
-  const setStep = (step: string) => {
-    const s = step.toUpperCase();
-    if (s === OrderStatus.PICKING) {
-      setStatus(OrderStatus.PICKING);
-    } else if (s === OrderStatus.SHIPPING) {
-      setStatus(OrderStatus.SHIPPING);
-    }
-    if (s !== status) {
-      setListState({listError: "", listEmpty: "", listLoading: true});
-    }
-  }
-
-  const checkStep = (step: string) => {
-    const s = step.toUpperCase();
-    if (s === status) {
-      return true;
-    } else if (s === OrderStatus.PICKING) {
-      return true;
-    }
-    return false;
-  }
 
   return (
   <section className="min-h-screen">
-    <div className="flex flex-col items-center container">
-      <div className="my-6 w-11/12 sm:w-8/12 xl:w-6/12 flex justify-center">
-        <div className="w-11/12">
-          <ul className="steps w-full">
-            {Object.values(OrderStatus)
-            .filter(s => 
-              s !== OrderStatus.CANCELED && 
-              s !== OrderStatus.COMPLETED &&
-              s !== OrderStatus.CHECKING &&
-              s !== OrderStatus.DELIVERED
-            )
-            .map((s) => (
-            <li key={s} className={`cursor-pointer step text-sm sm:text-base font-medium 
-              ${checkStep(s) ? "text-primary step-primary" : ""}`}
-              onClick={() => setStep(s)}
-            >{capitalizeFirst(s.toLowerCase())}</li>
-            ))}
-          </ul>
-        </div>
-      </div>          
+    <div className="flex justify-center my-8">
+      <TabGroup group={Object.values(OrderStatus).filter(s => 
+          s !== OrderStatus.CANCELED && 
+          s !== OrderStatus.CHECKING && 
+          s !== OrderStatus.DELIVERED && 
+          s !== OrderStatus.COMPLETED
+        )} selected={status} onSelect={setStatus} display={capitalizeFirst}></TabGroup>
     </div>
     
-    <div className="container w-full">
+    <div className="w-full">
       {listState.listLoading ? (
       <div className="flex justify-center">
         <Spinner></Spinner>
@@ -124,9 +90,7 @@ export default function UpdateOrderPriorityPage() {
           {listState.listEmpty ? (
           <Alert message={listState.listEmpty} type="empty"></Alert>
           ) : (
-          <>
             <EmployeeTaskList employeeTasks={employeeTaskList} />
-          </>
           )}
         </>
         )}

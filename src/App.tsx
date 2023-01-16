@@ -36,6 +36,7 @@ import ViewVendorPage from "./pages/configure/view-vendor-page/ViewVendorPage";
 import DraftCustomerPage from "./pages/configure/draft-customer-page/DraftCustomerPage";
 import ViewCustomerPage from "./pages/configure/view-customer-page/ViewCustomerPage";
 import UpdateOrderPriorityPage from "./pages/customer/update-order-priority-page/UpdateOrderPriorityPage";
+import OverviewCustomerOrderPage from "./pages/customer/overview-customer-order-page/OverviewCustomerOrderPage";
 
 
 export default function App() {
@@ -65,6 +66,7 @@ export default function App() {
             <Route path="/customer/view-customer-return" element={<ViewCustomerReturnPage />}></Route>
             <Route path="/customer/report-sale" element={<ReportCustomerSalePage />}></Route>
             <Route path="/customer/view-customer-order" element={<ViewCustomerOrderPage />}></Route>
+            <Route path="/customer/overview-customer-order" element={<OverviewCustomerOrderPage />}></Route>
           </Route>
 
           {/* Vendor routes */}
