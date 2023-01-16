@@ -23,6 +23,9 @@
   .btn-ghost {
     @apply bg-transparent hover:bg-base-200 focus:bg-base-200
   }
+  .custom-card {
+    @apply bg-base-100 p-6 rounded-box shadow-md
+  }
 }
 
 input {

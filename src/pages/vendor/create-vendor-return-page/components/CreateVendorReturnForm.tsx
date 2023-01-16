@@ -98,7 +98,7 @@ export default function CreateVendorReturnForm({
   return (
     <>
       <form onSubmit={vendorReturnForm.handleSubmit}>
-        <div className="mb-4 flex flex-col justify-between">
+        <div className="mb-3 flex flex-col justify-between">
           <div>
             <span>#{sold.sale_code}</span>
           </div>
@@ -110,8 +110,8 @@ export default function CreateVendorReturnForm({
           </div>           
         </div>
            
-        <div className="divider"></div>  
-        <div className="flex justify-between items-center mb-4">
+        <div className="divider my-1"></div>  
+        <div className="flex justify-between items-center mb-2">
           <div className="w-5/12">
             <span className="custom-label">Product</span>
           </div>
@@ -127,7 +127,7 @@ export default function CreateVendorReturnForm({
         {products.map((product, index) => {
           return (
           <div key={index}>
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex justify-between items-center">
               <div className="w-5/12">
                 <span>{product.product_name}</span>
               </div>
@@ -148,30 +148,27 @@ export default function CreateVendorReturnForm({
               </div>
 
             </div>
-            <div className="divider"></div>
+            <div className="divider my-1"></div>
           </div>
           )
         })}
         {formState.page === 1 ? (        
-        <div className="flex flex-col mb-5">
+        <div className="flex flex-col my-5">
           <label htmlFor="total" className="custom-label mb-2">Refund ($)</label>
           <div className="w-24">
             <TextInput id={`total`} type="text" name={`total`} placeholder="Total" 
               value={finalPrice} onChange={(e) => handleFinalPriceChange(e)}
             ></TextInput>
           </div>
-
-        </div>) :(<></>)}
+        </div>) : null}
 
         <div className="flex flex-col">
-          <div className="mt-1">
+          <div className="my-3">
             {formState.page === 0 ? 
-            (<>
-            <button type="button" className="btn btn-primary w-full" onClick={onNextPage}>
+            (<button type="button" className="btn btn-primary w-full" onClick={onNextPage}>
               <span>Confirm price</span>
               <span><BiRightArrowAlt className="w-7 h-7 ml-1"></BiRightArrowAlt></span>
-            </button>
-            </>) : 
+            </button>) : 
             (<>
             {formState.page === 1 ? (
             <div className="flex justify-between">
@@ -188,7 +185,7 @@ export default function CreateVendorReturnForm({
             </>)}
           </div>
           <div>
-            <button type="button" className="btn btn-accent w-full mt-3" onClick={onClearForm}>
+            <button type="button" className="btn btn-accent w-full" onClick={onClearForm}>
               <span>Clear change(s)</span>
             </button>
           </div>

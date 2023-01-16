@@ -65,7 +65,7 @@ export default function SearchVendorSalePage() {
     <section className="min-h-screen">
       <h1 className="text-center font-bold text-xl my-4">Search sale</h1>
       <div className="flex flex-col items-center mb-8">
-        <form onSubmit={searchForm.handleSubmit} className="w-11/12 sm:w-8/12 md:w-6/12 bg-base-100 p-6 rounded-box shadow-md">
+        <form onSubmit={searchForm.handleSubmit} className="w-11/12 sm:w-8/12 xl:w-6/12 custom-card">
           <div className="flex flex-col mb-6">
             <div className="mb-4">
               <DateInput id="date" min="2022-01-01" max="2100-12-31"
@@ -95,7 +95,7 @@ export default function SearchVendorSalePage() {
           <>
             {searchState.found.map((sale) => {
             return (
-              <div key={sale.code} className="w-11/12 sm:w-8/12 md:w-6/12 bg-base-100 p-6 rounded-box shadow-md mb-4">
+              <div key={sale.code} className="w-11/12 sm:w-8/12 md:w-6/12 custom-crd mb-4">
                 {/* basic sale info */}
                 <div className="flex flex-row justify-between">
                   <div>
@@ -125,7 +125,7 @@ export default function SearchVendorSalePage() {
                 </div>
                 {sale.productVendorOrders.map(productOrder => {
                   return (
-                  <div key={productOrder.productName} className="flex justify-center items-center py-3 bg-base-200 rounded-btn mb-2">
+                  <div key={productOrder.productName} className="flex justify-center items-center py-2 bg-base-200 rounded-btn mb-2">
                     <div className="w-6/12 ml-3">
                       <span>{productOrder.productName}</span>
                     </div>

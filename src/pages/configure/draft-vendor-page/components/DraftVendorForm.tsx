@@ -192,7 +192,7 @@ export default function DraftVendorForm({edit, editedProducts, initialData, allP
             label="In use" 
             ></Checkbox>
           </div>
-          <button type="button" className="mt-1 btn btn-primary w-full" onClick={onNextPage}>
+          <button type="button" className="my-3 btn btn-primary w-full" onClick={onNextPage}>
             <span>Product template</span>
             <span><BiRightArrowAlt className="w-7 h-7 ml-1"></BiRightArrowAlt></span>
           </button>       
@@ -204,46 +204,46 @@ export default function DraftVendorForm({edit, editedProducts, initialData, allP
             {/* 2nd Page */}
             {allProducts?.length > 0 ? ( 
             <div className="mb-5">
-              <div className="flex justify-between items-center">
-                <div className="w-full">
-                  <SearchInput id="product-search" name="product-search" placeholder="Search product"
-                  onChange={(e) => onChangeSearch(e)} value={query} onFocus={() => setSearchedProducts(allProducts)}
-                  onClear={onClearQuery}></SearchInput>
-                </div>
+            <div className="flex justify-between items-center">
+              <div className="w-full">
+                <SearchInput id="product-search" name="product-search" placeholder="Search product"
+                onChange={(e) => onChangeSearch(e)} value={query} onFocus={() => setSearchedProducts(allProducts)}
+                onClear={onClearQuery}></SearchInput>
               </div>
+            </div>
+            {searchedProducts.length > 0 ? (
+            <div className="my-2 border border-base-300 rounded-btn p-2 shadow-md">
               {searchedProducts.map((product, index) => (
-              <div key={index} className="cursor-pointer my-2 w-full bg-base-200 p-3 rounded-btn 
-              hover:bg-primary hover:text-primary-content focus:bg-primary focus:text-primary-content" 
+              <div key={index} className="cursor-pointer w-full p-3 rounded-btn hover:bg-info" 
               onClick={() => onAddProduct(product)}>
                 <p>{product.name}</p>
               </div>
               ))}
-              {searchedProducts?.length === 0 && query ? (
-              <div className="my-2 w-full bg-base-200 p-3 rounded-btn">
-                <p>Not found.</p>
-              </div>) : null}
-            </div>            
+            </div>) : null}
+            {searchedProducts?.length === 0 && query ? (
+            <div className="my-2 border border-base-300 rounded-btn p-2 shadow-md">
+              <p className="p-3">Not found.</p>
+            </div>) : null}
+          </div>           
             ) : null}
             <div className="mb-5">
               {selectedProducts?.length > 0 ? (
               <>
-                <div className="flex justify-between items-center mt-8 mb-4">
-                  <div className="w-5/12">
+                <div className="flex justify-between items-center mb-2">
+                  <div className="w-6/12">
                     <span className="custom-label">Product</span>
                   </div>
-                  <div className="flex w-7/12">
-                    <div className="w-6/12 mr-2">
-                      <span className="custom-label">Qty</span>
-                    </div>
+                  <div className="w-6/12">
+                    <span className="custom-label">Qty</span>
                   </div>
                 </div>
                 {selectedProducts.map((product) => 
                 <div key={product.id}>
-                <div className="flex justify-between items-center mb-4">
-                  <div className="w-5/12">
+                <div className="flex justify-between items-center">
+                  <div className="w-6/12">
                     <span>{product.name}</span>
                   </div>
-                  <div className="flex w-7/12">
+                  <div className="flex w-6/12">
                     <div className="w-6/12 mr-2">
                       <NumberInput id={`quantity${product.id}`} 
                         name={`quantity${product.id}`} placeholder="Qty" 
@@ -256,20 +256,20 @@ export default function DraftVendorForm({edit, editedProducts, initialData, allP
                       <button type="button" className="btn btn-accent w-full" 
                       onClick={() => onRemoveProduct(product.id)}>
                         <span><BiTrash className="w-6 h-6 lg:mr-1"></BiTrash></span>
-                        <span className="hidden lg:block">Remove</span>
+                        <span className="hidden lg:inline-block">Remove</span>
                       </button>
                     </div>
                   </div>
                 </div>
-                <div className="divider"></div>
+                <div className="divider my-1"></div>
               </div>
                 )}
               </>) : (
-              <div className="flex justify-center">
+              <div className="flex justify-center mt-5 mb-2">
                 <span>Empty template.</span>
               </div>)}
             </div>
-            <div className="flex justify-between mt-1">
+            <div className="flex justify-between my-3">
               <button type="button" className="btn btn-alt w-[49%]" onClick={onPreviousPage}>
                 <span><BiLeftArrowAlt className="w-7 h-7 mr-1"></BiLeftArrowAlt></span>
                 <span>Go back</span>
@@ -281,7 +281,7 @@ export default function DraftVendorForm({edit, editedProducts, initialData, allP
           </>
           ) : null}
         </>)}
-        <button type="button" className="mt-3 btn btn-accent w-full" onClick={onClear}>
+        <button type="button" className="btn btn-accent w-full" onClick={onClear}>
           <span>Clear change(s)</span>
         </button>
         <div>

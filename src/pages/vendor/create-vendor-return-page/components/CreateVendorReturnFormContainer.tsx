@@ -92,7 +92,7 @@ export default function CreateVendorReturnFormContainer({}) {
       {formState.loading ? (
       <Spinner></Spinner>            
       ) : (
-      <div className="w-11/12 sm:w-8/12 md:w-6/12">
+      <div className="container w-11/12 sm:w-8/12 xl:w-6/12">
         {formState.errorMessage ? (
         <Alert message={formState.errorMessage} type="error"></Alert>
         ) : (
@@ -101,7 +101,7 @@ export default function CreateVendorReturnFormContainer({}) {
           <Alert message={formState.emptyMessage} type="empty"></Alert>
           ) : (
           <>
-            <div className=" bg-base-100 p-6 rounded-box shadow-md mb-12">
+            <div className="custom-card mb-12">
               <CreateVendorReturnForm
               initialData={initialFields}
               products={dataState.products}

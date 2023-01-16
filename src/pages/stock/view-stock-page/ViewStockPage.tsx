@@ -5,6 +5,8 @@ import Alert from "../../../components/Alert";
 import Spinner from "../../../components/Spinner";
 import api from "../../../stores/api";
 import { useAuthStore } from "../../../stores/auth.store";
+import { BiEdit } from "react-icons/bi";
+import SearchInput from "../../../components/forms/SearchInput";
 
 export default function ViewStockPage() {
   const [stock, setStock] = useState(null);
@@ -15,6 +17,8 @@ export default function ViewStockPage() {
   });
   const navigate = useNavigate();
   const role = useAuthStore((state) => state.role);
+  const [query, setQuery] = useState("");
+  const [searchedStocks, setSearchedStocks] = useState([]);
 
   useEffect(() => {
     api.get(`/product-stock`)
@@ -25,6 +29,7 @@ export default function ViewStockPage() {
         ));
       } else {
         setStock(res.data);
+        setSearchedStocks(res.data);
         setDataState(prev => ({...prev, empty: "", loading: false}));
       }
     })
@@ -42,6 +47,21 @@ export default function ViewStockPage() {
     navigate(`/stock/change-stock`);
   }
 
+  const onChangeSearch = (e) => {
+    if (e.target.value) {
+      const searched = stock.filter(product => product.productName.toLowerCase().replace(/\s+/g, "").includes(e.target.value.toLowerCase().replace(/\s+/g, "")));
+      setSearchedStocks(searched);
+    } else {
+      setSearchedStocks(stock);
+    }
+    setQuery(e.target.value);
+  }
+
+  const onClearQuery = () => {
+    setSearchedStocks(stock);
+    setQuery("");
+  } 
+
   return (
     <>
       <section className="min-h-screen">
@@ -50,7 +70,7 @@ export default function ViewStockPage() {
           {dataState.loading ? (
           <Spinner></Spinner>
           ) : (
-          <div className="w-11/12 sm:w-8/12 md:w-6/12">
+          <div className="container px-4">
             {dataState.error ? (
             <Alert message={dataState.error} type="error"></Alert>
             ) : (
@@ -59,15 +79,28 @@ export default function ViewStockPage() {
               <Alert message={dataState.empty} type="empty"></Alert>
               ) : (
               <>
-                <div className="bg-base-100 p-6 rounded-box shadow-md mb-12">
-                  {stock.map((product) => (
-                  <div key={product.productName} className="flex justify-between py-3 bg-base-200 rounded-btn mb-2">
-                    <div className="mx-3"><span>{product.productName}</span></div>
-                    <div className="mx-3"><span>{product.quantity}</span></div>
+                <div className="mb-5 w-12/12 sm:8/12 xl:w-6/12 mx-auto">
+                  <SearchInput id="stock-search" name="stock-search" placeholder="Search stock"
+                  value={query} onChange={(e) => onChangeSearch(e)} onClear={onClearQuery} onFocus={null}
+                  ></SearchInput>
+                </div>
+                <div className="mb-12">
+                  <div className="grid grid-cols-12 gap-2">
+                    {searchedStocks.map((product) => (
+                    <div key={product.productName} className="col-span-12 sm:col-span-6 xl:col-span-3 flex justify-between items-center p-2 bg-base-100 shadow-md rounded-btn">
+                      <div><span>{product.productName}</span></div>
+                      <div><span>{product.quantity}</span></div>
+                    </div>
+                    ))}
                   </div>
-                  ))}
+                  {searchedStocks?.length < 1 ? (<div className="flex justify-center">Not found.</div>) : null}
                   {role === Role.MASTER || role === Role.ADMIN ? (
-                  <button type="button" className="mt-4 btn btn-primary w-full" onClick={onChangeStock}>Change stock</button>
+                  <div className="flex justify-center mt-8">
+                    <button type="button" className="btn btn-accent" onClick={onChangeStock}>
+                      <BiEdit className="h-6 w-6 mr-1"></BiEdit>
+                      <span>Change stock</span>
+                    </button>
+                  </div>
                   ) : null}
                 </div>   
               </>

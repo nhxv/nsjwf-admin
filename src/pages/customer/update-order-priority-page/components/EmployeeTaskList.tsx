@@ -85,7 +85,7 @@ export default function EmployeeTaskList({ employeeTasks }) {
                         {(provided, snapshot) => (
                           <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}
                           className={`rounded-box p-3 my-3 mx-2
-                          ${order.is_doing ? "bg-secondary text-secondary-content" : "bg-base-200"}
+                          ${order.is_doing ? "bg-red-900 text-white" : "bg-base-200"}
                           ${snapshot.isDragging ? "bg-primary text-primary-content" : ""}`}>
                             <div className="flex flex-col">
                               <p>#{order.code}</p>

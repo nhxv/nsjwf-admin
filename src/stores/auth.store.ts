@@ -14,9 +14,13 @@ export const useAuthStore = create<AuthState>((set) => ({
   role: +localStorage.getItem("role"),
   token: localStorage.getItem("token"),
   signIn: (resData: SignInResponse) => {
-    localStorage.removeItem("nickname");
-    localStorage.removeItem("role");
-    localStorage.removeItem("token");
+    if (
+      localStorage.getItem("nickname") || 
+      localStorage.getItem("role") || 
+      localStorage.getItem("token")
+    ) {
+      throw `Sign out first.`;
+    }
     localStorage.setItem("nickname", JSON.stringify(resData.nickname));
     localStorage.setItem("role", JSON.stringify(resData.roleId));
     localStorage.setItem("token", resData.token);
