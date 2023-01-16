@@ -12,6 +12,7 @@ import TextInput from "../../../../components/forms/TextInput";
 import api from "../../../../stores/api";
 import { BiLeftArrowAlt, BiRightArrowAlt, BiX } from "react-icons/bi";
 import SearchInput from "../../../../components/forms/SearchInput";
+import SearchSuggest from "../../../../components/forms/SearchSuggest";
 
 export default function CustomerOrderForm({
   edit,
@@ -228,26 +229,9 @@ export default function CustomerOrderForm({
           {formState.page === 1 ? (
           <>
             <div className="mb-5">
-              <div className="flex justify-between items-center">
-                <div className="w-full">
-                  <SearchInput id="product-search" name="product-search" placeholder="Search product"
-                  onChange={(e) => onChangeSearch(e)} value={query} onFocus={() => setSearchedProducts(allProducts)}
-                  onClear={onClearQuery}></SearchInput>
-                </div>
-              </div>
-              {searchedProducts.length > 0 ? (
-              <div className="my-2 border border-base-300 rounded-btn p-2 shadow-md">
-                {searchedProducts.map((product, index) => (
-                <div key={index} className="cursor-pointer w-full p-3 rounded-btn hover:bg-info" 
-                onClick={() => onAddProduct(product)}>
-                  <p>{product.name}</p>
-                </div>
-                ))}
-              </div>) : null}
-              {searchedProducts?.length === 0 && query ? (
-              <div className="my-2 border border-base-300 rounded-btn p-2 shadow-md">
-                <p className="p-3">Not found.</p>
-              </div>) : null}
+              <SearchSuggest query={query} items={searchedProducts}
+              onChange={(e) => onChangeSearch(e)} onFocus={() => setSearchedProducts(allProducts)}
+              onSelect={onAddProduct} onClear={onClearQuery}></SearchSuggest>
             </div>
             
             {selectedProducts?.length > 0 ? (

@@ -5,7 +5,7 @@ import { ProductStockChangeReason } from "../../../../commons/product-stock-chan
 import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
 import NumberInput from "../../../../components/forms/NumberInput";
-import SearchInput from "../../../../components/forms/SearchInput";
+import SearchSuggest from "../../../../components/forms/SearchSuggest";
 import SelectInput from "../../../../components/forms/SelectInput";
 import api from "../../../../stores/api";
 
@@ -113,26 +113,9 @@ export default function ProductStockForm({ initialData, stocks, onClear }) {
       </div>
 
       <div className="mb-5">
-        <div className="flex justify-between items-center">
-          <div className="w-full">
-            <SearchInput id="product-search" name="product-search" placeholder="Search product"
-            onChange={(e) => onChangeSearch(e)} value={query} onFocus={() => setSearchedProducts(stocks)}
-            onClear={onClearQuery}></SearchInput>
-          </div>
-        </div>
-        {searchedProducts.length > 0 ? (
-        <div className="my-2 border border-base-300 rounded-btn p-2 shadow-md">
-          {searchedProducts.map((product, index) => (
-          <div key={index} className="cursor-pointer w-full p-3 rounded-btn hover:bg-info" 
-          onClick={() => onAddProduct(product)}>
-            <p>{product.productName}</p>
-          </div>
-          ))}
-        </div>) : null}
-        {searchedProducts?.length === 0 && query ? (
-        <div className="my-2 border border-base-300 rounded-btn p-2 shadow-md">
-          <p className="p-3">Not found.</p>
-        </div>) : null}
+        <SearchSuggest query={query} items={searchedProducts}
+        onChange={(e) => onChangeSearch(e)} onFocus={() => setSearchedProducts(stocks)}
+        onSelect={onAddProduct} onClear={onClearQuery}></SearchSuggest>
       </div>
 
       {selectedProducts?.length > 0 ? (
