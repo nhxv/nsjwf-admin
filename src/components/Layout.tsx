@@ -123,7 +123,7 @@ export default function Layout({ children }) {
           </nav>
 
           {/* Main content */}
-          <main className="container mb-16">
+          <main className="container mb-20">
             {children}
           </main>
         </div>
