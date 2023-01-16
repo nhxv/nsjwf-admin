@@ -24,7 +24,7 @@ export default function SelectInput({name, form, field, options, value}) {
               />
             </span>
           </Listbox.Button>
-          <Listbox.Options className="absolute mt-1 max-h-70 w-full overflow-auto rounded-btn bg-base-100 py-2 shadow-md border border-base-300 focus:outline-none z-10">
+          <Listbox.Options className="absolute mt-1 max-h-72 w-full overflow-auto rounded-btn bg-base-100 py-2 shadow-md border border-base-300 focus:outline-none z-10">
             {options.map((option) => (
               <Listbox.Option
                 key={option}

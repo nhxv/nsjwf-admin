@@ -33,7 +33,7 @@ export default function SelectSearch({ name, form, field, options, value }) {
               />
             </Combobox.Button>
           </div>
-          <Combobox.Options className="z-10 absolute mt-1 max-h-70 w-full overflow-auto rounded-btn bg-base-100 py-2 shadow-md border border-base-300 focus:outline-none">
+          <Combobox.Options className="z-10 absolute mt-1 max-h-72 w-full overflow-auto rounded-btn bg-base-100 py-2 shadow-md border border-base-300 focus:outline-none">
             {filteredOption.length === 0 && query !== "" ? (
               <div className="relative cursor-default select-none py-3 px-4">
                 Nothing found.
