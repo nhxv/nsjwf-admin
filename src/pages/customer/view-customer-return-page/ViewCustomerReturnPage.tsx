@@ -53,7 +53,7 @@ export default function ViewCustomerReturnPage() {
       {listState.listLoading ? (
       <Spinner></Spinner>
       ) : (
-      <div className="container w-11/12 sm:w-8/12 xl:w-6/12">
+      <div className="w-11/12 sm:w-8/12 xl:w-6/12">
         {listState.listError ? (
         <Alert message={listState.listError} type="error"></Alert>
         ) : (

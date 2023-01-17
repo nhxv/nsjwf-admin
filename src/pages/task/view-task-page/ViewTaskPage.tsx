@@ -8,6 +8,7 @@ import TaskList from "./components/TaskList";
 import useFirstRender from "../../../commons/hooks/first-render.hook";
 import { useAuthStore } from "../../../stores/auth.store";
 import Alert from "../../../components/Alert";
+import Stepper from "../../../components/Stepper";
 
 export default function ViewTaskPage() {
   const isFirstRender = useFirstRender();
@@ -18,48 +19,18 @@ export default function ViewTaskPage() {
   });
   const [status, setStatus] = useState(OrderStatus.PICKING);
   const [dataState, setDataState] = useState({
-    tasks: null,
+    tasks: [],
     toast: "",
   });
   const nickname = useAuthStore((state) => JSON.parse(state.nickname));
   const [reload, setReload] = useState(false);
 
   useEffect(() => {
-    let orderPromise = null;
-    if (status === OrderStatus.PICKING || status === OrderStatus.SHIPPING) {
-      orderPromise = api.get(`/customer-orders/tasks/search?nickname=${nickname}&status=${status}`);
-    } else if (status === OrderStatus.CHECKING || OrderStatus.DELIVERED) {
-      orderPromise = api.get(`/customer-orders/basic-list/${status}`);
-    }
-    orderPromise.then((res) => {
-      if (res.data.length === 0) {
-        setListState(prev => ({
-          ...prev, 
-          listEmpty: "Such hollow, much empty...", 
-          listLoading: false
-        }));
-      } else {
-        setListState(prev => ({
-          ...prev, 
-          listLoading: false
-        }));
-        setDataState(prev => ({...prev, toast: "", tasks: res.data}));
-      }
-
-    })
-    .catch((e) => {
-      const error = JSON.parse(JSON.stringify(
-        e.response ? e.response.data.error : e
-      ));
-      setListState(prev => (
-        {...prev, listError: error.message, listLoading: false}
-      ));
-    });
-
+    getOrderList();
     // re-render after 1 min
     const reRender = setInterval(() => {
-      getOrderList(orderPromise);
-    }, 60000);
+      getOrderList();
+    }, 10000);
 
     return () => {
       clearInterval(reRender);
@@ -74,22 +45,32 @@ export default function ViewTaskPage() {
     }
   }, [dataState]);
 
-  const getOrderList = (orderPromise) => {
-    setListState(prev => ({...prev, listError: "", listEmpty: "", listLoading: true}));
+  const getOrderList = () => {
+    let orderPromise = null;
+    if (status === OrderStatus.PICKING || status === OrderStatus.SHIPPING) {
+      orderPromise = api.get(`/customer-orders/tasks/search?nickname=${nickname}&status=${status}`);
+    } else if (status === OrderStatus.CHECKING || OrderStatus.DELIVERED) {
+      orderPromise = api.get(`/customer-orders/basic-list/${status}`);
+    }
     orderPromise.then((res) => {
       if (res.data.length === 0) {
         setListState(prev => ({
-          ...prev, 
+          ...prev,
+          listError: "", 
           listEmpty: "Such hollow, much empty...", 
-          listLoading: false
+          listLoading: false,
         }));
       } else {
-        setListState(prev => ({...prev, listError: "", listEmpty: "", listLoading: false}));
+        setListState(prev => ({
+          ...prev,
+          listError: "",
+          listEmpty: "", 
+          listLoading: false,
+        }));
         // TODO: notification
         // const oldTaskList = [...dataState.tasks];
         // const newTaskList = [...res.data];
         // let updates = [];
-        // console.log(dataState.tasks);
         // for (const newTask of newTaskList) {
         //   for (const oldTask of oldTaskList) {
         //     if (newTask.code === oldTask.code) {
@@ -127,6 +108,8 @@ export default function ViewTaskPage() {
         //     }
         //   }
         // }
+        // const toastMessage = updates.reduce((prev, curr) => prev + ", " +, "");
+        // console.log(toastMessage);
         setDataState(prev => ({...prev, tasks: res.data}));
       }
     })
@@ -142,7 +125,7 @@ export default function ViewTaskPage() {
 
   const forceReload = () => {
     setReload(!reload);
-    setListState(prev => ({...prev, listLoading: true}));
+    setListState(prev => ({...prev, listError: "", listEmpty: "", listLoading: true}));
   }
 
   // const onCloseToast = () => {
@@ -165,7 +148,7 @@ export default function ViewTaskPage() {
       setStatus(OrderStatus.DELIVERED);
     }
     if (s !== status) {
-      setListState({listError: "", listEmpty: "", listLoading: true});
+      setListState(prev => ({...prev, listError: "", listEmpty: "", listLoading: true}));
     }
   }
 
@@ -189,22 +172,12 @@ export default function ViewTaskPage() {
     <>
       <section className="min-h-screen">
         <div className="flex flex-col items-center">
-          <div className="my-6 w-11/12 sm:w-8/12 md:w-6/12 flex justify-center">
-            <div className="w-11/12">
-              <ul className="steps w-full">
-                {Object.values(OrderStatus)
-                .filter(s => s !== OrderStatus.CANCELED && s !== OrderStatus.COMPLETED)
-                .map((s) => (
-                <li key={s} className={`cursor-pointer step text-sm sm:text-base font-medium 
-                  ${checkStep(s) ? "text-primary step-primary" : ""}`}
-                  onClick={() => setStep(s)}
-                >{capitalizeFirst(s.toLowerCase())}</li>
-                ))}
-              </ul>
-            </div>
+          <div className="my-6 w-11/12 sm:w-8/12 xl:w-6/12 flex justify-center">
+            <Stepper steps={Object.values(OrderStatus).filter(s => s !== OrderStatus.CANCELED && s !== OrderStatus.COMPLETED)} 
+            selected={status} onSelect={setStep} display={capitalizeFirst}></Stepper>
           </div>          
           
-          <div className="w-11/12 sm:w-8/12 md:w-6/12">
+          <div className="w-11/12 sm:w-8/12 xl:w-6/12">
             {listState.listLoading ? (
             <div className="flex justify-center">
               <Spinner></Spinner>
@@ -220,6 +193,7 @@ export default function ViewTaskPage() {
                 ) : (
                 <>
                 <TaskList orders={dataState.tasks} reload={forceReload} status={status} />
+                
                 {/* {dataState.toast ? (              
                 <div className="toast toast-center bottom-20 w-11/12 md:w-6/12 lg:w-3/12">
                   <div className="p-4 flex justify-between items-center shadow-md bg-emerald-100 border-2 border-emerald-600 text-primary rounded-box">
@@ -231,7 +205,7 @@ export default function ViewTaskPage() {
                     </div>
                   </div>
                 </div>
-                ) : (<></>)} */}
+                ) : null} */}
                 </>
                 )}
               </>

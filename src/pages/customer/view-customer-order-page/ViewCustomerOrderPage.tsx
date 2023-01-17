@@ -1,15 +1,14 @@
 import { useEffect, useRef, useState } from "react";
-import { BiBot, BiLayer } from "react-icons/bi";
+import { BiLayer } from "react-icons/bi";
 import { useReactToPrint } from "react-to-print";
 import useFirstRender from "../../../commons/hooks/first-render.hook";
 import { OrderStatus } from "../../../commons/order-status.enum";
-import { Role } from "../../../commons/role.enum";
 import Alert from "../../../components/Alert";
 import Spinner from "../../../components/Spinner";
 import api from "../../../stores/api";
-import { useAuthStore } from "../../../stores/auth.store";
 import CustomerOrderList from "./components/CustomerOrderList";
 import PackingSlipToPrint from "./components/PackingSlipToPrint";
+import Stepper from "../../../components/Stepper";
 
 export default function ViewCustomerOrderPage() {
   const isFirstRender = useFirstRender();
@@ -49,13 +48,15 @@ export default function ViewCustomerOrderPage() {
     .then((res) => {
       if (res.data.length === 0) {
         setListState(prev => ({
-          ...prev, 
+          ...prev,
+          listError: "", 
           listEmpty: "Such hollow, much empty...", 
           listLoading: false,
         }));
+      } else {
+        setListState(prev => ({...prev, listError: "", listEmpty: "", listLoading: false}));
+        setCustomerOrderList(res.data);
       }
-      setListState(prev => ({...prev, listError: "", listEmpty: "", listLoading: false}));
-      setCustomerOrderList(res.data);
     })
     .catch((e) => {
       const error = JSON.parse(JSON.stringify(
@@ -87,24 +88,8 @@ export default function ViewCustomerOrderPage() {
       setStatus(OrderStatus.DELIVERED);
     }
     if (s !== status) {
-      setListState({listError: "", listEmpty: "", listLoading: true});
+      setListState(prev => ({...prev, listError: "", listEmpty: "", listLoading: true}));
     }
-  }
-
-  const checkStep = (step: string) => {
-    const s = step.toUpperCase();
-    if (s === status) {
-      return true;
-    } else if (s === OrderStatus.PICKING) {
-      return true;
-    } else if (
-      s === OrderStatus.CHECKING && 
-      (status === OrderStatus.SHIPPING || status === OrderStatus.DELIVERED)) {
-      return true;
-    } else if (s === OrderStatus.SHIPPING && status === OrderStatus.DELIVERED) {
-      return true;
-    }
-    return false;
   }
 
   return (
@@ -112,18 +97,8 @@ export default function ViewCustomerOrderPage() {
       <section className="min-h-screen">
         <div className="flex flex-col items-center container">
           <div className={`my-6 w-11/12 sm:w-8/12 xl:w-6/12 flex justify-center`}>
-            <div className="w-11/12">
-              <ul className="steps w-full">
-                {Object.values(OrderStatus)
-                .filter(s => s !== OrderStatus.CANCELED && s !== OrderStatus.COMPLETED)
-                .map((s) => (
-                <li key={s} className={`cursor-pointer step font-medium text-sm sm:text-base
-                  ${checkStep(s) ? "text-primary step-primary" : ""}`}
-                  onClick={() => setStep(s)}
-                >{capitalizeFirst(s.toLowerCase())}</li>
-                ))}
-              </ul>
-            </div>
+            <Stepper steps={Object.values(OrderStatus).filter(s => s !== OrderStatus.CANCELED && s !== OrderStatus.COMPLETED)} 
+            selected={status} onSelect={setStep} display={capitalizeFirst}></Stepper>
           </div>
 
           <div className="hidden">

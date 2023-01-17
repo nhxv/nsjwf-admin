@@ -5,6 +5,7 @@ import Alert from "../../../components/Alert";
 import Spinner from "../../../components/Spinner";
 import api from "../../../stores/api";
 import BackorderList from "./components/BackorderList";
+import Stepper from "../../../components/Stepper";
 
 export default function ViewBackorderPage() {
   const isFirstRender = useFirstRender();
@@ -21,12 +22,15 @@ export default function ViewBackorderPage() {
     .then((res) => {
       if (res.data.length === 0) {
         setListState(prev => ({
-          ...prev, 
+          ...prev,
+          listError: "", 
           listEmpty: "Such hollow, much empty...", 
           listLoading: false,
         }));
+      } else {
+        setListState(prev => ({...prev, listError: "", listEmpty: "", listLoading: false}));
+        setBackorderList(res.data);
       }
-      setBackorderList(res.data);
     })
     .catch((e) => {
       const error = JSON.parse(JSON.stringify(
@@ -58,35 +62,17 @@ export default function ViewBackorderPage() {
       setStatus(BackorderStatus.ARCHIVED);
     }
     if (s !== status) {
-      setListState({listError: "", listEmpty: "", listLoading: true});
+      setListState(prev => ({...prev, listError: "", listEmpty: "", listLoading: true}));
     }
-  }
-
-  const checkStep = (step: string) => {
-    const s = step.toUpperCase();
-    if (s === status) {
-      return true;
-    } else if (s === BackorderStatus.PENDING) {
-      return true;
-    }
-    return false;
-  }  
+  } 
 
   return (
     <>
       <section className="min-h-screen">
         <div className="flex flex-col items-center">
           <div className={`my-6 w-11/12 sm:w-8/12 xl:w-6/12 flex justify-center`}>
-            <div className="w-11/12">
-              <ul className="steps w-full">
-                {Object.values(BackorderStatus).map((s) => (
-                <li key={s} className={`cursor-pointer step text-sm sm:text-base font-medium 
-                  ${checkStep(s) ? "text-primary step-primary" : ""}`}
-                  onClick={() => setStep(s)}
-                >{capitalizeFirst(s.toLowerCase())}</li>
-                ))}
-              </ul>
-            </div>
+            <Stepper steps={Object.values(BackorderStatus)} selected={status} 
+            onSelect={setStep} display={capitalizeFirst}></Stepper>
           </div>
 
           {listState.listLoading ? (
