@@ -49,7 +49,7 @@ export default function ViewStockPage() {
 
   const onChangeSearch = (e) => {
     if (e.target.value) {
-      const searched = stock.filter(product => product.productName.toLowerCase().replace(/\s+/g, "").includes(e.target.value.toLowerCase().replace(/\s+/g, "")));
+      const searched = stock.filter(product => product.name.toLowerCase().replace(/\s+/g, "").includes(e.target.value.toLowerCase().replace(/\s+/g, "")));
       setSearchedStocks(searched);
     } else {
       setSearchedStocks(stock);
@@ -87,8 +87,8 @@ export default function ViewStockPage() {
                 <div className="mb-12">
                   <div className="grid grid-cols-12 gap-2">
                     {searchedStocks.map((product) => (
-                    <div key={product.productName} className="col-span-12 sm:col-span-6 xl:col-span-3 flex justify-between items-center p-3 bg-base-100 shadow-md rounded-btn">
-                      <div><span>{product.productName}</span></div>
+                    <div key={product.name} className="col-span-12 sm:col-span-6 xl:col-span-3 flex justify-between items-center p-3 bg-base-100 shadow-md rounded-btn">
+                      <div><span>{product.name}</span></div>
                       <div><span>{product.quantity}</span></div>
                     </div>
                     ))}

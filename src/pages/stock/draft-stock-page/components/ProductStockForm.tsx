@@ -64,7 +64,7 @@ export default function ProductStockForm({ initialData, stocks, onClear }) {
 
   const onChangeSearch = (e) => {
     if (e.target.value) {
-      const searched = stocks.filter(product => product.productName.toLowerCase().replace(/\s+/g, "").includes(e.target.value.toLowerCase().replace(/\s+/g, "")));
+      const searched = stocks.filter(product => product.name.toLowerCase().replace(/\s+/g, "").includes(e.target.value.toLowerCase().replace(/\s+/g, "")));
       setSearchedProducts(searched);
     } else {
       setSearchedProducts([]);
@@ -73,7 +73,7 @@ export default function ProductStockForm({ initialData, stocks, onClear }) {
   }
 
   const onAddProduct = (product) => {
-    const found = selectedProducts.find(p => p.productName === product.productName);
+    const found = selectedProducts.find(p => p.name === product.name);
     if (!found) {
       setSelectedProducts([product, ...selectedProducts]);
       productStockForm.setFieldValue(`quantity${product.id}`, 0);
@@ -138,7 +138,7 @@ export default function ProductStockForm({ initialData, stocks, onClear }) {
       <div key={product.id}>
         <div className="flex justify-between items-center">
           <div className="w-6/12">
-            <span>{product.productName}</span>
+            <span>{product.name}</span>
           </div>
           <div className="flex w-6/12">
             <div className="w-[49%] mr-2">
