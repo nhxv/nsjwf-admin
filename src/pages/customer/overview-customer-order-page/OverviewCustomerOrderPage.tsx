@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import api from "../../../stores/api";
 import useFirstRender from "../../../commons/hooks/first-render.hook";
 import { OrderStatus } from "../../../commons/order-status.enum";
+import Alert from "../../../components/Alert";
 
 export default function OverviewCustomerOrderPage() {
   const isFirstRender = useFirstRender();
@@ -38,6 +39,13 @@ export default function OverviewCustomerOrderPage() {
 
   return (
   <section className="min-h-screen">
+    {!customerOrderList || customerOrderList.length < 1 ? (
+    <div className="my-8 flex flex-col items-center">
+      <div className="w-11/12 sm:w-6/12">
+        <Alert message="Such hollow, much empty..." type="empty"></Alert>
+      </div>
+    </div>
+    ) : null}
     <div className="grid grid-cols-12 gap-2 px-4 mt-8">
       {customerOrderList.map(order => (
       <div key={order.code} className={`col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3 xl:col-span-2 p-3 shadow-md rounded-box border-2

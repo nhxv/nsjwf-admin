@@ -29,11 +29,14 @@ export default function ProductStockForm({ initialData, stocks, onClear }) {
         const reqData = {};
         const stock = [];
         for (const property in data) {
-          if (property.includes("stock")) {
+          if (property.includes("quantity")) {
             const item = {id: -1, quantity: -1};
-            item.id = +property.replace("stock", "");
-            item.quantity = data[property];
-            stock.push(item);
+            item.id = +property.replace("quantity", "");
+            const selected = selectedProducts.find(p => p.id === item.id);
+            if (selected) {
+              item.quantity = data[property];
+              stock.push(item);
+            }
           }
         }
         reqData["stock"] = stock;

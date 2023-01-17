@@ -25,7 +25,7 @@ export default function ProductStockFormContainer() {
       } else {
         const formFieldData = {};
         for (const s of res.data) {
-          formFieldData[`stock${s.id}`] = s.quantity;
+          formFieldData[`quantity${s.id}`] = s.quantity;
         }
         setInitialFields(prev => ({
           ...prev, 
@@ -64,7 +64,7 @@ export default function ProductStockFormContainer() {
       {formState.loading ? (
       <Spinner></Spinner>
       ) : (
-      <div className="container w-11/12 sm:w-8/12 xl:w-6/12">
+      <div className="w-11/12 sm:w-8/12 xl:w-6/12">
         {formState.error ? (
         <Alert message={formState.error} type="error"></Alert>
         ) : (
