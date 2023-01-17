@@ -40,8 +40,7 @@ export default function Task({ order, reload, status }) {
   const onStartTask = async (code: string) => {
     setFormState(prev => ({...prev, error: "", loading: true}));
     try {
-      const res = await api.put(`/customer-orders/tasks/start-doing?
-      code=${code}&nickname=${nickname}`);
+      const res = await api.put(`/customer-orders/tasks/start-doing?code=${code}&nickname=${nickname}`);
       if (res) {
         setFormState(prev => ({...prev, error: "", loading: false}));
         reload();
