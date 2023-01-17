@@ -17,7 +17,7 @@
   .btn {
     @apply text-base font-semibold border-2
   }
-  .btn-alt {
+  .btn-outline-primary {
     @apply bg-transparent border-primary hover:border-primary focus:border-primary text-primary hover:bg-success focus:bg-success
   }
   .btn-ghost {

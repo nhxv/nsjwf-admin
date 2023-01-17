@@ -125,7 +125,7 @@ export default function Task({ order, reload, status }) {
     {order.isDoing ? (
     <>
       <button className="btn btn-primary w-full" onClick={() => onFinishTask(order.code)}>Done {order.status.toLowerCase()}</button>
-      <button className="btn btn-alt w-full mt-3" onClick={() => onStopTask(order.code)}>Stop doing</button>
+      <button className="btn btn-outline-primary w-full mt-3" onClick={() => onStopTask(order.code)}>Stop doing</button>
     </>) : (
     <button className="btn btn-primary w-full" onClick={() => onStartTask(order.code)}>Start doing</button>
     )}

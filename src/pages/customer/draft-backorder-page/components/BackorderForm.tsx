@@ -303,7 +303,7 @@ export default function BackorderForm({
             </div>
 
             <div className="flex justify-between mt-3">
-              <button type="button" className="btn btn-alt w-[49%]" onClick={onPreviousPage}>
+              <button type="button" className="btn btn-outline-primary w-[49%]" onClick={onPreviousPage}>
                 <span><BiLeftArrowAlt className="w-7 h-7 mr-1"></BiLeftArrowAlt></span>
                 <span>Go back</span>
               </button>
