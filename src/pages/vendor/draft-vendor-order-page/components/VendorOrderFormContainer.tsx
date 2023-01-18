@@ -188,7 +188,6 @@ export default function VendorOrderFormContainer() {
       const id = +inputId.replace("price", "");
       const index = updatedPrices.findIndex(p => p.id === id);
       updatedPrices[index].price = value;
-      console.log(updatedPrices);
     } else if (inputId.includes("remove")) {
       const id = +inputId.replace("remove", "");
       const index = updatedPrices.findIndex(p => p.id === id);
@@ -215,40 +214,22 @@ export default function VendorOrderFormContainer() {
     }
   }
 
+  if (formState.loading) return <Spinner></Spinner>
+  if (formState.errorMessage) return <Alert message={formState.errorMessage} type="error"></Alert>
+  if (formState.emptyMessage) return <Alert message={formState.emptyMessage} type="empty"></Alert>
+
   return (
-  <div>
-    <div className="flex flex-col items-center">
-      {formState.loading ? (
-      <Spinner></Spinner>            
-      ) : (
-      <div className="w-11/12 sm:w-8/12 xl:w-6/12">
-        {formState.errorMessage ? (
-        <Alert message={formState.errorMessage} type="error"></Alert>
-        ) : (
-        <>
-          {formState.emptyMessage ? (
-          <Alert message={formState.emptyMessage} type="empty"></Alert>
-          ) : (
-          <>
-            <div className="custom-card mb-12">
-              <VendorOrderForm
-              edit={!!params.code} 
-              initialData={initialFields} 
-              vendors={dataState.vendors}
-              editedProducts={(dataState.editedProducts?.length > 0) ? dataState.editedProducts : null} 
-              allProducts={dataState.allProducts}
-              updatePrice={updatePrice}
-              total={total}
-              loadTemplate={loadTemplate}
-              onClear={onClear} />
-            </div>   
-          </>
-          )}
-        </>
-        )}
-      </div>
-      )}
-    </div>  
-  </div>
+    <div className="custom-card mb-12">
+      <VendorOrderForm
+      edit={!!params.code} 
+      initialData={initialFields} 
+      vendors={dataState.vendors}
+      editedProducts={(dataState.editedProducts?.length > 0) ? dataState.editedProducts : null} 
+      allProducts={dataState.allProducts}
+      updatePrice={updatePrice}
+      total={total}
+      loadTemplate={loadTemplate}
+      onClear={onClear} />
+    </div> 
   )
 }

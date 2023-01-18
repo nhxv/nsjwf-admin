@@ -28,8 +28,8 @@ export default function ViewVendorOrderPage() {
           listLoading: false
         }));
       } else {
-        setListState(prev => ({...prev, listError: "", listEmpty: "", listLoading: false}));
         setVendorOrderList(res.data);
+        setListState(prev => ({...prev, listError: "", listEmpty: "", listLoading: false}));
       }
 
     })
@@ -46,7 +46,7 @@ export default function ViewVendorOrderPage() {
   useEffect(() => {
     if (!isFirstRender) {
       setListState(prev => (
-        {...prev, listLoading: false}
+        {...prev, listError: "", listEmpty: "", listLoading: false}
       ));
     }
   }, [vendorOrderList]);
@@ -70,32 +70,34 @@ export default function ViewVendorOrderPage() {
   return (
     <>
       <section className="min-h-screen">
-        <div className="flex flex-col items-center">
-          <div className={`my-6 w-11/12 sm:w-8/12 xl:w-6/12 flex justify-center`}>
-            <Stepper steps={Object.values(OrderStatus).filter(s => 
-              s !== OrderStatus.CANCELED && 
-              s !== OrderStatus.PICKING &&
-              s !== OrderStatus.CHECKING &&
-              s !== OrderStatus.DELIVERED
-            )} selected={status} onSelect={setStep} display={capitalizeFirst}></Stepper>            
-          </div>
+        <div className="flex justify-center">
+          <div className="w-11/12 sm:w-8/12 xl:w-6/12">
+            <div className="my-6">
+              <Stepper steps={Object.values(OrderStatus).filter(s => 
+                s !== OrderStatus.CANCELED && 
+                s !== OrderStatus.PICKING &&
+                s !== OrderStatus.CHECKING &&
+                s !== OrderStatus.DELIVERED
+              )} selected={status} onSelect={setStep} display={capitalizeFirst}></Stepper>
+            </div>
 
-          {listState.listLoading ? (
-          <Spinner></Spinner>          
-          ) : (
-          <div className="w-11/12 sm:w-8/12 md:w-6/12">
-            {listState.listError ? (
-            <Alert message={listState.listError} type="error"></Alert>
+            {listState.listLoading ? (
+            <Spinner></Spinner>
             ) : (
             <>
-              {listState.listEmpty ? (
-              <Alert message={listState.listEmpty} type="empty"></Alert>
+              {listState.listError ? (
+              <Alert message={listState.listError} type="error"></Alert>
               ) : (
-              <VendorOrderList orders={vendorOrderList} />
+              <>
+                {listState.listEmpty ? (
+                <Alert message={listState.listEmpty} type="empty"></Alert>
+                ) : (
+                <VendorOrderList orders={vendorOrderList} />
+                )}
+              </>
               )}
-            </>
-            )}
-          </div>)}    
+            </>)}                         
+          </div>   
         </div>
       </section>
     </>

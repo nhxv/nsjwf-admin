@@ -171,13 +171,13 @@ export default function ViewTaskPage() {
   return (
     <>
       <section className="min-h-screen">
-        <div className="flex flex-col items-center">
-          <div className="my-6 w-11/12 sm:w-8/12 xl:w-6/12 flex justify-center">
-            <Stepper steps={Object.values(OrderStatus).filter(s => s !== OrderStatus.CANCELED && s !== OrderStatus.COMPLETED)} 
-            selected={status} onSelect={setStep} display={capitalizeFirst}></Stepper>
-          </div>          
-          
+        <div className="flex justify-center">
           <div className="w-11/12 sm:w-8/12 xl:w-6/12">
+            <div className="my-6">
+              <Stepper steps={Object.values(OrderStatus).filter(s => s !== OrderStatus.CANCELED && s !== OrderStatus.COMPLETED)} 
+              selected={status} onSelect={setStep} display={capitalizeFirst}></Stepper>
+            </div>
+
             {listState.listLoading ? (
             <div className="flex justify-center">
               <Spinner></Spinner>
@@ -210,7 +210,7 @@ export default function ViewTaskPage() {
                 )}
               </>
               )}
-            </>)}
+            </>)}             
           </div>
         </div>
       </section>

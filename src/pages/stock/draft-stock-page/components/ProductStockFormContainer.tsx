@@ -10,8 +10,8 @@ export default function ProductStockFormContainer() {
   const isFirstRender = useFirstRender();
   const [reload, setReload] = useState(false);
   const [formState, setFormState] = useState({
-    error: "",
-    empty: "",
+    errorMessage: "",
+    emptyMessage: "",
     loading: true,
   });
   const [initialFields, setInitialFields] = useState({});
@@ -21,7 +21,12 @@ export default function ProductStockFormContainer() {
     api.get(`/product-stock`)
     .then((res) => {
       if (res.data?.length === 0) {
-        setFormState(prev => ({...prev, error: "", empty: "Such hollow, much empty...", loading: false}));
+        setFormState(prev => ({
+          ...prev, 
+          errorMessage: "", 
+          emptyMessage: "Such hollow, much empty...", 
+          loading: false
+        }));
       } else {
         const formFieldData = {};
         for (const s of res.data) {
@@ -33,6 +38,12 @@ export default function ProductStockFormContainer() {
           ...formFieldData
         }));
         setProductStock(res.data);
+        setFormState(prev => ({
+          ...prev,
+          errorMessage: "",
+          emptyMessage: "",
+          loading: false,
+        }))
       }
     })
     .catch ((e) => {
@@ -40,7 +51,7 @@ export default function ProductStockFormContainer() {
         e.response ? e.response.data.error : e
       ));
       setFormState(prev => (
-        {...prev, error: error.message, loading: false}
+        {...prev, emptyMessage: "", errorMessage: error.message, loading: false}
       ));
     });
   }, [reload]);
@@ -48,42 +59,26 @@ export default function ProductStockFormContainer() {
   useEffect(() => {
     if (!isFirstRender) {
       setFormState(prev => (
-        {...prev, loading: false}
+        {...prev, errorMessage: "", emptyMessage: "", loading: false}
       ));
     }
   }, [initialFields]);
 
   const onClear = () => {
     setReload(!reload);
-    setFormState(prev => ({...prev, loading: true}));
+    setFormState(prev => ({...prev, erorrMessage: "", emptyMessage: "", loading: true}));
   }
 
+  if (formState.loading) return <Spinner></Spinner>
+  if (formState.errorMessage) return <Alert message={formState.errorMessage} type="error"></Alert>
+  if (formState.emptyMessage) return <Alert message={formState.emptyMessage} type="empty"></Alert>
+
   return (
-  <>
-    <div className="flex flex-col items-center">
-      {formState.loading ? (
-      <Spinner></Spinner>
-      ) : (
-      <div className="w-11/12 sm:w-8/12 xl:w-6/12">
-        {formState.error ? (
-        <Alert message={formState.error} type="error"></Alert>
-        ) : (
-        <>
-          {formState.empty ? (
-          <Alert message={formState.empty} type="empty"></Alert>
-          ) : (
-          <div className="custom-card mb-12">
-            <ProductStockForm 
-            initialData={initialFields}
-            stocks={productStock} 
-            onClear={onClear} />
-          </div>   
-          )}
-        </>
-        )}
-      </div>
-      )}
+    <div className="custom-card mb-12">
+      <ProductStockForm 
+      initialData={initialFields}
+      stocks={productStock} 
+      onClear={onClear} />
     </div>  
-  </>  
-  )
+  );
 }

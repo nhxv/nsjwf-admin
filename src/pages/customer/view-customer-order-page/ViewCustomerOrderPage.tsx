@@ -95,48 +95,50 @@ export default function ViewCustomerOrderPage() {
   return (
     <>
       <section className="min-h-screen">
-        <div className="flex flex-col items-center container">
-          <div className={`my-6 w-11/12 sm:w-8/12 xl:w-6/12 flex justify-center`}>
-            <Stepper steps={Object.values(OrderStatus).filter(s => s !== OrderStatus.CANCELED && s !== OrderStatus.COMPLETED)} 
-            selected={status} onSelect={setStep} display={capitalizeFirst}></Stepper>
-          </div>
-
-          <div className="hidden">
-            <div ref={batchToPrintRef}>
-              {customerOrderList.map((order, index) => (
-              <div key={`customer-order-${index}`}>
-                <PackingSlipToPrint printRef={null} order={order} />
-              </div>
-              ))}
+        <div className="flex justify-center">
+          <div className="w-11/12 sm:w-8/12 xl:w-6/12">
+            <div className="my-6">
+              <Stepper steps={Object.values(OrderStatus).filter(s => s !== OrderStatus.CANCELED && s !== OrderStatus.COMPLETED)} 
+              selected={status} onSelect={setStep} display={capitalizeFirst}></Stepper>
             </div>
-          </div> 
 
-          {listState.listLoading ? (
-          <Spinner></Spinner>
-          ) : (
-          <div className="w-11/12 sm:w-8/12 md:w-6/12">
-            {listState.listError ? (
-            <Alert message={listState.listError} type="error"></Alert>
+            <div className="hidden">
+              <div ref={batchToPrintRef}>
+                {customerOrderList.map((order, index) => (
+                <div key={`customer-order-${index}`}>
+                  <PackingSlipToPrint printRef={null} order={order} />
+                </div>
+                ))}
+              </div>
+            </div>
+
+            {listState.listLoading ? (
+              <Spinner></Spinner>
             ) : (
             <>
-              {listState.listEmpty ? (
-              <Alert message={listState.listEmpty} type="empty"></Alert>
+              {listState.listError ? (
+              <Alert message={listState.listError} type="error"></Alert>
               ) : (
-              <div>
-                <CustomerOrderList orders={customerOrderList} printMode={status !== OrderStatus.COMPLETED ? true : false} />
-                {(!listState.listEmpty && !listState.listError && !listState.listLoading) ? (         
-                <div className="flex justify-center mb-6">
-                  <button type="button" className="btn btn-accent" onClick={onBatchPrint}>
-                    <span className="mr-2">Print all orders</span>
-                    <BiLayer className="w-6 h-6"></BiLayer>
-                  </button>
+              <>
+                {listState.listEmpty ? (
+                <Alert message={listState.listEmpty} type="empty"></Alert>
+                ) : (
+                <div>
+                  <CustomerOrderList orders={customerOrderList} printMode={status !== OrderStatus.COMPLETED ? true : false} />
+                  {(!listState.listEmpty && !listState.listError && !listState.listLoading) ? (         
+                  <div className="flex justify-center mb-6">
+                    <button type="button" className="btn btn-accent" onClick={onBatchPrint}>
+                      <span className="mr-2">Print all orders</span>
+                      <BiLayer className="w-6 h-6"></BiLayer>
+                    </button>
+                  </div>
+                  ): null}
                 </div>
-                ): null}
-              </div>
+                )}
+              </>
               )}
-            </>
-            )}
-          </div>)}    
+            </>)}              
+          </div>   
         </div>
       </section>
     </>

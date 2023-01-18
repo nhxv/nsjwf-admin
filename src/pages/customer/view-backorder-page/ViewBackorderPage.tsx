@@ -45,7 +45,7 @@ export default function ViewBackorderPage() {
   useEffect(() => {
     if (!isFirstRender) {
       setListState(prev => (
-        {...prev, listLoading: false}
+        {...prev, listError: "", listEmpty: "", listLoading: false}
       ));
     }
   }, [backorderList]);
@@ -69,28 +69,30 @@ export default function ViewBackorderPage() {
   return (
     <>
       <section className="min-h-screen">
-        <div className="flex flex-col items-center">
-          <div className={`my-6 w-11/12 sm:w-8/12 xl:w-6/12 flex justify-center`}>
-            <Stepper steps={Object.values(BackorderStatus)} selected={status} 
-            onSelect={setStep} display={capitalizeFirst}></Stepper>
-          </div>
-
-          {listState.listLoading ? (
-          <Spinner></Spinner>
-          ) : (
+        <div className="flex justify-center">
           <div className="w-11/12 sm:w-8/12 xl:w-6/12">
-            {listState.listError ? (
-            <Alert message={listState.listError} type="error"></Alert>
+            <div className="my-6">
+              <Stepper steps={Object.values(BackorderStatus)} selected={status} 
+              onSelect={setStep} display={capitalizeFirst}></Stepper>
+            </div>
+            
+            {listState.listLoading ? (
+              <Spinner></Spinner>
             ) : (
             <>
-              {listState.listEmpty ? (
-              <Alert message={listState.listEmpty} type="empty"></Alert>
+              {listState.listError ? (
+              <Alert message={listState.listError} type="error"></Alert>
               ) : (
-              <BackorderList orders={backorderList} />
+              <>
+                {listState.listEmpty ? (
+                <Alert message={listState.listEmpty} type="empty"></Alert>
+                ) : (
+                <BackorderList orders={backorderList} />
+                )}
+              </>
               )}
-            </>
-            )}
-          </div>)}    
+            </>)} 
+          </div>   
         </div>
       </section>
     </>

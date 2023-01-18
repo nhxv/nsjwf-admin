@@ -65,9 +65,8 @@ export default function CustomerOrderList({orders, printMode }) {
         {order.status !== OrderStatus.COMPLETED && (role ===  Role.MASTER || role === Role.ADMIN) ? (
         <>
           <div className="divider"></div>
-          <button className="btn btn-primary w-full" 
-          onClick={() => onUpdateOrder(order.code)}>Update order</button>
-        </>): (<></>)}
+          <button className="btn btn-primary w-full" onClick={() => onUpdateOrder(order.code)}>Update order</button>
+        </>): null}
       </div>)})
     }
   </>

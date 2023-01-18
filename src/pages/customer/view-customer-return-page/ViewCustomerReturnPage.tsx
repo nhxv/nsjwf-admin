@@ -22,10 +22,12 @@ export default function ViewCustomerReturnPage() {
         setListState(prev => ({
           ...prev, 
           listEmpty: "Such hollow, much empty...", 
-          listLoading: false
+          listLoading: false,
         }));
+      } else {
+        setListState(prev => ({...prev, listError: "", listEmpty: "", listLoading: false}));
+        setCustomerReturnList(res.data);
       }
-      setCustomerReturnList(res.data);
     })
     .catch((e) => {
       const error = JSON.parse(JSON.stringify(
@@ -46,28 +48,28 @@ export default function ViewCustomerReturnPage() {
   }, [customerReturnList]);
 
   return (
-  <>
-  <section className="min-h-screen">
-    <h1 className="text-center font-bold text-xl my-4">Customer return</h1>
-    <div className="flex flex-col items-center">     
-      {listState.listLoading ? (
-      <Spinner></Spinner>
-      ) : (
-      <div className="w-11/12 sm:w-8/12 xl:w-6/12">
-        {listState.listError ? (
-        <Alert message={listState.listError} type="error"></Alert>
-        ) : (
-        <>
-          {listState.listEmpty ? (
-          <Alert message={listState.listEmpty} type="empty"></Alert>
+    <section className="min-h-screen">
+      <h1 className="text-center font-bold text-xl my-4">Customer return</h1>
+      <div className="flex justify-center">
+        <div className="w-11/12 sm:w-8/12 xl:w-6/12">
+          {listState.listLoading ? (
+          <Spinner></Spinner>
           ) : (
-          <CustomerReturnList returns={customerReturnList} />
-          )}
-        </>
-        )}
-      </div>)}
-    </div>    
-  </section>
-  </>
+          <>
+            {listState.listError ? (
+            <Alert message={listState.listError} type="error"></Alert>
+            ) : (
+            <>
+              {listState.listEmpty ? (
+              <Alert message={listState.listEmpty} type="empty"></Alert>
+              ) : (
+              <CustomerReturnList returns={customerReturnList} />
+              )}
+            </>
+            )}
+          </>)}        
+        </div> 
+      </div>    
+    </section>
   );
 }

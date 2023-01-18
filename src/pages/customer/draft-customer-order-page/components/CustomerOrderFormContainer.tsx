@@ -227,39 +227,23 @@ export default function CustomerOrderFormContainer() {
     }
   }
 
+  if (formState.loading) return <Spinner></Spinner>
+  if (formState.errorMessage) return <Alert message={formState.errorMessage} type="error"></Alert>
+  if (formState.emptyMessage) return <Alert message={formState.emptyMessage} type="empty"></Alert>
+
   return (
-  <>
-    <div className="flex flex-col items-center">
-      {formState.loading ? (
-      <Spinner></Spinner>
-      ) : (
-      <div className="w-11/12 sm:w-8/12 xl:w-6/12">
-        {formState.errorMessage ? (
-        <Alert message={formState.errorMessage} type="error"></Alert>
-        ) : (
-        <>
-          {formState.emptyMessage ? (
-          <Alert message={formState.emptyMessage} type="empty"></Alert>
-          ) : (
-          <div className="custom-card mb-12">
-            <CustomerOrderForm
-            edit={!!params.code} 
-            initialData={initialFields} 
-            customers={dataState.customers} 
-            editedProducts={(dataState.editedProducts?.length > 0) ? dataState.editedProducts : null} 
-            allProducts={dataState.allProducts}
-            employees={dataState.employees}
-            updatePrice={updatePrice}
-            total={total}
-            loadTemplate={loadTemplate}
-            onClear={onClear} />
-          </div>   
-          )}
-        </>
-        )}
-      </div>
-      )}
+    <div className="custom-card mb-12">
+      <CustomerOrderForm
+      edit={!!params.code} 
+      initialData={initialFields} 
+      customers={dataState.customers} 
+      editedProducts={(dataState.editedProducts?.length > 0) ? dataState.editedProducts : null} 
+      allProducts={dataState.allProducts}
+      employees={dataState.employees}
+      updatePrice={updatePrice}
+      total={total}
+      loadTemplate={loadTemplate}
+      onClear={onClear} />
     </div>  
-  </>
   )
 }

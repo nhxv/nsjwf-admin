@@ -22,10 +22,13 @@ export default function ViewVendorReturnPage() {
         setListState(prev => ({
           ...prev, 
           listEmpty: "Such hollow, much empty...", 
-          listLoading: false
+          listLoading: false,
         }));
+      } else {
+        setVendorReturnList(res.data);
+        setListState(prev => ({...prev, listError: "", listEmpty: "", listLoading: false}));
       }
-      setVendorReturnList(res.data);
+
     })
     .catch((e) => {
       const error = JSON.parse(JSON.stringify(
@@ -39,9 +42,7 @@ export default function ViewVendorReturnPage() {
 
   useEffect(() => {
     if (!isFirstRender) {
-      setListState(prev => (
-        {...prev, listLoading: false}
-      ));
+      setListState(prev => ({...prev, listError: "", listEmpty: "", listLoading: false}));
     }
   }, [vendorReturnList]);
 
@@ -49,23 +50,25 @@ export default function ViewVendorReturnPage() {
   <>
   <section className="min-h-screen">
     <h1 className="text-center font-bold text-xl my-4">Vendor return</h1>
-    <div className="flex flex-col items-center">     
-      {listState.listLoading ? (
-      <Spinner></Spinner>
-      ) : (
+    <div className="flex justify-center">  
       <div className="w-11/12 sm:w-8/12 xl:w-6/12">
-        {listState.listError ? (
-        <Alert message={listState.listError} type="error"></Alert>
+        {listState.listLoading ? (
+        <Spinner></Spinner>
         ) : (
         <>
-          {listState.listEmpty ? (
-          <Alert message={listState.listEmpty} type="empty"></Alert>
+          {listState.listError ? (
+          <Alert message={listState.listError} type="error"></Alert>
           ) : (
-          <VendorReturnList returns={vendorReturnList} />
+          <>
+            {listState.listEmpty ? (
+            <Alert message={listState.listEmpty} type="empty"></Alert>
+            ) : (
+            <VendorReturnList returns={vendorReturnList} />
+            )}
+          </>
           )}
-        </>
-        )}
-      </div>)}
+        </>)}        
+      </div>
     </div>    
   </section>
   </>
