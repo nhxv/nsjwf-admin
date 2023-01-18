@@ -64,7 +64,7 @@ export default function SearchCustomerSalePage() {
   <>
     <section className="min-h-screen">
       <h1 className="text-center font-bold text-xl my-4">Search sale</h1>
-      <div className="flex flex-col items-center mb-8 container">
+      <div className="flex flex-col items-center mb-8">
         <form onSubmit={searchForm.handleSubmit} className="w-11/12 sm:w-8/12 xl:w-6/12 custom-card">
           <div className="flex flex-col mb-6">
             <div className="mb-4">

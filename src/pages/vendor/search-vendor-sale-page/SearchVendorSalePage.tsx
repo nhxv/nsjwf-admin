@@ -95,7 +95,7 @@ export default function SearchVendorSalePage() {
           <>
             {searchState.found.map((sale) => {
             return (
-              <div key={sale.code} className="w-11/12 sm:w-8/12 md:w-6/12 custom-crd mb-4">
+              <div key={sale.code} className="w-11/12 sm:w-8/12 xl:w-6/12 custom-card mb-4">
                 {/* basic sale info */}
                 <div className="flex flex-row justify-between">
                   <div>
@@ -141,7 +141,7 @@ export default function SearchVendorSalePage() {
                 {!sale.fullReturn ? (
                 <>
                   <div className="divider"></div>
-                  <button className="btn btn-primary text-white w-full mt-2" 
+                  <button className="btn btn-primary w-full mt-2" 
                   onClick={() => onCreateReturn(sale.code)}>Create return</button> 
                 </>) : (<></>)}                
               </div>)              

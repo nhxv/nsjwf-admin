@@ -68,41 +68,40 @@ export default function EmployeeTaskList({ employeeTasks }) {
     return result;
   }
 
+  if (errorMessage) return <Alert message={errorMessage} type="error"></Alert>
+
   return (
-    <div>
-      {errorMessage ? (<Alert message={errorMessage} type="error"></Alert>) : null}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-12">
-        <DragDropContext onDragEnd={onDragEnd}>
-          {employees.map((employee) => (
-            <Droppable key={employee.nickname} droppableId={employee.nickname}>
-              {(provided, snapshot) => (
-                <div ref={provided.innerRef} {...provided.droppableProps}
-                className={`rounded-box p-2 w-full shadow-md border-2 bg-base-100 self-start ${snapshot.isDraggingOver ? "border-primary" : "border-base-100"}`}>
-                  <p className="m-2 font-medium">{employee.nickname}</p>
-                  {employee.customerOrders.map((order, index) => {
-                    return (
-                      <Draggable key={order.code} draggableId={order.code} index={index} isDragDisabled={order.is_doing}>
-                        {(provided, snapshot) => (
-                          <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}
-                          className={`rounded-box p-3 my-3 mx-2
-                          ${order.is_doing ? "bg-red-900 text-white" : "bg-base-200"}
-                          ${snapshot.isDragging ? "bg-primary text-primary-content" : ""}`}>
-                            <div className="flex flex-col">
-                              <p>#{order.code}</p>
-                              <p>{order.customer_name}</p>
-                            </div>
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+      <DragDropContext onDragEnd={onDragEnd}>
+        {employees.map((employee) => (
+          <Droppable key={employee.nickname} droppableId={employee.nickname}>
+            {(provided, snapshot) => (
+              <div ref={provided.innerRef} {...provided.droppableProps}
+              className={`rounded-box p-2 w-full shadow-md border-2 bg-base-100 self-start ${snapshot.isDraggingOver ? "border-primary" : "border-base-100"}`}>
+                <p className="m-2 font-medium">{employee.nickname}</p>
+                {employee.customerOrders.map((order, index) => {
+                  return (
+                    <Draggable key={order.code} draggableId={order.code} index={index} isDragDisabled={order.is_doing}>
+                      {(provided, snapshot) => (
+                        <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}
+                        className={`rounded-box p-3 my-3 mx-2
+                        ${order.is_doing ? "bg-red-900 text-white" : "bg-base-200"}
+                        ${snapshot.isDragging ? "bg-primary text-primary-content" : ""}`}>
+                          <div className="flex flex-col">
+                            <p>#{order.code}</p>
+                            <p>{order.customer_name}</p>
                           </div>
-                        )}
-                      </Draggable>
-                    )
-                  } )}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          ))}
-        </DragDropContext>
-      </div>
+                        </div>
+                      )}
+                    </Draggable>
+                  )
+                } )}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        ))}
+      </DragDropContext>
     </div>
   );
 }

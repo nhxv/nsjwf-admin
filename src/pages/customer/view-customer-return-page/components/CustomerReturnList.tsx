@@ -1,12 +1,4 @@
-import { useNavigate } from "react-router-dom";
-import { convertTime } from "../../../../commons/time.util";
-import { useAuthStore } from "../../../../stores/auth.store";
-import { Role } from "../../../../commons/role.enum";
-
 export default function CustomerReturnList({returns}) {
-  const navigate = useNavigate();
-  const role = useAuthStore(state => state.role);
-
   return (
   <>
     {returns.map((customerReturn) => {

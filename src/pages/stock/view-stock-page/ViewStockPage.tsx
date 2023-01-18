@@ -25,12 +25,12 @@ export default function ViewStockPage() {
     .then((res) => {
       if (res.data.length === 0) {
         setDataState(prev => (
-          {...prev, empty: "Such hollow, much empty...", loading: false}
+          {...prev, error: "", empty: "Such hollow, much empty...", loading: false}
         ));
       } else {
         setStock(res.data);
         setSearchedStocks(res.data);
-        setDataState(prev => ({...prev, empty: "", loading: false}));
+        setDataState(prev => ({...prev, error: "", empty: "", loading: false}));
       }
     })
     .catch((e) => {
@@ -38,7 +38,7 @@ export default function ViewStockPage() {
         e.response ? e.response.data.error : e
       ));
       setDataState(prev => (
-        {...prev, error: error.message, loading: false}
+        {...prev, error: error.message, empty: "", loading: false}
       ));
     })
   }, []);

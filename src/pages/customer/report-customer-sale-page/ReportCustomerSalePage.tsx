@@ -1,12 +1,12 @@
-import { useState, useEffect } from "react";
-import useFirstRender from "../../../commons/hooks/first-render.hook";
 import csvDownload from "json-to-csv-export";
+import { useEffect, useState } from "react";
+import { BiDownload } from "react-icons/bi";
+import useFirstRender from "../../../commons/hooks/first-render.hook";
 import { convertTime } from "../../../commons/time.util";
-import api from "../../../stores/api";
-import { BiDownload, BiError, BiBot } from "react-icons/bi";
-import Spinner from "../../../components/Spinner";
-import CustomerSaleList from "./components/CustomerSaleList";
 import Alert from "../../../components/Alert";
+import Spinner from "../../../components/Spinner";
+import api from "../../../stores/api";
+import CustomerSaleList from "./components/CustomerSaleList";
 
 export default function ReportCustomerSalePage() {
   const isFirstRender = useFirstRender();
@@ -35,7 +35,7 @@ export default function ReportCustomerSalePage() {
   useEffect(() => {
     if (!isFirstRender) {
       setListState(prev => (
-        {...prev, listLoading: false}
+        {...prev, listError: "", listEmpty: "", listLoading: false}
       ));
     }
   }, [data]);
@@ -49,8 +49,9 @@ export default function ReportCustomerSalePage() {
           listEmpty: "Such hollow, much empty...", 
           listLoading: false
         }));
+      } else {
+        setData(prev => ({...prev, reports: res.data, display: res.data.filter(report => report.sale > 0)}));
       }
-      setData(prev => ({...prev, reports: res.data, display: res.data.filter(report => report.sale > 0)}));
     })
     .catch((e) => {
       const error = JSON.parse(JSON.stringify(

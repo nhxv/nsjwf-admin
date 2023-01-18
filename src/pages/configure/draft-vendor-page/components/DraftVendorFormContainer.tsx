@@ -64,7 +64,7 @@ export default function DraftVendorFormContainer() {
           e.response ? e.response.data.error : e
         ));
         setFormState(prev => (
-          {...prev, errorMessage: error.message, loading: false}
+          {...prev, emptyMessage: "", errorMessage: error.message, loading: false}
         )); 
       });
     } else {
@@ -92,7 +92,7 @@ export default function DraftVendorFormContainer() {
           e.response ? e.response.data.error : e
         ));
         setFormState(prev => (
-          {...prev, errorMessage: error.message, loading: false}
+          {...prev, errorMessage: error.message, emptyMessage: "", loading: false}
         )); 
       });
     }
@@ -101,46 +101,28 @@ export default function DraftVendorFormContainer() {
   useEffect(() => {
     if (!isFirstRender) {
       setFormState(prev => (
-      {...prev, loading: false}
+        {...prev, errorMessage: "", emptyMessage: "", loading: false}
       ));
     }
   }, [initialFields]);
   
   const onClear = () => {
     setReload(!reload);
-    setFormState(prev => ({...prev, loading: true}));
+    setFormState(prev => ({...prev, errorMessage: "", emptyMessage: "", loading: true}));
   }
 
+  if (formState.loading) return <Spinner></Spinner>
+  if (formState.errorMessage) return <Alert message={formState.errorMessage} type="error"></Alert>
+  if (formState.emptyMessage) return <Alert message={formState.emptyMessage} type="empty"></Alert>
+
   return (
-  <>
-    <div className="flex flex-col items-center">
-      {formState.loading ? (
-      <Spinner></Spinner>            
-      ) : (
-      <div className="container w-11/12 sm:w-8/12 xl:w-6/12">
-        {formState.errorMessage ? (
-        <Alert message={formState.errorMessage} type="error"></Alert>
-        ) : (
-        <>
-          {formState.emptyMessage ? (
-          <Alert message={formState.emptyMessage} type="empty"></Alert>
-          ) : (
-          <>
-            <div className="custom-card mb-12">
-              <DraftVendorForm
-              edit={!!params?.id}
-              editedProducts={(dataState.editedProducts?.length > 0) ? dataState.editedProducts : null}
-              initialData={initialFields}
-              allProducts={dataState.allProducts}
-              onClear={onClear} />
-            </div>   
-          </>
-          )}
-        </>
-        )}
-      </div>
-      )}
-    </div>  
-  </>
+    <div className="custom-card mb-12">
+      <DraftVendorForm
+      edit={!!params?.id}
+      editedProducts={(dataState.editedProducts?.length > 0) ? dataState.editedProducts : null}
+      initialData={initialFields}
+      allProducts={dataState.allProducts}
+      onClear={onClear} />
+    </div> 
   )
 }
