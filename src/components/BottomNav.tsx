@@ -9,7 +9,7 @@ export default function BottomNav() {
   return (
     <>
       {role === Role.OPERATOR ? (
-        <div className="btm-nav h-20 py-2 border border-t-base-300 border-l-0 border-r-0 border-b-0">
+        <div className="btm-nav sticky h-20 py-2 border border-t-base-300 border-l-0 border-r-0 border-b-0">
           <div className="hidden md:flex"></div>
           <NavLink to="/task/view-task" className={
             navData => navData.isActive ? `bg-info text-info-content rounded-btn mx-1` : `rounded-btn mx-1 hover:bg-base-200`
