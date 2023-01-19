@@ -85,7 +85,7 @@ export default function Layout({ children }) {
 
   return(
   <>
-    <div className="min-h-screen bg-base-200">
+    <div className="bg-base-200">
       <div className="drawer">
         <input id="mobile-drawer" type="checkbox" className="drawer-toggle" /> 
         <div className="drawer-content flex flex-col">
@@ -124,9 +124,11 @@ export default function Layout({ children }) {
           </nav>
 
           {/* Main content */}
-          <main className="container mb-20">
+          <main>
             {children}
+            <BottomNav/>
           </main>
+
         </div>
 
         {/* Sidebar */}
@@ -162,8 +164,8 @@ export default function Layout({ children }) {
             </ul>
           </div> 
         </aside>
+
       </div>
-      <BottomNav/>
     </div>
   </>
   )

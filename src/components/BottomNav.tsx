@@ -34,7 +34,7 @@ export default function BottomNav() {
           <div className="hidden md:flex"></div>
         </div>         
         ) : (
-        <div className="btm-nav h-20 py-2 border border-t-base-300 border-l-0 border-r-0 border-b-0">
+        <div className="btm-nav sticky h-20 py-2 border border-t-base-300 border-l-0 border-r-0 border-b-0">
           <NavLink to="/customer/draft-customer-order" className={navData => navData.isActive ? `bg-info text-info-content rounded-btn mx-1 md:flex hidden` : `rounded-btn mx-1 hover:bg-base-200 md:flex hidden`}>
             <BiShoppingBag className="w-6 h-6"></BiShoppingBag>
             <span className="btm-nav-label font-medium">Draft CO</span>
