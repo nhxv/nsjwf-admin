@@ -313,7 +313,7 @@ export default function BackorderForm({
             </div>            
           </>) : null}
         </>)}
-        <button type="button" className="mt-3 btn btn-accent w-full" onClick={onClearForm}>
+        <button type="button" className="mt-3 btn btn-accent w-full" disabled={formState.loading} onClick={onClearForm}>
           <span>Clear change(s)</span>
         </button>
         <div>

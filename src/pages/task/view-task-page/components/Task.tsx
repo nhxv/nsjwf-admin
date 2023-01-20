@@ -128,10 +128,10 @@ export default function Task({ order, reload, status }) {
     <div className="divider"></div>
     {order.isDoing ? (
     <>
-      <button className="btn btn-primary w-full" onClick={() => onFinishTask(order.code)}>Done {order.status.toLowerCase()}</button>
-      <button className="btn btn-outline-primary w-full mt-3" onClick={() => onStopTask(order.code)}>Stop doing</button>
+      <button className="btn btn-primary w-full" onClick={() => onFinishTask(order.code)} disabled={formState.loading}>Done {order.status.toLowerCase()}</button>
+      <button className="btn btn-outline-primary w-full mt-3" onClick={() => onStopTask(order.code)} disabled={formState.loading}>Stop doing</button>
     </>) : (
-    <button className="btn btn-primary w-full" onClick={() => onStartTask(order.code)}>Start doing</button>
+    <button className="btn btn-primary w-full" onClick={() => onStartTask(order.code)} disabled={formState.loading}>Start doing</button>
     )}
     
   </>) : null}

@@ -70,7 +70,7 @@ export default function SignInPage() {
             onChange={signInForm.handleChange}
             ></TextInput>
           </div>
-          <button type="submit" className="btn btn-primary w-full mt-3">Sign in</button>
+          <button type="submit" className="btn btn-primary w-full mt-3" disabled={!!formState.loading}>Sign in</button>
         </form>
         {formState.loading ? (
         <div className="mt-4">
