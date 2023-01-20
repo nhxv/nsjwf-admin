@@ -3,7 +3,7 @@ import { useState } from "react";
 import Alert from "../../../../components/Alert";
 import api from "../../../../stores/api";
 
-export default function EmployeeTaskList({ employeeTasks }) {
+export default function EmployeeTaskList({ employeeTasks, reload }) {
   const [employees, setEmployees] = useState(employeeTasks);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -40,8 +40,11 @@ export default function EmployeeTaskList({ employeeTasks }) {
       const error = JSON.parse(JSON.stringify(
         e.response ? e.response.data.error : e
       ));
-      setErrorMessage(error);
-    }
+      setErrorMessage(error.message);
+      setTimeout(() => {
+        reload();
+      }, 2000)
+    };
   }
 
   const reorder = (list, startIndex, endIndex) => {
@@ -68,9 +71,17 @@ export default function EmployeeTaskList({ employeeTasks }) {
     return result;
   }
 
-  if (errorMessage) return <Alert message={errorMessage} type="error"></Alert>
+  if (errorMessage) {
+    return (
+      <div className="my-4">
+        <Alert message={errorMessage} type="error"></Alert>    
+      </div>
+    );
+  } 
+
 
   return (
+  <>
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
       <DragDropContext onDragEnd={onDragEnd}>
         {employees.map((employee) => (
@@ -103,5 +114,6 @@ export default function EmployeeTaskList({ employeeTasks }) {
         ))}
       </DragDropContext>
     </div>
+  </>
   );
 }
