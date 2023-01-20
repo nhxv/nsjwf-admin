@@ -15,6 +15,7 @@ export default function UpdateOrderPriorityPage() {
     listEmpty: "",
     listLoading: true,
   });
+  const [reload, setReload] = useState(false);
   const [employeeTaskList, setEmployeeTaskList] = useState([]);
 
   useEffect(() => {
@@ -27,12 +28,12 @@ export default function UpdateOrderPriorityPage() {
     return () => {
       clearInterval(reRender);
     }
-  }, [status]);
+  }, [status, reload]);
 
   useEffect(() => {
     if (!isFirstRender) {
       setListState(prev => (
-        {...prev, listLoading: false}
+        {...prev, listError: "", listEmpty: "", listLoading: false}
       ));
     }
   }, [employeeTaskList]);
@@ -43,13 +44,14 @@ export default function UpdateOrderPriorityPage() {
     .then((res) => {
       if (res.data.length === 0) {
         setListState(prev => ({
-          ...prev, 
+          ...prev,
+          listError: "", 
           listEmpty: "Such hollow, much empty...", 
           listLoading: false
         }));
       }
-      setListState(prev => ({...prev, listError: "", listEmpty: "", listLoading: false}));
       setEmployeeTaskList(res.data);
+      setListState(prev => ({...prev, listError: "", listEmpty: "", listLoading: false}));
     })
     .catch((e) => {
       const error = JSON.parse(JSON.stringify(
@@ -59,6 +61,11 @@ export default function UpdateOrderPriorityPage() {
         {...prev, listError: error.message, listLoading: false}
       ));
     });
+  }
+
+  const onClear = () => {
+    setReload(!reload);
+    setListState(prev => ({...prev, listError: "", listEmpty: "", loading: true}));
   }
 
   const capitalizeFirst = (str: string) => {
@@ -90,7 +97,7 @@ export default function UpdateOrderPriorityPage() {
           {listState.listEmpty ? (
           <Alert message={listState.listEmpty} type="empty"></Alert>
           ) : (
-            <EmployeeTaskList employeeTasks={employeeTaskList} />
+            <EmployeeTaskList employeeTasks={employeeTaskList} reload={onClear} />
           )}
         </>
         )}
