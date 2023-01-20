@@ -259,7 +259,7 @@ export default function DraftCustomerForm({editedId, editedProducts, initialData
                 <span><BiLeftArrowAlt className="w-7 h-7 mr-1"></BiLeftArrowAlt></span>
                 <span>Go back</span>
               </button>
-              <button type="submit" className="btn btn-primary w-[49%]">
+              <button type="submit" className="btn btn-primary w-[49%]" disabled={formState.loading}>
                 <span>{editedId ? "Update" : "Create"}</span>
               </button>
             </div>

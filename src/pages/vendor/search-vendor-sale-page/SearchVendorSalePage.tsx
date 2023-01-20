@@ -143,7 +143,7 @@ export default function SearchVendorSalePage() {
                   <div className="divider"></div>
                   <button className="btn btn-primary w-full mt-2" 
                   onClick={() => onCreateReturn(sale.code)}>Create return</button> 
-                </>) : (<></>)}                
+                </>) : null}                
               </div>)              
             })}
             <div className="mt-4 mb-8">

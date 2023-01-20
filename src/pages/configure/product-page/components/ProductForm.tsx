@@ -108,7 +108,7 @@ export default function ProductForm() {
         label="In use" 
         ></Checkbox>
       </div>
-      <button type="submit" className="mt-1 btn btn-primary w-full text-white">
+      <button type="submit" className="mt-1 btn btn-primary w-full" disabled={formState.loading}>
         <span>{formType} product</span>
       </button>
       <button type="button" className="mt-3 btn btn-accent w-full" onClick={onClear}>

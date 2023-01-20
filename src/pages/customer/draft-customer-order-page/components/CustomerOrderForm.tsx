@@ -1,18 +1,17 @@
 import { useFormik } from "formik";
 import { useState } from "react";
+import { BiLeftArrowAlt, BiRightArrowAlt, BiX } from "react-icons/bi";
 import { OrderStatus } from "../../../../commons/order-status.enum";
 import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
 import Checkbox from "../../../../components/forms/Checkbox";
 import DateInput from "../../../../components/forms/DateInput";
 import NumberInput from "../../../../components/forms/NumberInput";
+import SearchSuggest from "../../../../components/forms/SearchSuggest";
 import SelectInput from "../../../../components/forms/SelectInput";
 import SelectSearch from "../../../../components/forms/SelectSearch";
 import TextInput from "../../../../components/forms/TextInput";
 import api from "../../../../stores/api";
-import { BiLeftArrowAlt, BiRightArrowAlt, BiX } from "react-icons/bi";
-import SearchInput from "../../../../components/forms/SearchInput";
-import SearchSuggest from "../../../../components/forms/SearchSuggest";
 
 export default function CustomerOrderForm({
   edit,
@@ -196,7 +195,7 @@ export default function CustomerOrderForm({
 
           <div className="mb-5">
             <label htmlFor="expect" className="custom-label inline-block mb-2">Expected delivery date</label>
-            <DateInput id="expect" min="2022-01-01" max="2100-12-31"
+            <DateInput id="expect" min="2023-01-01" max="2100-12-31"
             name="expect" placeholder="Expected Delivery Date" 
             value={customerOrderForm.values[`expectedAt`]}
             onChange={(e) => customerOrderForm.setFieldValue("expectedAt", e.target.value)}
@@ -280,10 +279,10 @@ export default function CustomerOrderForm({
                   </div>
 
                   <div className="w-2/12 flex items-center">
-                  <button type="button" className="btn btn-accent btn-circle btn-sm" 
-                  onClick={() => onRemoveProduct(product.id)}>
-                    <span><BiX className="w-6 h-6"></BiX></span>
-                  </button>
+                    <button type="button" className="btn btn-accent btn-circle btn-sm" 
+                    onClick={() => onRemoveProduct(product.id)}>
+                      <span><BiX className="w-6 h-6"></BiX></span>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -310,7 +309,7 @@ export default function CustomerOrderForm({
                 <span><BiLeftArrowAlt className="w-7 h-7 mr-1"></BiLeftArrowAlt></span>
                 <span>Go back</span>
               </button>
-              <button type="submit" className="btn btn-primary w-[49%]">
+              <button type="submit" className="btn btn-primary w-[49%]" disabled={formState.loading}>
                 <span>{edit ? "Update" : "Create"}</span>
               </button>
             </div>            

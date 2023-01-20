@@ -176,12 +176,12 @@ export default function CreateVendorReturnForm({
                 <span><BiLeftArrowAlt className="w-7 h-7 mr-1"></BiLeftArrowAlt></span>
                 <span>Go back</span>
               </button>
-              <button type="submit" className="btn btn-primary w-[49%]">
+              <button type="submit" className="btn btn-primary w-[49%]" disabled={formState.loading}>
                 <span>Create</span>
                 <span><BiRightArrowAlt className="w-7 h-7 ml-1"></BiRightArrowAlt></span>
               </button>
             </div>
-            ) : (<></>)}
+            ) : null}
             </>)}
           </div>
           <div>

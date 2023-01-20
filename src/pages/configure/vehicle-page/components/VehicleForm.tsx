@@ -129,7 +129,7 @@ export default function VehicleForm() {
         ></Checkbox>
       </div>
 
-      <button type="submit" className="mt-1 btn btn-primary w-full text-white">
+      <button type="submit" className="mt-1 btn btn-primary w-full" disabled={formState.loading}>
         <span>{formType} vehicle</span>
       </button>
 

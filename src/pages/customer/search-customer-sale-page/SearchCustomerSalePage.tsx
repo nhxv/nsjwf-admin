@@ -82,7 +82,7 @@ export default function SearchCustomerSalePage() {
             </div>
           </div>
           <div>
-            <button type="submit" className="btn btn-accent w-full">Search</button>
+            <button type="submit" className="btn btn-accent w-full" disabled={searchState.loading}>Search</button>
           </div>
         </form>
       </div>
