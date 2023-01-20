@@ -50,6 +50,10 @@ export default function Task({ order, reload, status }) {
         e.response ? e.response.data.error : e
       ));
       setFormState(prev => ({...prev, error: error.message, loading: false}));
+      setTimeout(() => {
+        setFormState(prev => ({...prev, error: "", loading: false}));
+        reload();
+      }, 2000);
     }
   }
 
