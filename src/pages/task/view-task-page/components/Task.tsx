@@ -79,7 +79,7 @@ export default function Task({ order, reload, status }) {
   <div className="flex flex-row justify-between">
     <div>
       <div>
-        <span>#{order.code}</span>
+        <span>#{order.manualCode ? order.manualCode : order.code}</span>
       </div>
       <div>
         <span className="font-semibold text-xl">{order.customerName}</span>

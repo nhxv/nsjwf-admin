@@ -100,7 +100,7 @@ export default function CreateCustomerReturnForm({
       <form onSubmit={customerReturnForm.handleSubmit}>
         <div className="mb-3 flex flex-col justify-between">
           <div>
-            <span>#{sold.sale_code}</span>
+            <span>#{sold.sale_manual_code ? sold.sale_manual_code : sold.sale_code}</span>
           </div>
           <div>
             <span className="font-semibold text-xl">{sold.customer_name}</span>

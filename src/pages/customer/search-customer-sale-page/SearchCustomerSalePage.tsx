@@ -24,16 +24,30 @@ export default function SearchCustomerSalePage() {
       date: convertTime(new Date()),
     },
     onSubmit: async (data) => {
-      setSearchState(prev => ({...prev, found: [], loading: true}));
+      setSearchState(prev => ({
+        ...prev, 
+        found: [], 
+        error: "", 
+        empty: "", 
+        greet: "", 
+        loading: true,
+      }));
       try {
         const res = await api.get(
           `/customer-orders/sold/search?keyword=${data.keyword}&date=${data.date}`
         );
         const resData = res.data;
         if (resData.length < 1) {
-          setSearchState(prev => ({...prev, greet: "", empty: "No result found.", loading: false}));
+          setSearchState(prev => ({
+            ...prev, 
+            greet: "",
+            error: "",
+            empty: "No result found.", 
+            loading: false,
+          }));
+        } else {
+          setSearchState(prev => ({...prev, loading: false, found: resData}));
         }
-        setSearchState(prev => ({...prev, loading: false, found: resData}));
       } catch (e) {
         const error = JSON.parse(JSON.stringify(
           e.response ? e.response.data.error : e
@@ -61,7 +75,6 @@ export default function SearchCustomerSalePage() {
   }
 
   return (
-  <>
     <section className="min-h-screen">
       <h1 className="text-center font-bold text-xl my-4">Search sale</h1>
       <div className="flex flex-col items-center mb-8">
@@ -74,10 +87,10 @@ export default function SearchCustomerSalePage() {
               onChange={(e) => searchForm.setFieldValue("date", e.target.value)}
               ></DateInput>              
             </div>
-            <div className="">
-              <SearchInput id="search" name="keyword" placeholder="Customer's name" 
-              value={searchForm.values.keyword} onChange={searchForm.handleChange}
-              onFocus={null}
+            <div>
+              <SearchInput id="search" placeholder="Customer's name" 
+              name="keyword" value={searchForm.values.keyword} 
+              onChange={searchForm.handleChange} onFocus={null}
               onClear={() => searchForm.setFieldValue("keyword", "")} />       
             </div>
           </div>
@@ -102,7 +115,7 @@ export default function SearchCustomerSalePage() {
                 <div className="flex flex-row justify-between">
                   <div>
                     <div>
-                      <span>#{sale.code}</span>
+                      <span>#{sale.manualCode ? sale.manualCode : sale.code}</span>
                     </div>
                     <div>
                       <span className="font-semibold text-xl">{sale.customerName}</span>
@@ -178,6 +191,5 @@ export default function SearchCustomerSalePage() {
         )}
       </div>
     </section>  
-  </>
   );
 }

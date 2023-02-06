@@ -147,16 +147,16 @@ export default function DraftCustomerForm({editedId, editedProducts, initialData
               <span>Name</span>
               <span className="text-red-500">*</span>
             </label>
-            <TextInput id="name" type="text" name="name" placeholder={`Name`} 
-            value={customerForm.values.name} 
+            <TextInput id="name" type="text" placeholder={`Name`} 
+            name="name" value={customerForm.values.name} 
             onChange={customerForm.handleChange}
             ></TextInput>
           </div>
     
           <div className="mb-5">
             <label htmlFor="address" className="custom-label inline-block mb-2">Address</label>
-            <TextInput id="address" type="text" name="address" placeholder={`Address`} 
-            value={customerForm.values.address} 
+            <TextInput id="address" type="text" placeholder={`Address`} 
+            name="address" value={customerForm.values.address} 
             onChange={customerForm.handleChange}
             ></TextInput>
           </div>

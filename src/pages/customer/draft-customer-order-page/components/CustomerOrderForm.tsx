@@ -48,6 +48,7 @@ export default function CustomerOrderForm({
         reqData["assignTo"] = data["employeeName"];
         reqData["status"] = data["status"];
         reqData["isTest"] = data["isTest"];
+        reqData["manualCode"] = data["manualCode"];
         reqData["expectedAt"] = data["expectedAt"];
         const properties = Object.keys(data).sort();
         for (const property of properties) {
@@ -104,7 +105,7 @@ export default function CustomerOrderForm({
         const error = JSON.parse(JSON.stringify(
           e.response ? e.response.data.error : e
         ));
-        setFormState(prev => ({...prev, error: error.message, loading: false}));
+        setFormState(prev => ({...prev, error: error.message, success: "", loading: false}));
       }
     }
   });
@@ -185,6 +186,15 @@ export default function CustomerOrderForm({
           {/* 1st page */}
           <div className="mb-5">
             <label className="custom-label inline-block mb-2">
+              <span>Manual code</span>
+            </label>
+            <TextInput id="manual-code" type="text" placeholder={`Manual code`}
+            name="manualCode" value={customerOrderForm.values.manualCode}
+            onChange={customerOrderForm.handleChange}></TextInput>
+          </div>
+
+          <div className="mb-5">
+            <label className="custom-label inline-block mb-2">
               <span>Order from customer</span>
               <span className="text-red-500">*</span>
             </label>
@@ -195,26 +205,25 @@ export default function CustomerOrderForm({
 
           <div className="mb-5">
             <label htmlFor="expect" className="custom-label inline-block mb-2">Expected delivery date</label>
-            <DateInput id="expect" min="2023-01-01" max="2100-12-31"
-            name="expect" placeholder="Expected Delivery Date" 
-            value={customerOrderForm.values[`expectedAt`]}
+            <DateInput id="expect" min="2023-01-01" max="2100-12-31" placeholder="Expected Delivery Date"
+            name="expectedAt" value={customerOrderForm.values[`expectedAt`]}
             onChange={(e) => customerOrderForm.setFieldValue("expectedAt", e.target.value)}
             ></DateInput>
           </div>
 
           <div className="mb-5">
             <label htmlFor="employee" className="custom-label inline-block mb-2">Assign to</label>
-            <SelectInput name="employee" form={customerOrderForm} field={"employeeName"}
+            <SelectInput form={customerOrderForm} field={"employeeName"}
             options={employees.map(employee => employee.nickname)}
-            value={customerOrderForm.values["employeeName"]}
+            name="employeeName" value={customerOrderForm.values["employeeName"]}
             ></SelectInput>
           </div>
 
           <div className="mb-5">
             <label htmlFor="status" className="custom-label inline-block mb-2">Status</label>
-            <SelectInput name="status" form={customerOrderForm} field={"status"} 
+            <SelectInput form={customerOrderForm} field={"status"} 
             options={Object.values(OrderStatus).filter(status => status !== OrderStatus.CANCELED)}
-            value={customerOrderForm.values["status"]}
+            name="status" value={customerOrderForm.values["status"]}
             ></SelectInput>
           </div>
 

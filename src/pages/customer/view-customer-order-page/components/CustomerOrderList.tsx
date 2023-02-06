@@ -16,14 +16,14 @@ export default function CustomerOrderList({orders, printMode }) {
 
   return (
   <>
-    {orders.map((order) => {
+    {orders.map(order => {
       return (
       <div key={order.code} className="custom-card mb-8">
         {/* basic order info */}
         <div className="flex flex-row justify-between">
           <div>
             <div>
-              <span>#{order.code}</span>
+              <span>#{order.manualCode ? order.manualCode : order.code}</span>
             </div>
             <div>
               <span className="font-semibold text-xl">{order.customerName}</span>

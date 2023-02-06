@@ -1,4 +1,4 @@
-export default function NumberInput({ id, name, placeholder, value, onChange, min, max, disabled }) {
+export default function NumberInput({ id, placeholder, name, value, onChange, min, max, disabled }) {
   return (
   <>
     <input id={id} type="number" name={name} placeholder={placeholder} value={value} 

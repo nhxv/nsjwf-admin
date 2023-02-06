@@ -1,7 +1,5 @@
-export class SignInResponse {
-  constructor(
-    public nickname: string,
-    public roleId: number,
-    public token: string,
-  ) {}
+export interface SignInResponse {
+  nickname: string,
+  roleId: number,
+  token: string,
 }

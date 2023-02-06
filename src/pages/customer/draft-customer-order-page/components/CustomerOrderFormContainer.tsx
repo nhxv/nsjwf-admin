@@ -1,13 +1,12 @@
-import { useState, useEffect, useMemo } from "react";
-import CustomerOrderForm from "./CustomerOrderForm";
-import api from "../../../../stores/api";
-import { BiError, BiBot } from "react-icons/bi";
-import Spinner from "../../../../components/Spinner";
-import useFirstRender from "../../../../commons/hooks/first-render.hook";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
+import useFirstRender from "../../../../commons/hooks/first-render.hook";
 import { OrderStatus } from "../../../../commons/order-status.enum";
 import { convertTime } from "../../../../commons/time.util";
 import Alert from "../../../../components/Alert";
+import Spinner from "../../../../components/Spinner";
+import api from "../../../../stores/api";
+import CustomerOrderForm from "./CustomerOrderForm";
 
 export default function CustomerOrderFormContainer() {
   const isFirstRender = useFirstRender();
@@ -88,6 +87,7 @@ export default function CustomerOrderFormContainer() {
               status: orderRes.data.status, 
               isTest: orderRes.data.is_test,
               code: orderRes.data.code,
+              manualCode: orderRes.data.manual_code ? orderRes.data.manual_code : "",
               expectedAt: convertTime(new Date(orderRes.data.expected_at)),
               ...productFieldData
             }

@@ -60,7 +60,7 @@ export default function OverviewCustomerOrderPage() {
       "border-sky-700 bg-sky-100 text-sky-700 dark:bg-base-100 dark:shadow-sky-700" : ""}
       ${order.status === OrderStatus.COMPLETED ? 
       "border-emerald-700 bg-emerald-100 text-emerald-700 dark:bg-base-100 dark:shadow-emerald-700" : ""}`}>
-        <div>#{order.code}</div>
+        <div>#{order.manual_code ? order.manual_code : order.code}</div>
         <div className="font-semibold">{order.customer_name}</div>
         <div className="text-sm">
           {order.status.toLowerCase()} by {order.status === OrderStatus.CHECKING || order.status === OrderStatus.COMPLETED ? "Admin" : order.assign_to}
