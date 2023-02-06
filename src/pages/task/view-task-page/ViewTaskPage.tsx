@@ -169,51 +169,49 @@ export default function ViewTaskPage() {
   }  
 
   return (
-    <>
-      <section className="min-h-screen">
-        <div className="flex justify-center">
-          <div className="w-11/12 sm:w-8/12 xl:w-6/12">
-            <div className="my-6">
-              <Stepper steps={Object.values(OrderStatus).filter(s => s !== OrderStatus.CANCELED && s !== OrderStatus.COMPLETED)} 
-              selected={status} onSelect={setStep} display={capitalizeFirst}></Stepper>
-            </div>
+    <section className="min-h-screen">
+      <div className="flex justify-center">
+        <div className="w-11/12 sm:w-8/12 xl:w-6/12">
+          <div className="my-6">
+            <Stepper steps={Object.values(OrderStatus).filter(s => s !== OrderStatus.CANCELED && s !== OrderStatus.COMPLETED)} 
+            selected={status} onSelect={setStep} display={capitalizeFirst}></Stepper>
+          </div>
 
-            {listState.listLoading ? (
-            <div className="flex justify-center">
-              <Spinner></Spinner>
-            </div>            
+          {listState.listLoading ? (
+          <div className="flex justify-center">
+            <Spinner></Spinner>
+          </div>            
+          ) : (
+          <>
+            {listState.listError ? (
+            <Alert message={listState.listError} type="error"></Alert>
             ) : (
             <>
-              {listState.listError ? (
-              <Alert message={listState.listError} type="error"></Alert>
+              {listState.listEmpty ? (
+              <Alert message={listState.listEmpty} type="empty"></Alert>
               ) : (
               <>
-                {listState.listEmpty ? (
-                <Alert message={listState.listEmpty} type="empty"></Alert>
-                ) : (
-                <>
-                <TaskList orders={dataState.tasks} reload={forceReload} status={status} />
-                
-                {/* {dataState.toast ? (              
-                <div className="toast toast-center bottom-20 w-11/12 md:w-6/12 lg:w-3/12">
-                  <div className="p-4 flex justify-between items-center shadow-md bg-emerald-100 border-2 border-emerald-600 text-primary rounded-box">
-                    <div><span className="font-semibold">{dataState.toast}</span></div>
-                    <div>
-                      <div className="hover:bg-emerald-200 p-1 rounded-full cursor-pointer" onClick={onCloseToast}>
-                        <BiX className="w-7 h-7"></BiX>
-                      </div>
+              <TaskList orders={dataState.tasks} reload={forceReload} status={status} />
+              
+              {/* {dataState.toast ? (              
+              <div className="toast toast-center bottom-20 w-11/12 md:w-6/12 lg:w-3/12">
+                <div className="p-4 flex justify-between items-center shadow-md bg-emerald-100 border-2 border-emerald-600 text-primary rounded-box">
+                  <div><span className="font-semibold">{dataState.toast}</span></div>
+                  <div>
+                    <div className="hover:bg-emerald-200 p-1 rounded-full cursor-pointer" onClick={onCloseToast}>
+                      <BiX className="w-7 h-7"></BiX>
                     </div>
                   </div>
                 </div>
-                ) : null} */}
-                </>
-                )}
+              </div>
+              ) : null} */}
               </>
               )}
-            </>)}             
-          </div>
+            </>
+            )}
+          </>)}             
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   )
 }

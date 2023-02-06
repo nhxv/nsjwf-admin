@@ -1,7 +1,13 @@
 export class ProductStockResponse {
   constructor(
-    public productName: string,
-    public quantity: number,
-    public id?: number,
+    productName: string,
+    quantity: number,
+    id?: number,
   ) {}
+}
+
+export interface ProductStockResponse {
+  productName: string,
+  quantity: number,
+  id?: number,
 }

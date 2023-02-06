@@ -16,7 +16,6 @@ export default function SignInPage() {
     loading: false,
   });
   const signIn = useAuthStore((state) => state.signIn);
-  const role = useAuthStore(state => state.role);
 
   const signInForm = useFormik({
     initialValues: {

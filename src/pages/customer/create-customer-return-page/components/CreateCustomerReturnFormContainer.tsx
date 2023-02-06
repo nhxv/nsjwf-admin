@@ -74,7 +74,7 @@ export default function CreateCustomerReturnFormContainer({}) {
   
   const onClear = () => {
     setReload(!reload);
-    setFormState(prev => ({...prev, loading: true}));
+    setFormState(prev => ({...prev, errorMessage: "", emptyMessage: "", loading: true}));
   }
 
   const updatePrice = (e, inputId: string) => {

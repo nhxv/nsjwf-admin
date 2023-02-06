@@ -1,10 +1,8 @@
-export class VehicleResponse {
-  constructor(
-    public licensePlate: string,
-    public available: boolean,
-    public discontinued: boolean,
-    public id?: number,
-    public nickname?: string,
-    public volume?: number,
-  ) {}
+export interface VehicleResponse {
+  licensePlate: string,
+  available: boolean,
+  discontinued: boolean,
+  id?: number,
+  nickname?: string,
+  volume?: number,
 }

@@ -96,8 +96,8 @@ export default function ProductForm() {
           <span>Name</span>
           <span className="text-red-500">*</span>
         </label>
-        <TextInput id="name" type="text" name="name" placeholder={`Name`} 
-        value={productForm.values.name} 
+        <TextInput id="name" type="text" placeholder={`Name`} 
+        name="name" value={productForm.values.name} 
         onChange={productForm.handleChange}
         ></TextInput>
       </div>
