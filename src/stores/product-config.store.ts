@@ -1,4 +1,4 @@
-import create from "zustand";
+import  {create } from "zustand";
 import { FormType } from "../commons/form-type.enum";
 
 interface ProductConfigState {

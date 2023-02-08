@@ -4,9 +4,9 @@ export default function SearchSuggest({query, items, onChange, onFocus, onSelect
   return (
   <>
     <div className="w-full">
-      <SearchInput id="search-suggest" name="search-suggest" placeholder="Search"
-      onChange={onChange} value={query} onFocus={onFocus}
-      onClear={onClear}></SearchInput>
+      <SearchInput id="search-suggest" placeholder="Search"
+      name="search-suggest" value={query} onFocus={onFocus}
+      onChange={onChange} onClear={onClear}></SearchInput>
     </div>
     {items.length > 0 ? (
     <div className="my-2 border border-base-300 rounded-btn p-2 shadow-md max-h-72 overflow-auto">
