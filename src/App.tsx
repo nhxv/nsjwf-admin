@@ -38,80 +38,77 @@ import ViewCustomerPage from "./pages/configure/view-customer-page/ViewCustomerP
 import UpdateOrderPriorityPage from "./pages/customer/update-order-priority-page/UpdateOrderPriorityPage";
 import OverviewCustomerOrderPage from "./pages/customer/overview-customer-order-page/OverviewCustomerOrderPage";
 
-
 export default function App() {
   return (
-    <>
-      <Routes>
-        <Route path="/sign-in" element={<SignInPage />} />
-        <Route path="/" element={<Navigate replace to="/sign-in" />}></Route>
-        <Route path="/home" element={<Navigate replace to="/sign-in" />}></Route>
+    <Routes>
+      <Route path="/sign-in" element={<SignInPage />} />
+      <Route path="/" element={<Navigate replace to="/sign-in" />}></Route>
+      <Route path="/home" element={<Navigate replace to="/sign-in" />}></Route>
 
-        {/* Private routes */}
-        <Route element={<PrivateOutlet />}>
-          <Route path="/profile" element={<ProfilePage />}></Route>
+      {/* Private routes */}
+      <Route element={<PrivateOutlet />}>
+        <Route path="/profile" element={<ProfilePage />}></Route>
 
-          {/* Customer routes */}
-          <Route element={<AdminOutlet />}>
-            <Route path="/customer/draft-customer-order" element={<DraftCustomerOrderPage />}>
-              <Route path=":code" element={<DraftCustomerOrderPage />}></Route>
-            </Route>
-            <Route path="/customer/update-order-priority" element={<UpdateOrderPriorityPage />}></Route>
-            <Route path="/customer/draft-backorder" element={<DraftBackorderPage />}>
-              <Route path=":id" element={<DraftBackorderPage />}></Route>
-            </Route>
-            <Route path="/customer/view-backorder" element={<ViewBackorderPage />}></Route>
-            <Route path="/customer/create-customer-return/:code" element={<CreateCustomerReturnPage />}></Route>
-            <Route path="/customer/search-customer-sale" element={<SearchCustomerSalePage />}></Route>
-            <Route path="/customer/view-customer-return" element={<ViewCustomerReturnPage />}></Route>
-            <Route path="/customer/report-sale" element={<ReportCustomerSalePage />}></Route>
-            <Route path="/customer/view-customer-order" element={<ViewCustomerOrderPage />}></Route>
-            <Route path="/customer/overview-customer-order" element={<OverviewCustomerOrderPage />}></Route>
+        {/* Customer routes */}
+        <Route element={<AdminOutlet />}>
+          <Route path="/customer/draft-customer-order" element={<DraftCustomerOrderPage />}>
+            <Route path=":code" element={<DraftCustomerOrderPage />}></Route>
           </Route>
-
-          {/* Vendor routes */}
-          <Route element={<AdminOutlet />}>
-            <Route path="/vendor/draft-vendor-order" element={<DraftVendorOrderPage />}>
-              <Route path=":code" element={<DraftVendorOrderPage />}></Route>
-            </Route>
-            <Route path="/vendor/create-vendor-return/:code" element={<CreateVendorReturnPage />}></Route>
-            <Route path="/vendor/search-vendor-sale" element={<SearchVendorSalePage />}></Route>
-            <Route path="/vendor/view-vendor-return" element={<ViewVendorReturnPage />}></Route>
-            <Route path="/vendor/view-vendor-order" element={<ViewVendorOrderPage />}></Route>
+          <Route path="/customer/update-order-priority" element={<UpdateOrderPriorityPage />}></Route>
+          <Route path="/customer/draft-backorder" element={<DraftBackorderPage />}>
+            <Route path=":id" element={<DraftBackorderPage />}></Route>
           </Route>
-
-          {/* Stock routes */}
-          <Route element={<AdminOutlet />}>
-            <Route path="/stock/change-stock" element={<DraftStockPage />}></Route>
-          </Route>
-          <Route path="/stock/view-stock" element={<ViewStockPage />}></Route>
-          
-          {/* Task routes */}
-          <Route path="/task/view-task" element={<ViewTaskPage />}></Route>
-          <Route path="/task/report-task" element={<ReportTaskPage />}></Route>
-
-          {/* Configure routes */}
-          <Route element={<AdminOutlet />}>
-            <Route path="/configure/product" element={<ProductPage />}></Route>
-            <Route path="/configure/draft-customer" element={<DraftCustomerPage />}>
-              <Route path=":id" element={<DraftCustomerPage />}></Route>
-            </Route>
-            <Route path="/configure/view-customer" element={<ViewCustomerPage />}></Route>
-            <Route path="/configure/draft-vendor" element={<DraftVendorPage />}>
-              <Route path=":id" element={<DraftVendorPage />}></Route>
-            </Route>
-            <Route path="/configure/view-vendor" element={<ViewVendorPage />}></Route>
-            <Route path="/configure/vehicle" element={<VehiclePage />}></Route>
-          </Route>
-
-          {/* Test routes */}
-          <Route element={<MasterOutlet />}>
-            <Route path="/test/reset" element={<ResetPage />}></Route>
-          </Route>
+          <Route path="/customer/view-backorder" element={<ViewBackorderPage />}></Route>
+          <Route path="/customer/create-customer-return/:code" element={<CreateCustomerReturnPage />}></Route>
+          <Route path="/customer/search-customer-sale" element={<SearchCustomerSalePage />}></Route>
+          <Route path="/customer/view-customer-return" element={<ViewCustomerReturnPage />}></Route>
+          <Route path="/customer/report-sale" element={<ReportCustomerSalePage />}></Route>
+          <Route path="/customer/view-customer-order" element={<ViewCustomerOrderPage />}></Route>
+          <Route path="/customer/overview-customer-order" element={<OverviewCustomerOrderPage />}></Route>
         </Route>
+
+        {/* Vendor routes */}
+        <Route element={<AdminOutlet />}>
+          <Route path="/vendor/draft-vendor-order" element={<DraftVendorOrderPage />}>
+            <Route path=":code" element={<DraftVendorOrderPage />}></Route>
+          </Route>
+          <Route path="/vendor/create-vendor-return/:code" element={<CreateVendorReturnPage />}></Route>
+          <Route path="/vendor/search-vendor-sale" element={<SearchVendorSalePage />}></Route>
+          <Route path="/vendor/view-vendor-return" element={<ViewVendorReturnPage />}></Route>
+          <Route path="/vendor/view-vendor-order" element={<ViewVendorOrderPage />}></Route>
+        </Route>
+
+        {/* Stock routes */}
+        <Route element={<AdminOutlet />}>
+          <Route path="/stock/change-stock" element={<DraftStockPage />}></Route>
+        </Route>
+        <Route path="/stock/view-stock" element={<ViewStockPage />}></Route>
         
-        <Route path="*" element={<NotFoundPage />}></Route>
-      </Routes>
-    </>
-  )
+        {/* Task routes */}
+        <Route path="/task/view-task" element={<ViewTaskPage />}></Route>
+        <Route path="/task/report-task" element={<ReportTaskPage />}></Route>
+
+        {/* Configure routes */}
+        <Route element={<AdminOutlet />}>
+          <Route path="/configure/product" element={<ProductPage />}></Route>
+          <Route path="/configure/draft-customer" element={<DraftCustomerPage />}>
+            <Route path=":id" element={<DraftCustomerPage />}></Route>
+          </Route>
+          <Route path="/configure/view-customer" element={<ViewCustomerPage />}></Route>
+          <Route path="/configure/draft-vendor" element={<DraftVendorPage />}>
+            <Route path=":id" element={<DraftVendorPage />}></Route>
+          </Route>
+          <Route path="/configure/view-vendor" element={<ViewVendorPage />}></Route>
+          <Route path="/configure/vehicle" element={<VehiclePage />}></Route>
+        </Route>
+
+        {/* Test routes */}
+        <Route element={<MasterOutlet />}>
+          <Route path="/test/reset" element={<ResetPage />}></Route>
+        </Route>
+      </Route>
+      
+      <Route path="*" element={<NotFoundPage />}></Route>
+    </Routes>
+  );
 }

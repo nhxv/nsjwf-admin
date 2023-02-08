@@ -48,9 +48,12 @@ export default function VendorOrderFormContainer() {
           vendorRes.data.length === 0 ||
           !orderRes.data
         ) {
-            setFormState(prev => (
-            {...prev, emptyMessage: "Such hollow, much empty...", loading: false}
-            ));
+            setFormState(prev => ({
+              ...prev, 
+              emptyMessage: "Such hollow, much empty...", 
+              errorMessage: "", 
+              loading: false
+            }));
         } else {
           // setup initial field values
           const updatedPrices = [];
@@ -101,7 +104,7 @@ export default function VendorOrderFormContainer() {
             e.response ? e.response.data.error : e
           ));
           setFormState(prev => (
-            {...prev, errorMessage: error.message, loading: false}
+            {...prev, errorMessage: error.message, emptyMessage: "", loading: false}
           ));        
         });
     } else {
@@ -117,7 +120,7 @@ export default function VendorOrderFormContainer() {
         vendorRes.data?.length === 0
       ) {
         setFormState(prev => (
-        {...prev, emptyMessage: "Such hollow, much empty...", loading: false}
+        {...prev, emptyMessage: "Such hollow, much empty...", errorMessage: "", loading: false}
         ));
       } else {
         // setup initial field values
@@ -158,7 +161,7 @@ export default function VendorOrderFormContainer() {
           e.response ? e.response.data.error : e
         ));
         setFormState(prev => (
-          {...prev, errorMessage: error.message, loading: false}
+          {...prev, errorMessage: error.message, emptyMessage: "", loading: false}
         ));
       });
     }
@@ -175,7 +178,7 @@ export default function VendorOrderFormContainer() {
   
   const onClear = () => {
     setReload(!reload);
-    setFormState(prev => ({...prev, loading: true}));
+    setFormState(prev => ({...prev, errorMessage: "", emptyMessage: "", loading: true}));
   }
 
   const updatePrice = (value: number, inputId: string) => {
@@ -208,7 +211,7 @@ export default function VendorOrderFormContainer() {
           e.response ? e.response.data.error : e
         ));
         setFormState(prev => (
-          {...prev, errorMessage: error.message, loading: false}
+          {...prev, errorMessage: error.message, emptyMessage: "", loading: false}
         ));
       }
     }

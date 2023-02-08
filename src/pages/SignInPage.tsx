@@ -25,7 +25,7 @@ export default function SignInPage() {
     onSubmit: async (data) => {
       setFormState(prev => ({...prev, error: "", loading: true}));
       await api.post<SignInResponse>(`/auth/login`, data)
-      .then((res) => {
+      .then(res => {
         const resData: SignInResponse = res.data;
         signIn(resData);
         setFormState(prev => ({...prev, error: "", loading: false}));
@@ -47,36 +47,32 @@ export default function SignInPage() {
   });
 
   return (
-    <>
-      <div className="flex flex-col justify-center items-center min-h-screen px-4 bg-base-200">
-        <form onSubmit={signInForm.handleSubmit} className="custom-card">
-          {formState.error ? (
-          <div className="mb-5">
-            <Alert message={formState.error} type="error"></Alert>
-          </div>
-          )  : null}
-          <div className="mb-5">
-            <label htmlFor="username" className="custom-label inline-block mb-2">Username</label>
-            <TextInput id="username" name="username" type="text" placeholder={`Username`} 
-            value={signInForm.values.username} 
-            onChange={signInForm.handleChange}
-            ></TextInput>
-          </div>
-          <div className="my-5">
-            <label htmlFor="password" className="custom-label inline-block mb-2">Password</label>
-            <TextInput id="password" type="password" name="password" placeholder={`Password`}
-            value={signInForm.values.password} 
-            onChange={signInForm.handleChange}
-            ></TextInput>
-          </div>
-          <button type="submit" className="btn btn-primary w-full mt-3" disabled={!!formState.loading}>Sign in</button>
-        </form>
-        {formState.loading ? (
-        <div className="mt-4">
-          <Spinner></Spinner>
+    <div className="flex flex-col justify-center items-center min-h-screen p-4 bg-base-200">
+      <form onSubmit={signInForm.handleSubmit} className="custom-card">
+        {formState.error ? (
+        <div className="mb-5">
+          <Alert message={formState.error} type="error"></Alert>
         </div>
-        ) : null}
+        )  : null}
+        <div className="mb-5">
+          <label htmlFor="username" className="custom-label inline-block mb-2">Username</label>
+          <TextInput id="username" type="text" placeholder={`Username`} 
+          name="username" value={signInForm.values.username} 
+          onChange={signInForm.handleChange}></TextInput>
+        </div>
+        <div className="mb-5">
+          <label htmlFor="password" className="custom-label inline-block mb-2">Password</label>
+          <TextInput id="password" type="password" placeholder={`Password`}
+          name="password" value={signInForm.values.password} 
+          onChange={signInForm.handleChange}></TextInput>
+        </div>
+        <button type="submit" className="btn btn-primary w-full mt-3" disabled={!!formState.loading}>Sign in</button>
+      </form>
+      {formState.loading ? (
+      <div className="mt-5">
+        <Spinner></Spinner>
       </div>
-    </>
+      ) : null}
+    </div>
   )
 }

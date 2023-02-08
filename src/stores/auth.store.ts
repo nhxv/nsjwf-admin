@@ -1,5 +1,5 @@
 import { SignInResponse } from './../models/sign-in-response.model';
-import create from "zustand";
+import { create } from "zustand";
 
 interface AuthState {
   nickname: string,
