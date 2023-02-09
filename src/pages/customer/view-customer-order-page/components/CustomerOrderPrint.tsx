@@ -4,6 +4,7 @@ import { BiPrinter, BiX } from "react-icons/bi";
 import NumberInput from "../../../../components/forms/NumberInput";
 import PalletLabelToPrint from "./PalletLabelToPrint";
 import PackingSlipToPrint from "./PackingSlipToPrint";
+import Modal from "../../../../components/Modal";
 
 export default function CustomerOrderPrint({ order }) {
   const [pallet, setPallet] = useState({count: 1, list: [null]});
@@ -11,6 +12,7 @@ export default function CustomerOrderPrint({ order }) {
   const handlePalletPrint = useReactToPrint({
     content: () => palletLabelToPrintRef.current,
   });
+  const [isOpen, setIsOpen] = useState(false);
 
   const orderToPrintRef = useRef<HTMLDivElement>(null);
   const handleOrderPrint = useReactToPrint({
@@ -18,6 +20,7 @@ export default function CustomerOrderPrint({ order }) {
   });
 
   const onPalletPrint = () => {
+    onCloseModal();
     if (pallet.count < 1 || pallet.list.length < 1) {
       return;
     }
@@ -32,56 +35,63 @@ export default function CustomerOrderPrint({ order }) {
     setPallet(prev => ({...prev, count: e.target.value, list: newArr}));
   }
 
+  const onCloseModal = () => {
+    setIsOpen(false);
+  }
+
+  const onOpenModal = () => {
+    setIsOpen(true);
+  }
+
   return (
-  <>
-    <div className="hidden">
-      <PackingSlipToPrint printRef={orderToPrintRef} order={order} />
-      <PalletLabelToPrint printRef={palletLabelToPrintRef} pallet={pallet} order={order} />
-    </div>
-
-    {/* Pallet modal */}
-    <input type="checkbox" id={`modal-${order.code}`} className="modal-toggle" />
-      <div className="modal">
-        <div className="modal-box p-0 md:w-4/12 sm:w-6/12 w-8/12">
-        <div className="flex justify-end px-4 mt-4">
-          <label htmlFor={`modal-${order.code}`} className="btn btn-circle btn-ghost btn-sm bg-base-200">
-            <BiX className="h-6 w-6"></BiX>
-          </label>
-        </div>
-        <div className="mb-5 mx-4">
-          <label htmlFor="name" className="custom-label inline-block mb-2">
-            <span>Number of pallet</span>
-            <span className="text-red-500">*</span>
-          </label>
-          <NumberInput id="pallet" name="pallet" placeholder={`Number of Pallet`} 
-          value={pallet.count} min={1} max={100} disabled={false}
-          onChange={onChange}></NumberInput>
-        </div>        
-        <div className="modal-action bg-base-200 px-4 py-6">
-          <label htmlFor={`modal-${order.code}`} className="btn btn-primary w-full"
-          onClick={onPalletPrint}>Print label</label>
-        </div>
+    <>
+      <div className="hidden">
+        <PackingSlipToPrint printRef={orderToPrintRef} order={order} />
+        <PalletLabelToPrint printRef={palletLabelToPrintRef} pallet={pallet} order={order} />
       </div>
-    </div>
 
-    {/* Print menu */}     
-    <div className="dropdown dropdown-end z-0">
-      <label tabIndex={0} className="btn btn-ghost btn-circle bg-base-200 text-neutral">
-        <BiPrinter className="inline-block w-6 h-6"></BiPrinter>
-      </label>
-      <ul tabIndex={0} className="dropdown-content menu p-2 shadow-md border border-base-300 bg-base-100 rounded-box w-36">
-        <li>
-          <a onClick={handleOrderPrint} className="hover:bg-base-200 focus:bg-base-200">
-            <span>Packing Slip</span>
-          </a>
-        </li>
-        <li>
-          <label htmlFor={`modal-${order.code}`} className="hover:bg-base-200 focus:bg-base-200">
-            <span>Pallet Label</span>
-          </label>     
-        </li>
-      </ul>
-    </div>  
-  </>
+      {/* Pallet modal */}
+      <Modal isOpen={isOpen} onClose={onCloseModal}>
+        <div className="custom-card text-left">
+          <div className="flex justify-end">
+            <button className="btn btn-circle btn-ghost bg-base-200 text-neutral btn-sm" onClick={onCloseModal}>
+              <BiX className="h-6 w-6"></BiX>
+            </button>
+          </div>
+          <div className="mb-5">
+            <label htmlFor="name" className="custom-label inline-block mb-2">
+              <span>Number of pallet</span>
+              <span className="text-red-500">*</span>
+            </label>
+            <NumberInput id="pallet" placeholder={`Number of Pallet`} min={1} max={100} 
+            name="pallet" value={pallet.count}  disabled={false}
+            onChange={onChange}></NumberInput>
+          </div>        
+          <button className="btn btn-primary w-full" onClick={onPalletPrint}>
+            Print label
+          </button>
+        </div>
+      
+      </Modal>
+
+      {/* Print menu */}     
+      <div className="dropdown dropdown-end z-0">
+        <label tabIndex={0} className="btn btn-ghost btn-circle bg-base-200 text-neutral">
+          <BiPrinter className="inline-block w-6 h-6"></BiPrinter>
+        </label>
+        <ul tabIndex={0} className="dropdown-content menu p-2 shadow-md border border-base-300 bg-base-100 rounded-box w-36">
+          <li>
+            <a onClick={handleOrderPrint} className="hover:bg-base-200 focus:bg-base-200">
+              <span>Packing Slip</span>
+            </a>
+          </li>
+          <li>
+            <a onClick={onOpenModal} className="hover:bg-base-200 focus:bg-base-200">
+              <span>Pallet Label</span>
+            </a>     
+          </li>
+        </ul>
+      </div>  
+    </>
   );
 }

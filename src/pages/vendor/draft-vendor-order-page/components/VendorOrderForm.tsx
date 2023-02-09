@@ -191,9 +191,8 @@ export default function VendorOrderForm({
 
         <div className="mb-5">
           <label htmlFor="expect" className="custom-label block mb-2">Expected delivery date</label>
-          <DateInput id="expect" min="2022-01-01" max="2100-12-31"
-          name="expect" placeholder="Expected Delivery Date" 
-          value={vendorOrderForm.values[`expectedAt`]}
+          <DateInput id="expect" min="2022-01-01" max="2100-12-31" placeholder="Expected Delivery Date"
+          name="expect" value={vendorOrderForm.values[`expectedAt`]}
           onChange={(e) => vendorOrderForm.setFieldValue("expectedAt", e.target.value)}
           ></DateInput>
         </div>
