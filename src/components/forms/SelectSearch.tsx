@@ -18,7 +18,7 @@ export default function SelectSearch({ name, form, field, options, value }) {
 
   return (
     <div className="w-full">
-      <Combobox value={selected} onChange={(v) => onChangeValue(v)} name={name}>
+      <Combobox name={name} value={selected} onChange={(v) => onChangeValue(v)}>
         <div className="relative">
           <div className="relative w-full cursor-default rounded-btn overflow-hidden bg-base-100 text-left">
             <Combobox.Input

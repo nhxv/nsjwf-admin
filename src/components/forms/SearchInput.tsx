@@ -18,8 +18,8 @@ export default function SearchInput({ id, name, placeholder, value, onChange, on
       </div>
       ) : null}
 
-      <input ref={searchRef} type="text" id={id} name={name} value={value} placeholder={placeholder} 
-      onChange={onChange} onFocus={onFocus}
+      <input ref={searchRef} type="text" placeholder={placeholder} id={id}
+      name={name} value={value} onChange={onChange} onFocus={onFocus}
       className="input border-2 border-base-300 focus:outline-none focus:border-primary pl-10 w-full dark:placeholder:text-base-300" />
     </div>    
   </>

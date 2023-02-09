@@ -13,7 +13,7 @@ export default function SelectInput({name, form, field, options, value}) {
 
   return (
     <div className="w-full">
-      <Listbox value={selected} onChange={onChangeValue} name={name}>
+      <Listbox name={name} value={selected} onChange={onChangeValue}>
         <div className="relative">
           <Listbox.Button className="relative w-full cursor-default rounded-btn focus:border-primary ui-open:border-primary bg-base-100 py-3 pl-3.5 pr-10 text-left border-2 border-base-300 text-sm font-semibold">
             <span className="block truncate">{selected}</span>

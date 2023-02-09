@@ -83,8 +83,7 @@ export default function Layout({ children }) {
     navigate("/profile");
   }
 
-  return(
-  <>
+  return (
     <div className="bg-base-200">
       <div className="drawer">
         <input id="mobile-drawer" type="checkbox" className="drawer-toggle" /> 
@@ -106,13 +105,13 @@ export default function Layout({ children }) {
                 </label>
                 <ul tabIndex={0} className="dropdown-content menu p-2 shadow-md bg-base-100 rounded-box border border-base-300 w-52">
                   <li>
-                    <a onClick={onProfile} className="hover:bg-base-200 focus:bg-base-200">
+                    <a className="hover:bg-base-200 focus:bg-base-200" onClick={onProfile}>
                       <span><BiUser className="w-6 h-6 mr-1"></BiUser></span>
                       <span>My profile</span>
                     </a>
                   </li>
                   <li>
-                    <a onClick={onSignOut} className="hover:bg-base-200 focus:bg-base-200">
+                    <a className="hover:bg-base-200 focus:bg-base-200" onClick={onSignOut}>
                       <span><BiExit className="w-6 h-6 mr-1"></BiExit></span>
                       <span>Sign out</span>
                     </a>
@@ -168,6 +167,5 @@ export default function Layout({ children }) {
 
       </div>
     </div>
-  </>
-  )
+  );
 }
