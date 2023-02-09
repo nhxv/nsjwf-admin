@@ -54,7 +54,7 @@ export default function CustomerOrderPrint({ order }) {
       <Modal isOpen={isOpen} onClose={onCloseModal}>
         <div className="custom-card text-left">
           <div className="flex justify-end">
-            <button className="btn btn-circle btn-ghost bg-base-200 text-neutral btn-sm" onClick={onCloseModal}>
+            <button className="btn btn-circle btn-ghost bg-base-200 dark:bg-base-300 text-neutral dark:text-neutral-content btn-sm" onClick={onCloseModal}>
               <BiX className="h-6 w-6"></BiX>
             </button>
           </div>
@@ -76,17 +76,17 @@ export default function CustomerOrderPrint({ order }) {
 
       {/* Print menu */}     
       <div className="dropdown dropdown-end z-0">
-        <label tabIndex={0} className="btn btn-ghost btn-circle bg-base-200 text-neutral">
+        <label tabIndex={0} className="btn btn-ghost btn-circle bg-base-200 dark:bg-base-300 text-neutral dark:text-neutral-content">
           <BiPrinter className="inline-block w-6 h-6"></BiPrinter>
         </label>
-        <ul tabIndex={0} className="dropdown-content menu p-2 shadow-md border border-base-300 bg-base-100 rounded-box w-36">
+        <ul tabIndex={0} className="dropdown-content menu p-2 shadow-md border-2 border-base-300 bg-base-100 dark:bg-base-200 rounded-box w-36">
           <li>
-            <a onClick={handleOrderPrint} className="hover:bg-base-200 focus:bg-base-200">
+            <a onClick={handleOrderPrint} className="hover:bg-base-200 focus:bg-base-200 dark:hover:bg-base-300 dark:focus:bg-base-300">
               <span>Packing Slip</span>
             </a>
           </li>
           <li>
-            <a onClick={onOpenModal} className="hover:bg-base-200 focus:bg-base-200">
+            <a onClick={onOpenModal} className="hover:bg-base-200 focus:bg-base-200 dark:hover:bg-base-300 dark:focus:bg-base-300">
               <span>Pallet Label</span>
             </a>     
           </li>

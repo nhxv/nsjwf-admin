@@ -22,7 +22,7 @@ export default function SelectSearch({ name, form, field, options, value }) {
         <div className="relative">
           <div className="relative w-full cursor-default rounded-btn overflow-hidden bg-base-100 text-left">
             <Combobox.Input
-              className="w-full bg-base-100 border-2 border-base-300 focus-visible:outline-none focus-visible:border-primary rounded-btn py-3 pl-3.5 pr-10 text-sm font-semibold"
+              className="w-full bg-base-100 dark:bg-base-200 border-2 border-base-300 focus-visible:outline-none focus-visible:border-primary rounded-btn py-3 pl-3.5 pr-10 text-sm font-semibold"
               displayValue={(option: any) => option}
               onChange={(e) => setQuery(e.target.value)}
             />
@@ -33,7 +33,7 @@ export default function SelectSearch({ name, form, field, options, value }) {
               />
             </Combobox.Button>
           </div>
-          <Combobox.Options className="z-10 absolute mt-1 max-h-72 w-full overflow-auto rounded-btn bg-base-100 py-2 shadow-md border border-base-300 focus:outline-none">
+          <Combobox.Options className="z-10 absolute mt-1 max-h-72 w-full overflow-auto rounded-btn bg-base-100 dark:bg-base-200 py-2 shadow-md border-2 border-base-300 focus:outline-none">
             {filteredOption.length === 0 && query !== "" ? (
               <div className="relative cursor-default select-none py-3 px-4">
                 Nothing found.

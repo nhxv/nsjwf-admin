@@ -14,13 +14,13 @@ export default function SearchInput({ id, name, placeholder, value, onChange, on
 
       {value || (document.activeElement === searchRef.current) ? (
       <div className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer" onClick={onClear}>
-        <BiX className="w-6 h-6 text-neutral placeholder:text-base-300 dark:placeholder:text-base-300" />
+        <BiX className="w-6 h-6 text-neutral" />
       </div>
       ) : null}
 
       <input ref={searchRef} type="text" placeholder={placeholder} id={id}
       name={name} value={value} onChange={onChange} onFocus={onFocus}
-      className="input border-2 border-base-300 focus:outline-none focus:border-primary pl-10 w-full dark:placeholder:text-base-300" />
+      className="input border-2 border-base-300 bg-base-100 dark:bg-transparent focus:outline-none focus:border-primary pl-10 w-full dark:placeholder:text-neutral" />
     </div>    
   </>
   )

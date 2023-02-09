@@ -84,14 +84,14 @@ export default function Layout({ children }) {
   }
 
   return (
-    <div className="bg-base-200">
+    <div className="bg-base-200 dark:bg-base-100">
       <div className="drawer">
         <input id="mobile-drawer" type="checkbox" className="drawer-toggle" /> 
         <div className="drawer-content flex flex-col">
           {/* Navbar */}
-          <nav className="w-full navbar bg-base-100 shadow-md top-0 sticky z-20">
+          <nav className="w-full navbar bg-base-100 dark:bg-base-200 shadow-md top-0 sticky z-20">
             <div className="navbar-start">
-              <label htmlFor="mobile-drawer" className="btn btn-square btn-ghost">
+              <label htmlFor="mobile-drawer" className="btn btn-square btn-ghost hover:bg-base-300">
                 <BiMenuAltLeft className="inline-block w-8 h-8"></BiMenuAltLeft>
               </label> 
             </div>
@@ -100,18 +100,18 @@ export default function Layout({ children }) {
             </div>
             <div className="navbar-end">
               <div className="dropdown dropdown-end">
-                <label tabIndex={0} className="btn btn-square btn-ghost">
+                <label tabIndex={0} className="btn btn-square btn-ghost hover:bg-base-300">
                   <BiDotsHorizontalRounded className="inline-block w-8 h-8"></BiDotsHorizontalRounded>
                 </label>
-                <ul tabIndex={0} className="dropdown-content menu p-2 shadow-md bg-base-100 rounded-box border border-base-300 w-52">
+                <ul tabIndex={0} className="dropdown-content menu p-2 shadow-md bg-base-100 dark:bg-base-200 rounded-box border border-base-300 w-52">
                   <li>
-                    <a className="hover:bg-base-200 focus:bg-base-200" onClick={onProfile}>
+                    <a className="hover:bg-base-200 focus:bg-base-200 dark:hover:bg-base-300 dark:focus:bg-base-300" onClick={onProfile}>
                       <span><BiUser className="w-6 h-6 mr-1"></BiUser></span>
                       <span>My profile</span>
                     </a>
                   </li>
                   <li>
-                    <a className="hover:bg-base-200 focus:bg-base-200" onClick={onSignOut}>
+                    <a className="hover:bg-base-200 focus:bg-base-200 dark:hover:bg-base-300 dark:focus:bg-base-300" onClick={onSignOut}>
                       <span><BiExit className="w-6 h-6 mr-1"></BiExit></span>
                       <span>Sign out</span>
                     </a>
@@ -134,7 +134,7 @@ export default function Layout({ children }) {
         {/* Sidebar */}
         <aside className="drawer-side">
           <label htmlFor="mobile-drawer" className="drawer-overlay"></label>
-          <div className="bg-base-100 min-h-screen w-60 overflow-y-auto shadow-md">
+          <div className="bg-base-100 dark:bg-base-200 min-h-screen w-60 overflow-y-auto shadow-md">
             <ul className="menu p-4">
               {categories.map((category, index) => {
                 return (

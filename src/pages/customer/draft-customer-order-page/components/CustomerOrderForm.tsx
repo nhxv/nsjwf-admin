@@ -265,7 +265,7 @@ export default function CustomerOrderForm({
               <div className="w-5/12 xl:w-6/12">
                 <p className="mb-1">{product.name}</p>
                 {product.sell_price ? (
-                <div className="h-fit w-fit py-1.5 px-2 bg-info text-primary rounded-full font-medium text-xs">
+                <div className="h-fit w-fit py-1.5 px-2 bg-info text-info-content rounded-full font-medium text-xs">
                   <span className="hidden sm:inline">Suggest: </span>
                   <span>{"> "}${product.sell_price}</span>
                 </div>

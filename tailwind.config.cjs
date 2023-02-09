@@ -65,13 +65,13 @@ module.exports = {
           "base-100": "#171717", // neutral-900
           "base-200": "#262626", // neutral-800
           "base-300": "#404040", // neutral-700
-          "info": "#262626", // neutral-800
+          "info": "#404040", // neutral-700
           "info-content": "#fff",
-          "success": "#262626", // neutral-800
+          "success": "#404040", // neutral-700
           "success-content": "#10b981", //emerald-500
-          "warning": "#262626", // neutral-800
+          "warning": "#404040", // neutral-700
           "warning-content": "#eab308", // yellow-500
-          "error": "#262626", // neutral-800
+          "error": "#404040", // neutral-700
           "error-content": "#ef4444", //red-500
 
           "--rounded-box": "0.625rem", // border radius rounded-box utility class, used in card and other large boxes

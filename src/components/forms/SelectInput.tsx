@@ -15,7 +15,7 @@ export default function SelectInput({name, form, field, options, value}) {
     <div className="w-full">
       <Listbox name={name} value={selected} onChange={onChangeValue}>
         <div className="relative">
-          <Listbox.Button className="relative w-full cursor-default rounded-btn focus:border-primary ui-open:border-primary bg-base-100 py-3 pl-3.5 pr-10 text-left border-2 border-base-300 text-sm font-semibold">
+          <Listbox.Button className="relative w-full cursor-default rounded-btn focus:border-primary ui-open:border-primary bg-base-100 dark:bg-base-200 py-3 pl-3.5 pr-10 text-left border-2 border-base-300 text-sm font-semibold">
             <span className="block truncate">{selected}</span>
             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2.5">
               <BiChevronDown
@@ -24,7 +24,7 @@ export default function SelectInput({name, form, field, options, value}) {
               />
             </span>
           </Listbox.Button>
-          <Listbox.Options className="absolute mt-1 max-h-72 w-full overflow-auto rounded-btn bg-base-100 py-2 shadow-md border border-base-300 focus:outline-none z-10">
+          <Listbox.Options className="absolute mt-1 max-h-72 w-full overflow-auto rounded-btn bg-base-100 dark:bg-base-200 py-2 shadow-md border-2 border-base-300 focus:outline-none z-10">
             {options.map((option) => (
               <Listbox.Option
                 key={option}
