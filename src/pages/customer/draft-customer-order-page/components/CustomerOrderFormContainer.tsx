@@ -152,7 +152,7 @@ export default function CustomerOrderFormContainer() {
             customerName: ``,
             employeeName: employeeRes.data[0].nickname,
             status: OrderStatus.PICKING, 
-            isTest: true,
+            isTest: false,
             expectedAt: convertTime(nextDay),
             ...productFieldData
           }
@@ -188,7 +188,7 @@ export default function CustomerOrderFormContainer() {
   
   const onClear = () => {
     setReload(!reload);
-    setFormState(prev => ({...prev, loading: true}));
+    setFormState(prev => ({...prev, errorMessage: "", emptyMessage: "", loading: true}));
   }
 
   const updatePrice = (value: number, inputId: string) => {

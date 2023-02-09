@@ -111,10 +111,10 @@ export default function CreateCustomerReturnForm({
           
       <div className="divider my-1"></div>  
       <div className="flex justify-between items-center mb-2">
-        <div className="w-5/12">
+        <div className="w-6/12">
           <span className="custom-label">Product</span>
         </div>
-        <div className="flex w-7/12">
+        <div className="flex w-6/12">
           <div className="w-6/12 mr-2">
             <span className="custom-label">Qty</span>
           </div>
@@ -127,16 +127,14 @@ export default function CreateCustomerReturnForm({
         return (
         <div key={index}>
           <div className="flex justify-between items-center">
-            <div className="w-5/12">
+            <div className="w-6/12">
               <span>{product.product_name}</span>
             </div>
-            <div className="flex w-7/12">
+            <div className="flex w-6/12">
               <div className="w-6/12 mr-2">
-                <NumberInput id={`quantity${index}`} 
-                  name={`quantity${index}`} placeholder="Qty" 
-                  value={customerReturnForm.values[`quantity${index}`]}
+                <NumberInput id={`quantity${index}`} min="0" max={product.quantity} placeholder="Qty"
+                  name={`quantity${index}`}  value={customerReturnForm.values[`quantity${index}`]}
                   onChange={(e) => handlePriceChange(e, `quantity${index}`)}
-                  min="0" max={product.quantity} 
                   disabled={product.quantity === 0 || formState.page === 1 ? true : false}
                 ></NumberInput>
               </div>

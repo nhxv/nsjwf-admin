@@ -59,7 +59,7 @@ export default function CreateVendorReturnFormContainer({}) {
         e.response ? e.response.data.error : e
       ));
       setFormState(prev => (
-        {...prev, errorMessage: error.message, loading: false}
+        {...prev, errorMessage: error.message, emptyMessage: "", loading: false}
       )); 
     });
   }, [reload, params]);
@@ -67,14 +67,14 @@ export default function CreateVendorReturnFormContainer({}) {
   useEffect(() => {
     if (!isFirstRender) {
       setFormState(prev => (
-      {...prev, loading: false}
+      {...prev, errorMessage: "", emptyMessage: "", loading: false}
       ));
     }
   }, [initialFields]);
   
   const onClear = () => {
     setReload(!reload);
-    setFormState(prev => ({...prev, loading: true}));
+    setFormState(prev => ({...prev, errorMessage: "", emptyMessage: "", loading: true}));
   }
 
   const updatePrice = (e, inputId: string) => {

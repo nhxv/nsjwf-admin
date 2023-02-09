@@ -47,7 +47,7 @@ export default function SignInPage() {
   });
 
   return (
-    <div className="flex flex-col justify-center items-center min-h-screen p-4 bg-base-200">
+    <div className="flex flex-col justify-center items-center min-h-screen p-4 bg-base-200 dark:bg-base-100">
       <form onSubmit={signInForm.handleSubmit} className="custom-card">
         {formState.error ? (
         <div className="mb-5">

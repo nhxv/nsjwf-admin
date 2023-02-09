@@ -143,7 +143,7 @@ export default function VendorOrderFormContainer() {
             ...prev, 
             vendorName: ``,
             status: OrderStatus.SHIPPING, 
-            isTest: true,
+            isTest: false,
             expectedAt: convertTime(nextDay), 
             ...productFieldData
           }
