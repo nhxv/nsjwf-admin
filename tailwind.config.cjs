@@ -59,19 +59,19 @@ module.exports = {
           "primary-content": "#fff",
           "secondary": "#f5f5f5", // neutral-100
           "secondary-content": "#000",
-          "accent": "#3a3b3c", // neutral-700
+          "accent": "#404040", // neutral-700
           "neutral": "#737373", // neutral-500
           "neutral-content": "#fff",
-          "base-100": "#18191a", // neutral-900
-          "base-200": "#242526", // neutral-800
-          "base-300": "#3a3b3c", // neutral-700
-          "info": "#3a3b3c", // base-300
+          "base-100": "#171717", // neutral-900
+          "base-200": "#262626", // neutral-800
+          "base-300": "#404040", // neutral-700
+          "info": "#404040", // base-300
           "info-content": "#fff",
-          "success": "#3a3b3c", // base-300
+          "success": "#404040", // base-300
           "success-content": "#10b981", //emerald-500
-          "warning": "#3a3b3c", // base-300
+          "warning": "#404040", // base-300
           "warning-content": "#eab308", // yellow-500
-          "error": "#3a3b3c", // base-300
+          "error": "#404040", // base-300
           "error-content": "#ef4444", //red-500
 
           "--rounded-box": "0.625rem", // border radius rounded-box utility class, used in card and other large boxes
