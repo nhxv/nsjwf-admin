@@ -83,7 +83,7 @@ module.exports = {
           "--btn-focus-scale": "0.95", // scale transform of button when you focus on it
           "--border-btn": "1px", // border width of buttons
           "--tab-border": "1px", // border width of tabs
-          "--tab-radius": "0.5rem", // border radius of tabs          
+          "--tab-radius": "0.5rem", // border radius of tabs        
         }
       },
     ],

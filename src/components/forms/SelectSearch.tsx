@@ -45,7 +45,7 @@ export default function SelectSearch({ name, form, field, options, value }) {
                   className="relative cursor-default select-none py-3 px-4 mx-2 rounded-btn text-base-content 
                   ui-active:bg-info ui-active:text-info-content"
                   value={option}>
-                  <span className="block truncate ui-selected:font-semibold ui-selected:text-primary">
+                  <span className="block truncate ui-selected:font-semibold ui-selected:text-info-content">
                     {option}
                   </span>
                 </Combobox.Option>

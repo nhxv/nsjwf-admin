@@ -81,15 +81,13 @@ export default function ViewCustomerPage() {
               <>
                 {searchState.found.map((customer) => (
                 <div key={customer.id} className="w-full">
-                  <div className="flex flex-col md:flex-row md:justify-between 
-                  p-6 bg-base-100 rounded-box shadow-md mb-4 w-full">
+                  <div className="custom-card flex justify-between items-center mb-4">
                     <div>
                       <p className="font-medium">{customer.name}</p>
                       <p className="text-sm text-neutral">{customer.discontinued ? "Discontinued" : "In use"}</p>
                     </div>
   
-                    <button className="btn btn-info text-primary w-full md:w-fit mt-4 md:mt-0"
-                    onClick={() => onUpdate(customer.id)}>
+                    <button className="btn btn-circle btn-accent" onClick={() => onUpdate(customer.id)}>
                       <span><BiEdit className="w-6 h-6"></BiEdit></span>
                     </button>
                   </div>

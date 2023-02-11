@@ -23,6 +23,9 @@
   .btn-outline-primary {
     @apply bg-transparent border-primary hover:border-primary focus:border-primary text-primary hover:bg-info focus:bg-info
   }
+  .btn-outline-accent {
+    @apply bg-transparent border-accent text-accent-content hover:border-accent focus:border-accent hover:bg-accent focus:bg-accent
+  }
   .btn-ghost {
     @apply bg-transparent hover:bg-base-200 focus:bg-base-200 dark:hover:bg-base-300 dark:focus:bg-base-300
   }
@@ -31,6 +34,9 @@
   }
   .custom-card {
     @apply bg-base-100 dark:bg-base-200 p-6 rounded-box shadow-md
+  }
+  .custom-badge {
+    @apply h-fit w-fit py-1.5 px-2 rounded-full font-medium text-xs
   }
 }
 

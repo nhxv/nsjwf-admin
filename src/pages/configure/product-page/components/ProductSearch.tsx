@@ -75,23 +75,20 @@ export default function ProductSearch() {
     <div className="w-11/12 sm:w-6/12 md:w-5/12 mb-8">
       <div className="flex flex-col justify-center items-center">
         {searchState.loading ? (
-          <>
-            <Spinner></Spinner>
-          </>
+          <Spinner></Spinner>
         ) : (
         <>
           {searchState.found && searchState.found.length > 0 ? (
           <>
             {searchState.found.map((product) => (
             <div key={product.id} className="w-full">
-              <div className="flex flex-col md:flex-row md:justify-between 
-              p-6 bg-base-100 rounded-box shadow-md mb-4 w-full">
+              <div className="custom-card flex justify-between items-center mb-4">
                 <div>
                   <p className="font-medium">{product.name}</p>
                   <p className="text-sm text-neutral">{product.discontinued ? "Discontinued" : "In use"}</p>
                 </div>
 
-                <button className="btn btn-info text-primary w-full md:w-fit mt-4 md:mt-0"
+                <button className="btn btn-circle btn-accent"
                 onClick={() => onEdit(product)}>
                   <BiEdit className="w-6 h-6"></BiEdit>
                 </button>

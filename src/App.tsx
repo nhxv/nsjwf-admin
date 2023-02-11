@@ -37,6 +37,7 @@ import DraftCustomerPage from "./pages/configure/draft-customer-page/DraftCustom
 import ViewCustomerPage from "./pages/configure/view-customer-page/ViewCustomerPage";
 import UpdateOrderPriorityPage from "./pages/customer/update-order-priority-page/UpdateOrderPriorityPage";
 import OverviewCustomerOrderPage from "./pages/customer/overview-customer-order-page/OverviewCustomerOrderPage";
+import EmployeePage from "./pages/configure/employee-page/EmployeePage";
 
 export default function App() {
   return (
@@ -99,7 +100,8 @@ export default function App() {
             <Route path=":id" element={<DraftVendorPage />}></Route>
           </Route>
           <Route path="/configure/view-vendor" element={<ViewVendorPage />}></Route>
-          <Route path="/configure/vehicle" element={<VehiclePage />}></Route>
+          {/* <Route path="/configure/vehicle" element={<VehiclePage />}></Route> */}
+          <Route path="/configure/employee" element={<EmployeePage />}></Route>
         </Route>
 
         {/* Test routes */}
