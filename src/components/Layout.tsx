@@ -61,7 +61,8 @@ export default function Layout({ children }) {
         {itemName: "View Customer", href: "/configure/view-customer", visible: [Role.MASTER, Role.ADMIN]},
         {itemName: "Draft Vendor", href: "/configure/draft-vendor", visible: [Role.MASTER, Role.ADMIN]},
         {itemName: "View Vendor", href: "/configure/view-vendor", visible: [Role.MASTER, Role.ADMIN]},
-        {itemName: "Vehicle", href: "/configure/vehicle", visible: [Role.MASTER, Role.ADMIN]},
+        // {itemName: "Vehicle", href: "/configure/vehicle", visible: [Role.MASTER, Role.ADMIN]},
+        {itemName: "Employee", href: "/configure/employee", visible: [Role.MASTER, Role.ADMIN]},
       ],
       visible: [Role.MASTER, Role.ADMIN],
     },
@@ -149,7 +150,7 @@ export default function Layout({ children }) {
                     <div key={i}>
                       {item.visible.includes(role) ? 
                       (<li>
-                        <NavLink to={item.href} className={navData => navData.isActive ? `text-white active` : ``}>
+                        <NavLink to={item.href} className={navData => navData.isActive ? `text-primary-content active` : ``}>
                           {item.itemName}
                         </NavLink>
                       </li>) : null}

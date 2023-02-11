@@ -54,7 +54,7 @@ export default function CustomerOrderPrint({ order }) {
       <Modal isOpen={isOpen} onClose={onCloseModal}>
         <div className="custom-card text-left">
           <div className="flex justify-end">
-            <button className="btn btn-circle btn-ghost bg-base-200 dark:bg-base-300 text-neutral dark:text-neutral-content btn-sm" onClick={onCloseModal}>
+            <button className="btn btn-circle btn-accent btn-sm" onClick={onCloseModal}>
               <BiX className="h-6 w-6"></BiX>
             </button>
           </div>
