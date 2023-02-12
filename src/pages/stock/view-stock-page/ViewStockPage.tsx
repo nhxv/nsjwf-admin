@@ -23,7 +23,7 @@ export default function ViewStockPage() {
   useEffect(() => {
     api.get(`/product-stock`)
     .then((res) => {
-      if (res.data.length === 0) {
+      if (res.data?.length === 0) {
         setDataState(prev => (
           {...prev, error: "", empty: "Such hollow, much empty...", loading: false}
         ));
@@ -92,7 +92,7 @@ export default function ViewStockPage() {
                   </div>
                   ))}
                 </div>
-                {searchedStocks?.length < 1 ? (<div className="flex justify-center">Not found.</div>) : null}
+                {searchedStocks?.length < 1 ? (<div className="text-center">Not found.</div>) : null}
                 {role === Role.MASTER || role === Role.ADMIN ? (
                 <div className="flex justify-center mt-8">
                   <button type="button" className="btn btn-accent" onClick={onChangeStock}>

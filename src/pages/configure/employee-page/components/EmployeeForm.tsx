@@ -10,7 +10,7 @@ import Alert from "../../../../components/Alert";
 
 export default function EmployeeForm({ isOpen, onClose, employee, onReload }) {
   const [formState, setFormState] = useState({
-    errorMessage: "",
+    error: "",
     loading: false,
   });
 
@@ -24,37 +24,36 @@ export default function EmployeeForm({ isOpen, onClose, employee, onReload }) {
       setFormState(prev => ({
         ...prev, 
         error: "", 
-        success: "", 
-        loading: true
+        loading: true,
       }));
       try {
         const res = await api.put(`/accounts/employees/${employee.id}`, data);
-        setFormState(prev => ({...prev, errorMessage: "", loading: false}));
+        setFormState(prev => ({...prev, error: "", loading: false}));
         onReload();
         onClose();
       } catch (e) {
         const error = JSON.parse(JSON.stringify(
           e.response ? e.response.data.error : e
         ));
-        setFormState(prev => ({...prev, errorMessage: error.message, loading: false}));
+        setFormState(prev => ({...prev, error: error.message, loading: false}));
       }
     }
   });
 
   const onCloseForm = () => {
-    setFormState(prev => ({...prev, errorMessage: "", loading: false}));
+    setFormState(prev => ({...prev, error: "", loading: false}));
     onClose();
   }
 
   return (
     <Modal isOpen={isOpen} onClose={onCloseForm}>
       <div className="custom-card text-left">
+        <div className="flex justify-end">
+          <button type="button" className="btn btn-circle btn-accent btn-sm" onClick={onCloseForm}>
+            <BiX className="h-6 w-6"></BiX>
+          </button>
+        </div>
         <form onSubmit={employeeForm.handleSubmit}>
-          <div className="flex justify-end">
-            <button type="button" className="btn btn-circle btn-accent btn-sm" onClick={onCloseForm}>
-              <BiX className="h-6 w-6"></BiX>
-            </button>
-          </div>
           <div className="mb-5">
             <label htmlFor="name" className="custom-label inline-block mb-2">
               <span>Nickname</span>
@@ -70,16 +69,16 @@ export default function EmployeeForm({ isOpen, onClose, employee, onReload }) {
             checked={employeeForm.values.active}
             label="Available"></Checkbox>
           </div>
-          <button type="submit" className="btn btn-primary w-full mt-3" disabled={formState.loading}>Update</button>
+          <button type="submit" className="btn btn-primary w-full mt-1" disabled={formState.loading}>Update</button>
 
           {formState.loading ? (
           <div className="mt-5">
             <Spinner></Spinner>
           </div>
           ) : null}
-          {formState.errorMessage ? (
+          {formState.error ? (
           <div className="mt-5">
-            <Alert message={formState.errorMessage} type="error"></Alert>
+            <Alert message={formState.error} type="error"></Alert>
           </div>
           ) : null}
         </form>
