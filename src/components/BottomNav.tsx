@@ -8,7 +8,7 @@ export default function BottomNav() {
 
   if (role === Role.OPERATOR) {
     return (
-      <div className="btm-nav gap-2 sticky h-20 py-2 dark:bg-base-200 border border-t-base-300 border-l-0 border-r-0 border-b-0">
+      <div className="btm-nav sticky h-20 py-2 dark:bg-base-200 border border-t-base-300 border-l-0 border-r-0 border-b-0">
         <div className="hidden md:flex"></div>
         <NavLink to="/task/view-task" 
         className={

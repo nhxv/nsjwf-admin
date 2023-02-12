@@ -32,7 +32,7 @@ export default function CustomerOrderFormContainer() {
   }, [dataState.prices]);
 
   useEffect(() => {
-    const productPromise = api.get(`/products/all`);
+    const productPromise = api.get(`/products`);
     const customerPromise = api.get(`/customers/all`);
     const employeePromise = api.get(`/accounts/employees`);
     if (params.code) {

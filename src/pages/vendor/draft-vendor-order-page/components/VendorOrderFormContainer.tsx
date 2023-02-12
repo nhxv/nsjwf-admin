@@ -31,7 +31,7 @@ export default function VendorOrderFormContainer() {
   }, [dataState.prices]);
 
   useEffect(() => {
-    const productPromise = api.get(`/products/all`);
+    const productPromise = api.get(`/products`);
     const vendorPromise = api.get(`/vendors/all`);
     if (params.code) {
       // edit mode

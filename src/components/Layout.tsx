@@ -124,7 +124,7 @@ export default function Layout({ children }) {
 
           {/* Main content */}
           <main>
-            <div className="container">
+            <div className="container mb-5">
               {children}
             </div>
             <BottomNav/>
