@@ -1,12 +1,12 @@
-import { SignInResponse } from './../models/sign-in-response.model';
+import { SignInResponse } from "./../models/sign-in-response.model";
 import { create } from "zustand";
 
 interface AuthState {
-  nickname: string,
-  role: number,
-  token: string,
-  signIn: (data: SignInResponse) => void,
-  signOut: () => void,
+  nickname: string;
+  role: number;
+  token: string;
+  signIn: (data: SignInResponse) => void;
+  signOut: () => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({

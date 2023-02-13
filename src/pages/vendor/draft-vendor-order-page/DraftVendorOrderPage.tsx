@@ -10,5 +10,5 @@ export default function DraftVendorOrderPage() {
         </div>
       </div>
     </section>
-  )
+  );
 }

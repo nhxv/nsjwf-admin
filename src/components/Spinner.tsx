@@ -1,4 +1,4 @@
-import { BiLoaderCircle } from "react-icons/bi"
+import { BiLoaderCircle } from "react-icons/bi";
 
 export default function Spinner() {
   return (

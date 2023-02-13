@@ -22,43 +22,51 @@ export default function EmployeeList() {
   const [reload, setReload] = useState(false);
 
   useEffect(() => {
-    api.get(`/accounts/employees/all`)
-    .then(res => {
-      setFetchData(prev => ({...prev, employees: res.data, error: "", loading: false}));
-    })
-    .catch(e => {
-      const error = JSON.parse(JSON.stringify(
-        e.response ? e.response.data.error : e
-      ));
-      setFetchData(prev => ({...prev, error: error.message, loading: false}));
-    });
+    api
+      .get(`/accounts/employees/all`)
+      .then((res) => {
+        setFetchData((prev) => ({
+          ...prev,
+          employees: res.data,
+          error: "",
+          loading: false,
+        }));
+      })
+      .catch((e) => {
+        const error = JSON.parse(
+          JSON.stringify(e.response ? e.response.data.error : e)
+        );
+        setFetchData((prev) => ({
+          ...prev,
+          error: error.message,
+          loading: false,
+        }));
+      });
   }, [reload]);
 
   const onOpenForm = (data) => {
-    setModal(prev => ({
+    setModal((prev) => ({
       ...prev,
       employee: {
         ...prev.employee,
-        id: data.id, 
-        nickname: data.nickname, 
+        id: data.id,
+        nickname: data.nickname,
         active: data.active,
       },
       isOpen: true,
     }));
-  }
+  };
 
   const onCloseForm = () => {
-    setModal(prev => ({...prev, isOpen: false}));
-  }
+    setModal((prev) => ({ ...prev, isOpen: false }));
+  };
 
   const onReload = () => {
     setReload(!reload);
-  }
+  };
 
   if (fetchData.loading) {
-    return (
-      <Spinner></Spinner>
-    );
+    return <Spinner></Spinner>;
   }
 
   if (fetchData.error) {
@@ -73,22 +81,32 @@ export default function EmployeeList() {
     <>
       <div className="grid grid-cols-12 gap-4 px-4">
         {fetchData.employees.map((employee) => (
-          <div key={employee.nickname} className="col-span-12 sm:col-span-6 xl:col-span-4 custom-card flex items-center">
-            <button className="btn btn-accent btn-circle mr-4" onClick={() => onOpenForm(employee)}>
-              <span><BiEdit className="h-6 w-6"></BiEdit></span>
+          <div
+            key={employee.nickname}
+            className="col-span-12 sm:col-span-6 xl:col-span-4 custom-card flex items-center"
+          >
+            <button
+              className="btn btn-accent btn-circle mr-4"
+              onClick={() => onOpenForm(employee)}
+            >
+              <span>
+                <BiEdit className="h-6 w-6"></BiEdit>
+              </span>
             </button>
             <div className="flex flex-col">
               <span className="font-medium">{employee.nickname}</span>
-              <span className="text-sm text-neutral">{employee.active ? "Available" : "Not available"}</span>
+              <span className="text-sm text-neutral">
+                {employee.active ? "Available" : "Not available"}
+              </span>
             </div>
           </div>
         ))}
       </div>
-      <EmployeeForm 
-      isOpen={modal.isOpen} 
-      onClose={onCloseForm} 
-      employee={modal.employee} 
-      onReload={onReload}
+      <EmployeeForm
+        isOpen={modal.isOpen}
+        onClose={onCloseForm}
+        employee={modal.employee}
+        onReload={onReload}
       ></EmployeeForm>
     </>
   );

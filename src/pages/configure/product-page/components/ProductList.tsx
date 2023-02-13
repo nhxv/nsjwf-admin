@@ -30,29 +30,42 @@ export default function ProductList() {
   });
 
   useEffect(() => {
-    api.get(`/products/all`)
-    .then(res => {
-      if (res.data?.length === 0) {
-        setFetchData(prev => (
-          {...prev, error: "", empty: "Such hollow, much empty...", loading: false}
-        ));
-      } else {
-        setSearch(prev => ({...prev, products: res.data}));
-        setFetchData(prev => ({...prev, products: res.data, error: "", loading: false}));
-      }
-
-    })
-    .catch(e => {
-      const error = JSON.parse(JSON.stringify(
-        e.response ? e.response.data.error : e
-      ));
-      setFetchData(prev => ({...prev, error: error.message, empty: "", loading: false}));
-    });
+    api
+      .get(`/products/all`)
+      .then((res) => {
+        if (res.data?.length === 0) {
+          setFetchData((prev) => ({
+            ...prev,
+            error: "",
+            empty: "Such hollow, much empty...",
+            loading: false,
+          }));
+        } else {
+          setSearch((prev) => ({ ...prev, products: res.data }));
+          setFetchData((prev) => ({
+            ...prev,
+            products: res.data,
+            error: "",
+            loading: false,
+          }));
+        }
+      })
+      .catch((e) => {
+        const error = JSON.parse(
+          JSON.stringify(e.response ? e.response.data.error : e)
+        );
+        setFetchData((prev) => ({
+          ...prev,
+          error: error.message,
+          empty: "",
+          loading: false,
+        }));
+      });
   }, [reload]);
 
   const onAdd = () => {
-    setModal(prev => ({
-      ...prev, 
+    setModal((prev) => ({
+      ...prev,
       product: {
         ...prev.product,
         id: -1,
@@ -62,59 +75,62 @@ export default function ProductList() {
       type: FormType.CREATE,
       isOpen: true,
     }));
-  }
+  };
 
   const onEdit = (data) => {
-    setModal(prev => ({
+    setModal((prev) => ({
       ...prev,
       product: {
         ...prev.product,
-        id: data.id, 
-        name: data.name, 
+        id: data.id,
+        name: data.name,
         discontinued: data.discontinued,
-      }, 
+      },
       type: FormType.EDIT,
       isOpen: true,
     }));
-  }
+  };
 
   const onCloseForm = () => {
-    setModal(prev => ({...prev, isOpen: false}));
-  }
+    setModal((prev) => ({ ...prev, isOpen: false }));
+  };
 
   const onReload = () => {
     setReload(!reload);
-  }
+  };
 
   const onChangeSearch = (e) => {
     if (e.target.value) {
-      const searched = fetchData.products.filter(product => product.name.toLowerCase().replace(/\s+/g, "").includes(e.target.value.toLowerCase().replace(/\s+/g, "")));
-      setSearch(prev => ({
-        ...prev, 
-        products: searched, 
-        query: e.target.value
+      const searched = fetchData.products.filter((product) =>
+        product.name
+          .toLowerCase()
+          .replace(/\s+/g, "")
+          .includes(e.target.value.toLowerCase().replace(/\s+/g, ""))
+      );
+      setSearch((prev) => ({
+        ...prev,
+        products: searched,
+        query: e.target.value,
       }));
     } else {
-      setSearch(prev => ({
-        ...prev, 
-        products: fetchData.products, 
-        query: e.target.value
+      setSearch((prev) => ({
+        ...prev,
+        products: fetchData.products,
+        query: e.target.value,
       }));
     }
-  }
+  };
 
   const onClearQuery = () => {
-    setSearch(prev => ({
-      ...prev, 
-      products: fetchData.products, 
+    setSearch((prev) => ({
+      ...prev,
+      products: fetchData.products,
       query: "",
     }));
-  } 
+  };
 
   if (fetchData.loading) {
-    return (
-      <Spinner></Spinner>
-    );
+    return <Spinner></Spinner>;
   }
 
   if (fetchData.error) {
@@ -137,38 +153,55 @@ export default function ProductList() {
     <>
       <div className="fixed bottom-24 right-6 md:right-8 z-20">
         <button className="btn btn-primary btn-circle" onClick={onAdd}>
-          <span><BiPlus className="w-8 h-8"></BiPlus></span>
+          <span>
+            <BiPlus className="w-8 h-8"></BiPlus>
+          </span>
         </button>
       </div>
       <div className="mb-5 w-11/12 sm:w-8/12 xl:w-6/12 mx-auto">
-        <SearchInput id="product-search" placeholder="Search product"
-        name="product-search" value={search.query} 
-        onChange={(e) => onChangeSearch(e)} 
-        onClear={onClearQuery} 
-        onFocus={null}
+        <SearchInput
+          id="product-search"
+          placeholder="Search product"
+          name="product-search"
+          value={search.query}
+          onChange={(e) => onChangeSearch(e)}
+          onClear={onClearQuery}
+          onFocus={null}
         ></SearchInput>
       </div>
       <div className="grid grid-cols-12 gap-4 px-4">
         {search.products.map((product) => (
-          <div key={product.name} className="col-span-12 sm:col-span-6 xl:col-span-3 custom-card flex items-center">
-            <button className="btn btn-accent btn-circle mr-4" onClick={() => onEdit(product)}>
-              <span><BiEdit className="h-6 w-6"></BiEdit></span>
+          <div
+            key={product.name}
+            className="col-span-12 sm:col-span-6 xl:col-span-3 custom-card flex items-center"
+          >
+            <button
+              className="btn btn-accent btn-circle mr-4"
+              onClick={() => onEdit(product)}
+            >
+              <span>
+                <BiEdit className="h-6 w-6"></BiEdit>
+              </span>
             </button>
             <div className="flex flex-col">
               <span className="font-medium">{product.name}</span>
-              <span className="text-sm text-neutral">{product.discontinued ? "Not available" : "Available"}</span>
+              <span className="text-sm text-neutral">
+                {product.discontinued ? "Not available" : "Available"}
+              </span>
             </div>
           </div>
         ))}
       </div>
-      {search.products?.length < 1 ? (<div className="text-center">Not found.</div>) : null}
-      <ProductForm 
+      {search.products?.length < 1 ? (
+        <div className="text-center">Not found.</div>
+      ) : null}
+      <ProductForm
         isOpen={modal.isOpen}
-        onClose={onCloseForm} 
-        product={modal.product} 
+        onClose={onCloseForm}
+        product={modal.product}
         onReload={onReload}
         type={modal.type}
-      ></ProductForm>        
+      ></ProductForm>
     </>
   );
 }

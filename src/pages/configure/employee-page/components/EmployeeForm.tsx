@@ -21,35 +21,43 @@ export default function EmployeeForm({ isOpen, onClose, employee, onReload }) {
       active: employee.active,
     },
     onSubmit: async (data) => {
-      setFormState(prev => ({
-        ...prev, 
-        error: "", 
+      setFormState((prev) => ({
+        ...prev,
+        error: "",
         loading: true,
       }));
       try {
         const res = await api.put(`/accounts/employees/${employee.id}`, data);
-        setFormState(prev => ({...prev, error: "", loading: false}));
+        setFormState((prev) => ({ ...prev, error: "", loading: false }));
         onReload();
         onClose();
       } catch (e) {
-        const error = JSON.parse(JSON.stringify(
-          e.response ? e.response.data.error : e
-        ));
-        setFormState(prev => ({...prev, error: error.message, loading: false}));
+        const error = JSON.parse(
+          JSON.stringify(e.response ? e.response.data.error : e)
+        );
+        setFormState((prev) => ({
+          ...prev,
+          error: error.message,
+          loading: false,
+        }));
       }
-    }
+    },
   });
 
   const onCloseForm = () => {
-    setFormState(prev => ({...prev, error: "", loading: false}));
+    setFormState((prev) => ({ ...prev, error: "", loading: false }));
     onClose();
-  }
+  };
 
   return (
     <Modal isOpen={isOpen} onClose={onCloseForm}>
       <div className="custom-card text-left">
         <div className="flex justify-end">
-          <button type="button" className="btn btn-circle btn-accent btn-sm" onClick={onCloseForm}>
+          <button
+            type="button"
+            className="btn btn-circle btn-accent btn-sm"
+            onClick={onCloseForm}
+          >
             <BiX className="h-6 w-6"></BiX>
           </button>
         </div>
@@ -59,27 +67,46 @@ export default function EmployeeForm({ isOpen, onClose, employee, onReload }) {
               <span>Nickname</span>
               <span className="text-red-500">*</span>
             </label>
-            <TextInput id="nickname" type="text" placeholder={`Nickname`} 
-            name="nickname" value={employeeForm.values.nickname}
-            onChange={employeeForm.handleChange}></TextInput>
+            <TextInput
+              id="nickname"
+              type="text"
+              placeholder={`Nickname`}
+              name="nickname"
+              value={employeeForm.values.nickname}
+              onChange={employeeForm.handleChange}
+            ></TextInput>
           </div>
           <div className="mb-5 flex items-center">
-            <Checkbox id="active" name="active"
-            onChange={() => employeeForm.setFieldValue("active", !employeeForm.values.active)} 
-            checked={employeeForm.values.active}
-            label="Available"></Checkbox>
+            <Checkbox
+              id="active"
+              name="active"
+              onChange={() =>
+                employeeForm.setFieldValue(
+                  "active",
+                  !employeeForm.values.active
+                )
+              }
+              checked={employeeForm.values.active}
+              label="Available"
+            ></Checkbox>
           </div>
-          <button type="submit" className="btn btn-primary w-full mt-1" disabled={formState.loading}>Update</button>
+          <button
+            type="submit"
+            className="btn btn-primary w-full mt-1"
+            disabled={formState.loading}
+          >
+            Update
+          </button>
 
           {formState.loading ? (
-          <div className="mt-5">
-            <Spinner></Spinner>
-          </div>
+            <div className="mt-5">
+              <Spinner></Spinner>
+            </div>
           ) : null}
           {formState.error ? (
-          <div className="mt-5">
-            <Alert message={formState.error} type="error"></Alert>
-          </div>
+            <div className="mt-5">
+              <Alert message={formState.error} type="error"></Alert>
+            </div>
           ) : null}
         </form>
       </div>
