@@ -1,129 +1,125 @@
-import { useFormik } from "formik";
-import { useState } from "react";
-import api from "../../../stores/api";
+import { useEffect, useState } from "react";
+import { BiEdit, BiPlus } from "react-icons/bi";
+import { useNavigate } from "react-router";
+import Alert from "../../../components/Alert";
 import SearchInput from "../../../components/forms/SearchInput";
 import Spinner from "../../../components/Spinner";
-import { BiSearch, BiTrash, BiEdit } from "react-icons/bi";
-import { useNavigate } from "react-router";
+import api from "../../../stores/api";
 
 export default function ViewVendorPage() {
-  const [searchState, setSearchState] = useState({
-    greet: "Your search result will appear here.",
+  const [fetchData, setFetchData] = useState({
+    vendors: [],
     error: "",
     empty: "",
-    loading: false,
-    found: [],
+    loading: true,
   });
-
+  const [search, setSearch] = useState({
+    vendors: [],
+    query: "",
+  });
   const navigate = useNavigate();
 
-  const searchForm = useFormik({
-    initialValues: {
-      keyword: ""
-    },
-    onSubmit: async (data) => {
-      setSearchState(prev => ({...prev, found: [], loading: true}));
-      try {
-        const res = await api.get(`/vendors/basic-search?keyword=${data.keyword}`);
-        const resData = res.data;
-        if (resData.length < 1) {
-          setSearchState(prev => ({...prev, greet: "", empty: "No result found.", loading: false}));
-        }
-        setSearchState(prev => ({...prev, loading: false, found: resData}));
-      } catch (e) {
-        const error = JSON.parse(JSON.stringify(
-          e.response ? e.response.data.error : e
-        ));
-        setSearchState(prev => ({...prev, greet: "", error: error.message, loading: false}));
-        searchForm.resetForm();
+  useEffect(() => {
+    api.get(`/vendors/all`)
+    .then(res => {
+      if (res.data?.length === 0) {
+        setFetchData(prev => ({
+          ...prev, 
+          error: "", 
+          empty: "Such hollow, much empty...", 
+          loading: false
+        }));
+      } else {
+        setSearch(prev => ({...prev, vendors: res.data, query: ""}));
+        setFetchData(prev => ({...prev, vendors: res.data, error: "", empty: "", loading: false}));
       }
-    }
-  });
 
-  const onUpdate = (id: number) => {
+    })
+    .catch(e => {
+      const error = JSON.parse(JSON.stringify(
+        e.response ? e.response.data.error : e
+      ));
+      setFetchData(prev => ({...prev, error: error.message, empty: "", loading: false}));
+    });
+  }, []);
+
+  const onChangeSearch = (e) => {
+    if (e.target.value) {
+      const searched = fetchData.vendors.filter(vendor => vendor.name.toLowerCase().replace(/\s+/g, "").includes(e.target.value.toLowerCase().replace(/\s+/g, "")));
+      setSearch(prev => ({
+        ...prev, 
+        vendors: searched, 
+        query: e.target.value
+      }));
+    } else {
+      setSearch(prev => ({
+        ...prev, 
+        vendors: fetchData.vendors, 
+        query: e.target.value
+      }));
+    }
+  }
+
+  const onClearQuery = () => {
+    setSearch(prev => ({
+      ...prev, 
+      vendors: fetchData.vendors, 
+      query: "",
+    }));
+  }
+
+  const onAdd = () => {
+    navigate(`/configure/draft-vendor`);
+  }
+
+  const onEdit = (id: number) => {
     navigate(`/configure/draft-vendor/${id}`);
   }
 
-  const onClearAll = () => {
-    setSearchState(prev => ({
-      ...prev, 
-      greet: "Your search result will appear here.", 
-      error: "", 
-      empty: "",
-      loading: false,
-      found: [],
-    }));
-    searchForm.resetForm();
+  if (fetchData.loading) {
+    return (
+      <Spinner></Spinner>
+    );
+  }
+
+  if (fetchData.error) {
+    return (
+      <div className="w-11/12 sm:w-8/12 xl:w-6/12 mx-auto">
+        <Alert type="error" message={fetchData.error}></Alert>
+      </div>
+    );
   }
 
   return (
-    <section className="min-h-screen flex flex-col items-center">
-      <h1 className="font-bold text-xl my-4">View vendor</h1>
-      <div className="w-11/12 sm:w-6/12 md:w-5/12">
-        <form onSubmit={searchForm.handleSubmit} className="flex flex-col justify-center">
-          <div className="mb-5 flex">
-            <SearchInput id="vendor-search" name="keyword" placeholder="Search by vendor's name" 
-            value={searchForm.values.keyword} onChange={searchForm.handleChange} onFocus={null}
-            onClear={() => searchForm.setFieldValue("keyword", "")} />
-            <button type="submit" className="btn btn-accent btn-circle ml-2">
-              <BiSearch className="w-6 h-6"></BiSearch>
-            </button>
-          </div>
-        </form>
+    <section className="min-h-screen">
+      <h1 className="font-bold text-xl text-center my-4">View vendor</h1>
+      <div className="fixed bottom-24 right-6 md:right-8 z-20">
+        <button className="btn btn-primary btn-circle" onClick={onAdd}>
+          <span><BiPlus className="w-8 h-8"></BiPlus></span>
+        </button>
       </div>
-      <div className="w-11/12 sm:w-6/12 md:w-5/12 mb-8">
-        <div className="flex flex-col justify-center items-center">
-          {searchState.loading ? (
-          <Spinner></Spinner>
-          ) : (
-          <>
-            {searchState.found && searchState.found.length > 0 ? (
-              <>
-                {searchState.found.map((vendor) => (
-                <div key={vendor.id} className="w-full">
-                  <div className="custom-card flex justify-between items-center mb-4">
-                    <div>
-                      <p className="font-medium">{vendor.name}</p>
-                      <p className="text-sm text-neutral">{vendor.discontinued ? "Discontinued" : "In use"}</p>
-                    </div>
-  
-                    <button className="btn btn-circle btn-accent" onClick={() => onUpdate(vendor.id)}>
-                      <span><BiEdit className="w-6 h-6"></BiEdit></span>
-                    </button>
-                  </div>
-                </div>
-                ))}
-                <div className="mt-4">
-                  <button className="btn btn-accent" onClick={onClearAll}>
-                    <span className="mr-2">Clear search result(s)</span>
-                    <BiTrash className="w-6 h-6"></BiTrash>
-                  </button>
-                </div>
-              </>
-              ) : (
-              <>
-              {searchState.error ? (
-              <p className="text-neutral">{searchState.error}</p>
-              ) : (
-              <> 
-                {searchState.empty ? (
-                <p className="text-neutral">{searchState.empty}</p>
-                ) : (
-                <>
-                  {searchState.greet ? (
-                  <p className="text-neutral">{searchState.greet}</p>
-                  ) : null}
-                </>
-                )}
-              </>
-              )}
-            </>
-            )}        
-          </>
-          )
-          }
-        </div>
-      </div>  
+      <div className="mb-5 w-11/12 sm:w-8/12 xl:w-6/12 mx-auto">
+        <SearchInput id="vendor-search" placeholder="Search vendor"
+        name="vendor-search" value={search.query} 
+        onChange={(e) => onChangeSearch(e)} 
+        onClear={onClearQuery} 
+        onFocus={null}
+        ></SearchInput>
+      </div>
+      <div className="grid grid-cols-12 gap-4 px-4">
+        {search.vendors.map((vendor) => (
+          <div key={vendor.id} className="col-span-12 sm:col-span-6 xl:col-span-3 custom-card flex items-center">
+            <button className="btn btn-accent btn-circle mr-4" onClick={() => onEdit(vendor.id)}>
+              <span><BiEdit className="h-6 w-6"></BiEdit></span>
+            </button>
+            <div className="flex flex-col">
+              <span className="font-medium">{vendor.name}</span>
+              <span className="text-sm text-neutral">{vendor.discontinued ? "Not available" : "Available"}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+      {search.vendors?.length < 1 ? (<div className="text-center">Not found.</div>) : null}
     </section>
-  )
+  );
 }

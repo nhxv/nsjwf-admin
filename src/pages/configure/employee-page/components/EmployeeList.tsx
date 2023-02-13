@@ -6,55 +6,65 @@ import { BiEdit } from "react-icons/bi";
 import EmployeeForm from "./EmployeeForm";
 
 export default function EmployeeList() {
-  const [dataState, setDataState] = useState({
+  const [fetchData, setFetchData] = useState({
     employees: [],
     error: "",
     loading: true,
   });
-  const [modalData, setModalData] = useState({
-    id: -1,
-    nickname: "",
-    active: true,
+  const [modal, setModal] = useState({
+    employee: {
+      id: -1,
+      nickname: "",
+      active: true,
+    },
+    isOpen: false,
   });
-  const [isOpen, setIsOpen] = useState(false);
   const [reload, setReload] = useState(false);
 
   useEffect(() => {
     api.get(`/accounts/employees/all`)
     .then(res => {
-      setDataState(prev => ({...prev, employees: res.data, error: "", loading: false}));
+      setFetchData(prev => ({...prev, employees: res.data, error: "", loading: false}));
     })
     .catch(e => {
       const error = JSON.parse(JSON.stringify(
         e.response ? e.response.data.error : e
       ));
-      setDataState(prev => ({...prev, error: error.message, loading: false}));
+      setFetchData(prev => ({...prev, error: error.message, loading: false}));
     });
   }, [reload]);
 
   const onOpenForm = (data) => {
-    setModalData(prev => ({...prev, id: data.id, nickname: data.nickname, active: data.active}));
-    setIsOpen(true);
+    setModal(prev => ({
+      ...prev,
+      employee: {
+        ...prev.employee,
+        id: data.id, 
+        nickname: data.nickname, 
+        active: data.active,
+      },
+      isOpen: true,
+    }));
   }
 
   const onCloseForm = () => {
-    setIsOpen(false);
+    setModal(prev => ({...prev, isOpen: false}));
   }
 
   const onReload = () => {
     setReload(!reload);
   }
 
-  if (dataState.loading) {
+  if (fetchData.loading) {
     return (
       <Spinner></Spinner>
     );
   }
 
-  if (dataState.error) {
+  if (fetchData.error) {
     return (
       <div className="w-11/12 sm:w-8/12 xl:w-6/12 mx-auto">
-        <Alert type="error" message={dataState.error}></Alert>
+        <Alert type="error" message={fetchData.error}></Alert>
       </div>
     );
   }
@@ -62,7 +72,7 @@ export default function EmployeeList() {
   return (
     <>
       <div className="grid grid-cols-12 gap-4 px-4">
-        {dataState.employees.map((employee) => (
+        {fetchData.employees.map((employee) => (
           <div key={employee.nickname} className="col-span-12 sm:col-span-6 xl:col-span-4 custom-card flex items-center">
             <button className="btn btn-accent btn-circle mr-4" onClick={() => onOpenForm(employee)}>
               <span><BiEdit className="h-6 w-6"></BiEdit></span>
@@ -75,9 +85,9 @@ export default function EmployeeList() {
         ))}
       </div>
       <EmployeeForm 
-      isOpen={isOpen} 
+      isOpen={modal.isOpen} 
       onClose={onCloseForm} 
-      employee={modalData} 
+      employee={modal.employee} 
       onReload={onReload}
       ></EmployeeForm>
     </>

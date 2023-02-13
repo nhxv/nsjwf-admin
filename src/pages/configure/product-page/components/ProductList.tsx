@@ -8,33 +8,37 @@ import { FormType } from "../../../../commons/form-type.enum";
 import api from "../../../../stores/api";
 
 export default function ProductList() {
-  const [dataState, setDataState] = useState({
-    products: null,
+  const [fetchData, setFetchData] = useState({
+    products: [],
     error: "",
     empty: "",
     loading: true,
   });
-  const [modalData, setModalData] = useState({
-    id: -1,
-    name: "",
-    discontinued: false,
-    formType: FormType.CREATE,
+  const [modal, setModal] = useState({
+    product: {
+      id: -1,
+      name: "",
+      discontinued: false,
+    },
+    type: FormType.CREATE,
+    isOpen: false,
   });
-  const [isOpen, setIsOpen] = useState(false);
   const [reload, setReload] = useState(false);
-  const [query, setQuery] = useState("");
-  const [searchedProducts, setSearchedProducts] = useState([]);
+  const [search, setSearch] = useState({
+    products: [],
+    query: "",
+  });
 
   useEffect(() => {
     api.get(`/products/all`)
     .then(res => {
       if (res.data?.length === 0) {
-        setDataState(prev => (
+        setFetchData(prev => (
           {...prev, error: "", empty: "Such hollow, much empty...", loading: false}
         ));
       } else {
-        setSearchedProducts(res.data);
-        setDataState(prev => ({...prev, products: res.data, error: "", loading: false}));
+        setSearch(prev => ({...prev, products: res.data}));
+        setFetchData(prev => ({...prev, products: res.data, error: "", loading: false}));
       }
 
     })
@@ -42,34 +46,40 @@ export default function ProductList() {
       const error = JSON.parse(JSON.stringify(
         e.response ? e.response.data.error : e
       ));
-      setDataState(prev => ({...prev, error: error.message, loading: false}));
+      setFetchData(prev => ({...prev, error: error.message, empty: "", loading: false}));
     });
   }, [reload]);
 
   const onAdd = () => {
-    setModalData(prev => ({
+    setModal(prev => ({
       ...prev, 
-      id: -1,
-      name: "",
-      discontinued: false,
-      formType: FormType.CREATE,
+      product: {
+        ...prev.product,
+        id: -1,
+        name: "",
+        discontinued: false,
+      },
+      type: FormType.CREATE,
+      isOpen: true,
     }));
-    setIsOpen(true);
   }
 
   const onEdit = (data) => {
-    setModalData(prev => ({
-      ...prev, 
-      id: data.id, 
-      name: data.name, 
-      discontinued: data.discontinued,
-      formType: FormType.EDIT,
+    setModal(prev => ({
+      ...prev,
+      product: {
+        ...prev.product,
+        id: data.id, 
+        name: data.name, 
+        discontinued: data.discontinued,
+      }, 
+      type: FormType.EDIT,
+      isOpen: true,
     }));
-    setIsOpen(true);
   }
 
   const onCloseForm = () => {
-    setIsOpen(false);
+    setModal(prev => ({...prev, isOpen: false}));
   }
 
   const onReload = () => {
@@ -78,37 +88,47 @@ export default function ProductList() {
 
   const onChangeSearch = (e) => {
     if (e.target.value) {
-      const searched = dataState.products.filter(product => product.name.toLowerCase().replace(/\s+/g, "").includes(e.target.value.toLowerCase().replace(/\s+/g, "")));
-      setSearchedProducts(searched);
+      const searched = fetchData.products.filter(product => product.name.toLowerCase().replace(/\s+/g, "").includes(e.target.value.toLowerCase().replace(/\s+/g, "")));
+      setSearch(prev => ({
+        ...prev, 
+        products: searched, 
+        query: e.target.value
+      }));
     } else {
-      setSearchedProducts(dataState.products);
+      setSearch(prev => ({
+        ...prev, 
+        products: fetchData.products, 
+        query: e.target.value
+      }));
     }
-    setQuery(e.target.value);
   }
 
   const onClearQuery = () => {
-    setSearchedProducts(dataState.products);
-    setQuery("");
+    setSearch(prev => ({
+      ...prev, 
+      products: fetchData.products, 
+      query: "",
+    }));
   } 
 
-  if (dataState.loading) {
+  if (fetchData.loading) {
     return (
       <Spinner></Spinner>
     );
   }
 
-  if (dataState.error) {
+  if (fetchData.error) {
     return (
       <div className="w-11/12 sm:w-8/12 xl:w-6/12 mx-auto">
-        <Alert type="error" message={dataState.error}></Alert>
+        <Alert type="error" message={fetchData.error}></Alert>
       </div>
     );
   }
 
-  if (dataState.empty) {
+  if (fetchData.empty) {
     return (
       <div className="w-11/12 sm:w-8/12 xl:w-6/12 mx-auto">
-        <Alert type="empty" message={dataState.empty}></Alert>
+        <Alert type="empty" message={fetchData.empty}></Alert>
       </div>
     );
   }
@@ -120,17 +140,16 @@ export default function ProductList() {
           <span><BiPlus className="w-8 h-8"></BiPlus></span>
         </button>
       </div>
-
       <div className="mb-5 w-11/12 sm:w-8/12 xl:w-6/12 mx-auto">
         <SearchInput id="product-search" placeholder="Search product"
-        name="product-search" value={query} 
+        name="product-search" value={search.query} 
         onChange={(e) => onChangeSearch(e)} 
         onClear={onClearQuery} 
         onFocus={null}
         ></SearchInput>
       </div>
       <div className="grid grid-cols-12 gap-4 px-4">
-        {searchedProducts.map((product) => (
+        {search.products.map((product) => (
           <div key={product.name} className="col-span-12 sm:col-span-6 xl:col-span-3 custom-card flex items-center">
             <button className="btn btn-accent btn-circle mr-4" onClick={() => onEdit(product)}>
               <span><BiEdit className="h-6 w-6"></BiEdit></span>
@@ -142,13 +161,13 @@ export default function ProductList() {
           </div>
         ))}
       </div>
-      {searchedProducts?.length < 1 ? (<div className="text-center">Not found.</div>) : null}
+      {search.products?.length < 1 ? (<div className="text-center">Not found.</div>) : null}
       <ProductForm 
-        isOpen={isOpen} 
+        isOpen={modal.isOpen}
         onClose={onCloseForm} 
-        product={modalData} 
+        product={modal.product} 
         onReload={onReload}
-        type={modalData.formType}
+        type={modal.type}
       ></ProductForm>        
     </>
   );
