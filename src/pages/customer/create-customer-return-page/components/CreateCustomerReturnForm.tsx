@@ -1,6 +1,10 @@
 import { useFormik } from "formik";
 import { useState } from "react";
-import { BiCloudLightRain, BiLeftArrowAlt, BiRightArrowAlt } from "react-icons/bi";
+import {
+  BiCloudLightRain,
+  BiLeftArrowAlt,
+  BiRightArrowAlt,
+} from "react-icons/bi";
 import { convertTime } from "../../../../commons/time.util";
 import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
@@ -9,12 +13,12 @@ import TextInput from "../../../../components/forms/TextInput";
 import api from "../../../../stores/api";
 
 export default function CreateCustomerReturnForm({
-  initialData, 
+  initialData,
   products,
-  sold, 
+  sold,
   updatePrice,
-  total, 
-  onClear
+  total,
+  onClear,
 }) {
   const [formState, setFormState] = useState({
     success: "",
@@ -28,7 +32,12 @@ export default function CreateCustomerReturnForm({
     enableReinitialize: true,
     initialValues: initialData,
     onSubmit: async (data) => {
-      setFormState(prev => ({...prev, success: "", error: "", loading: true}));
+      setFormState((prev) => ({
+        ...prev,
+        success: "",
+        error: "",
+        loading: true,
+      }));
       try {
         let reqData = {};
         let productReturns = new Map();
@@ -43,9 +52,9 @@ export default function CreateCustomerReturnForm({
             const product = products[productIndex];
             productReturns.set(productIndex, {
               ...productReturns.get(productIndex),
-              "productName": product.product_name, 
-              "quantity": data[property],
-              "unitPrice": product.unit_price,
+              productName: product.product_name,
+              quantity: data[property],
+              unitPrice: product.unit_price,
             });
           }
         }
@@ -53,63 +62,71 @@ export default function CreateCustomerReturnForm({
         reqData["productCustomerReturns"] = productCustomerReturns;
         // create return
         const res = await api.post(`/customer-returns`, reqData);
-        setFormState(prev => ({
-          ...prev, 
+        setFormState((prev) => ({
+          ...prev,
           success: "Created return successfully.",
           error: "",
           loading: false,
         }));
         setTimeout(() => {
-          setFormState(prev => ({...prev, success: ""}));
+          setFormState((prev) => ({ ...prev, success: "" }));
           onClear();
         }, 2000);
       } catch (e) {
-        const error = JSON.parse(JSON.stringify(
-          e.response ? e.response.data.error : e
-        ));
-        setFormState(prev => ({...prev, error: error.message, loading: false}));
+        const error = JSON.parse(
+          JSON.stringify(e.response ? e.response.data.error : e)
+        );
+        setFormState((prev) => ({
+          ...prev,
+          error: error.message,
+          loading: false,
+        }));
       }
-    }
+    },
   });
 
   const handlePriceChange = (e, inputId: string) => {
     customerReturnForm.setFieldValue(inputId, e.target.value);
     updatePrice(e, inputId);
-  }
+  };
 
   const onClearForm = () => {
     onClear();
-  }
+  };
 
   const onNextPage = () => {
     setFinalPrice(total);
-    setFormState(prev => ({...prev, page: 1}));
-  }
+    setFormState((prev) => ({ ...prev, page: 1 }));
+  };
 
   const onPreviousPage = () => {
     setFinalPrice(total);
-    setFormState(prev => ({...prev, page: 0}));
-  }
+    setFormState((prev) => ({ ...prev, page: 0 }));
+  };
 
   const handleFinalPriceChange = (e) => {
     setFinalPrice(e.target.value);
-  }
+  };
 
   return (
     <form onSubmit={customerReturnForm.handleSubmit}>
       <div className="mb-3 flex flex-col justify-between">
         <div>
-          <span>#{sold.sale_manual_code ? sold.sale_manual_code : sold.sale_code}</span>
+          <span>
+            #{sold.sale_manual_code ? sold.sale_manual_code : sold.sale_code}
+          </span>
         </div>
         <div>
           <span className="font-semibold text-xl">{sold.customer_name}</span>
         </div>
         <div>
-          <span className="text-neutral text-sm">Created at {convertTime(new Date(sold.sold_at))}</span>
-        </div>           
+          <span className="text-neutral text-sm">
+            Created at {convertTime(new Date(sold.sold_at))}
+          </span>
+        </div>
       </div>
-          
-      <div className="divider my-1"></div>  
+
+      <div className="divider my-1"></div>
       <div className="flex justify-between items-center mb-2">
         <div className="w-6/12">
           <span className="custom-label">Product</span>
@@ -125,83 +142,120 @@ export default function CreateCustomerReturnForm({
       </div>
       {products.map((product, index) => {
         return (
-        <div key={index}>
-          <div className="flex justify-between items-center">
-            <div className="w-6/12">
-              <span>{product.product_name}</span>
-            </div>
-            <div className="flex w-6/12">
-              <div className="w-6/12 mr-2">
-                <NumberInput id={`quantity${index}`} min="0" max={product.quantity} placeholder="Qty"
-                  name={`quantity${index}`}  value={customerReturnForm.values[`quantity${index}`]}
-                  onChange={(e) => handlePriceChange(e, `quantity${index}`)}
-                  disabled={product.quantity === 0 || formState.page === 1 ? true : false}
-                ></NumberInput>
+          <div key={index}>
+            <div className="flex justify-between items-center">
+              <div className="w-6/12">
+                <span>{product.product_name}</span>
               </div>
+              <div className="flex w-6/12">
+                <div className="w-6/12 mr-2">
+                  <NumberInput
+                    id={`quantity${index}`}
+                    min="0"
+                    max={product.quantity}
+                    placeholder="Qty"
+                    name={`quantity${index}`}
+                    value={customerReturnForm.values[`quantity${index}`]}
+                    onChange={(e) => handlePriceChange(e, `quantity${index}`)}
+                    disabled={
+                      product.quantity === 0 || formState.page === 1
+                        ? true
+                        : false
+                    }
+                  ></NumberInput>
+                </div>
 
-              <div className="w-6/12 flex items-center justify-center">
-                <span>{product.unit_price}</span>
+                <div className="w-6/12 flex items-center justify-center">
+                  <span>{product.unit_price}</span>
+                </div>
               </div>
             </div>
-
+            <div className="divider my-1"></div>
           </div>
-          <div className="divider my-1"></div>
-        </div>
-        )
+        );
       })}
-      {formState.page === 1 ? (        
-      <div className="flex flex-col my-5">
-        <label htmlFor="total" className="custom-label mb-2">Refund ($)</label>
-        <div className="w-24">
-          <TextInput id={`total`} type="text" name={`total`} placeholder="Total" 
-            value={finalPrice} onChange={(e) => handleFinalPriceChange(e)}
-          ></TextInput>
+      {formState.page === 1 ? (
+        <div className="flex flex-col my-5">
+          <label htmlFor="total" className="custom-label mb-2">
+            Refund ($)
+          </label>
+          <div className="w-24">
+            <TextInput
+              id={`total`}
+              type="text"
+              name={`total`}
+              placeholder="Total"
+              value={finalPrice}
+              onChange={(e) => handleFinalPriceChange(e)}
+            ></TextInput>
+          </div>
         </div>
-      </div>) : null}
+      ) : null}
 
       <div className="flex flex-col">
         <div className="my-3">
-          {formState.page === 0 ? 
-          (<button type="button" className="btn btn-primary w-full" onClick={onNextPage}>
-            <span>Confirm price</span>
-            <span><BiRightArrowAlt className="w-7 h-7 ml-1"></BiRightArrowAlt></span>
-          </button>) : 
-          (<>
-            {formState.page === 1 ? (
-            <div className="flex justify-between">
-              <button type="button" className="btn btn-outline-primary w-[49%]" onClick={onPreviousPage}>
-                <span><BiLeftArrowAlt className="w-7 h-7 mr-1"></BiLeftArrowAlt></span>
-                <span>Go back</span>
-              </button>
-              <button type="submit" className="btn btn-primary w-[49%]">
-                <span>Create</span>
-                <span><BiRightArrowAlt className="w-7 h-7 ml-1"></BiRightArrowAlt></span>
-              </button>
-            </div>
-            ) : null}
-          </>)}
+          {formState.page === 0 ? (
+            <button
+              type="button"
+              className="btn btn-primary w-full"
+              onClick={onNextPage}
+            >
+              <span>Confirm price</span>
+              <span>
+                <BiRightArrowAlt className="w-7 h-7 ml-1"></BiRightArrowAlt>
+              </span>
+            </button>
+          ) : (
+            <>
+              {formState.page === 1 ? (
+                <div className="flex justify-between">
+                  <button
+                    type="button"
+                    className="btn btn-outline-primary w-[49%]"
+                    onClick={onPreviousPage}
+                  >
+                    <span>
+                      <BiLeftArrowAlt className="w-7 h-7 mr-1"></BiLeftArrowAlt>
+                    </span>
+                    <span>Go back</span>
+                  </button>
+                  <button type="submit" className="btn btn-primary w-[49%]">
+                    <span>Create</span>
+                    <span>
+                      <BiRightArrowAlt className="w-7 h-7 ml-1"></BiRightArrowAlt>
+                    </span>
+                  </button>
+                </div>
+              ) : null}
+            </>
+          )}
         </div>
-        <button type="button" className="btn btn-accent w-full" disabled={formState.loading} onClick={onClearForm}>
+        <button
+          type="button"
+          className="btn btn-accent w-full"
+          disabled={formState.loading}
+          onClick={onClearForm}
+        >
           <span>Clear change(s)</span>
         </button>
       </div>
       <div>
         {formState.loading ? (
-        <div className="mt-5">
-          <Spinner></Spinner>
-        </div>
+          <div className="mt-5">
+            <Spinner></Spinner>
+          </div>
         ) : null}
         {formState.success ? (
-        <div className="mt-5">
-          <Alert message={formState.success} type="success"></Alert>
-        </div>
+          <div className="mt-5">
+            <Alert message={formState.success} type="success"></Alert>
+          </div>
         ) : null}
         {formState.error ? (
-        <div className="mt-5">
-          <Alert message={formState.error} type="error"></Alert>
-        </div>  
+          <div className="mt-5">
+            <Alert message={formState.error} type="error"></Alert>
+          </div>
         ) : null}
       </div>
-    </form>        
-  )
+    </form>
+  );
 }
