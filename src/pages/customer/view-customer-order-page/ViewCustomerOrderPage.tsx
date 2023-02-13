@@ -161,14 +161,14 @@ export default function ViewCustomerOrderPage() {
                       {!listState.listEmpty &&
                       !listState.listError &&
                       !listState.listLoading ? (
-                        <div className="flex justify-center mb-6">
+                        <div className="mb-6 flex justify-center">
                           <button
                             type="button"
-                            className="btn btn-accent"
+                            className="btn-accent btn"
                             onClick={onBatchPrint}
                           >
                             <span className="mr-2">Print all orders</span>
-                            <BiLayer className="w-6 h-6"></BiLayer>
+                            <BiLayer className="h-6 w-6"></BiLayer>
                           </button>
                         </div>
                       ) : null}

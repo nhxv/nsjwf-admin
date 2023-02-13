@@ -16,16 +16,16 @@ export default function SearchInput({
     <>
       {/* <label htmlFor={id} className="sr-only">Search</label> */}
       <div className="relative w-full">
-        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-          <BiSearch className="w-6 h-6 text-neutral placeholder:text-base-300 dark:placeholder:text-base-300" />
+        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+          <BiSearch className="h-6 w-6 text-neutral placeholder:text-base-300 dark:placeholder:text-base-300" />
         </div>
 
         {value && document.activeElement === searchRef.current ? (
           <div
-            className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
+            className="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3"
             onClick={onClear}
           >
-            <BiX className="w-6 h-6 text-neutral" />
+            <BiX className="h-6 w-6 text-neutral" />
           </div>
         ) : null}
 
@@ -38,7 +38,7 @@ export default function SearchInput({
           value={value}
           onChange={onChange}
           onFocus={onFocus}
-          className="input border-2 border-base-300 bg-base-100 dark:bg-transparent focus:outline-none focus:border-primary pl-10 w-full dark:placeholder:text-neutral"
+          className="input w-full border-2 border-base-300 bg-base-100 pl-10 focus:border-primary focus:outline-none dark:bg-transparent dark:placeholder:text-neutral"
         />
       </div>
     </>

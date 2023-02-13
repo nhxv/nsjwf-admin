@@ -81,7 +81,7 @@ export default function ViewStockPage() {
 
   return (
     <section className="min-h-screen">
-      <h1 className="text-center font-bold text-xl my-4">View stock</h1>
+      <h1 className="my-4 text-center text-xl font-bold">View stock</h1>
       <div className="flex flex-col items-center">
         {dataState.loading ? (
           <Spinner></Spinner>
@@ -95,7 +95,7 @@ export default function ViewStockPage() {
                   <Alert message={dataState.empty} type="empty"></Alert>
                 ) : (
                   <>
-                    <div className="mb-5 w-12/12 sm:8/12 xl:w-6/12 mx-auto">
+                    <div className="w-12/12 sm:8/12 mx-auto mb-5 xl:w-6/12">
                       <SearchInput
                         id="stock-search"
                         name="stock-search"
@@ -111,7 +111,7 @@ export default function ViewStockPage() {
                         {searchedStocks.map((product) => (
                           <div
                             key={product.name}
-                            className="col-span-12 sm:col-span-6 xl:col-span-3 flex justify-between items-center p-3 bg-base-100 dark:bg-base-200 shadow-md rounded-btn"
+                            className="rounded-btn col-span-12 flex items-center justify-between bg-base-100 p-3 shadow-md dark:bg-base-200 sm:col-span-6 xl:col-span-3"
                           >
                             <div>
                               <span>{product.name}</span>
@@ -126,13 +126,13 @@ export default function ViewStockPage() {
                         <div className="text-center">Not found.</div>
                       ) : null}
                       {role === Role.MASTER || role === Role.ADMIN ? (
-                        <div className="flex justify-center mt-8">
+                        <div className="mt-8 flex justify-center">
                           <button
                             type="button"
-                            className="btn btn-accent"
+                            className="btn-accent btn"
                             onClick={onChangeStock}
                           >
-                            <BiEdit className="h-6 w-6 mr-1"></BiEdit>
+                            <BiEdit className="mr-1 h-6 w-6"></BiEdit>
                             <span>Change stock</span>
                           </button>
                         </div>

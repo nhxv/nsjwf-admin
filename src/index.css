@@ -18,13 +18,13 @@
 
 @layer components {
   .btn {
-    @apply text-base font-semibold border-2;
+    @apply border-2 text-base font-semibold;
   }
   .btn-outline-primary {
-    @apply bg-transparent border-primary text-primary hover:border-primary focus:border-primary hover:bg-info focus:bg-info;
+    @apply border-primary bg-transparent text-primary hover:border-primary hover:bg-info focus:border-primary focus:bg-info;
   }
   .btn-outline-accent {
-    @apply bg-transparent border-accent text-accent-content hover:border-accent focus:border-accent hover:bg-accent focus:bg-accent;
+    @apply border-accent bg-transparent text-accent-content hover:border-accent hover:bg-accent focus:border-accent focus:bg-accent;
   }
   .btn-ghost {
     @apply bg-transparent hover:bg-base-200 focus:bg-base-200 dark:hover:bg-base-300 dark:focus:bg-base-300;
@@ -33,10 +33,10 @@
     @apply text-base font-medium;
   }
   .custom-card {
-    @apply bg-base-100 dark:bg-base-200 p-6 rounded-box shadow-md;
+    @apply rounded-box bg-base-100 p-6 shadow-md dark:bg-base-200;
   }
   .custom-badge {
-    @apply h-fit w-fit py-1.5 px-2 rounded-full font-medium text-xs;
+    @apply h-fit w-fit rounded-full py-1.5 px-2 text-xs font-medium;
   }
 }
 

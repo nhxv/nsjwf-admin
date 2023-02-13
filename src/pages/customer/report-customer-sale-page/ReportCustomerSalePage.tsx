@@ -110,11 +110,11 @@ export default function ReportCustomerSalePage() {
             <div className="text-end">
               <button
                 type="button"
-                className="btn btn-accent"
+                className="btn-accent btn"
                 onClick={onDownloadReport}
               >
                 <span className="mr-2">Download report</span>
-                <BiDownload className="w-6 h-6"></BiDownload>
+                <BiDownload className="h-6 w-6"></BiDownload>
               </button>
             </div>
           ) : null}

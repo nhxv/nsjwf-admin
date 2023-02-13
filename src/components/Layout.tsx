@@ -176,29 +176,29 @@ export default function Layout({ children }) {
         <input id="mobile-drawer" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content flex flex-col">
           {/* Navbar */}
-          <nav className="w-full navbar bg-base-100 dark:bg-base-200 shadow-md top-0 sticky z-20">
+          <nav className="navbar sticky top-0 z-20 w-full bg-base-100 shadow-md dark:bg-base-200">
             <div className="navbar-start">
               <label
                 htmlFor="mobile-drawer"
-                className="btn btn-square btn-ghost hover:bg-base-300"
+                className="btn-ghost btn-square btn hover:bg-base-300"
               >
-                <BiMenuAltLeft className="inline-block w-8 h-8"></BiMenuAltLeft>
+                <BiMenuAltLeft className="inline-block h-8 w-8"></BiMenuAltLeft>
               </label>
             </div>
             <div className="navbar-center">
-              <div className="flex-1 px-2 mx-2 font-bold text-xl">NSJWF</div>
+              <div className="mx-2 flex-1 px-2 text-xl font-bold">NSJWF</div>
             </div>
             <div className="navbar-end">
-              <div className="dropdown dropdown-end">
+              <div className="dropdown-end dropdown">
                 <label
                   tabIndex={0}
-                  className="btn btn-square btn-ghost hover:bg-base-300"
+                  className="btn-ghost btn-square btn hover:bg-base-300"
                 >
-                  <BiDotsHorizontalRounded className="inline-block w-8 h-8"></BiDotsHorizontalRounded>
+                  <BiDotsHorizontalRounded className="inline-block h-8 w-8"></BiDotsHorizontalRounded>
                 </label>
                 <ul
                   tabIndex={0}
-                  className="dropdown-content menu p-2 shadow-md bg-base-100 dark:bg-base-200 rounded-box border border-base-300 w-52"
+                  className="dropdown-content menu rounded-box w-52 border border-base-300 bg-base-100 p-2 shadow-md dark:bg-base-200"
                 >
                   <li>
                     <a
@@ -206,7 +206,7 @@ export default function Layout({ children }) {
                       onClick={onProfile}
                     >
                       <span>
-                        <BiUser className="w-6 h-6 mr-1"></BiUser>
+                        <BiUser className="mr-1 h-6 w-6"></BiUser>
                       </span>
                       <span>My profile</span>
                     </a>
@@ -217,7 +217,7 @@ export default function Layout({ children }) {
                       onClick={onSignOut}
                     >
                       <span>
-                        <BiExit className="w-6 h-6 mr-1"></BiExit>
+                        <BiExit className="mr-1 h-6 w-6"></BiExit>
                       </span>
                       <span>Sign out</span>
                     </a>
@@ -237,7 +237,7 @@ export default function Layout({ children }) {
         {/* Sidebar */}
         <aside className="drawer-side">
           <label htmlFor="mobile-drawer" className="drawer-overlay"></label>
-          <div className="bg-base-100 dark:bg-base-200 min-h-screen w-60 overflow-y-auto shadow-md">
+          <div className="min-h-screen w-60 overflow-y-auto bg-base-100 shadow-md dark:bg-base-200">
             <ul className="menu p-4">
               {categories.map((category, index) => {
                 return (
@@ -256,7 +256,7 @@ export default function Layout({ children }) {
                                     to={item.href}
                                     className={(navData) =>
                                       navData.isActive
-                                        ? `text-primary-content active`
+                                        ? `active text-primary-content`
                                         : ``
                                     }
                                   >

@@ -98,7 +98,7 @@ export default function ViewVendorPage() {
 
   if (fetchData.error) {
     return (
-      <div className="w-11/12 sm:w-8/12 xl:w-6/12 mx-auto">
+      <div className="mx-auto w-11/12 sm:w-8/12 xl:w-6/12">
         <Alert type="error" message={fetchData.error}></Alert>
       </div>
     );
@@ -106,15 +106,15 @@ export default function ViewVendorPage() {
 
   return (
     <section className="min-h-screen">
-      <h1 className="font-bold text-xl text-center my-4">View vendor</h1>
-      <div className="fixed bottom-24 right-6 md:right-8 z-20">
-        <button className="btn btn-primary btn-circle" onClick={onAdd}>
+      <h1 className="my-4 text-center text-xl font-bold">View vendor</h1>
+      <div className="fixed bottom-24 right-6 z-20 md:right-8">
+        <button className="btn-primary btn-circle btn" onClick={onAdd}>
           <span>
-            <BiPlus className="w-8 h-8"></BiPlus>
+            <BiPlus className="h-8 w-8"></BiPlus>
           </span>
         </button>
       </div>
-      <div className="mb-5 w-11/12 sm:w-8/12 xl:w-6/12 mx-auto">
+      <div className="mx-auto mb-5 w-11/12 sm:w-8/12 xl:w-6/12">
         <SearchInput
           id="vendor-search"
           placeholder="Search vendor"
@@ -129,10 +129,10 @@ export default function ViewVendorPage() {
         {search.vendors.map((vendor) => (
           <div
             key={vendor.id}
-            className="col-span-12 sm:col-span-6 xl:col-span-3 custom-card flex items-center"
+            className="custom-card col-span-12 flex items-center sm:col-span-6 xl:col-span-3"
           >
             <button
-              className="btn btn-accent btn-circle mr-4"
+              className="btn-accent btn-circle btn mr-4"
               onClick={() => onEdit(vendor.id)}
             >
               <span>

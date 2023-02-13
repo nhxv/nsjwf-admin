@@ -4,9 +4,9 @@ export default function Stepper({ steps, selected, onSelect, display }) {
       {steps.map((s, index) => (
         <li
           key={s}
-          className={`cursor-pointer step text-sm sm:text-base font-medium ${
+          className={`step cursor-pointer text-sm font-medium sm:text-base ${
             index <= steps.findIndex((step) => step === selected)
-              ? "text-primary step-primary"
+              ? "step-primary text-primary"
               : ""
           }`}
           onClick={() => onSelect(s)}

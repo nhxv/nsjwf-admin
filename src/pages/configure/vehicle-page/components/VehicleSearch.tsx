@@ -74,7 +74,7 @@ export default function VehicleSearch() {
 
   return (
     <>
-      <div className="w-11/12 sm:w-6/12 md:w-5/12 mt-12">
+      <div className="mt-12 w-11/12 sm:w-6/12 md:w-5/12">
         <form
           onSubmit={searchForm.handleSubmit}
           className="flex flex-col justify-center"
@@ -89,14 +89,14 @@ export default function VehicleSearch() {
               onFocus={null}
               onClear={() => searchForm.setFieldValue("keyword", "")}
             />
-            <button type="submit" className="btn btn-accent btn-circle ml-2">
-              <BiSearch className="w-6 h-6"></BiSearch>
+            <button type="submit" className="btn-accent btn-circle btn ml-2">
+              <BiSearch className="h-6 w-6"></BiSearch>
             </button>
           </div>
         </form>
       </div>
-      <div className="w-11/12 sm:w-6/12 md:w-5/12 mb-8">
-        <div className="flex flex-col justify-center items-center">
+      <div className="mb-8 w-11/12 sm:w-6/12 md:w-5/12">
+        <div className="flex flex-col items-center justify-center">
           {searchState.loading ? (
             <>
               <Spinner></Spinner>
@@ -108,8 +108,8 @@ export default function VehicleSearch() {
                   {searchState.found.map((vehicle) => (
                     <div key={vehicle.id} className="w-full">
                       <div
-                        className="flex flex-col md:flex-row md:justify-between 
-              p-6 bg-base-100 rounded-box shadow-md mb-4 w-full"
+                        className="rounded-box mb-4 flex w-full 
+              flex-col bg-base-100 p-6 shadow-md md:flex-row md:justify-between"
                       >
                         <div>
                           <p className="font-medium">{vehicle.licensePlate}</p>
@@ -138,18 +138,18 @@ export default function VehicleSearch() {
                         </div>
 
                         <button
-                          className="btn btn-info text-primary w-full md:w-fit mt-4 md:mt-0"
+                          className="btn-info btn mt-4 w-full text-primary md:mt-0 md:w-fit"
                           onClick={() => onEdit(vehicle)}
                         >
-                          <BiEdit className="w-6 h-6"></BiEdit>
+                          <BiEdit className="h-6 w-6"></BiEdit>
                         </button>
                       </div>
                     </div>
                   ))}
                   <div className="mt-4">
-                    <button className="btn btn-accent" onClick={onClearAll}>
+                    <button className="btn-accent btn" onClick={onClearAll}>
                       <span className="mr-2">Clear search result(s)</span>
-                      <BiTrash className="w-6 h-6"></BiTrash>
+                      <BiTrash className="h-6 w-6"></BiTrash>
                     </button>
                   </div>
                 </>

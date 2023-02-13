@@ -95,7 +95,7 @@ export default function UpdateOrderPriorityPage() {
 
   return (
     <section className="min-h-screen">
-      <div className="flex justify-center my-8">
+      <div className="my-8 flex justify-center">
         <TabGroup
           group={Object.values(OrderStatus).filter(
             (s) =>

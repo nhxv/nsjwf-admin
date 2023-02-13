@@ -55,7 +55,7 @@ export default function EmployeeForm({ isOpen, onClose, employee, onReload }) {
         <div className="flex justify-end">
           <button
             type="button"
-            className="btn btn-circle btn-accent btn-sm"
+            className="btn-accent btn-sm btn-circle btn"
             onClick={onCloseForm}
           >
             <BiX className="h-6 w-6"></BiX>
@@ -63,7 +63,7 @@ export default function EmployeeForm({ isOpen, onClose, employee, onReload }) {
         </div>
         <form onSubmit={employeeForm.handleSubmit}>
           <div className="mb-5">
-            <label htmlFor="name" className="custom-label inline-block mb-2">
+            <label htmlFor="name" className="custom-label mb-2 inline-block">
               <span>Nickname</span>
               <span className="text-red-500">*</span>
             </label>
@@ -92,7 +92,7 @@ export default function EmployeeForm({ isOpen, onClose, employee, onReload }) {
           </div>
           <button
             type="submit"
-            className="btn btn-primary w-full mt-1"
+            className="btn-primary btn mt-1 w-full"
             disabled={formState.loading}
           >
             Update

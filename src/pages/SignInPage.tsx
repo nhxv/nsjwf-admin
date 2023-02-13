@@ -52,7 +52,7 @@ export default function SignInPage() {
   });
 
   return (
-    <div className="flex flex-col justify-center items-center min-h-screen p-4 bg-base-200 dark:bg-base-100">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-base-200 p-4 dark:bg-base-100">
       <form onSubmit={signInForm.handleSubmit} className="custom-card">
         {formState.error ? (
           <div className="mb-5">
@@ -60,7 +60,7 @@ export default function SignInPage() {
           </div>
         ) : null}
         <div className="mb-5">
-          <label htmlFor="username" className="custom-label inline-block mb-2">
+          <label htmlFor="username" className="custom-label mb-2 inline-block">
             Username
           </label>
           <TextInput
@@ -73,7 +73,7 @@ export default function SignInPage() {
           ></TextInput>
         </div>
         <div className="mb-5">
-          <label htmlFor="password" className="custom-label inline-block mb-2">
+          <label htmlFor="password" className="custom-label mb-2 inline-block">
             Password
           </label>
           <TextInput
@@ -87,7 +87,7 @@ export default function SignInPage() {
         </div>
         <button
           type="submit"
-          className="btn btn-primary w-full mt-3"
+          className="btn-primary btn mt-3 w-full"
           disabled={!!formState.loading}
         >
           Sign in

@@ -25,12 +25,12 @@ export default function VendorOrderList({ orders }) {
                   <span>#{order.code}</span>
                 </div>
                 <div>
-                  <span className="font-semibold text-xl">
+                  <span className="text-xl font-semibold">
                     {order.vendorName}
                   </span>
                 </div>
                 <div className="mb-6">
-                  <span className="text-neutral text-sm">
+                  <span className="text-sm text-neutral">
                     Expected at {convertTime(new Date(order.expectedAt))}
                   </span>
                 </div>
@@ -41,7 +41,7 @@ export default function VendorOrderList({ orders }) {
             </div>
             <div className="divider"></div>
             {/* products in order */}
-            <div className="flex items-center mb-2">
+            <div className="mb-2 flex items-center">
               <div className="w-10/12">
                 <span className="font-medium">Product</span>
               </div>
@@ -53,9 +53,9 @@ export default function VendorOrderList({ orders }) {
               return (
                 <div
                   key={productOrder.productName}
-                  className="flex justify-center items-center py-3 bg-base-200 dark:bg-base-300 rounded-btn mb-2"
+                  className="rounded-btn mb-2 flex items-center justify-center bg-base-200 py-3 dark:bg-base-300"
                 >
-                  <div className="w-10/12 ml-3">
+                  <div className="ml-3 w-10/12">
                     <span>{productOrder.productName}</span>
                   </div>
                   <div className="w-2/12 text-center">
@@ -69,7 +69,7 @@ export default function VendorOrderList({ orders }) {
               <>
                 <div className="divider"></div>
                 <button
-                  className="btn btn-primary w-full"
+                  className="btn-primary btn w-full"
                   onClick={() => onUpdateOrder(order.code)}
                 >
                   Update order

@@ -18,7 +18,7 @@ export default function DateInput({
         onChange={onChange}
         min={min}
         max={max}
-        className="input bg-transparent border-base-300 border-2 focus:outline-none focus:border-primary w-full"
+        className="input w-full border-2 border-base-300 bg-transparent focus:border-primary focus:outline-none"
       />
     </>
   );
