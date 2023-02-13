@@ -166,7 +166,7 @@ export default function DraftCustomerForm({
           <>
             {/* 1st Page */}
             <div className="mb-5">
-              <label htmlFor="name" className="custom-label inline-block mb-2">
+              <label htmlFor="name" className="custom-label mb-2 inline-block">
                 <span>Name</span>
                 <span className="text-red-500">*</span>
               </label>
@@ -183,7 +183,7 @@ export default function DraftCustomerForm({
             <div className="mb-5">
               <label
                 htmlFor="address"
-                className="custom-label inline-block mb-2"
+                className="custom-label mb-2 inline-block"
               >
                 Address
               </label>
@@ -198,7 +198,7 @@ export default function DraftCustomerForm({
             </div>
 
             <div className="mb-5">
-              <label htmlFor="phone" className="custom-label inline-block mb-2">
+              <label htmlFor="phone" className="custom-label mb-2 inline-block">
                 Phone
               </label>
               <TextInput
@@ -212,7 +212,7 @@ export default function DraftCustomerForm({
             </div>
 
             <div className="mb-5">
-              <label htmlFor="email" className="custom-label inline-block mb-2">
+              <label htmlFor="email" className="custom-label mb-2 inline-block">
                 Email
               </label>
               <TextInput
@@ -228,7 +228,7 @@ export default function DraftCustomerForm({
             <div className="mb-5">
               <label
                 htmlFor="presentative"
-                className="custom-label inline-block mb-2"
+                className="custom-label mb-2 inline-block"
               >
                 Presentative
               </label>
@@ -258,12 +258,12 @@ export default function DraftCustomerForm({
             </div>
             <button
               type="button"
-              className="my-3 btn btn-primary w-full"
+              className="btn-primary btn my-3 w-full"
               onClick={onNextPage}
             >
               <span>Product template</span>
               <span>
-                <BiRightArrowAlt className="w-7 h-7 ml-1"></BiRightArrowAlt>
+                <BiRightArrowAlt className="ml-1 h-7 w-7"></BiRightArrowAlt>
               </span>
             </button>
           </>
@@ -288,7 +288,7 @@ export default function DraftCustomerForm({
                 <div className="mb-5">
                   {selectedProducts && selectedProducts.length > 0 ? (
                     <>
-                      <div className="flex justify-between items-center mb-2">
+                      <div className="mb-2 flex items-center justify-between">
                         <div className="w-6/12">
                           <span className="custom-label">Product</span>
                         </div>
@@ -298,12 +298,12 @@ export default function DraftCustomerForm({
                       </div>
                       {selectedProducts.map((product) => (
                         <div key={product.id}>
-                          <div className="flex justify-between items-center">
+                          <div className="flex items-center justify-between">
                             <div className="w-6/12">
                               <span>{product.name}</span>
                             </div>
                             <div className="flex w-6/12">
-                              <div className="w-[49%] mr-2">
+                              <div className="mr-2 w-[49%]">
                                 <NumberInput
                                   id={`quantity${product.id}`}
                                   name={`quantity${product.id}`}
@@ -318,14 +318,14 @@ export default function DraftCustomerForm({
                                 ></NumberInput>
                               </div>
 
-                              <div className="w-[49%] flex items-center">
+                              <div className="flex w-[49%] items-center">
                                 <button
                                   type="button"
-                                  className="btn btn-accent w-full"
+                                  className="btn-accent btn w-full"
                                   onClick={() => onRemoveProduct(product.id)}
                                 >
                                   <span>
-                                    <BiTrash className="w-6 h-6 mr-1"></BiTrash>
+                                    <BiTrash className="mr-1 h-6 w-6"></BiTrash>
                                   </span>
                                   <span className="hidden lg:inline-block">
                                     Remove
@@ -339,25 +339,25 @@ export default function DraftCustomerForm({
                       ))}
                     </>
                   ) : (
-                    <div className="flex justify-center mt-5 mb-2">
+                    <div className="mt-5 mb-2 flex justify-center">
                       <span>Empty template.</span>
                     </div>
                   )}
                 </div>
-                <div className="flex justify-between my-3">
+                <div className="my-3 flex justify-between">
                   <button
                     type="button"
-                    className="btn btn-outline-primary w-[49%]"
+                    className="btn-outline-primary btn w-[49%]"
                     onClick={onPreviousPage}
                   >
                     <span>
-                      <BiLeftArrowAlt className="w-7 h-7 mr-1"></BiLeftArrowAlt>
+                      <BiLeftArrowAlt className="mr-1 h-7 w-7"></BiLeftArrowAlt>
                     </span>
                     <span>Go back</span>
                   </button>
                   <button
                     type="submit"
-                    className="btn btn-primary w-[49%]"
+                    className="btn-primary btn w-[49%]"
                     disabled={formState.loading}
                   >
                     <span>{editedId ? "Update" : "Create"}</span>
@@ -369,7 +369,7 @@ export default function DraftCustomerForm({
         )}
         <button
           type="button"
-          className="btn btn-accent w-full"
+          className="btn-accent btn w-full"
           onClick={onClear}
         >
           <span>Clear change(s)</span>

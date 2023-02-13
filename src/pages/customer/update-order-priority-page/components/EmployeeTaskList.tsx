@@ -93,7 +93,7 @@ export default function EmployeeTaskList({ employeeTasks, reload }) {
 
   return (
     <>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
         <DragDropContext onDragEnd={onDragEnd}>
           {employees.map((employee) => (
             <Droppable key={employee.nickname} droppableId={employee.nickname}>
@@ -101,7 +101,7 @@ export default function EmployeeTaskList({ employeeTasks, reload }) {
                 <div
                   ref={provided.innerRef}
                   {...provided.droppableProps}
-                  className={`rounded-box p-2 w-full shadow-md border-2 bg-base-100 dark:bg-base-200 self-start ${
+                  className={`rounded-box w-full self-start border-2 bg-base-100 p-2 shadow-md dark:bg-base-200 ${
                     snapshot.isDraggingOver
                       ? "border-primary"
                       : "border-base-100"
@@ -121,7 +121,7 @@ export default function EmployeeTaskList({ employeeTasks, reload }) {
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
-                            className={`rounded-box p-3 my-3 mx-2
+                            className={`rounded-box my-3 mx-2 p-3
                         ${
                           order.is_doing
                             ? "bg-red-900 text-white"

@@ -219,7 +219,7 @@ export default function BackorderForm({
         <>
           {/* 1st page */}
           <div className="mb-5">
-            <label className="custom-label inline-block mb-2">
+            <label className="custom-label mb-2 inline-block">
               <span>Order from customer</span>
               <span className="text-red-500">*</span>
             </label>
@@ -233,7 +233,7 @@ export default function BackorderForm({
           </div>
 
           <div className="mb-5">
-            <label htmlFor="expect" className="custom-label inline-block mb-2">
+            <label htmlFor="expect" className="custom-label mb-2 inline-block">
               Expected delivery date
             </label>
             <DateInput
@@ -252,7 +252,7 @@ export default function BackorderForm({
           <div className="mb-5">
             <label
               htmlFor="employee"
-              className="custom-label inline-block mb-2"
+              className="custom-label mb-2 inline-block"
             >
               Assign to
             </label>
@@ -268,12 +268,12 @@ export default function BackorderForm({
           {backorderForm.values[`customerName`] ? (
             <button
               type="button"
-              className="mt-3 btn btn-primary w-full"
+              className="btn-primary btn mt-3 w-full"
               onClick={onNextPage}
             >
               <span>Set product</span>
               <span>
-                <BiRightArrowAlt className="w-7 h-7 ml-1"></BiRightArrowAlt>
+                <BiRightArrowAlt className="ml-1 h-7 w-7"></BiRightArrowAlt>
               </span>
             </button>
           ) : null}
@@ -294,12 +294,12 @@ export default function BackorderForm({
               </div>
               {selectedProducts?.length > 0 ? (
                 <>
-                  <div className="flex justify-between items-center mb-2">
+                  <div className="mb-2 flex items-center justify-between">
                     <div className="w-5/12">
                       <span className="custom-label">Product</span>
                     </div>
                     <div className="flex w-7/12">
-                      <div className="w-5/12 mr-2">
+                      <div className="mr-2 w-5/12">
                         <span className="custom-label">Qty</span>
                       </div>
                       <div className="w-5/12">
@@ -309,7 +309,7 @@ export default function BackorderForm({
                   </div>
                 </>
               ) : (
-                <div className="flex justify-center mt-5 mb-2">
+                <div className="mt-5 mb-2 flex justify-center">
                   <span>Empty.</span>
                 </div>
               )}
@@ -317,7 +317,7 @@ export default function BackorderForm({
               {selectedProducts.map((product) => {
                 return (
                   <div key={product.id}>
-                    <div className="flex justify-between items-center">
+                    <div className="flex items-center justify-between">
                       <div className="w-5/12">
                         <span>{product.name}</span>
                         {product.sell_price ? (
@@ -330,7 +330,7 @@ export default function BackorderForm({
                         ) : null}
                       </div>
                       <div className="flex w-7/12">
-                        <div className="w-5/12 mr-2">
+                        <div className="mr-2 w-5/12">
                           <NumberInput
                             id={`quantity${product.id}`}
                             name={`quantity${product.id}`}
@@ -347,7 +347,7 @@ export default function BackorderForm({
                           ></NumberInput>
                         </div>
 
-                        <div className="w-5/12 mr-2">
+                        <div className="mr-2 w-5/12">
                           <TextInput
                             id={`price${product.id}`}
                             type="text"
@@ -360,14 +360,14 @@ export default function BackorderForm({
                           ></TextInput>
                         </div>
 
-                        <div className="w-2/12 flex items-center">
+                        <div className="flex w-2/12 items-center">
                           <button
                             type="button"
-                            className="btn btn-accent btn-circle btn-sm"
+                            className="btn-accent btn-sm btn-circle btn"
                             onClick={() => onRemoveProduct(product.id)}
                           >
                             <span>
-                              <BiX className="w-6 h-6"></BiX>
+                              <BiX className="h-6 w-6"></BiX>
                             </span>
                           </button>
                         </div>
@@ -378,11 +378,11 @@ export default function BackorderForm({
                 );
               })}
 
-              <div className="flex items-center mt-3 mb-5">
+              <div className="mt-3 mb-5 flex items-center">
                 <div>
                   <span className="">Total price:</span>
                 </div>
-                <span className="text-xl font-medium ml-2">${total}</span>
+                <span className="ml-2 text-xl font-medium">${total}</span>
               </div>
 
               <div className="mb-5 flex items-center">
@@ -400,18 +400,18 @@ export default function BackorderForm({
                 ></Checkbox>
               </div>
 
-              <div className="flex justify-between mt-3">
+              <div className="mt-3 flex justify-between">
                 <button
                   type="button"
-                  className="btn btn-outline-primary w-[49%]"
+                  className="btn-outline-primary btn w-[49%]"
                   onClick={onPreviousPage}
                 >
                   <span>
-                    <BiLeftArrowAlt className="w-7 h-7 mr-1"></BiLeftArrowAlt>
+                    <BiLeftArrowAlt className="mr-1 h-7 w-7"></BiLeftArrowAlt>
                   </span>
                   <span>Go back</span>
                 </button>
-                <button type="submit" className="btn btn-primary w-[49%]">
+                <button type="submit" className="btn-primary btn w-[49%]">
                   <span>{edit ? "Update" : "Create"}</span>
                 </button>
               </div>
@@ -421,7 +421,7 @@ export default function BackorderForm({
       )}
       <button
         type="button"
-        className="mt-3 btn btn-accent w-full"
+        className="btn-accent btn mt-3 w-full"
         disabled={formState.loading}
         onClick={onClearForm}
       >

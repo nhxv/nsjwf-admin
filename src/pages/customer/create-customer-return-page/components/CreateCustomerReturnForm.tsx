@@ -117,25 +117,25 @@ export default function CreateCustomerReturnForm({
           </span>
         </div>
         <div>
-          <span className="font-semibold text-xl">{sold.customer_name}</span>
+          <span className="text-xl font-semibold">{sold.customer_name}</span>
         </div>
         <div>
-          <span className="text-neutral text-sm">
+          <span className="text-sm text-neutral">
             Created at {convertTime(new Date(sold.sold_at))}
           </span>
         </div>
       </div>
 
       <div className="divider my-1"></div>
-      <div className="flex justify-between items-center mb-2">
+      <div className="mb-2 flex items-center justify-between">
         <div className="w-6/12">
           <span className="custom-label">Product</span>
         </div>
         <div className="flex w-6/12">
-          <div className="w-6/12 mr-2">
+          <div className="mr-2 w-6/12">
             <span className="custom-label">Qty</span>
           </div>
-          <div className="w-6/12 flex items-center justify-center">
+          <div className="flex w-6/12 items-center justify-center">
             <span className="custom-label">Unit price</span>
           </div>
         </div>
@@ -143,12 +143,12 @@ export default function CreateCustomerReturnForm({
       {products.map((product, index) => {
         return (
           <div key={index}>
-            <div className="flex justify-between items-center">
+            <div className="flex items-center justify-between">
               <div className="w-6/12">
                 <span>{product.product_name}</span>
               </div>
               <div className="flex w-6/12">
-                <div className="w-6/12 mr-2">
+                <div className="mr-2 w-6/12">
                   <NumberInput
                     id={`quantity${index}`}
                     min="0"
@@ -165,7 +165,7 @@ export default function CreateCustomerReturnForm({
                   ></NumberInput>
                 </div>
 
-                <div className="w-6/12 flex items-center justify-center">
+                <div className="flex w-6/12 items-center justify-center">
                   <span>{product.unit_price}</span>
                 </div>
               </div>
@@ -175,7 +175,7 @@ export default function CreateCustomerReturnForm({
         );
       })}
       {formState.page === 1 ? (
-        <div className="flex flex-col my-5">
+        <div className="my-5 flex flex-col">
           <label htmlFor="total" className="custom-label mb-2">
             Refund ($)
           </label>
@@ -197,12 +197,12 @@ export default function CreateCustomerReturnForm({
           {formState.page === 0 ? (
             <button
               type="button"
-              className="btn btn-primary w-full"
+              className="btn-primary btn w-full"
               onClick={onNextPage}
             >
               <span>Confirm price</span>
               <span>
-                <BiRightArrowAlt className="w-7 h-7 ml-1"></BiRightArrowAlt>
+                <BiRightArrowAlt className="ml-1 h-7 w-7"></BiRightArrowAlt>
               </span>
             </button>
           ) : (
@@ -211,18 +211,18 @@ export default function CreateCustomerReturnForm({
                 <div className="flex justify-between">
                   <button
                     type="button"
-                    className="btn btn-outline-primary w-[49%]"
+                    className="btn-outline-primary btn w-[49%]"
                     onClick={onPreviousPage}
                   >
                     <span>
-                      <BiLeftArrowAlt className="w-7 h-7 mr-1"></BiLeftArrowAlt>
+                      <BiLeftArrowAlt className="mr-1 h-7 w-7"></BiLeftArrowAlt>
                     </span>
                     <span>Go back</span>
                   </button>
-                  <button type="submit" className="btn btn-primary w-[49%]">
+                  <button type="submit" className="btn-primary btn w-[49%]">
                     <span>Create</span>
                     <span>
-                      <BiRightArrowAlt className="w-7 h-7 ml-1"></BiRightArrowAlt>
+                      <BiRightArrowAlt className="ml-1 h-7 w-7"></BiRightArrowAlt>
                     </span>
                   </button>
                 </div>
@@ -232,7 +232,7 @@ export default function CreateCustomerReturnForm({
         </div>
         <button
           type="button"
-          className="btn btn-accent w-full"
+          className="btn-accent btn w-full"
           disabled={formState.loading}
           onClick={onClearForm}
         >

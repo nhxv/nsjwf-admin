@@ -96,25 +96,25 @@ export default function Task({ order, reload, status }) {
             <span>#{order.manualCode ? order.manualCode : order.code}</span>
           </div>
           <div>
-            <span className="font-semibold text-xl">{order.customerName}</span>
+            <span className="text-xl font-semibold">{order.customerName}</span>
           </div>
           {status === OrderStatus.CHECKING ||
           status === OrderStatus.DELIVERED ? (
             <>
               <div>
-                <span className="text-neutral text-sm">
+                <span className="text-sm text-neutral">
                   Expected at {convertTime(new Date(order.expectedAt))}
                 </span>
               </div>
               <div className="mb-6">
-                <span className="text-neutral text-sm">
+                <span className="text-sm text-neutral">
                   by {order.assignTo}
                 </span>
               </div>
             </>
           ) : (
             <div className="mb-6">
-              <span className="text-neutral text-sm">
+              <span className="text-sm text-neutral">
                 Expected at {convertTime(new Date(order.expectedAt))}
               </span>
             </div>
@@ -126,7 +126,7 @@ export default function Task({ order, reload, status }) {
       </div>
       <div className="divider"></div>
       {/* products in order */}
-      <div className="flex items-center mb-2">
+      <div className="mb-2 flex items-center">
         <div className="w-10/12">
           <span className="font-medium">Product</span>
         </div>
@@ -138,9 +138,9 @@ export default function Task({ order, reload, status }) {
         return (
           <div
             key={productOrder.productName}
-            className="flex justify-center items-center py-3 bg-base-200 rounded-btn mb-2"
+            className="rounded-btn mb-2 flex items-center justify-center bg-base-200 py-3"
           >
-            <div className="w-10/12 ml-3">
+            <div className="ml-3 w-10/12">
               <span>{productOrder.productName}</span>
             </div>
             <div className="w-2/12 text-center">
@@ -155,14 +155,14 @@ export default function Task({ order, reload, status }) {
           {order.isDoing ? (
             <>
               <button
-                className="btn btn-primary w-full"
+                className="btn-primary btn w-full"
                 onClick={() => onFinishTask(order.code)}
                 disabled={formState.loading}
               >
                 Done {order.status.toLowerCase()}
               </button>
               <button
-                className="btn btn-outline-primary w-full mt-3"
+                className="btn-outline-primary btn mt-3 w-full"
                 onClick={() => onStopTask(order.code)}
                 disabled={formState.loading}
               >
@@ -171,7 +171,7 @@ export default function Task({ order, reload, status }) {
             </>
           ) : (
             <button
-              className="btn btn-primary w-full"
+              className="btn-primary btn w-full"
               onClick={() => onStartTask(order.code)}
               disabled={formState.loading}
             >

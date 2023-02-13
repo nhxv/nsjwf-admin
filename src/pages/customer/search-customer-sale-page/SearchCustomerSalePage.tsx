@@ -85,13 +85,13 @@ export default function SearchCustomerSalePage() {
 
   return (
     <section className="min-h-screen">
-      <h1 className="text-center font-bold text-xl my-4">Search sale</h1>
-      <div className="flex flex-col items-center mb-8">
+      <h1 className="my-4 text-center text-xl font-bold">Search sale</h1>
+      <div className="mb-8 flex flex-col items-center">
         <form
           onSubmit={searchForm.handleSubmit}
-          className="w-11/12 sm:w-8/12 xl:w-6/12 custom-card"
+          className="custom-card w-11/12 sm:w-8/12 xl:w-6/12"
         >
-          <div className="flex flex-col mb-6">
+          <div className="mb-6 flex flex-col">
             <div className="mb-4">
               <DateInput
                 id="date"
@@ -120,7 +120,7 @@ export default function SearchCustomerSalePage() {
           <div>
             <button
               type="submit"
-              className="btn btn-accent w-full"
+              className="btn-accent btn w-full"
               disabled={searchState.loading}
             >
               Search
@@ -139,7 +139,7 @@ export default function SearchCustomerSalePage() {
                   return (
                     <div
                       key={sale.code}
-                      className="w-11/12 sm:w-8/12 xl:w-6/12 custom-card mb-4"
+                      className="custom-card mb-4 w-11/12 sm:w-8/12 xl:w-6/12"
                     >
                       {/* basic sale info */}
                       <div className="flex flex-row justify-between">
@@ -150,12 +150,12 @@ export default function SearchCustomerSalePage() {
                             </span>
                           </div>
                           <div>
-                            <span className="font-semibold text-xl">
+                            <span className="text-xl font-semibold">
                               {sale.customerName}
                             </span>
                           </div>
                           <div className="">
-                            <span className="text-neutral text-sm">
+                            <span className="text-sm text-neutral">
                               Completed at{" "}
                               {convertTime(new Date(sale.updatedAt))}
                             </span>
@@ -164,7 +164,7 @@ export default function SearchCustomerSalePage() {
                       </div>
                       <div className="divider"></div>
                       {/* products in sale */}
-                      <div className="flex items-center mb-2">
+                      <div className="mb-2 flex items-center">
                         <div className="w-6/12">
                           <span className="font-medium">Product</span>
                         </div>
@@ -179,9 +179,9 @@ export default function SearchCustomerSalePage() {
                         return (
                           <div
                             key={productOrder.productName}
-                            className="flex justify-center items-center py-3 bg-base-200 dark:bg-base-300 rounded-btn mb-2"
+                            className="rounded-btn mb-2 flex items-center justify-center bg-base-200 py-3 dark:bg-base-300"
                           >
-                            <div className="w-6/12 ml-3">
+                            <div className="ml-3 w-6/12">
                               <span>{productOrder.productName}</span>
                             </div>
                             <div className="w-3/12 text-center">
@@ -197,7 +197,7 @@ export default function SearchCustomerSalePage() {
                         <>
                           <div className="divider"></div>
                           <button
-                            className="btn btn-primary w-full mt-2"
+                            className="btn-primary btn mt-2 w-full"
                             onClick={() => onCreateReturn(sale.code)}
                           >
                             Create return
@@ -210,9 +210,9 @@ export default function SearchCustomerSalePage() {
                   );
                 })}
                 <div className="mt-4 mb-8">
-                  <button className="btn btn-accent" onClick={onClearAll}>
+                  <button className="btn-accent btn" onClick={onClearAll}>
                     <span className="mr-2">Clear search result(s)</span>
-                    <BiTrash className="w-6 h-6"></BiTrash>
+                    <BiTrash className="h-6 w-6"></BiTrash>
                   </button>
                 </div>
               </>

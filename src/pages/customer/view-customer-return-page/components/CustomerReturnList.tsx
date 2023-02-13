@@ -5,7 +5,7 @@ export default function CustomerReturnList({ returns }) {
         return (
           <div
             key={customerReturn.orderCode}
-            className="bg-base-100 p-6 rounded-box shadow-md mb-8"
+            className="rounded-box mb-8 bg-base-100 p-6 shadow-md"
           >
             {/* basic order info */}
             <div className="flex flex-row justify-between">
@@ -14,7 +14,7 @@ export default function CustomerReturnList({ returns }) {
                   <span>#{customerReturn.orderCode}</span>
                 </div>
                 <div>
-                  <span className="font-semibold text-xl">
+                  <span className="text-xl font-semibold">
                     {customerReturn.customerName}
                   </span>
                 </div>
@@ -22,7 +22,7 @@ export default function CustomerReturnList({ returns }) {
             </div>
             <div className="divider"></div>
             {/* products in order */}
-            <div className="flex items-center mb-2">
+            <div className="mb-2 flex items-center">
               <div className="w-6/12">
                 <span className="font-medium">Product</span>
               </div>
@@ -37,9 +37,9 @@ export default function CustomerReturnList({ returns }) {
               return (
                 <div
                   key={productReturn.productName}
-                  className="flex justify-center items-center py-3 bg-base-200 dark:bg-base-300 rounded-btn mb-2"
+                  className="rounded-btn mb-2 flex items-center justify-center bg-base-200 py-3 dark:bg-base-300"
                 >
-                  <div className="w-6/12 ml-3">
+                  <div className="ml-3 w-6/12">
                     <span>{productReturn.productName}</span>
                   </div>
                   <div className="w-3/12 text-center">

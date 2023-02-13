@@ -18,12 +18,12 @@ export default function CustomerSaleList({ reports }) {
                   </span>
                 </div>
                 <div>
-                  <span className="font-semibold text-xl">
+                  <span className="text-xl font-semibold">
                     {report.customer_name}
                   </span>
                 </div>
                 <div className="">
-                  <span className="text-neutral text-sm">
+                  <span className="text-sm text-neutral">
                     Completed at {convertTime(new Date(report.date))}
                   </span>
                 </div>
@@ -31,7 +31,7 @@ export default function CustomerSaleList({ reports }) {
             </div>
             <div className="divider"></div>
             {/* products in report */}
-            <div className="flex items-center mb-2">
+            <div className="mb-2 flex items-center">
               <div className="w-6/12">
                 <span className="font-medium">Product</span>
               </div>
@@ -46,9 +46,9 @@ export default function CustomerSaleList({ reports }) {
               return (
                 <div
                   key={productOrder.product_name}
-                  className="flex justify-center items-center py-3 bg-base-200 dark:bg-base-300 rounded-btn mb-2"
+                  className="rounded-btn mb-2 flex items-center justify-center bg-base-200 py-3 dark:bg-base-300"
                 >
-                  <div className="w-6/12 ml-3">
+                  <div className="ml-3 w-6/12">
                     <span>{productOrder.product_name}</span>
                   </div>
                   <div className="w-3/12 text-center">
@@ -63,7 +63,7 @@ export default function CustomerSaleList({ reports }) {
             <div className="divider"></div>
             <div className="mt-2 flex items-center">
               <span className="mr-2">Total:</span>
-              <span className="font-medium text-xl mr-2">${report.sale}</span>
+              <span className="mr-2 text-xl font-medium">${report.sale}</span>
               <span className="text-red-600">-${report.refund}</span>
             </div>
           </div>

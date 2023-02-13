@@ -55,11 +55,11 @@ export default function OverviewCustomerOrderPage() {
         </div>
       ) : null}
 
-      <div className="grid grid-cols-12 gap-2 px-4 mt-8">
+      <div className="mt-8 grid grid-cols-12 gap-2 px-4">
         {customerOrderList.map((order) => (
           <div
             key={order.code}
-            className={`col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3 xl:col-span-2 p-3 shadow-md rounded-box border-2
+            className={`rounded-box col-span-12 border-2 p-3 shadow-md sm:col-span-6 md:col-span-4 lg:col-span-3 xl:col-span-2
       ${
         order.status === OrderStatus.PICKING
           ? "border-yellow-700 bg-yellow-100 text-yellow-700 dark:bg-base-100 dark:shadow-yellow-700"

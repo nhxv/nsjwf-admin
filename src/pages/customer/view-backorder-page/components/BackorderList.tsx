@@ -19,12 +19,12 @@ export default function BackorderList({ orders }) {
             <div className="flex flex-row justify-between">
               <div>
                 <div>
-                  <span className="font-semibold text-xl">
+                  <span className="text-xl font-semibold">
                     {order.customerName}
                   </span>
                 </div>
                 <div className="mb-6">
-                  <span className="text-neutral text-sm">
+                  <span className="text-sm text-neutral">
                     Expected at {convertTime(new Date(order.expectedAt))}
                   </span>
                 </div>
@@ -41,7 +41,7 @@ export default function BackorderList({ orders }) {
             </div>
             <div className="divider"></div>
             {/* products in order */}
-            <div className="flex items-center mb-2">
+            <div className="mb-2 flex items-center">
               <div className="w-10/12">
                 <span className="font-medium">Product</span>
               </div>
@@ -53,9 +53,9 @@ export default function BackorderList({ orders }) {
               return (
                 <div
                   key={productOrder.productName}
-                  className="flex justify-center items-center py-3 bg-base-200 rounded-btn mb-2"
+                  className="rounded-btn mb-2 flex items-center justify-center bg-base-200 py-3"
                 >
-                  <div className="w-10/12 ml-3">
+                  <div className="ml-3 w-10/12">
                     <span>{productOrder.productName}</span>
                   </div>
                   <div className="w-2/12 text-center">
@@ -68,7 +68,7 @@ export default function BackorderList({ orders }) {
               <>
                 <div className="divider"></div>
                 <button
-                  className="btn btn-primary w-full mt-4"
+                  className="btn-primary btn mt-4 w-full"
                   onClick={() => onUpdateOrder(order.id)}
                 >
                   Update order

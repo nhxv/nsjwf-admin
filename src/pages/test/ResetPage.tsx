@@ -48,28 +48,28 @@ export default function ResetPage() {
   };
 
   return (
-    <div className="flex flex-col items-center p-6 min-h-screen">
-      <h1 className="font-bold text-xl mb-8">Version 1</h1>
+    <div className="flex min-h-screen flex-col items-center p-6">
+      <h1 className="mb-8 text-xl font-bold">Version 1</h1>
       {message ? (
-        <div className="mockup-code bg-black mb-8">
+        <div className="mockup-code mb-8 bg-black">
           <pre data-prefix=">" className="text-white">
             <code>{message}</code>
           </pre>
         </div>
       ) : null}
-      <div className="mb-8 flex flex-col justify-center items-center">
+      <div className="mb-8 flex flex-col items-center justify-center">
         <h2 className="font-medium underline underline-offset-4">Configure</h2>
-        <button className="btn btn-secondary mt-4" onClick={onResetConfigure}>
+        <button className="btn-secondary btn mt-4" onClick={onResetConfigure}>
           <span>Reset configured data</span>
-          <BiReset className="w-6 h-6 ml-1"></BiReset>
+          <BiReset className="ml-1 h-6 w-6"></BiReset>
         </button>
       </div>
 
-      <div className="mb-8 flex flex-col justify-center items-center">
+      <div className="mb-8 flex flex-col items-center justify-center">
         <h2 className="font-medium underline underline-offset-4">Operation</h2>
-        <button className="btn btn-secondary mt-4" onClick={onResetOperation}>
+        <button className="btn-secondary btn mt-4" onClick={onResetOperation}>
           <span>Reset operational data</span>
-          <BiReset className="w-6 h-6 ml-1"></BiReset>
+          <BiReset className="ml-1 h-6 w-6"></BiReset>
         </button>
       </div>
     </div>

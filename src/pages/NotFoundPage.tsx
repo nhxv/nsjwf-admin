@@ -9,12 +9,12 @@ export default function NotFoundPage() {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center min-h-screen p-6 bg-base-200">
-      <h1 className="font-bold text-7xl">Error</h1>
+    <div className="flex min-h-screen flex-col items-center justify-center bg-base-200 p-6">
+      <h1 className="text-7xl font-bold">Error</h1>
       <p className="text-xl">This page does not exist.</p>
-      <button className="btn btn-primary mt-4" onClick={onBack}>
+      <button className="btn-primary btn mt-4" onClick={onBack}>
         <span className="mr-1">Go to sign in</span>
-        <BiRightArrowAlt className="w-6 h-6" />
+        <BiRightArrowAlt className="h-6 w-6" />
       </button>
     </div>
   );

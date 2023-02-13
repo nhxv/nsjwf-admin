@@ -71,7 +71,7 @@ export default function EmployeeList() {
 
   if (fetchData.error) {
     return (
-      <div className="w-11/12 sm:w-8/12 xl:w-6/12 mx-auto">
+      <div className="mx-auto w-11/12 sm:w-8/12 xl:w-6/12">
         <Alert type="error" message={fetchData.error}></Alert>
       </div>
     );
@@ -83,10 +83,10 @@ export default function EmployeeList() {
         {fetchData.employees.map((employee) => (
           <div
             key={employee.nickname}
-            className="col-span-12 sm:col-span-6 xl:col-span-4 custom-card flex items-center"
+            className="custom-card col-span-12 flex items-center sm:col-span-6 xl:col-span-4"
           >
             <button
-              className="btn btn-accent btn-circle mr-4"
+              className="btn-accent btn-circle btn mr-4"
               onClick={() => onOpenForm(employee)}
             >
               <span>

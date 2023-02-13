@@ -59,14 +59,14 @@ export default function CustomerOrderPrint({ order }) {
         <div className="custom-card text-left">
           <div className="flex justify-end">
             <button
-              className="btn btn-circle btn-accent btn-sm"
+              className="btn-accent btn-sm btn-circle btn"
               onClick={onCloseModal}
             >
               <BiX className="h-6 w-6"></BiX>
             </button>
           </div>
           <div className="mb-5">
-            <label htmlFor="name" className="custom-label inline-block mb-2">
+            <label htmlFor="name" className="custom-label mb-2 inline-block">
               <span>Number of pallet</span>
               <span className="text-red-500">*</span>
             </label>
@@ -81,23 +81,23 @@ export default function CustomerOrderPrint({ order }) {
               onChange={onChange}
             ></NumberInput>
           </div>
-          <button className="btn btn-primary w-full" onClick={onPalletPrint}>
+          <button className="btn-primary btn w-full" onClick={onPalletPrint}>
             Print label
           </button>
         </div>
       </Modal>
 
       {/* Print menu */}
-      <div className="dropdown dropdown-end z-0">
+      <div className="dropdown-end dropdown z-0">
         <label
           tabIndex={0}
-          className="btn btn-ghost btn-circle bg-base-200 dark:bg-base-300 text-neutral dark:text-neutral-content"
+          className="btn-ghost btn-circle btn bg-base-200 text-neutral dark:bg-base-300 dark:text-neutral-content"
         >
-          <BiPrinter className="inline-block w-6 h-6"></BiPrinter>
+          <BiPrinter className="inline-block h-6 w-6"></BiPrinter>
         </label>
         <ul
           tabIndex={0}
-          className="dropdown-content menu p-2 shadow-md border-2 border-base-300 bg-base-100 dark:bg-base-200 rounded-box w-36"
+          className="dropdown-content menu rounded-box w-36 border-2 border-base-300 bg-base-100 p-2 shadow-md dark:bg-base-200"
         >
           <li>
             <a

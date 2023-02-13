@@ -135,7 +135,7 @@ export default function ProductList() {
 
   if (fetchData.error) {
     return (
-      <div className="w-11/12 sm:w-8/12 xl:w-6/12 mx-auto">
+      <div className="mx-auto w-11/12 sm:w-8/12 xl:w-6/12">
         <Alert type="error" message={fetchData.error}></Alert>
       </div>
     );
@@ -143,7 +143,7 @@ export default function ProductList() {
 
   if (fetchData.empty) {
     return (
-      <div className="w-11/12 sm:w-8/12 xl:w-6/12 mx-auto">
+      <div className="mx-auto w-11/12 sm:w-8/12 xl:w-6/12">
         <Alert type="empty" message={fetchData.empty}></Alert>
       </div>
     );
@@ -151,14 +151,14 @@ export default function ProductList() {
 
   return (
     <>
-      <div className="fixed bottom-24 right-6 md:right-8 z-20">
-        <button className="btn btn-primary btn-circle" onClick={onAdd}>
+      <div className="fixed bottom-24 right-6 z-20 md:right-8">
+        <button className="btn-primary btn-circle btn" onClick={onAdd}>
           <span>
-            <BiPlus className="w-8 h-8"></BiPlus>
+            <BiPlus className="h-8 w-8"></BiPlus>
           </span>
         </button>
       </div>
-      <div className="mb-5 w-11/12 sm:w-8/12 xl:w-6/12 mx-auto">
+      <div className="mx-auto mb-5 w-11/12 sm:w-8/12 xl:w-6/12">
         <SearchInput
           id="product-search"
           placeholder="Search product"
@@ -173,10 +173,10 @@ export default function ProductList() {
         {search.products.map((product) => (
           <div
             key={product.name}
-            className="col-span-12 sm:col-span-6 xl:col-span-3 custom-card flex items-center"
+            className="custom-card col-span-12 flex items-center sm:col-span-6 xl:col-span-3"
           >
             <button
-              className="btn btn-accent btn-circle mr-4"
+              className="btn-accent btn-circle btn mr-4"
               onClick={() => onEdit(product)}
             >
               <span>

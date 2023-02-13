@@ -107,25 +107,25 @@ export default function CreateVendorReturnForm({
             <span>#{sold.sale_code}</span>
           </div>
           <div>
-            <span className="font-semibold text-xl">{sold.vendor_name}</span>
+            <span className="text-xl font-semibold">{sold.vendor_name}</span>
           </div>
           <div className="">
-            <span className="text-neutral text-sm">
+            <span className="text-sm text-neutral">
               Created at {convertTime(new Date(sold.sold_at))}
             </span>
           </div>
         </div>
 
         <div className="divider my-1"></div>
-        <div className="flex justify-between items-center mb-2">
+        <div className="mb-2 flex items-center justify-between">
           <div className="w-5/12">
             <span className="custom-label">Product</span>
           </div>
           <div className="flex w-7/12">
-            <div className="w-6/12 mr-2">
+            <div className="mr-2 w-6/12">
               <span className="custom-label">Qty</span>
             </div>
-            <div className="w-6/12 flex items-center justify-center">
+            <div className="flex w-6/12 items-center justify-center">
               <span className="custom-label">Unit price</span>
             </div>
           </div>
@@ -133,12 +133,12 @@ export default function CreateVendorReturnForm({
         {products.map((product, index) => {
           return (
             <div key={index}>
-              <div className="flex justify-between items-center">
+              <div className="flex items-center justify-between">
                 <div className="w-5/12">
                   <span>{product.product_name}</span>
                 </div>
                 <div className="flex w-7/12">
-                  <div className="w-6/12 mr-2">
+                  <div className="mr-2 w-6/12">
                     <NumberInput
                       id={`quantity${index}`}
                       name={`quantity${index}`}
@@ -155,7 +155,7 @@ export default function CreateVendorReturnForm({
                     ></NumberInput>
                   </div>
 
-                  <div className="w-6/12 flex items-center justify-center">
+                  <div className="flex w-6/12 items-center justify-center">
                     <span>{product.unit_price}</span>
                   </div>
                 </div>
@@ -165,7 +165,7 @@ export default function CreateVendorReturnForm({
           );
         })}
         {formState.page === 1 ? (
-          <div className="flex flex-col my-5">
+          <div className="my-5 flex flex-col">
             <label htmlFor="total" className="custom-label mb-2">
               Refund ($)
             </label>
@@ -187,12 +187,12 @@ export default function CreateVendorReturnForm({
             {formState.page === 0 ? (
               <button
                 type="button"
-                className="btn btn-primary w-full"
+                className="btn-primary btn w-full"
                 onClick={onNextPage}
               >
                 <span>Confirm price</span>
                 <span>
-                  <BiRightArrowAlt className="w-7 h-7 ml-1"></BiRightArrowAlt>
+                  <BiRightArrowAlt className="ml-1 h-7 w-7"></BiRightArrowAlt>
                 </span>
               </button>
             ) : (
@@ -201,22 +201,22 @@ export default function CreateVendorReturnForm({
                   <div className="flex justify-between">
                     <button
                       type="button"
-                      className="btn btn-outline-primary w-[49%]"
+                      className="btn-outline-primary btn w-[49%]"
                       onClick={onPreviousPage}
                     >
                       <span>
-                        <BiLeftArrowAlt className="w-7 h-7 mr-1"></BiLeftArrowAlt>
+                        <BiLeftArrowAlt className="mr-1 h-7 w-7"></BiLeftArrowAlt>
                       </span>
                       <span>Go back</span>
                     </button>
                     <button
                       type="submit"
-                      className="btn btn-primary w-[49%]"
+                      className="btn-primary btn w-[49%]"
                       disabled={formState.loading}
                     >
                       <span>Create</span>
                       <span>
-                        <BiRightArrowAlt className="w-7 h-7 ml-1"></BiRightArrowAlt>
+                        <BiRightArrowAlt className="ml-1 h-7 w-7"></BiRightArrowAlt>
                       </span>
                     </button>
                   </div>
@@ -227,7 +227,7 @@ export default function CreateVendorReturnForm({
           <div>
             <button
               type="button"
-              className="btn btn-accent w-full"
+              className="btn-accent btn w-full"
               onClick={onClearForm}
             >
               <span>Clear change(s)</span>
