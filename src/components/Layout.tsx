@@ -57,10 +57,8 @@ export default function Layout({ children }) {
       name: "Configure",
       subItems: [
         {itemName: "Product", href: "/configure/product", visible: [Role.MASTER, Role.ADMIN]},
-        {itemName: "Draft Customer", href: "/configure/draft-customer", visible: [Role.MASTER, Role.ADMIN]},
-        {itemName: "View Customer", href: "/configure/view-customer", visible: [Role.MASTER, Role.ADMIN]},
-        {itemName: "Draft Vendor", href: "/configure/draft-vendor", visible: [Role.MASTER, Role.ADMIN]},
-        {itemName: "View Vendor", href: "/configure/view-vendor", visible: [Role.MASTER, Role.ADMIN]},
+        {itemName: "Customer", href: "/configure/view-customer", visible: [Role.MASTER, Role.ADMIN]},
+        {itemName: "Vendor", href: "/configure/view-vendor", visible: [Role.MASTER, Role.ADMIN]},
         // {itemName: "Vehicle", href: "/configure/vehicle", visible: [Role.MASTER, Role.ADMIN]},
         {itemName: "Employee", href: "/configure/employee", visible: [Role.MASTER, Role.ADMIN]},
       ],

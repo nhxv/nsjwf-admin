@@ -81,9 +81,8 @@ export default function SearchCustomerSalePage() {
         <form onSubmit={searchForm.handleSubmit} className="w-11/12 sm:w-8/12 xl:w-6/12 custom-card">
           <div className="flex flex-col mb-6">
             <div className="mb-4">
-              <DateInput id="date" min="2022-01-01" max="2100-12-31"
-              name="date" placeholder="Date" 
-              value={searchForm.values[`date`]}
+              <DateInput id="date" min="2022-01-01" max="2100-12-31" placeholder="Date"
+              name="date" value={searchForm.values[`date`]}
               onChange={(e) => searchForm.setFieldValue("date", e.target.value)}
               ></DateInput>              
             </div>

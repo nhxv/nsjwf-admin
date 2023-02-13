@@ -22,10 +22,9 @@ export default function DraftCustomerFormContainer() {
   const [initialFields, setInitialFields] = useState({});
 
   useEffect(() => {
-    const productPromise = api.get(`/products/all`);
+    const productPromise = api.get(`/products/active`);
     if (params.id) {
-      // TODO: update customer
-      const customerPromise = api.get(`/customers/all/${params.id}`);
+      const customerPromise = api.get(`/customers/active/${params.id}`);
       Promise.all([customerPromise, productPromise])
       .then((res) => {
         const customerRes = res[0].data;

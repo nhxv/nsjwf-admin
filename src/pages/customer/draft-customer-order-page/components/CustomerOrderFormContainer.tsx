@@ -32,9 +32,9 @@ export default function CustomerOrderFormContainer() {
   }, [dataState.prices]);
 
   useEffect(() => {
-    const productPromise = api.get(`/products`);
-    const customerPromise = api.get(`/customers/all`);
-    const employeePromise = api.get(`/accounts/employees`);
+    const productPromise = api.get(`/products/active`);
+    const customerPromise = api.get(`/customers/active`);
+    const employeePromise = api.get(`/accounts/employees/active`);
     if (params.code) {
       // edit mode
       const orderPromise = api.get(`/customer-orders/${params.code}`);
