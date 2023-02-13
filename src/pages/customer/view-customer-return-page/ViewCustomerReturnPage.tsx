@@ -16,34 +16,40 @@ export default function ViewCustomerReturnPage() {
   const [customerReturnList, setCustomerReturnList] = useState([]);
 
   useEffect(() => {
-    api.get(`/customer-returns`)
-    .then((res) => {
-      if (res.data.length === 0) {
-        setListState(prev => ({
-          ...prev, 
-          listEmpty: "Such hollow, much empty...", 
+    api
+      .get(`/customer-returns`)
+      .then((res) => {
+        if (res.data.length === 0) {
+          setListState((prev) => ({
+            ...prev,
+            listEmpty: "Such hollow, much empty...",
+            listLoading: false,
+          }));
+        } else {
+          setListState((prev) => ({
+            ...prev,
+            listError: "",
+            listEmpty: "",
+            listLoading: false,
+          }));
+          setCustomerReturnList(res.data);
+        }
+      })
+      .catch((e) => {
+        const error = JSON.parse(
+          JSON.stringify(e.response ? e.response.data.error : e)
+        );
+        setListState((prev) => ({
+          ...prev,
+          listError: error.message,
           listLoading: false,
         }));
-      } else {
-        setListState(prev => ({...prev, listError: "", listEmpty: "", listLoading: false}));
-        setCustomerReturnList(res.data);
-      }
-    })
-    .catch((e) => {
-      const error = JSON.parse(JSON.stringify(
-        e.response ? e.response.data.error : e
-      ));
-      setListState(prev => (
-        {...prev, listError: error.message, listLoading: false}
-      ));
-    });
+      });
   }, []);
 
   useEffect(() => {
     if (!isFirstRender) {
-      setListState(prev => (
-        {...prev, listLoading: false}
-      ));
+      setListState((prev) => ({ ...prev, listLoading: false }));
     }
   }, [customerReturnList]);
 
@@ -53,23 +59,24 @@ export default function ViewCustomerReturnPage() {
       <div className="flex justify-center">
         <div className="w-11/12 sm:w-8/12 xl:w-6/12">
           {listState.listLoading ? (
-          <Spinner></Spinner>
+            <Spinner></Spinner>
           ) : (
-          <>
-            {listState.listError ? (
-            <Alert message={listState.listError} type="error"></Alert>
-            ) : (
             <>
-              {listState.listEmpty ? (
-              <Alert message={listState.listEmpty} type="empty"></Alert>
+              {listState.listError ? (
+                <Alert message={listState.listError} type="error"></Alert>
               ) : (
-              <CustomerReturnList returns={customerReturnList} />
+                <>
+                  {listState.listEmpty ? (
+                    <Alert message={listState.listEmpty} type="empty"></Alert>
+                  ) : (
+                    <CustomerReturnList returns={customerReturnList} />
+                  )}
+                </>
               )}
             </>
-            )}
-          </>)}        
-        </div> 
-      </div>    
+          )}
+        </div>
+      </div>
     </section>
   );
 }

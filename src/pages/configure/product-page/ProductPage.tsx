@@ -6,5 +6,5 @@ export default function ProductPage() {
       <h1 className="font-bold text-xl text-center my-4">Product</h1>
       <ProductList></ProductList>
     </section>
-  )
+  );
 }

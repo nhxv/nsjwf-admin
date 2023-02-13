@@ -2,7 +2,7 @@ import { BiError, BiBot, BiCheckDouble } from "react-icons/bi";
 
 export default function Alert({ message, type }) {
   if (type === "error") {
-    return (    
+    return (
       <div className="alert alert-error text-error-content justify-center">
         <div>
           <BiError className="w-6 h-6 md:mr-2"></BiError>
@@ -20,7 +20,7 @@ export default function Alert({ message, type }) {
           <span>{message}</span>
         </div>
       </div>
-    );    
+    );
   }
 
   if (type === "success") {

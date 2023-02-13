@@ -8,7 +8,7 @@ export default function ResetPage() {
   const onResetConfigure = async () => {
     setMessage("I've come to talk with you again...");
     try {
-      const res =  await api.delete(`/test/nuke/configure`);
+      const res = await api.delete(`/test/nuke/configure`);
       setTimeout(() => {
         setMessage("Done.");
         setTimeout(() => {
@@ -16,20 +16,20 @@ export default function ResetPage() {
         }, 2000);
       }, 2000);
     } catch (e) {
-      const error = JSON.parse(JSON.stringify(
-        e.response ? e.response.data.error : e
-      ));
+      const error = JSON.parse(
+        JSON.stringify(e.response ? e.response.data.error : e)
+      );
       setMessage(error.message);
       setTimeout(() => {
         setMessage("");
       }, 2000);
     }
-  }
+  };
 
   const onResetOperation = async () => {
     setMessage("I've come to talk with you again...");
     try {
-      const res =  await api.delete(`/test/nuke/operation`);
+      const res = await api.delete(`/test/nuke/operation`);
       setTimeout(() => {
         setMessage("Done.");
         setTimeout(() => {
@@ -37,22 +37,24 @@ export default function ResetPage() {
         }, 2000);
       }, 2000);
     } catch (e) {
-      const error = JSON.parse(JSON.stringify(
-        e.response ? e.response.data.error : e
-      ));
+      const error = JSON.parse(
+        JSON.stringify(e.response ? e.response.data.error : e)
+      );
       setMessage(error.message);
       setTimeout(() => {
         setMessage("");
       }, 2000);
     }
-  }
+  };
 
   return (
     <div className="flex flex-col items-center p-6 min-h-screen">
       <h1 className="font-bold text-xl mb-8">Version 1</h1>
       {message ? (
         <div className="mockup-code bg-black mb-8">
-          <pre data-prefix=">" className="text-white"><code>{message}</code></pre>
+          <pre data-prefix=">" className="text-white">
+            <code>{message}</code>
+          </pre>
         </div>
       ) : null}
       <div className="mb-8 flex flex-col justify-center items-center">

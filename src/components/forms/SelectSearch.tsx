@@ -6,15 +6,21 @@ export default function SelectSearch({ name, form, field, options, value }) {
   const [selected, setSelected] = useState(value);
   const [query, setQuery] = useState("");
 
-  const filteredOption = query === "" ? options : options.filter((option) =>
-          option.toLowerCase().replace(/\s+/g, "").includes(query.toLowerCase().replace(/\s+/g, ""))
+  const filteredOption =
+    query === ""
+      ? options
+      : options.filter((option) =>
+          option
+            .toLowerCase()
+            .replace(/\s+/g, "")
+            .includes(query.toLowerCase().replace(/\s+/g, ""))
         );
 
   const onChangeValue = (v) => {
     form.setFieldValue(field, v);
     setSelected(v);
     setQuery("");
-  }      
+  };
 
   return (
     <div className="w-full">
@@ -27,10 +33,7 @@ export default function SelectSearch({ name, form, field, options, value }) {
               onChange={(e) => setQuery(e.target.value)}
             />
             <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-3">
-              <BiChevronDown
-                className="h-6 w-6"
-                aria-hidden="true"
-              />
+              <BiChevronDown className="h-6 w-6" aria-hidden="true" />
             </Combobox.Button>
           </div>
           <Combobox.Options className="z-10 absolute mt-1 max-h-72 w-full overflow-auto rounded-btn bg-base-100 dark:bg-base-200 py-2 shadow-md border-2 border-base-300 focus:outline-none">
@@ -44,7 +47,8 @@ export default function SelectSearch({ name, form, field, options, value }) {
                   key={option}
                   className="relative cursor-default select-none py-3 px-4 mx-2 rounded-btn text-base-content 
                   ui-active:bg-info ui-active:text-info-content"
-                  value={option}>
+                  value={option}
+                >
                   <span className="block truncate ui-selected:font-semibold ui-selected:text-info-content">
                     {option}
                   </span>
@@ -55,5 +59,5 @@ export default function SelectSearch({ name, form, field, options, value }) {
         </div>
       </Combobox>
     </div>
-  )
+  );
 }

@@ -6,9 +6,12 @@ export default function PrivateOutlet() {
   const token = useAuthStore((state) => state.token);
 
   if (token) {
-    return <Layout><Outlet /></Layout>
+    return (
+      <Layout>
+        <Outlet />
+      </Layout>
+    );
   } else {
     return <Navigate to="/not-found" />;
   }
-
 }
