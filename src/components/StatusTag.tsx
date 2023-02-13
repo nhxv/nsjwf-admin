@@ -11,7 +11,7 @@ export default function StatusTag({ status }) {
   ) {
     return (
       <span
-        className={`p-2.5 text-sm rounded-full bg-warning text-warning-content font-medium`}
+        className={`rounded-full bg-warning p-2.5 text-sm font-medium text-warning-content`}
       >
         {status}
       </span>
@@ -21,7 +21,7 @@ export default function StatusTag({ status }) {
   if (status === OrderStatus.COMPLETED || status === BackorderStatus.ARCHIVED) {
     return (
       <span
-        className={`p-2.5 text-sm rounded-full bg-success text-success-content font-medium`}
+        className={`rounded-full bg-success p-2.5 text-sm font-medium text-success-content`}
       >
         {status}
       </span>

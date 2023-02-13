@@ -122,7 +122,7 @@ export default function VehicleForm() {
         <div className="mb-5">
           <label
             htmlFor="license-plate"
-            className="custom-label inline-block mb-2"
+            className="custom-label mb-2 inline-block"
           >
             <span>License Plate</span>
             <span className="text-red-500">*</span>
@@ -138,7 +138,7 @@ export default function VehicleForm() {
         </div>
 
         <div className="mb-5">
-          <label htmlFor="nickname" className="custom-label inline-block mb-2">
+          <label htmlFor="nickname" className="custom-label mb-2 inline-block">
             Nickname
           </label>
           <TextInput
@@ -152,7 +152,7 @@ export default function VehicleForm() {
         </div>
 
         <div className="mb-5">
-          <label htmlFor="volume" className="custom-label inline-block mb-2">
+          <label htmlFor="volume" className="custom-label mb-2 inline-block">
             Volume
           </label>
           <NumberInput
@@ -199,7 +199,7 @@ export default function VehicleForm() {
 
         <button
           type="submit"
-          className="mt-1 btn btn-primary w-full"
+          className="btn-primary btn mt-1 w-full"
           disabled={formState.loading}
         >
           <span>{formType} vehicle</span>
@@ -207,7 +207,7 @@ export default function VehicleForm() {
 
         <button
           type="button"
-          className="mt-3 btn btn-accent w-full"
+          className="btn-accent btn mt-3 w-full"
           onClick={onClear}
         >
           <span>Clear change(s)</span>

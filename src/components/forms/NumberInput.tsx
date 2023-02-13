@@ -21,7 +21,7 @@ export default function NumberInput({
         onChange={onChange}
         onFocus={(e) => e.target.select()}
         disabled={disabled}
-        className="input bg-transparent border-base-300 border-2 placeholder:text-base-300 dark:placeholder:text-neutral focus:outline-none focus:border-primary w-full dark:disabled:bg-base-300"
+        className="input w-full border-2 border-base-300 bg-transparent placeholder:text-base-300 focus:border-primary focus:outline-none dark:placeholder:text-neutral dark:disabled:bg-base-300"
       />
     </>
   );

@@ -5,7 +5,7 @@ export default function PalletLabelToPrint({ printRef, pallet, order }) {
     <div ref={printRef}>
       {pallet.list.map((_, index) => (
         <div
-          className="flex break-before-page justify-center items-center h-full"
+          className="flex h-full break-before-page items-center justify-center"
           key={`pallet-label-${index}`}
         >
           <div>

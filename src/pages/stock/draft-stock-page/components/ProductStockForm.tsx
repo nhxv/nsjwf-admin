@@ -118,7 +118,7 @@ export default function ProductStockForm({ initialData, stocks, onClear }) {
     <>
       <form onSubmit={productStockForm.handleSubmit}>
         <div className="mb-5">
-          <label htmlFor="reason" className="custom-label inline-block mb-2">
+          <label htmlFor="reason" className="custom-label mb-2 inline-block">
             Reason
           </label>
           <SelectInput
@@ -151,7 +151,7 @@ export default function ProductStockForm({ initialData, stocks, onClear }) {
 
         {selectedProducts?.length > 0 ? (
           <>
-            <div className="flex justify-between items-center mb-2">
+            <div className="mb-2 flex items-center justify-between">
               <div className="w-6/12">
                 <span className="custom-label">Product</span>
               </div>
@@ -161,7 +161,7 @@ export default function ProductStockForm({ initialData, stocks, onClear }) {
             </div>
           </>
         ) : (
-          <div className="flex justify-center mt-5 mb-2">
+          <div className="mt-5 mb-2 flex justify-center">
             <span>Empty.</span>
           </div>
         )}
@@ -169,12 +169,12 @@ export default function ProductStockForm({ initialData, stocks, onClear }) {
         {selectedProducts.map((product) => {
           return (
             <div key={product.id}>
-              <div className="flex justify-between items-center">
+              <div className="flex items-center justify-between">
                 <div className="w-6/12">
                   <span>{product.name}</span>
                 </div>
                 <div className="flex w-6/12">
-                  <div className="w-[49%] mr-2">
+                  <div className="mr-2 w-[49%]">
                     <NumberInput
                       id={`quantity${product.id}`}
                       name={`quantity${product.id}`}
@@ -187,14 +187,14 @@ export default function ProductStockForm({ initialData, stocks, onClear }) {
                     ></NumberInput>
                   </div>
 
-                  <div className="w-[49%] flex items-center">
+                  <div className="flex w-[49%] items-center">
                     <button
                       type="button"
-                      className="btn btn-accent w-full"
+                      className="btn-accent btn w-full"
                       onClick={() => onRemoveProduct(product.id)}
                     >
                       <span>
-                        <BiTrash className="w-6 h-6 mr-1"></BiTrash>
+                        <BiTrash className="mr-1 h-6 w-6"></BiTrash>
                       </span>
                       <span className="hidden lg:inline-block">Remove</span>
                     </button>
@@ -206,12 +206,12 @@ export default function ProductStockForm({ initialData, stocks, onClear }) {
           );
         })}
 
-        <button type="submit" className="my-3 btn btn-primary w-full">
+        <button type="submit" className="btn-primary btn my-3 w-full">
           Update Stock
         </button>
         <button
           type="button"
-          className="btn btn-accent w-full"
+          className="btn-accent btn w-full"
           onClick={onClearForm}
         >
           Clear change(s)

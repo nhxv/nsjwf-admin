@@ -22,11 +22,11 @@ export default function SearchSuggest({
         ></SearchInput>
       </div>
       {items.length > 0 ? (
-        <div className="my-2 border-2 border-base-300 dark:bg-base-200 rounded-btn p-2 shadow-md max-h-72 overflow-auto">
+        <div className="rounded-btn my-2 max-h-72 overflow-auto border-2 border-base-300 p-2 shadow-md dark:bg-base-200">
           {items.map((item, index) => (
             <div
               key={index}
-              className="cursor-pointer w-full p-3 rounded-btn hover:bg-info focus:bg-info focus:text-primary"
+              className="rounded-btn w-full cursor-pointer p-3 hover:bg-info focus:bg-info focus:text-primary"
               onClick={() => onSelect(item)}
             >
               <p>{item.name}</p>
@@ -35,7 +35,7 @@ export default function SearchSuggest({
         </div>
       ) : null}
       {items?.length === 0 && query ? (
-        <div className="my-2 border border-base-300 rounded-btn p-2 shadow-md">
+        <div className="rounded-btn my-2 border border-base-300 p-2 shadow-md">
           <p className="p-3">Not found.</p>
         </div>
       ) : null}

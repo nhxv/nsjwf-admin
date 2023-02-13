@@ -90,16 +90,16 @@ export default function ReportTaskPage() {
                       <>
                         {dataState.report.map((stat) => (
                           <div key={stat.label}>
-                            <h1 className="text-center font-bold text-xl my-4">
+                            <h1 className="my-4 text-center text-xl font-bold">
                               {stat.label}
                             </h1>
-                            <div className="flex flex-col md:flex-row justify-between">
-                              <div className="md:w-[49%] w-full mb-4 bg-yellow-500 flex items-center text-black rounded-box p-5 shadow-md">
-                                <span className="p-2 rounded-full bg-yellow-600 mr-4">
-                                  <BiCube className="w-8 h-8"></BiCube>
+                            <div className="flex flex-col justify-between md:flex-row">
+                              <div className="rounded-box mb-4 flex w-full items-center bg-yellow-500 p-5 text-black shadow-md md:w-[49%]">
+                                <span className="mr-4 rounded-full bg-yellow-600 p-2">
+                                  <BiCube className="h-8 w-8"></BiCube>
                                 </span>
                                 <div className="flex flex-col">
-                                  <span className="font-bold text-2xl">
+                                  <span className="text-2xl font-bold">
                                     {stat.employeePicking}/{stat.totalPicking}
                                   </span>
                                   <span className="text-sm font-medium">
@@ -108,12 +108,12 @@ export default function ReportTaskPage() {
                                 </div>
                               </div>
 
-                              <div className="md:w-[49%] w-full mb-4 bg-primary flex items-center text-white rounded-box p-5 shadow-md">
-                                <span className="p-2 rounded-full bg-emerald-800 mr-4">
-                                  <HiOutlineTruck className="w-8 h-8"></HiOutlineTruck>
+                              <div className="rounded-box mb-4 flex w-full items-center bg-primary p-5 text-white shadow-md md:w-[49%]">
+                                <span className="mr-4 rounded-full bg-emerald-800 p-2">
+                                  <HiOutlineTruck className="h-8 w-8"></HiOutlineTruck>
                                 </span>
                                 <div className="flex flex-col">
-                                  <span className="font-bold text-2xl">
+                                  <span className="text-2xl font-bold">
                                     {stat.employeeShipping}/{stat.totalShipping}
                                   </span>
                                   <span className="text-sm font-medium">
