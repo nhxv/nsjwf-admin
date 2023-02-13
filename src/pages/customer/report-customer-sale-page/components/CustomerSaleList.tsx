@@ -10,7 +10,7 @@ export default function CustomerSaleList({reports}) {
           <div className="flex flex-row justify-between">
             <div>
               <div>
-                <span>#{report.order_code}</span>
+                <span>#{report.manual_code ? report.manual_code : report.order_code}</span>
               </div>
               <div>
                 <span className="font-semibold text-xl">{report.customer_name}</span>
