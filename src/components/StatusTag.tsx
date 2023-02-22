@@ -1,5 +1,5 @@
-import { BackorderStatus } from "../commons/backorder-status.enum";
-import { OrderStatus } from "../commons/order-status.enum";
+import { BackorderStatus } from "../commons/enums/backorder-status.enum";
+import { OrderStatus } from "../commons/enums/order-status.enum";
 
 export default function StatusTag({ status }) {
   if (

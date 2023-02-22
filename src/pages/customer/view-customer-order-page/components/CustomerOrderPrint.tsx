@@ -1,10 +1,10 @@
-import { useReactToPrint } from "react-to-print";
 import { useRef, useState } from "react";
 import { BiPrinter, BiX } from "react-icons/bi";
+import { useReactToPrint } from "react-to-print";
 import NumberInput from "../../../../components/forms/NumberInput";
-import PalletLabelToPrint from "./PalletLabelToPrint";
-import PackingSlipToPrint from "./PackingSlipToPrint";
 import Modal from "../../../../components/Modal";
+import PackingSlipToPrint from "./PackingSlipToPrint";
+import PalletLabelToPrint from "./PalletLabelToPrint";
 
 export default function CustomerOrderPrint({ order }) {
   const [pallet, setPallet] = useState({ count: 1, list: [null] });

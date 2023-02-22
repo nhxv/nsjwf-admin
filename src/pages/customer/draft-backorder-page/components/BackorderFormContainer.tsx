@@ -1,20 +1,19 @@
-import { useState, useEffect, useMemo } from "react";
-import BackorderForm from "./BackorderForm";
-import api from "../../../../stores/api";
-import Spinner from "../../../../components/Spinner";
-import useFirstRender from "../../../../commons/hooks/first-render.hook";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import { OrderStatus } from "../../../../commons/order-status.enum";
-import { convertTime } from "../../../../commons/time.util";
+import useFirstRender from "../../../../commons/hooks/first-render.hook";
+import { convertTime } from "../../../../commons/utils/time.util";
 import Alert from "../../../../components/Alert";
+import Spinner from "../../../../components/Spinner";
+import api from "../../../../stores/api";
+import BackorderForm from "./BackorderForm";
 
 export default function BackorderFormContainer() {
   const isFirstRender = useFirstRender();
   const params = useParams();
   const [reload, setReload] = useState(false);
-  const [formState, setFormState] = useState({
-    errorMessage: "",
-    emptyMessage: "",
+  const [fetchData, setFetchData] = useState({
+    error: "",
+    empty: "",
     loading: true,
   });
   const [initialFields, setInitialFields] = useState({});
@@ -52,17 +51,15 @@ export default function BackorderFormContainer() {
           const employeeRes = res[2];
           const orderRes = res[3];
           if (
-            !productRes ||
-            productRes.data.length === 0 ||
-            !customerRes ||
-            customerRes.data.length === 0 ||
-            !employeeRes ||
-            employeeRes.data.length === 0 ||
+            productRes?.data?.length === 0 ||
+            customerRes?.data?.length === 0 ||
+            employeeRes?.data?.length === 0 ||
             !orderRes.data
           ) {
-            setFormState((prev) => ({
+            setFetchData((prev) => ({
               ...prev,
-              emptyMessage: "Such hollow, much empty...",
+              error: "",
+              empty: "Such hollow, much empty...",
               loading: false,
             }));
           } else {
@@ -77,10 +74,9 @@ export default function BackorderFormContainer() {
                 (po) => po.product_name === product.name
               );
               if (productOrder) {
-                productFieldData[`quantity${product.id}`] =
-                  productOrder.quantity;
-                productFieldData[`price${product.id}`] =
-                  productOrder.unit_price;
+                productFieldData[`quantity${product.id}`] = productOrder.quantity;
+                productFieldData[`unit${product.id}`] = productOrder.unit_code.split("_")[1];
+                productFieldData[`price${product.id}`] = productOrder.unit_price;
                 updatedPrices.push({
                   id: product.id,
                   quantity: productFieldData[`quantity${product.id}`],
@@ -89,8 +85,18 @@ export default function BackorderFormContainer() {
                 editedProductsRes.push({
                   id: product.id,
                   name: product.name,
+                  units: product.units,
                 });
+              } else {
+                productFieldData[`quantity${product.id}`] = 0;
+                productFieldData[`unit${product.id}`] = "BOX";
+                productFieldData[`price${product.id}`] = 0;
               }
+              updatedPrices.push({
+                id: product.id,
+                quantity: productFieldData[`quantity${product.id}`],
+                price: productFieldData[`price${product.id}`],
+              });
             }
             setInitialFields((prev) => ({
               ...prev,
@@ -117,9 +123,9 @@ export default function BackorderFormContainer() {
           const error = JSON.parse(
             JSON.stringify(e.response ? e.response.data.error : e)
           );
-          setFormState((prev) => ({
+          setFetchData((prev) => ({
             ...prev,
-            errorMessage: error.message,
+            error: error.message,
             loading: false,
           }));
         });
@@ -131,16 +137,14 @@ export default function BackorderFormContainer() {
           const customerRes = res[1];
           const employeeRes = res[2];
           if (
-            !productRes ||
-            productRes.data.length === 0 ||
-            !customerRes ||
-            customerRes.data?.length === 0 ||
-            !employeeRes ||
-            employeeRes.data?.length === 0
+            productRes?.data?.length === 0 ||
+            customerRes?.data?.length === 0 ||
+            employeeRes?.data?.length === 0
           ) {
-            setFormState((prev) => ({
+            setFetchData((prev) => ({
               ...prev,
-              emptyMessage: "Such hollow, much empty...",
+              empty: "Such hollow, much empty...",
+              error: "",
               loading: false,
             }));
           } else {
@@ -149,6 +153,7 @@ export default function BackorderFormContainer() {
             const productFieldData = {};
             for (const product of productRes.data) {
               productFieldData[`quantity${product.id}`] = 0;
+              productFieldData[`unit${product.id}`] = "BOX";
               productFieldData[`price${product.id}`] = 0;
               updatedPrices.push({
                 id: product.id,
@@ -164,7 +169,7 @@ export default function BackorderFormContainer() {
               customerName: ``,
               employeeName: employeeRes.data[0].nickname,
               isArchived: false,
-              isTest: true,
+              isTest: false,
               expectedAt: convertTime(nextDay),
               ...productFieldData,
             }));
@@ -181,9 +186,9 @@ export default function BackorderFormContainer() {
           const error = JSON.parse(
             JSON.stringify(e.response ? e.response.data.error : e)
           );
-          setFormState((prev) => ({
+          setFetchData((prev) => ({
             ...prev,
-            errorMessage: error.message,
+            error: error.message,
             loading: false,
           }));
         });
@@ -192,13 +197,13 @@ export default function BackorderFormContainer() {
 
   useEffect(() => {
     if (!isFirstRender) {
-      setFormState((prev) => ({ ...prev, loading: false }));
+      setFetchData((prev) => ({ ...prev, loading: false }));
     }
   }, [initialFields]);
 
   const onClear = () => {
     setReload(!reload);
-    setFormState((prev) => ({ ...prev, loading: true }));
+    setFetchData((prev) => ({ ...prev, error: "", empty: "", loading: true }));
   };
 
   const updatePrice = (value: number, inputId: string) => {
@@ -216,7 +221,7 @@ export default function BackorderFormContainer() {
       const index = updatedPrices.findIndex((p) => p.id === id);
       updatedPrices[index].quantity = 0;
       updatedPrices[index].price = 0;
-    }
+    } 
     setDataState((prev) => ({ ...prev, prices: updatedPrices }));
   };
 
@@ -224,26 +229,27 @@ export default function BackorderFormContainer() {
     if (!params.code) {
       // load template when create
       try {
-        const response = await api.get(`/customers/tendency/${customerName}`);
+        const response = await api.get(`/customers/active/tendency/${encodeURIComponent(customerName)}`);
         return response.data.customerProductTendencies;
       } catch (e) {
         const error = JSON.parse(
           JSON.stringify(e.response ? e.response.data.error : e)
         );
-        setFormState((prev) => ({
+        setFetchData((prev) => ({
           ...prev,
-          errorMessage: error.message,
+          error: error.message,
+          empty: "",
           loading: false,
         }));
       }
     }
   };
 
-  if (formState.loading) return <Spinner></Spinner>;
-  if (formState.errorMessage)
-    return <Alert message={formState.errorMessage} type="error"></Alert>;
-  if (formState.emptyMessage)
-    return <Alert message={formState.emptyMessage} type="empty"></Alert>;
+  if (fetchData.loading) return <Spinner></Spinner>;
+  if (fetchData.error)
+    return <Alert message={fetchData.error} type="error"></Alert>;
+  if (fetchData.empty)
+    return <Alert message={fetchData.empty} type="empty"></Alert>;
 
   return (
     <div className="custom-card mb-12">

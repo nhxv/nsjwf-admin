@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Combobox } from "@headlessui/react";
 import { BiChevronDown } from "react-icons/bi";
 
-export default function SelectSearch({ name, form, field, options, value }) {
-  const [selected, setSelected] = useState(value);
+export default function SelectSearch({ name, form, field, options, selected }) {
+  const [selectedOption, setSelectedOption] = useState(selected);
   const [query, setQuery] = useState("");
 
   const filteredOption =
@@ -18,17 +18,17 @@ export default function SelectSearch({ name, form, field, options, value }) {
 
   const onChangeValue = (v) => {
     form.setFieldValue(field, v);
-    setSelected(v);
+    setSelectedOption(v);
     setQuery("");
   };
 
   return (
     <div className="w-full">
-      <Combobox name={name} value={selected} onChange={(v) => onChangeValue(v)}>
+      <Combobox name={name} value={selectedOption} onChange={(v) => onChangeValue(v)}>
         <div className="relative">
           <div className="rounded-btn relative w-full cursor-default overflow-hidden bg-base-100 text-left">
             <Combobox.Input
-              className="rounded-btn w-full border-2 border-base-300 bg-base-100 py-3 pl-3.5 pr-10 text-sm font-semibold focus-visible:border-primary focus-visible:outline-none dark:bg-base-200"
+              className="rounded-btn w-full border-2 border-base-300 bg-base-100 h-12 pl-3.5 pr-10 text-sm font-semibold focus-visible:border-primary focus-visible:outline-none dark:bg-base-200"
               displayValue={(option: any) => option}
               onChange={(e) => setQuery(e.target.value)}
             />

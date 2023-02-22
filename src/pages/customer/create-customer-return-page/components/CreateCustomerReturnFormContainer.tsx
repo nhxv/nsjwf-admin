@@ -10,9 +10,9 @@ export default function CreateCustomerReturnFormContainer({}) {
   const isFirstRender = useFirstRender();
   const params = useParams();
   const [reload, setReload] = useState(false);
-  const [formState, setFormState] = useState({
-    errorMessage: "",
-    emptyMessage: "",
+  const [fetchData, setFetchData] = useState({
+    error: "",
+    empty: "",
     loading: true,
   });
   const [initialFields, setInitialFields] = useState({});
@@ -61,9 +61,10 @@ export default function CreateCustomerReturnFormContainer({}) {
         const error = JSON.parse(
           JSON.stringify(e.response ? e.response.data.error : e)
         );
-        setFormState((prev) => ({
+        setFetchData((prev) => ({
           ...prev,
-          errorMessage: error.message,
+          error: error.message,
+          empty: "",
           loading: false,
         }));
       });
@@ -71,16 +72,16 @@ export default function CreateCustomerReturnFormContainer({}) {
 
   useEffect(() => {
     if (!isFirstRender) {
-      setFormState((prev) => ({ ...prev, loading: false }));
+      setFetchData((prev) => ({ ...prev, loading: false }));
     }
   }, [initialFields]);
 
   const onClear = () => {
     setReload(!reload);
-    setFormState((prev) => ({
+    setFetchData((prev) => ({
       ...prev,
-      errorMessage: "",
-      emptyMessage: "",
+      error: "",
+      empty: "",
       loading: true,
     }));
   };
@@ -94,11 +95,11 @@ export default function CreateCustomerReturnFormContainer({}) {
     setDataState((prev) => ({ ...prev, prices: updatedPrices }));
   };
 
-  if (formState.loading) return <Spinner></Spinner>;
-  if (formState.errorMessage)
-    return <Alert message={formState.errorMessage} type="error"></Alert>;
-  if (formState.emptyMessage)
-    return <Alert message={formState.emptyMessage} type="empty"></Alert>;
+  if (fetchData.loading) return <Spinner></Spinner>;
+  if (fetchData.error)
+    return <Alert message={fetchData.error} type="error"></Alert>;
+  if (fetchData.empty)
+    return <Alert message={fetchData.empty} type="empty"></Alert>;
 
   return (
     <div className="custom-card mb-12">

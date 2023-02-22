@@ -1,7 +1,7 @@
 import { useFormik } from "formik";
 import { useState } from "react";
 import { BiLeftArrowAlt, BiRightArrowAlt } from "react-icons/bi";
-import { convertTime } from "../../../../commons/time.util";
+import { convertTime } from "../../../../commons/utils/time.util";
 import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
 import NumberInput from "../../../../components/forms/NumberInput";
@@ -28,7 +28,7 @@ export default function CreateVendorReturnForm({
     enableReinitialize: true,
     initialValues: initialData,
     onSubmit: async (data) => {
-      setFormState((prev) => ({ ...prev, loading: true }));
+      setFormState((prev) => ({ ...prev, error: "", success: "", loading: true }));
       try {
         let reqData = {};
         let productReturns = new Map();
@@ -45,6 +45,7 @@ export default function CreateVendorReturnForm({
               ...productReturns.get(productIndex),
               productName: product.product_name,
               quantity: data[property],
+              unitCode: product.unit_code,
               unitPrice: product.unit_price,
             });
           }
@@ -70,6 +71,7 @@ export default function CreateVendorReturnForm({
         setFormState((prev) => ({
           ...prev,
           error: error.message,
+          success: "",
           loading: false,
         }));
       }
@@ -121,12 +123,12 @@ export default function CreateVendorReturnForm({
           <div className="w-5/12">
             <span className="custom-label">Product</span>
           </div>
-          <div className="flex w-7/12">
-            <div className="mr-2 w-6/12">
+          <div className="flex gap-2 w-7/12">
+            <div className="w-6/12">
               <span className="custom-label">Qty</span>
             </div>
             <div className="flex w-6/12 items-center justify-center">
-              <span className="custom-label">Unit price</span>
+              <span className="custom-label">Price</span>
             </div>
           </div>
         </div>
@@ -136,9 +138,10 @@ export default function CreateVendorReturnForm({
               <div className="flex items-center justify-between">
                 <div className="w-5/12">
                   <span>{product.product_name}</span>
+                  <span className="block custom-badge bg-info text-info-content mt-1">Sold in {product.unit_code.split("_")[1].toLowerCase()}</span>
                 </div>
-                <div className="flex w-7/12">
-                  <div className="mr-2 w-6/12">
+                <div className="flex gap-2 w-7/12">
+                  <div className="w-6/12 flex gap-2 items-center">
                     <NumberInput
                       id={`quantity${index}`}
                       name={`quantity${index}`}
@@ -147,16 +150,12 @@ export default function CreateVendorReturnForm({
                       onChange={(e) => handlePriceChange(e, `quantity${index}`)}
                       min="0"
                       max={product.quantity}
-                      disabled={
-                        product.quantity === 0 || formState.page === 1
-                          ? true
-                          : false
-                      }
+                      disabled={!!(product.quantity === 0 || formState.page === 1)}
                     ></NumberInput>
                   </div>
 
                   <div className="flex w-6/12 items-center justify-center">
-                    <span>{product.unit_price}</span>
+                    <span>${product.unit_price}</span>
                   </div>
                 </div>
               </div>
@@ -187,7 +186,7 @@ export default function CreateVendorReturnForm({
             {formState.page === 0 ? (
               <button
                 type="button"
-                className="btn-primary btn w-full"
+                className="btn-primary btn w-full mt-3"
                 onClick={onNextPage}
               >
                 <span>Confirm price</span>

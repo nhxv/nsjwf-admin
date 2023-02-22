@@ -1,4 +1,4 @@
-import { Role } from "../../commons/role.enum";
+import { Role } from "../../commons/enums/role.enum";
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuthStore } from "../../stores/auth.store";
 

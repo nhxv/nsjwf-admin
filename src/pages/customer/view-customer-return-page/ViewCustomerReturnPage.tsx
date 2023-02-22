@@ -8,68 +8,66 @@ import Alert from "../../../components/Alert";
 
 export default function ViewCustomerReturnPage() {
   const isFirstRender = useFirstRender();
-  const [listState, setListState] = useState({
-    listError: "",
-    listEmpty: "",
-    listLoading: true,
+  const [fetchData, setFetchData] = useState({
+    returns: [],
+    error: "",
+    empty: "",
+    loading: true,
   });
-  const [customerReturnList, setCustomerReturnList] = useState([]);
 
   useEffect(() => {
     api
       .get(`/customer-returns`)
       .then((res) => {
         if (res.data.length === 0) {
-          setListState((prev) => ({
+          setFetchData((prev) => ({
             ...prev,
-            listEmpty: "Such hollow, much empty...",
-            listLoading: false,
+            returns: [],
+            empty: "Such hollow, much empty...",
+            error: "",
+            loading: false,
           }));
         } else {
-          setListState((prev) => ({
+          setFetchData((prev) => ({
             ...prev,
-            listError: "",
-            listEmpty: "",
-            listLoading: false,
+            returns: res.data,
+            error: "",
+            empty: "",
+            loading: false,
           }));
-          setCustomerReturnList(res.data);
         }
       })
       .catch((e) => {
         const error = JSON.parse(
           JSON.stringify(e.response ? e.response.data.error : e)
         );
-        setListState((prev) => ({
+        setFetchData((prev) => ({
           ...prev,
-          listError: error.message,
-          listLoading: false,
+          returns: [],
+          error: error.message,
+          empty: "",
+          loading: false,
         }));
       });
   }, []);
-
-  useEffect(() => {
-    if (!isFirstRender) {
-      setListState((prev) => ({ ...prev, listLoading: false }));
-    }
-  }, [customerReturnList]);
 
   return (
     <section className="min-h-screen">
       <h1 className="my-4 text-center text-xl font-bold">Customer return</h1>
       <div className="flex justify-center">
-        <div className="w-11/12 sm:w-8/12 xl:w-6/12">
-          {listState.listLoading ? (
+        <div className="w-11/12 md:w-8/12 lg:w-6/12 xl:w-5/12">
+          {fetchData.loading ? (
             <Spinner></Spinner>
           ) : (
             <>
-              {listState.listError ? (
-                <Alert message={listState.listError} type="error"></Alert>
+              {fetchData.error ? (
+                <Alert message={fetchData.error} type="error"></Alert>
               ) : (
                 <>
-                  {listState.listEmpty ? (
-                    <Alert message={listState.listEmpty} type="empty"></Alert>
+                  {fetchData.empty ? (
+                    <Alert message={fetchData.empty} type="empty"></Alert>
                   ) : (
-                    <CustomerReturnList returns={customerReturnList} />
+                    <CustomerReturnList returns={fetchData.returns} />
                   )}
                 </>
               )}

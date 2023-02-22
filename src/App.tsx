@@ -18,7 +18,6 @@ import ViewVendorOrderPage from "./pages/vendor/view-vendor-order-page/ViewVendo
 
 import ViewStockPage from "./pages/stock/view-stock-page/ViewStockPage";
 
-import ProductPage from "./pages/configure/product-page/ProductPage";
 import VehiclePage from "./pages/configure/vehicle-page/VehiclePage";
 import ResetPage from "./pages/test/ResetPage";
 import DraftStockPage from "./pages/stock/draft-stock-page/DraftStockPage";
@@ -38,6 +37,8 @@ import ViewCustomerPage from "./pages/configure/view-customer-page/ViewCustomerP
 import UpdateOrderPriorityPage from "./pages/customer/update-order-priority-page/UpdateOrderPriorityPage";
 import OverviewCustomerOrderPage from "./pages/customer/overview-customer-order-page/OverviewCustomerOrderPage";
 import EmployeePage from "./pages/configure/employee-page/EmployeePage";
+import DraftProductPage from "./pages/configure/draft-product-page/DraftProductPage";
+import ViewProductPage from "./pages/configure/view-product-page/ViewProductPage";
 
 export default function App() {
   return (
@@ -139,24 +140,19 @@ export default function App() {
 
         {/* Configure routes */}
         <Route element={<AdminOutlet />}>
-          <Route path="/configure/product" element={<ProductPage />}></Route>
-          <Route
-            path="/configure/draft-customer"
-            element={<DraftCustomerPage />}
-          >
+          {/* <Route path="/configure/product" element={<ProductPage />}></Route> */}
+          <Route path="/configure/draft-product" element={<DraftProductPage />}>
+            <Route path=":id" element={<DraftProductPage />}></Route>
+          </Route>
+          <Route path="/configure/view-product" element={<ViewProductPage />}></Route>
+          <Route path="/configure/draft-customer" element={<DraftCustomerPage />}>
             <Route path=":id" element={<DraftCustomerPage />}></Route>
           </Route>
-          <Route
-            path="/configure/view-customer"
-            element={<ViewCustomerPage />}
-          ></Route>
+          <Route path="/configure/view-customer" element={<ViewCustomerPage />}></Route>
           <Route path="/configure/draft-vendor" element={<DraftVendorPage />}>
             <Route path=":id" element={<DraftVendorPage />}></Route>
           </Route>
-          <Route
-            path="/configure/view-vendor"
-            element={<ViewVendorPage />}
-          ></Route>
+          <Route path="/configure/view-vendor" element={<ViewVendorPage />}></Route>
           {/* <Route path="/configure/vehicle" element={<VehiclePage />}></Route> */}
           <Route path="/configure/employee" element={<EmployeePage />}></Route>
         </Route>

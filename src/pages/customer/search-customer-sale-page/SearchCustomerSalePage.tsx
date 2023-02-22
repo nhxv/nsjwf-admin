@@ -4,12 +4,12 @@ import Spinner from "../../../components/Spinner";
 import SearchInput from "../../../components/forms/SearchInput";
 import DateInput from "../../../components/forms/DateInput";
 import { useState } from "react";
-import { convertTime } from "../../../commons/time.util";
+import { convertTime } from "../../../commons/utils/time.util";
 import { BiTrash } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 
 export default function SearchCustomerSalePage() {
-  const [searchState, setSearchState] = useState({
+  const [search, setSearch] = useState({
     greet: "Your search result will appear here.",
     error: "",
     empty: "",
@@ -24,7 +24,7 @@ export default function SearchCustomerSalePage() {
       date: convertTime(new Date()),
     },
     onSubmit: async (data) => {
-      setSearchState((prev) => ({
+      setSearch((prev) => ({
         ...prev,
         found: [],
         error: "",
@@ -34,11 +34,11 @@ export default function SearchCustomerSalePage() {
       }));
       try {
         const res = await api.get(
-          `/customer-orders/sold/search?keyword=${data.keyword}&date=${data.date}`
+          `/customer-orders/sold/search?keyword=${encodeURIComponent(data.keyword)}&date=${data.date}`
         );
         const resData = res.data;
         if (resData.length < 1) {
-          setSearchState((prev) => ({
+          setSearch((prev) => ({
             ...prev,
             greet: "",
             error: "",
@@ -46,9 +46,12 @@ export default function SearchCustomerSalePage() {
             loading: false,
           }));
         } else {
-          setSearchState((prev) => ({
+          setSearch((prev) => ({
             ...prev,
             loading: false,
+            error: "",
+            greet: "",
+            empty: "",
             found: resData,
           }));
         }
@@ -56,10 +59,12 @@ export default function SearchCustomerSalePage() {
         const error = JSON.parse(
           JSON.stringify(e.response ? e.response.data.error : e)
         );
-        setSearchState((prev) => ({
+        setSearch((prev) => ({
           ...prev,
+          found: [],
           greet: "",
           error: error.message,
+          empty: "",
           loading: false,
         }));
         searchForm.resetForm();
@@ -68,7 +73,7 @@ export default function SearchCustomerSalePage() {
   });
 
   const onClearAll = () => {
-    setSearchState((prev) => ({
+    setSearch((prev) => ({
       ...prev,
       greet: "Your search result will appear here.",
       error: "",
@@ -89,7 +94,7 @@ export default function SearchCustomerSalePage() {
       <div className="mb-8 flex flex-col items-center">
         <form
           onSubmit={searchForm.handleSubmit}
-          className="custom-card w-11/12 sm:w-8/12 xl:w-6/12"
+          className="custom-card w-11/12 md:w-8/12 lg:w-6/12 xl:w-5/12"
         >
           <div className="mb-6 flex flex-col">
             <div className="mb-4">
@@ -121,7 +126,7 @@ export default function SearchCustomerSalePage() {
             <button
               type="submit"
               className="btn-accent btn w-full"
-              disabled={searchState.loading}
+              disabled={search.loading}
             >
               Search
             </button>
@@ -129,17 +134,17 @@ export default function SearchCustomerSalePage() {
         </form>
       </div>
       <div className="flex flex-col items-center">
-        {searchState.loading ? (
+        {search.loading ? (
           <Spinner></Spinner>
         ) : (
           <>
-            {searchState.found && searchState.found.length > 0 ? (
+            {search.found && search.found.length > 0 ? (
               <>
-                {searchState.found.map((sale) => {
+                {search.found.map((sale) => {
                   return (
                     <div
                       key={sale.code}
-                      className="custom-card mb-4 w-11/12 sm:w-8/12 xl:w-6/12"
+                      className="custom-card mb-4 w-11/12 md:w-8/12 lg:w-6/12 xl:w-5/12"
                     >
                       {/* basic sale info */}
                       <div className="flex flex-row justify-between">
@@ -172,7 +177,7 @@ export default function SearchCustomerSalePage() {
                           <span className="font-medium">Qty</span>
                         </div>
                         <div className="w-3/12 text-center">
-                          <span className="font-medium">Unit price</span>
+                          <span className="font-medium">Price</span>
                         </div>
                       </div>
                       {sale.productCustomerOrders.map((productOrder) => {
@@ -185,7 +190,7 @@ export default function SearchCustomerSalePage() {
                               <span>{productOrder.productName}</span>
                             </div>
                             <div className="w-3/12 text-center">
-                              <span>{productOrder.quantity}</span>
+                              <span>{productOrder.quantity} ({productOrder.unitCode})</span>
                             </div>
                             <div className="w-3/12 text-center">
                               <span>{productOrder.unitPrice}</span>
@@ -218,16 +223,16 @@ export default function SearchCustomerSalePage() {
               </>
             ) : (
               <>
-                {searchState.error ? (
-                  <p className="text-neutral">{searchState.error}</p>
+                {search.error ? (
+                  <p className="text-neutral">{search.error}</p>
                 ) : (
                   <>
-                    {searchState.empty ? (
-                      <p className="text-neutral">{searchState.empty}</p>
+                    {search.empty ? (
+                      <p className="text-neutral">{search.empty}</p>
                     ) : (
                       <>
-                        {searchState.greet ? (
-                          <p className="text-neutral">{searchState.greet}</p>
+                        {search.greet ? (
+                          <p className="text-neutral">{search.greet}</p>
                         ) : null}
                       </>
                     )}

@@ -1,7 +1,7 @@
 import { useFormik } from "formik";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Role } from "../commons/role.enum";
+import { Role } from "../commons/enums/role.enum";
 import Alert from "../components/Alert";
 import Spinner from "../components/Spinner";
 import TextInput from "../components/forms/TextInput";

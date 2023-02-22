@@ -1,4 +1,4 @@
-import { convertTimeToText } from "../../../../commons/time.util";
+import { convertTimeToText } from "../../../../commons/utils/time.util";
 
 export default function PackingSlipToPrint({ printRef, order }) {
   return (
@@ -42,7 +42,7 @@ export default function PackingSlipToPrint({ printRef, order }) {
           <div className="block text-4xl font-bold">{order.customerName}</div>
         </div>
         <div className="ml-24 flex w-9/12 border-b-4 border-black pb-1">
-          <div className="w-[32px] text-center text-sm font-semibold">Qty</div>
+          <div className="w-[64px] text-sm font-semibold">Qty</div>
           <div className="ml-8 text-sm font-semibold">Item Description</div>
         </div>
         {order.productCustomerOrders.map((productOrder) => (
@@ -50,8 +50,8 @@ export default function PackingSlipToPrint({ printRef, order }) {
             key={productOrder.productName}
             className="ml-24 flex w-9/12 border-b border-black py-2"
           >
-            <div className="w-[32px] text-center text-xs font-semibold">
-              {productOrder.quantity}
+            <div className="w-[64px] text-xs font-semibold">
+              {productOrder.quantity} ({productOrder.unitCode})
             </div>
             <div className="ml-8 text-xs">{productOrder.productName}</div>
           </div>
