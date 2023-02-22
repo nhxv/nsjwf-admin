@@ -1,9 +1,6 @@
 import { useFormik } from "formik";
 import { useState } from "react";
-import {
-  BiLeftArrowAlt,
-  BiRightArrowAlt
-} from "react-icons/bi";
+import { BiLeftArrowAlt, BiRightArrowAlt } from "react-icons/bi";
 import { convertTime } from "../../../../commons/utils/time.util";
 import Alert from "../../../../components/Alert";
 import NumberInput from "../../../../components/forms/NumberInput";
@@ -132,7 +129,7 @@ export default function CreateCustomerReturnForm({
         <div className="w-5/12">
           <span className="custom-label">Product</span>
         </div>
-        <div className="flex gap-2 w-7/12">
+        <div className="flex w-7/12 gap-2">
           <div className="w-6/12">
             <span className="custom-label">Qty</span>
           </div>
@@ -147,9 +144,11 @@ export default function CreateCustomerReturnForm({
             <div className="flex items-center justify-between">
               <div className="w-5/12">
                 <span>{product.product_name}</span>
-                <span className="block custom-badge bg-info text-info-content mt-1">Sold in {product.unit_code.split("_")[1].toLowerCase()}</span>
+                <span className="custom-badge mt-1 block bg-info text-info-content">
+                  Sold in {product.unit_code.split("_")[1].toLowerCase()}
+                </span>
               </div>
-              <div className="flex gap-2 w-7/12">
+              <div className="flex w-7/12 gap-2">
                 <div className="w-6/12">
                   <NumberInput
                     id={`quantity${index}`}
@@ -159,7 +158,9 @@ export default function CreateCustomerReturnForm({
                     name={`quantity${index}`}
                     value={customerReturnForm.values[`quantity${index}`]}
                     onChange={(e) => handlePriceChange(e, `quantity${index}`)}
-                    disabled={!!(product.quantity === 0 || formState.page === 1)}
+                    disabled={
+                      !!(product.quantity === 0 || formState.page === 1)
+                    }
                   ></NumberInput>
                 </div>
 
@@ -195,7 +196,7 @@ export default function CreateCustomerReturnForm({
           {formState.page === 0 ? (
             <button
               type="button"
-              className="btn-primary btn w-full mt-3"
+              className="btn-primary btn mt-3 w-full"
               onClick={onNextPage}
             >
               <span>Confirm price</span>

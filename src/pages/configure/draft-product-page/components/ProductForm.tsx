@@ -8,12 +8,7 @@ import api from "../../../../stores/api";
 import { BiPlus, BiEditAlt } from "react-icons/bi";
 import UnitForm from "./UnitForm";
 
-export default function ProductForm({
-  editedId,
-  units,
-  initialData,
-  onClear,
-}) {
+export default function ProductForm({ editedId, units, initialData, onClear }) {
   const [formState, setFormState] = useState({
     success: "",
     error: "",
@@ -38,26 +33,36 @@ export default function ProductForm({
       try {
         if (!editedId) {
           const res = await api.post(`/products`, data);
-          setFormState((prev) => ({ 
-            ...prev, 
-            success: "Create product successfully.", 
-            error: "", 
-            loading: false 
+          setFormState((prev) => ({
+            ...prev,
+            success: "Create product successfully.",
+            error: "",
+            loading: false,
           }));
           setTimeout(() => {
-            setFormState(prev => ({...prev, success: "", error: "", loading: false}));
+            setFormState((prev) => ({
+              ...prev,
+              success: "",
+              error: "",
+              loading: false,
+            }));
             onClear();
           }, 2000);
         } else {
           const res = await api.put(`/products/${editedId}`, data);
-          setFormState((prev) => ({ 
-            ...prev, 
-            success: "Update product successfully.", 
-            error: "", 
+          setFormState((prev) => ({
+            ...prev,
+            success: "Update product successfully.",
+            error: "",
             loading: false,
           }));
           setTimeout(() => {
-            setFormState(prev => ({...prev, success: "", error: "", loading: false}));
+            setFormState((prev) => ({
+              ...prev,
+              success: "",
+              error: "",
+              loading: false,
+            }));
             onClear();
           }, 2000);
         }
@@ -76,17 +81,17 @@ export default function ProductForm({
   });
 
   const onAddUnit = () => {
-    setModal(prev => ({...prev, productId: editedId, isOpen: true}));
-  }
+    setModal((prev) => ({ ...prev, productId: editedId, isOpen: true }));
+  };
 
   const onEditUnit = (unit) => {
-    setModal(prev => ({...prev, unit: unit, isOpen: true,}));
-  }
+    setModal((prev) => ({ ...prev, unit: unit, isOpen: true }));
+  };
 
   const onCloseUnitForm = () => {
-    setModal(prev => ({...prev, isOpen: false, unit: null}));
+    setModal((prev) => ({ ...prev, isOpen: false, unit: null }));
     onClear();
-  }
+  };
 
   return (
     <>
@@ -110,17 +115,35 @@ export default function ProductForm({
           <>
             <div className="mb-5">
               <p className="custom-label mb-2">Custom unit</p>
-              <button type="button" className="btn btn-outline-accent w-full justify-start font-normal p-3" onClick={onAddUnit}>
-                <span><BiPlus className="w-6 h-6 mr-2"></BiPlus></span>
+              <button
+                type="button"
+                className="btn-outline-accent btn w-full justify-start p-3 font-normal"
+                onClick={onAddUnit}
+              >
+                <span>
+                  <BiPlus className="mr-2 h-6 w-6"></BiPlus>
+                </span>
                 <span>Add a unit</span>
               </button>
             </div>
 
-            {units ? units.map((unit) => (
-            <button type="button" key={unit.id} className="mb-5 btn btn-outline-accent p-3 justify-start font-normal w-full" onClick={() => onEditUnit(unit)}>
-              <span><BiEditAlt className="w-6 h-6 mr-2"></BiEditAlt></span>
-              <span>1 {unit.name} = {unit.ratio} BOX</span>
-            </button>)) : null}
+            {units
+              ? units.map((unit) => (
+                  <button
+                    type="button"
+                    key={unit.id}
+                    className="btn-outline-accent btn mb-5 w-full justify-start p-3 font-normal"
+                    onClick={() => onEditUnit(unit)}
+                  >
+                    <span>
+                      <BiEditAlt className="mr-2 h-6 w-6"></BiEditAlt>
+                    </span>
+                    <span>
+                      1 {unit.name} = {unit.ratio} BOX
+                    </span>
+                  </button>
+                ))
+              : null}
           </>
         ) : null}
 
@@ -160,10 +183,15 @@ export default function ProductForm({
             <div className="mt-5">
               <Alert message={formState.success} type="success"></Alert>
             </div>
-          ) : null}          
+          ) : null}
         </div>
       </form>
-      <UnitForm productId={modal.productId} unit={modal.unit} isOpen={modal.isOpen} onClose={onCloseUnitForm}></UnitForm>
+      <UnitForm
+        productId={modal.productId}
+        unit={modal.unit}
+        isOpen={modal.isOpen}
+        onClose={onCloseUnitForm}
+      ></UnitForm>
     </>
   );
 }

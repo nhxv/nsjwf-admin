@@ -35,7 +35,8 @@ export default function CustomerFormContainer() {
             );
             if (found) {
               productFieldData[`quantity${product.id}`] = found.quantity;
-              productFieldData[`unit${product.id}`] = found.unit_code.split("_")[1];
+              productFieldData[`unit${product.id}`] =
+                found.unit_code.split("_")[1];
               editedProductsRes.push({
                 id: product.id,
                 name: product.name,
@@ -95,8 +96,8 @@ export default function CustomerFormContainer() {
             discontinued: false,
             ...productFieldData,
           }));
-          setFetchData((prev) => ({ 
-            ...prev, 
+          setFetchData((prev) => ({
+            ...prev,
             allProducts: allProducts,
             editedProducts: [],
             error: "",

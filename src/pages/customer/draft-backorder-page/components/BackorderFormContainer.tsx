@@ -74,9 +74,12 @@ export default function BackorderFormContainer() {
                 (po) => po.product_name === product.name
               );
               if (productOrder) {
-                productFieldData[`quantity${product.id}`] = productOrder.quantity;
-                productFieldData[`unit${product.id}`] = productOrder.unit_code.split("_")[1];
-                productFieldData[`price${product.id}`] = productOrder.unit_price;
+                productFieldData[`quantity${product.id}`] =
+                  productOrder.quantity;
+                productFieldData[`unit${product.id}`] =
+                  productOrder.unit_code.split("_")[1];
+                productFieldData[`price${product.id}`] =
+                  productOrder.unit_price;
                 updatedPrices.push({
                   id: product.id,
                   quantity: productFieldData[`quantity${product.id}`],
@@ -221,7 +224,7 @@ export default function BackorderFormContainer() {
       const index = updatedPrices.findIndex((p) => p.id === id);
       updatedPrices[index].quantity = 0;
       updatedPrices[index].price = 0;
-    } 
+    }
     setDataState((prev) => ({ ...prev, prices: updatedPrices }));
   };
 
@@ -229,7 +232,9 @@ export default function BackorderFormContainer() {
     if (!params.code) {
       // load template when create
       try {
-        const response = await api.get(`/customers/active/tendency/${encodeURIComponent(customerName)}`);
+        const response = await api.get(
+          `/customers/active/tendency/${encodeURIComponent(customerName)}`
+        );
         return response.data.customerProductTendencies;
       } catch (e) {
         const error = JSON.parse(

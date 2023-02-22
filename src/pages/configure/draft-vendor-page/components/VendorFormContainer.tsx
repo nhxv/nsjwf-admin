@@ -35,7 +35,8 @@ export default function VendorFormContainer() {
             );
             if (found) {
               productFieldData[`quantity${product.id}`] = found.quantity;
-              productFieldData[`unit${product.id}`] = found.unit_code.split("_")[1];
+              productFieldData[`unit${product.id}`] =
+                found.unit_code.split("_")[1];
               editedProductsRes.push({
                 id: product.id,
                 name: product.name,
@@ -96,13 +97,13 @@ export default function VendorFormContainer() {
             discontinued: false,
             ...productFieldData,
           }));
-          setFetchData((prev) => ({ 
-            ...prev, 
+          setFetchData((prev) => ({
+            ...prev,
             allProducts: allProducts,
             editedProducts: [],
             error: "",
             empty: "",
-            loading: false, 
+            loading: false,
           }));
         })
         .catch((e) => {

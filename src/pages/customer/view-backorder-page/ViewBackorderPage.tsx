@@ -48,12 +48,11 @@ export default function ViewBackorderPage() {
           loading: false,
         }));
       });
-  }, [status])
-
+  }, [status]);
 
   const capitalizeFirst = (str: string) => {
     return str.charAt(0).toUpperCase() + str.slice(1);
-  }
+  };
 
   const setStep = (step: string) => {
     const s = step.toUpperCase();
@@ -71,7 +70,7 @@ export default function ViewBackorderPage() {
         loading: true,
       }));
     }
-  }
+  };
 
   return (
     <>

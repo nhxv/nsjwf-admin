@@ -38,7 +38,7 @@ export default function VendorOrderForm({
   const [search, setSearch] = useState({
     products: [],
     query: "",
-  })
+  });
 
   const vendorOrderForm = useFormik({
     enableReinitialize: true,
@@ -155,15 +155,21 @@ export default function VendorOrderForm({
         const selected = [];
         for (const product of template) {
           const found = allProducts.find((p) => p.name === product.name);
-          selected.push({ id: found.id, name: product.name, units: found.units });
+          selected.push({
+            id: found.id,
+            name: product.name,
+            units: found.units,
+          });
           vendorOrderForm.setFieldValue(
             `quantity${found.id}`,
             product.quantity
           );
-          vendorOrderForm.setFieldValue(`unit${found.id}`, product.unit_code.split("_")[1]);
+          vendorOrderForm.setFieldValue(
+            `unit${found.id}`,
+            product.unit_code.split("_")[1]
+          );
           updatePrice(product.quantity, `quantity${found.id}`);
           vendorOrderForm.setFieldValue(`price${found.id}`, 0);
-
         }
         setSelectedProducts(selected);
       }
@@ -189,9 +195,13 @@ export default function VendorOrderForm({
           .replace(/\s+/g, "")
           .includes(e.target.value.toLowerCase().replace(/\s+/g, ""))
       );
-      setSearch(prev => ({...prev, products: searched, query: e.target.value}));
+      setSearch((prev) => ({
+        ...prev,
+        products: searched,
+        query: e.target.value,
+      }));
     } else {
-      setSearch(prev => ({...prev, products: [], query: e.target.value}));
+      setSearch((prev) => ({ ...prev, products: [], query: e.target.value }));
     }
   };
 
@@ -203,11 +213,11 @@ export default function VendorOrderForm({
       vendorOrderForm.setFieldValue(`unit${product.id}`, "BOX");
       vendorOrderForm.setFieldValue(`price${product.id}`, 0);
     }
-    setSearch(prev => ({...prev, products: [], query: ""}));
+    setSearch((prev) => ({ ...prev, products: [], query: "" }));
   };
 
   const onRemoveProduct = (id) => {
-    setSearch(prev => ({...prev, products: [], query: ""}));
+    setSearch((prev) => ({ ...prev, products: [], query: "" }));
     vendorOrderForm.setFieldValue(`quantity${id}`, 0);
     vendorOrderForm.setFieldValue(`unit${id}`, "BOX");
     vendorOrderForm.setFieldValue(`price${id}`, 0);
@@ -218,7 +228,7 @@ export default function VendorOrderForm({
   };
 
   const onClearQuery = () => {
-    setSearch(prev => ({...prev, products: [], query: ""}));
+    setSearch((prev) => ({ ...prev, products: [], query: "" }));
   };
 
   return (
@@ -297,7 +307,13 @@ export default function VendorOrderForm({
                   query={search.query}
                   items={search.products}
                   onChange={(e) => onChangeSearch(e)}
-                  onFocus={() => setSearch(prev => ({...prev, products: allProducts, query: ""}))}
+                  onFocus={() =>
+                    setSearch((prev) => ({
+                      ...prev,
+                      products: allProducts,
+                      query: "",
+                    }))
+                  }
                   onSelect={onAddProduct}
                   onClear={onClearQuery}
                 ></SearchSuggest>
@@ -307,23 +323,34 @@ export default function VendorOrderForm({
                 {selectedProducts && selectedProducts.length > 0 ? (
                   <div className="grid grid-cols-12 gap-3">
                     {selectedProducts.map((product) => (
-                      <div key={product.id} className="col-span-12 md:col-span-6 flex flex-col p-3 border-2 border-base-300 rounded-box">      
+                      <div
+                        key={product.id}
+                        className="rounded-box col-span-12 flex flex-col border-2 border-base-300 p-3 md:col-span-6"
+                      >
                         <div className="mb-3 flex justify-between">
                           <div>
-                            <span className="text-lg font-semibold">{product.name}</span>
-                            <span className="text-neutral block text-sm">Product</span>
+                            <span className="text-lg font-semibold">
+                              {product.name}
+                            </span>
+                            <span className="block text-sm text-neutral">
+                              Product
+                            </span>
                           </div>
                           <button
                             type="button"
                             className="btn-accent btn-sm btn-circle btn"
                             onClick={() => onRemoveProduct(product.id)}
                           >
-                            <span><BiX className="h-6 w-6"></BiX></span>
-                          </button>                            
+                            <span>
+                              <BiX className="h-6 w-6"></BiX>
+                            </span>
+                          </button>
                         </div>
-                        <div className="grid grid-cols-12 gap-2 mb-2">
+                        <div className="mb-2 grid grid-cols-12 gap-2">
                           <div className="col-span-6">
-                            <label className="custom-label inline-block mb-2">Qty</label>
+                            <label className="custom-label mb-2 inline-block">
+                              Qty
+                            </label>
                             <NumberInput
                               id={`quantity${product.id}`}
                               name={`quantity${product.id}`}
@@ -331,34 +358,46 @@ export default function VendorOrderForm({
                               value={
                                 vendorOrderForm.values[`quantity${product.id}`]
                               }
-                              onChange={(e) => handlePriceChange(e, `quantity${product.id}`)}
+                              onChange={(e) =>
+                                handlePriceChange(e, `quantity${product.id}`)
+                              }
                               min="0"
                               max="99999"
                               disabled={false}
                             ></NumberInput>
                           </div>
                           <div className="col-span-6">
-                            <label className="custom-label inline-block mb-2">Unit</label>
+                            <label className="custom-label mb-2 inline-block">
+                              Unit
+                            </label>
                             <SelectInput
                               form={vendorOrderForm}
                               field={`unit${product.id}`}
                               name={`unit${product.id}`}
-                              options={product.units.map((unit) => unit.code.split("_")[1])}
-                              selected={vendorOrderForm.values[`unit${product.id}`]}
+                              options={product.units.map(
+                                (unit) => unit.code.split("_")[1]
+                              )}
+                              selected={
+                                vendorOrderForm.values[`unit${product.id}`]
+                              }
                             ></SelectInput>
                           </div>
                           <div className="col-span-12">
-                            <label className="custom-label inline-block mb-2">Unit Price</label>
+                            <label className="custom-label mb-2 inline-block">
+                              Unit Price
+                            </label>
                             <TextInput
                               id={`price${product.id}`}
                               type="text"
                               name={`price${product.id}`}
                               placeholder="Price"
-                              value={vendorOrderForm.values[`price${product.id}`]}
+                              value={
+                                vendorOrderForm.values[`price${product.id}`]
+                              }
                               onChange={(e) =>
                                 handlePriceChange(e, `price${product.id}`)
                               }
-                            ></TextInput>                            
+                            ></TextInput>
                           </div>
                         </div>
                       </div>
@@ -406,7 +445,7 @@ export default function VendorOrderForm({
                 </button>
                 <button
                   type="submit"
-                  className="btn btn-primary col-span-6"
+                  className="btn-primary btn col-span-6"
                   disabled={formState.loading}
                 >
                   <span>{edit ? "Update" : "Create"}</span>
@@ -438,7 +477,7 @@ export default function VendorOrderForm({
           <div className="mt-5">
             <Alert message={formState.success} type="success"></Alert>
           </div>
-        ) : null}        
+        ) : null}
       </div>
     </form>
   );

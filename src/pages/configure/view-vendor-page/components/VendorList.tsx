@@ -131,50 +131,51 @@ export default function VendorList() {
   }
 
   return (
-  <>
-    <div className="fixed bottom-24 right-6 z-20 md:right-8">
-      <button className="btn-primary btn-circle btn" onClick={onAdd}>
-        <span>
-          <BiPlus className="h-8 w-8"></BiPlus>
-        </span>
-      </button>
-    </div>
-    <div className="mx-auto mb-5 w-11/12 sm:w-8/12 xl:w-6/12">
-      <SearchInput
-        id="vendor-search"
-        placeholder="Search vendor"
-        name="vendor-search"
-        value={search.query}
-        onChange={(e) => onChangeSearch(e)}
-        onClear={onClearQuery}
-        onFocus={null}
-      ></SearchInput>
-    </div>
-    <div className="grid grid-cols-12 gap-4 px-4">
-      {search.vendors.map((vendor) => (
-        <div
-          key={vendor.id}
-          className="custom-card col-span-12 flex items-center sm:col-span-6 xl:col-span-3"
-        >
-          <button
-            className="btn-accent btn-circle btn mr-4"
-            onClick={() => onEdit(vendor.id)}
+    <>
+      <div className="fixed bottom-24 right-6 z-20 md:right-8">
+        <button className="btn-primary btn-circle btn" onClick={onAdd}>
+          <span>
+            <BiPlus className="h-8 w-8"></BiPlus>
+          </span>
+        </button>
+      </div>
+      <div className="mx-auto mb-5 w-11/12 sm:w-8/12 xl:w-6/12">
+        <SearchInput
+          id="vendor-search"
+          placeholder="Search vendor"
+          name="vendor-search"
+          value={search.query}
+          onChange={(e) => onChangeSearch(e)}
+          onClear={onClearQuery}
+          onFocus={null}
+        ></SearchInput>
+      </div>
+      <div className="grid grid-cols-12 gap-4 px-4">
+        {search.vendors.map((vendor) => (
+          <div
+            key={vendor.id}
+            className="custom-card col-span-12 flex items-center sm:col-span-6 xl:col-span-3"
           >
-            <span>
-              <BiEdit className="h-6 w-6"></BiEdit>
-            </span>
-          </button>
-          <div className="flex flex-col">
-            <span className="font-medium">{vendor.name}</span>
-            <span className="text-sm text-neutral">
-              {vendor.discontinued ? "Not available" : "Available"}
-            </span>
+            <button
+              className="btn-accent btn-circle btn mr-4"
+              onClick={() => onEdit(vendor.id)}
+            >
+              <span>
+                <BiEdit className="h-6 w-6"></BiEdit>
+              </span>
+            </button>
+            <div className="flex flex-col">
+              <span className="font-medium">{vendor.name}</span>
+              <span className="text-sm text-neutral">
+                {vendor.discontinued ? "Not available" : "Available"}
+              </span>
+            </div>
           </div>
-        </div>
-      ))}
-    </div>
-    {search.vendors?.length < 1 ? (
-      <div className="text-center">Not found.</div>
-    ) : null}  
-  </>);
+        ))}
+      </div>
+      {search.vendors?.length < 1 ? (
+        <div className="text-center">Not found.</div>
+      ) : null}
+    </>
+  );
 }

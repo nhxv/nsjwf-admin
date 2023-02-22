@@ -24,10 +24,18 @@ export default function SearchVendorSalePage() {
       date: convertTime(new Date()),
     },
     onSubmit: async (data) => {
-      setSearch((prev) => ({ ...prev, found: [], error: "", empty: "", loading: true }));
+      setSearch((prev) => ({
+        ...prev,
+        found: [],
+        error: "",
+        empty: "",
+        loading: true,
+      }));
       try {
         const res = await api.get(
-          `/vendor-orders/sold/search?keyword=${encodeURIComponent(data.keyword)}&date=${data.date}`
+          `/vendor-orders/sold/search?keyword=${encodeURIComponent(
+            data.keyword
+          )}&date=${data.date}`
         );
         const resData = res.data;
         if (resData.length < 1) {
@@ -40,9 +48,15 @@ export default function SearchVendorSalePage() {
             found: [],
           }));
         } else {
-          setSearch((prev) => ({ ...prev, greet: "", error: "", empty: "", loading: false, found: resData }));
+          setSearch((prev) => ({
+            ...prev,
+            greet: "",
+            error: "",
+            empty: "",
+            loading: false,
+            found: resData,
+          }));
         }
-
       } catch (e) {
         const error = JSON.parse(
           JSON.stringify(e.response ? e.response.data.error : e)
@@ -173,7 +187,10 @@ export default function SearchVendorSalePage() {
                                 <span>{productOrder.productName}</span>
                               </div>
                               <div className="w-3/12 text-center">
-                                <span>{productOrder.quantity} ({productOrder.unitCode})</span>
+                                <span>
+                                  {productOrder.quantity} (
+                                  {productOrder.unitCode})
+                                </span>
                               </div>
                               <div className="w-3/12 text-center">
                                 <span>${productOrder.unitPrice}</span>
@@ -184,8 +201,15 @@ export default function SearchVendorSalePage() {
                         <div className="divider"></div>
                         <div className="my-2 flex items-center">
                           <span className="mr-2">Total:</span>
-                          <span className="mr-2 text-xl font-medium">${sale.productVendorOrders.reduce((prev, curr) => prev + curr.quantity*curr.unitPrice, 0)}</span>
-                        </div>                        
+                          <span className="mr-2 text-xl font-medium">
+                            $
+                            {sale.productVendorOrders.reduce(
+                              (prev, curr) =>
+                                prev + curr.quantity * curr.unitPrice,
+                              0
+                            )}
+                          </span>
+                        </div>
                         {!sale.fullReturn ? (
                           <button
                             className="btn-primary btn mt-3 w-full"

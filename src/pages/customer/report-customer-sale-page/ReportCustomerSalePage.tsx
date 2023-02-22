@@ -105,9 +105,7 @@ export default function ReportCustomerSalePage() {
     <section className="min-h-screen">
       <div className="flex flex-col items-center">
         <div className={`my-6`}>
-          {!fetchData.empty &&
-          !fetchData.error &&
-          !fetchData.loading ? (
+          {!fetchData.empty && !fetchData.error && !fetchData.loading ? (
             <div className="text-end">
               <button
                 type="button"

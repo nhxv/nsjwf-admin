@@ -100,7 +100,13 @@ export default function ViewTaskPage() {
           //   }
           // }
           // const toastMessage = updates.reduce((prev, curr) => prev + ", " +, "");
-          setFetchData((prev) => ({ ...prev, tasks: res.data, error: "", empty: "", loading: false }));
+          setFetchData((prev) => ({
+            ...prev,
+            tasks: res.data,
+            error: "",
+            empty: "",
+            loading: false,
+          }));
         }
       })
       .catch((e) => {

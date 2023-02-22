@@ -96,7 +96,10 @@ export default function BackorderForm({
             const res = await api.put(`/backorders/${reqData["id"]}`, reqData);
           } else {
             // convert backorder to customer order
-            const res = await api.put(`/backorders/convert/${reqData["id"]}`, reqData);
+            const res = await api.put(
+              `/backorders/convert/${reqData["id"]}`,
+              reqData
+            );
           }
 
           setFormState((prev) => ({
@@ -106,7 +109,12 @@ export default function BackorderForm({
             loading: false,
           }));
           setTimeout(() => {
-            setFormState((prev) => ({ ...prev, success: "", error: "", loading: false, }));
+            setFormState((prev) => ({
+              ...prev,
+              success: "",
+              error: "",
+              loading: false,
+            }));
             onClear();
           }, 2000);
         } else {
@@ -119,7 +127,12 @@ export default function BackorderForm({
             loading: false,
           }));
           setTimeout(() => {
-            setFormState((prev) => ({ ...prev, success: "", error: "", loading: false, }));
+            setFormState((prev) => ({
+              ...prev,
+              success: "",
+              error: "",
+              loading: false,
+            }));
             onClear();
           }, 2000);
         }
@@ -159,14 +172,17 @@ export default function BackorderForm({
         const selected = [];
         for (const product of template) {
           const found = allProducts.find((p) => p.name === product.name);
-          selected.push({ 
-            id: found.id, 
-            name: found.name, 
-            sell_price: found.sell_price, 
-            units: found.units, 
+          selected.push({
+            id: found.id,
+            name: found.name,
+            sell_price: found.sell_price,
+            units: found.units,
           });
           backorderForm.setFieldValue(`quantity${found.id}`, product.quantity);
-          backorderForm.setFieldValue(`unit${found.id}`, product.unit_code.split("_")[1]);
+          backorderForm.setFieldValue(
+            `unit${found.id}`,
+            product.unit_code.split("_")[1]
+          );
           updatePrice(product.quantity, `quantity${found.id}`);
           backorderForm.setFieldValue(`price${found.id}`, 0);
         }
@@ -194,9 +210,13 @@ export default function BackorderForm({
           .replace(/\s+/g, "")
           .includes(e.target.value.toLowerCase().replace(/\s+/g, ""))
       );
-      setSearch(prev => ({...prev, products: searched, query: e.target.value}));
+      setSearch((prev) => ({
+        ...prev,
+        products: searched,
+        query: e.target.value,
+      }));
     } else {
-      setSearch(prev => ({...prev, products: [], query: e.target.value}));
+      setSearch((prev) => ({ ...prev, products: [], query: e.target.value }));
     }
   };
 
@@ -206,12 +226,12 @@ export default function BackorderForm({
       setSelectedProducts([product, ...selectedProducts]);
       backorderForm.setFieldValue(`quantity${product.id}`, 0);
       backorderForm.setFieldValue(`price${product.id}`, 0);
-      setSearch(prev => ({...prev, products: [], query: ""}));
+      setSearch((prev) => ({ ...prev, products: [], query: "" }));
     }
   };
 
   const onRemoveProduct = (id) => {
-    setSearch(prev => ({...prev, products: [], query: ""}));
+    setSearch((prev) => ({ ...prev, products: [], query: "" }));
     backorderForm.setFieldValue(`quantity${id}`, 0);
     backorderForm.setFieldValue(`price${id}`, 0);
     updatePrice(0, `remove${id}`);
@@ -221,7 +241,7 @@ export default function BackorderForm({
   };
 
   const onClearQuery = () => {
-    setSearch(prev => ({...prev, products: [], query: ""}));
+    setSearch((prev) => ({ ...prev, products: [], query: "" }));
   };
 
   return (
@@ -298,7 +318,13 @@ export default function BackorderForm({
                   query={search.query}
                   items={search.products}
                   onChange={(e) => onChangeSearch(e)}
-                  onFocus={() => setSearch(prev => ({...prev, products: allProducts, query: ""}))}
+                  onFocus={() =>
+                    setSearch((prev) => ({
+                      ...prev,
+                      products: allProducts,
+                      query: "",
+                    }))
+                  }
                   onSelect={onAddProduct}
                   onClear={onClearQuery}
                 ></SearchSuggest>
@@ -308,28 +334,41 @@ export default function BackorderForm({
                 {selectedProducts && selectedProducts.length > 0 ? (
                   <div className="grid grid-cols-12 gap-3">
                     {selectedProducts.map((product) => (
-                      <div key={product.id} className="col-span-12 md:col-span-6 flex flex-col p-3 border-2 border-base-300 rounded-box">      
+                      <div
+                        key={product.id}
+                        className="rounded-box col-span-12 flex flex-col border-2 border-base-300 p-3 md:col-span-6"
+                      >
                         <div className="mb-3 flex justify-between">
                           <div>
-                            <span className="text-lg font-semibold">{product.name}</span>
-                              {product.sell_price ? (
-                                <div className="custom-badge bg-info text-info-content mt-1">
-                                  <span className="hidden sm:inline">Suggest:</span>
-                                  <span>{" > "}${product.sell_price}</span>
-                                </div>
-                              ) : null}
+                            <span className="text-lg font-semibold">
+                              {product.name}
+                            </span>
+                            {product.sell_price ? (
+                              <div className="custom-badge mt-1 bg-info text-info-content">
+                                <span className="hidden sm:inline">
+                                  Suggest:
+                                </span>
+                                <span>
+                                  {" > "}${product.sell_price}
+                                </span>
+                              </div>
+                            ) : null}
                           </div>
                           <button
                             type="button"
                             className="btn-accent btn-sm btn-circle btn"
                             onClick={() => onRemoveProduct(product.id)}
                           >
-                            <span><BiX className="h-6 w-6"></BiX></span>
-                          </button>                            
+                            <span>
+                              <BiX className="h-6 w-6"></BiX>
+                            </span>
+                          </button>
                         </div>
-                        <div className="grid grid-cols-12 gap-2 mb-2">
+                        <div className="mb-2 grid grid-cols-12 gap-2">
                           <div className="col-span-6">
-                            <label className="custom-label inline-block mb-2">Qty</label>
+                            <label className="custom-label mb-2 inline-block">
+                              Qty
+                            </label>
                             <NumberInput
                               id={`quantity${product.id}`}
                               name={`quantity${product.id}`}
@@ -337,24 +376,34 @@ export default function BackorderForm({
                               value={
                                 backorderForm.values[`quantity${product.id}`]
                               }
-                              onChange={(e) => handlePriceChange(e, `quantity${product.id}`)}
+                              onChange={(e) =>
+                                handlePriceChange(e, `quantity${product.id}`)
+                              }
                               min="0"
                               max="99999"
                               disabled={false}
                             ></NumberInput>
                           </div>
                           <div className="col-span-6">
-                            <label className="custom-label inline-block mb-2">Unit</label>
+                            <label className="custom-label mb-2 inline-block">
+                              Unit
+                            </label>
                             <SelectInput
                               form={backorderForm}
                               field={`unit${product.id}`}
                               name={`unit${product.id}`}
-                              options={product.units.map((unit) => unit.code.split("_")[1])}
-                              selected={backorderForm.values[`unit${product.id}`]}
+                              options={product.units.map(
+                                (unit) => unit.code.split("_")[1]
+                              )}
+                              selected={
+                                backorderForm.values[`unit${product.id}`]
+                              }
                             ></SelectInput>
                           </div>
                           <div className="col-span-12">
-                            <label className="custom-label inline-block mb-2">Unit Price</label>
+                            <label className="custom-label mb-2 inline-block">
+                              Unit Price
+                            </label>
                             <TextInput
                               id={`price${product.id}`}
                               type="text"
@@ -364,7 +413,7 @@ export default function BackorderForm({
                               onChange={(e) =>
                                 handlePriceChange(e, `price${product.id}`)
                               }
-                            ></TextInput>                            
+                            ></TextInput>
                           </div>
                         </div>
                       </div>
@@ -375,7 +424,7 @@ export default function BackorderForm({
                     <span>Empty.</span>
                   </div>
                 )}
-              </div> 
+              </div>
 
               <div className="mt-3 mb-5 flex items-center">
                 <div>
@@ -458,7 +507,7 @@ export default function BackorderForm({
           <div className="mt-5">
             <Alert message={formState.success} type="success"></Alert>
           </div>
-        ) : null}        
+        ) : null}
       </div>
     </form>
   );

@@ -23,7 +23,10 @@ export default function CreateVendorReturnFormContainer({}) {
   });
   const total = useMemo(() => {
     if (dataState.prices.length > 0) {
-      return dataState.prices.reduce((prev, current) => prev + current[0] * current[1], 0);
+      return dataState.prices.reduce(
+        (prev, current) => prev + current[0] * current[1],
+        0
+      );
     } else return 0;
   }, [dataState.prices]);
 
@@ -35,7 +38,8 @@ export default function CreateVendorReturnFormContainer({}) {
         const updatedPrices = [];
         const productFieldData = {};
         for (let i = 0; i < saleReturn.productVendorSaleReturns.length; i++) {
-          productFieldData[`quantity${i}`] = saleReturn.productVendorSaleReturns[i].quantity;
+          productFieldData[`quantity${i}`] =
+            saleReturn.productVendorSaleReturns[i].quantity;
           updatedPrices.push([
             productFieldData[`quantity${i}`],
             saleReturn.productVendorSaleReturns[i].unit_price,

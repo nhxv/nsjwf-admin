@@ -40,7 +40,9 @@ export default function VendorReturnList({ returns }) {
                     <span>{productReturn.productName}</span>
                   </div>
                   <div className="w-3/12 text-center">
-                    <span>{productReturn.quantity} ({productReturn.unitCode})</span>
+                    <span>
+                      {productReturn.quantity} ({productReturn.unitCode})
+                    </span>
                   </div>
                   <div className="w-3/12 text-center">
                     <span>${productReturn.unitPrice}</span>

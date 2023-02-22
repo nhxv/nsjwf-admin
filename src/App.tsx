@@ -144,15 +144,27 @@ export default function App() {
           <Route path="/configure/draft-product" element={<DraftProductPage />}>
             <Route path=":id" element={<DraftProductPage />}></Route>
           </Route>
-          <Route path="/configure/view-product" element={<ViewProductPage />}></Route>
-          <Route path="/configure/draft-customer" element={<DraftCustomerPage />}>
+          <Route
+            path="/configure/view-product"
+            element={<ViewProductPage />}
+          ></Route>
+          <Route
+            path="/configure/draft-customer"
+            element={<DraftCustomerPage />}
+          >
             <Route path=":id" element={<DraftCustomerPage />}></Route>
           </Route>
-          <Route path="/configure/view-customer" element={<ViewCustomerPage />}></Route>
+          <Route
+            path="/configure/view-customer"
+            element={<ViewCustomerPage />}
+          ></Route>
           <Route path="/configure/draft-vendor" element={<DraftVendorPage />}>
             <Route path=":id" element={<DraftVendorPage />}></Route>
           </Route>
-          <Route path="/configure/view-vendor" element={<ViewVendorPage />}></Route>
+          <Route
+            path="/configure/view-vendor"
+            element={<ViewVendorPage />}
+          ></Route>
           {/* <Route path="/configure/vehicle" element={<VehiclePage />}></Route> */}
           <Route path="/configure/employee" element={<EmployeePage />}></Route>
         </Route>

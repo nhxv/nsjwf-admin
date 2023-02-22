@@ -14,7 +14,7 @@ export default function SelectInput({ name, form, field, options, selected }) {
     <div className="w-full">
       <Listbox name={name} value={selectedOption} onChange={onChangeValue}>
         <div className="relative">
-          <Listbox.Button className="rounded-btn relative w-full cursor-default border-2 border-base-300 bg-base-100 h-12 pl-3.5 pr-10 text-left text-sm font-semibold focus:border-primary ui-open:border-primary dark:bg-base-200">
+          <Listbox.Button className="rounded-btn relative h-12 w-full cursor-default border-2 border-base-300 bg-base-100 pl-3.5 pr-10 text-left text-sm font-semibold focus:border-primary ui-open:border-primary dark:bg-base-200">
             <span className="block truncate">{selected}</span>
             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2.5">
               <BiChevronDown className="h-6 w-6" aria-hidden="true" />

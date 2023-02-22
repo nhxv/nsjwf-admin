@@ -66,9 +66,12 @@ export default function VendorOrderFormContainer() {
                 (po) => po.product_name === product.name
               );
               if (productOrder) {
-                productFieldData[`quantity${product.id}`] = productOrder.quantity;
-                productFieldData[`unit${product.id}`] = productOrder.unit_code.split("_")[1];
-                productFieldData[`price${product.id}`] = productOrder.unit_price;
+                productFieldData[`quantity${product.id}`] =
+                  productOrder.quantity;
+                productFieldData[`unit${product.id}`] =
+                  productOrder.unit_code.split("_")[1];
+                productFieldData[`price${product.id}`] =
+                  productOrder.unit_price;
                 editedProductsRes.push({
                   id: product.id,
                   name: product.name,
@@ -120,10 +123,7 @@ export default function VendorOrderFormContainer() {
         .then((res) => {
           const productRes = res[0];
           const vendorRes = res[1];
-          if (
-            productRes?.data?.length === 0 ||
-            vendorRes?.data?.length === 0
-          ) {
+          if (productRes?.data?.length === 0 || vendorRes?.data?.length === 0) {
             setFetchData((prev) => ({
               ...prev,
               empty: "Such hollow, much empty...",
@@ -143,7 +143,6 @@ export default function VendorOrderFormContainer() {
                 quantity: productFieldData[`quantity${product.id}`],
                 price: productFieldData[`price${product.id}`],
               });
-
             }
             const today = new Date();
             const nextDay = new Date(today);
@@ -217,7 +216,9 @@ export default function VendorOrderFormContainer() {
     if (!params.code) {
       // load template when create
       try {
-        const response = await api.get(`/vendors/active/tendency/${encodeURIComponent(vendorName)}`);
+        const response = await api.get(
+          `/vendors/active/tendency/${encodeURIComponent(vendorName)}`
+        );
         return response.data.vendorProductTendencies;
       } catch (e) {
         const error = JSON.parse(

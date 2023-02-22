@@ -28,7 +28,12 @@ export default function CreateVendorReturnForm({
     enableReinitialize: true,
     initialValues: initialData,
     onSubmit: async (data) => {
-      setFormState((prev) => ({ ...prev, error: "", success: "", loading: true }));
+      setFormState((prev) => ({
+        ...prev,
+        error: "",
+        success: "",
+        loading: true,
+      }));
       try {
         let reqData = {};
         let productReturns = new Map();
@@ -123,7 +128,7 @@ export default function CreateVendorReturnForm({
           <div className="w-5/12">
             <span className="custom-label">Product</span>
           </div>
-          <div className="flex gap-2 w-7/12">
+          <div className="flex w-7/12 gap-2">
             <div className="w-6/12">
               <span className="custom-label">Qty</span>
             </div>
@@ -138,10 +143,12 @@ export default function CreateVendorReturnForm({
               <div className="flex items-center justify-between">
                 <div className="w-5/12">
                   <span>{product.product_name}</span>
-                  <span className="block custom-badge bg-info text-info-content mt-1">Sold in {product.unit_code.split("_")[1].toLowerCase()}</span>
+                  <span className="custom-badge mt-1 block bg-info text-info-content">
+                    Sold in {product.unit_code.split("_")[1].toLowerCase()}
+                  </span>
                 </div>
-                <div className="flex gap-2 w-7/12">
-                  <div className="w-6/12 flex gap-2 items-center">
+                <div className="flex w-7/12 gap-2">
+                  <div className="flex w-6/12 items-center gap-2">
                     <NumberInput
                       id={`quantity${index}`}
                       name={`quantity${index}`}
@@ -150,7 +157,9 @@ export default function CreateVendorReturnForm({
                       onChange={(e) => handlePriceChange(e, `quantity${index}`)}
                       min="0"
                       max={product.quantity}
-                      disabled={!!(product.quantity === 0 || formState.page === 1)}
+                      disabled={
+                        !!(product.quantity === 0 || formState.page === 1)
+                      }
                     ></NumberInput>
                   </div>
 
@@ -186,7 +195,7 @@ export default function CreateVendorReturnForm({
             {formState.page === 0 ? (
               <button
                 type="button"
-                className="btn-primary btn w-full mt-3"
+                className="btn-primary btn mt-3 w-full"
                 onClick={onNextPage}
               >
                 <span>Confirm price</span>

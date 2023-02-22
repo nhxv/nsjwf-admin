@@ -22,23 +22,22 @@ export default function DraftUnitForm({ productId, unit, isOpen, onClose }) {
       discontinued: unit ? unit.discontinued : false,
     },
     onSubmit: async (data) => {
-      setFormState(prev => ({...prev, loading: true, error: ""}));
+      setFormState((prev) => ({ ...prev, loading: true, error: "" }));
       try {
         let res = null;
         if (unit?.id > 0) {
           res = await api.put(`/units/${unit.id}`, data);
           if (res) {
-            setFormState(prev => ({...prev, loading: false, error: "", }))
+            setFormState((prev) => ({ ...prev, loading: false, error: "" }));
             onCloseForm();
           }
         } else {
           res = await api.post(`/units/by-product/${productId}`, data);
           if (res) {
-            setFormState(prev => ({...prev, loading: false, error: "", }))
+            setFormState((prev) => ({ ...prev, loading: false, error: "" }));
             onCloseForm();
           }
         }
-
       } catch (e) {
         const error = JSON.parse(
           JSON.stringify(e.response ? e.response.data.error : e)
@@ -49,20 +48,26 @@ export default function DraftUnitForm({ productId, unit, isOpen, onClose }) {
           loading: false,
         }));
       }
-    }
+    },
   });
 
   const onCloseForm = () => {
     unitForm.resetForm();
     onClose();
-  }
+  };
 
   return (
     <Modal isOpen={isOpen} onClose={onCloseForm}>
       <div className="custom-card text-left">
         <div className="flex justify-end">
-          <button type="button" className="btn btn-accent btn-circle btn-sm" onClick={onCloseForm}>
-            <span><BiX className="h-6 w-6"></BiX></span>
+          <button
+            type="button"
+            className="btn-accent btn-sm btn-circle btn"
+            onClick={onCloseForm}
+          >
+            <span>
+              <BiX className="h-6 w-6"></BiX>
+            </span>
           </button>
         </div>
         <form onSubmit={unitForm.handleSubmit}>
@@ -82,53 +87,56 @@ export default function DraftUnitForm({ productId, unit, isOpen, onClose }) {
           </div>
 
           {!unit ? (
-          <div className="mb-5">
-            <label htmlFor="ratio" className="custom-label mb-2 inline-block">
-              <span>Ratio to box</span>
-              <span className="text-red-500">*</span>
-            </label>
-            <TextInput
-              id="ratio"
-              type="text"
-              placeholder={`1/4`}
-              name="ratio"
-              value={unitForm.values.ratio}
-              onChange={unitForm.handleChange}
-            ></TextInput>
-          </div>
+            <div className="mb-5">
+              <label htmlFor="ratio" className="custom-label mb-2 inline-block">
+                <span>Ratio to box</span>
+                <span className="text-red-500">*</span>
+              </label>
+              <TextInput
+                id="ratio"
+                type="text"
+                placeholder={`1/4`}
+                name="ratio"
+                value={unitForm.values.ratio}
+                onChange={unitForm.handleChange}
+              ></TextInput>
+            </div>
           ) : null}
 
-        <div className="mb-5 flex items-center">
-          <Checkbox
-            id="discontinued"
-            name="discontinued"
-            onChange={() =>
-              unitForm.setFieldValue(
-                "discontinued",
-                !unitForm.values.discontinued
-              )
-            }
-            checked={!unitForm.values.discontinued}
-            label="In use"
-          ></Checkbox>
-        </div>          
+          <div className="mb-5 flex items-center">
+            <Checkbox
+              id="discontinued"
+              name="discontinued"
+              onChange={() =>
+                unitForm.setFieldValue(
+                  "discontinued",
+                  !unitForm.values.discontinued
+                )
+              }
+              checked={!unitForm.values.discontinued}
+              label="In use"
+            ></Checkbox>
+          </div>
 
-          <button type="submit" className="btn btn-primary w-full mt-3" disabled={formState.loading}>
+          <button
+            type="submit"
+            className="btn-primary btn mt-3 w-full"
+            disabled={formState.loading}
+          >
             <span>{unit ? "Edit" : "Add"} unit</span>
           </button>
           <div>
-
-          {formState.loading ? (
-            <div className="mt-5">
-              <Spinner></Spinner>
-            </div>
-          ) : null}
-          {formState.error ? (
-            <div className="mt-5">
-              <Alert message={formState.error} type="error"></Alert>
-            </div>
-          ) : null}
-        </div>
+            {formState.loading ? (
+              <div className="mt-5">
+                <Spinner></Spinner>
+              </div>
+            ) : null}
+            {formState.error ? (
+              <div className="mt-5">
+                <Alert message={formState.error} type="error"></Alert>
+              </div>
+            ) : null}
+          </div>
         </form>
       </div>
     </Modal>

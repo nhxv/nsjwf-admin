@@ -20,7 +20,7 @@ export default function StockList() {
   const [search, setSearch] = useState({
     stock: [],
     query: "",
-  })
+  });
 
   useEffect(() => {
     api
@@ -35,8 +35,13 @@ export default function StockList() {
             loading: false,
           }));
         } else {
-          const boxStock = res.data.map(s => ({name: s.name, measures: s.measures.filter(m => m.unitCode.split("_")[1] === "BOX")}));
-          setSearch(prev => ({...prev, stock: boxStock, query: ""}));
+          const boxStock = res.data.map((s) => ({
+            name: s.name,
+            measures: s.measures.filter(
+              (m) => m.unitCode.split("_")[1] === "BOX"
+            ),
+          }));
+          setSearch((prev) => ({ ...prev, stock: boxStock, query: "" }));
           setFetchData((prev) => ({
             ...prev,
             stock: boxStock,
@@ -72,23 +77,31 @@ export default function StockList() {
           .replace(/\s+/g, "")
           .includes(e.target.value.toLowerCase().replace(/\s+/g, ""))
       );
-      setSearch(prev => ({...prev, stock: searched, query: e.target.value}));
+      setSearch((prev) => ({
+        ...prev,
+        stock: searched,
+        query: e.target.value,
+      }));
     } else {
-      setSearch(prev => ({...prev, stock: fetchData.stock, query: e.target.value}));
+      setSearch((prev) => ({
+        ...prev,
+        stock: fetchData.stock,
+        query: e.target.value,
+      }));
     }
   };
 
   const onClearQuery = () => {
-    setSearch(prev => ({...prev, stock: fetchData.stock, query: ""}));
+    setSearch((prev) => ({ ...prev, stock: fetchData.stock, query: "" }));
   };
-  
+
   const parseFraction = (s) => {
     if (!s.includes("/")) {
       return Math.floor(parseInt(s));
     }
     const [numerator, denominator] = s.split("/");
     return Math.floor(numerator / denominator);
-  }
+  };
 
   if (fetchData.loading) {
     return <Spinner></Spinner>;
@@ -99,7 +112,7 @@ export default function StockList() {
       <div className="mx-auto w-11/12 md:w-10/12 lg:w-6/12">
         <Alert type="error" message={fetchData.error}></Alert>
       </div>
-    );   
+    );
   }
 
   if (fetchData.empty) {
@@ -119,10 +132,12 @@ export default function StockList() {
             className="btn-primary btn-circle btn"
             onClick={onChangeStock}
           >
-            <span><BiEdit className="h-6 w-6"></BiEdit></span>
+            <span>
+              <BiEdit className="h-6 w-6"></BiEdit>
+            </span>
           </button>
         </div>
-      ) : null}    
+      ) : null}
       <div className="mx-auto mb-5 w-11/12 md:w-10/12 lg:w-6/12">
         <SearchInput
           id="stock-search"
@@ -138,7 +153,7 @@ export default function StockList() {
         {search.stock.map((product) => (
           <div
             key={product.name}
-            className="rounded-btn col-span-12 md:col-span-6 lg:col-span-3 flex items-center justify-between bg-base-100 p-3 shadow-md dark:bg-base-200"
+            className="rounded-btn col-span-12 flex items-center justify-between bg-base-100 p-3 shadow-md dark:bg-base-200 md:col-span-6 lg:col-span-3"
           >
             <div>
               <span>{product.name}</span>
@@ -151,7 +166,7 @@ export default function StockList() {
       </div>
       {search.stock?.length < 1 ? (
         <div className="text-center">Not found.</div>
-      ) : null}      
+      ) : null}
     </>
-  )
+  );
 }

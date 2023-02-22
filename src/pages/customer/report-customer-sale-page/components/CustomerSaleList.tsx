@@ -11,7 +11,10 @@ export default function CustomerSaleList({ reports }) {
               <div>
                 <div>
                   <span>
-                    #{report.manual_code ? report.manual_code : report.order_code}
+                    #
+                    {report.manual_code
+                      ? report.manual_code
+                      : report.order_code}
                   </span>
                 </div>
                 <div>
@@ -49,7 +52,10 @@ export default function CustomerSaleList({ reports }) {
                     <span>{productOrder.product_name}</span>
                   </div>
                   <div className="w-3/12 text-center">
-                    <span>{productOrder.quantity} ({productOrder.unit_code.split("_")[1].toLowerCase()})</span>
+                    <span>
+                      {productOrder.quantity} (
+                      {productOrder.unit_code.split("_")[1].toLowerCase()})
+                    </span>
                   </div>
                   <div className="w-3/12 text-center">
                     <span>${productOrder.unit_price}</span>

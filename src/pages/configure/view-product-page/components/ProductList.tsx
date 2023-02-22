@@ -41,7 +41,9 @@ export default function ProductList() {
         }
       })
       .catch((e) => {
-        const error = JSON.parse(JSON.stringify(e.response ? e.response.data.error : e));
+        const error = JSON.parse(
+          JSON.stringify(e.response ? e.response.data.error : e)
+        );
         setFetchData((prev) => ({
           ...prev,
           error: error.message,
@@ -53,11 +55,11 @@ export default function ProductList() {
 
   const onAdd = () => {
     navigate(`/configure/draft-product`);
-  }
+  };
 
   const onEdit = (id: number) => {
     navigate(`/configure/draft-product/${id}`);
-  }
+  };
 
   const onChangeSearch = (e) => {
     if (e.target.value) {
@@ -105,7 +107,7 @@ export default function ProductList() {
         </div>
         <div className="mx-auto w-11/12 sm:w-8/12 xl:w-6/12">
           <Alert type="error" message={fetchData.error}></Alert>
-        </div>      
+        </div>
       </>
     );
   }
@@ -122,7 +124,7 @@ export default function ProductList() {
         </div>
         <div className="mx-auto w-11/12 sm:w-8/12 xl:w-6/12">
           <Alert type="empty" message={fetchData.empty}></Alert>
-        </div>              
+        </div>
       </>
     );
   }
@@ -151,7 +153,7 @@ export default function ProductList() {
         {search.products.map((product) => (
           <div
             key={product.id}
-            className="custom-card col-span-12 md:col-span-6 lg:col-span-3 flex items-center"
+            className="custom-card col-span-12 flex items-center md:col-span-6 lg:col-span-3"
           >
             <button
               className="btn-accent btn-circle btn mr-4"

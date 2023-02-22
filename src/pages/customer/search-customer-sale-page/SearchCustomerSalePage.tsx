@@ -34,7 +34,9 @@ export default function SearchCustomerSalePage() {
       }));
       try {
         const res = await api.get(
-          `/customer-orders/sold/search?keyword=${encodeURIComponent(data.keyword)}&date=${data.date}`
+          `/customer-orders/sold/search?keyword=${encodeURIComponent(
+            data.keyword
+          )}&date=${data.date}`
         );
         const resData = res.data;
         if (resData.length < 1) {
@@ -190,7 +192,10 @@ export default function SearchCustomerSalePage() {
                               <span>{productOrder.productName}</span>
                             </div>
                             <div className="w-3/12 text-center">
-                              <span>{productOrder.quantity} ({productOrder.unitCode})</span>
+                              <span>
+                                {productOrder.quantity} ({productOrder.unitCode}
+                                )
+                              </span>
                             </div>
                             <div className="w-3/12 text-center">
                               <span>{productOrder.unitPrice}</span>

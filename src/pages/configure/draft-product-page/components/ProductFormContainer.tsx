@@ -28,11 +28,11 @@ export default function ProductFormContainer() {
             name: res.data.name,
             discontinued: res.data.discontinued,
           }));
-          setFetchData(prev => ({
-            ...prev, 
-            units: res.data.units, 
-            error: "", 
-            empty: "", 
+          setFetchData((prev) => ({
+            ...prev,
+            units: res.data.units,
+            error: "",
+            empty: "",
             loading: false,
           }));
         })
@@ -48,7 +48,12 @@ export default function ProductFormContainer() {
           }));
         });
     } else {
-      setFetchData(prev => ({...prev, error: "", empty: "", loading: false,}));
+      setFetchData((prev) => ({
+        ...prev,
+        error: "",
+        empty: "",
+        loading: false,
+      }));
       // create product
       setInitialFields((prev) => ({ ...prev, name: "", discontinued: false }));
     }

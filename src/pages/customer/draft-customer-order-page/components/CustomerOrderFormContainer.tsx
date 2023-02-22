@@ -75,9 +75,12 @@ export default function CustomerOrderFormContainer() {
                 (po) => po.product_name === product.name
               );
               if (productOrder) {
-                productFieldData[`quantity${product.id}`] = productOrder.quantity;
-                productFieldData[`unit${product.id}`] = productOrder.unit_code.split("_")[1];
-                productFieldData[`price${product.id}`] = productOrder.unit_price;
+                productFieldData[`quantity${product.id}`] =
+                  productOrder.quantity;
+                productFieldData[`unit${product.id}`] =
+                  productOrder.unit_code.split("_")[1];
+                productFieldData[`price${product.id}`] =
+                  productOrder.unit_price;
                 editedProductsRes.push({
                   id: product.id,
                   name: product.name,
@@ -232,7 +235,9 @@ export default function CustomerOrderFormContainer() {
     if (!params.code) {
       // load template when create
       try {
-        const response = await api.get(`/customers/active/tendency/${encodeURIComponent(customerName)}`);
+        const response = await api.get(
+          `/customers/active/tendency/${encodeURIComponent(customerName)}`
+        );
         return response.data.customerProductTendencies;
       } catch (e) {
         const error = JSON.parse(

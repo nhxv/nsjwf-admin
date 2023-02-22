@@ -97,9 +97,13 @@ export default function StockForm({ initialData, stock, onClear }) {
           .replace(/\s+/g, "")
           .includes(e.target.value.toLowerCase().replace(/\s+/g, ""))
       );
-      setSearch(prev => ({...prev, products: searched, query: e.target.value}));
+      setSearch((prev) => ({
+        ...prev,
+        products: searched,
+        query: e.target.value,
+      }));
     } else {
-      setSearch(prev => ({...prev, products: [], query: e.target.value}));
+      setSearch((prev) => ({ ...prev, products: [], query: e.target.value }));
     }
   };
 
@@ -110,11 +114,11 @@ export default function StockForm({ initialData, stock, onClear }) {
       stockForm.setFieldValue(`quantity${product.id}`, 0);
       stockForm.setFieldValue(`unit${product.id}`, "BOX");
     }
-    setSearch(prev => ({...prev, products: [], query: ""}));
+    setSearch((prev) => ({ ...prev, products: [], query: "" }));
   };
 
   const onRemoveProduct = (id) => {
-    setSearch(prev => ({...prev, products: [], query: ""}));
+    setSearch((prev) => ({ ...prev, products: [], query: "" }));
     stockForm.setFieldValue(`quantity${id}`, 0);
     setSelectedProducts(
       selectedProducts.filter((product) => product.id !== id)
@@ -122,7 +126,7 @@ export default function StockForm({ initialData, stock, onClear }) {
   };
 
   const onClearQuery = () => {
-    setSearch(prev => ({...prev, products: [], query: ""}));
+    setSearch((prev) => ({ ...prev, products: [], query: "" }));
   };
 
   return (
@@ -154,7 +158,9 @@ export default function StockForm({ initialData, stock, onClear }) {
             query={search.query}
             items={search.products}
             onChange={(e) => onChangeSearch(e)}
-            onFocus={() => setSearch(prev => ({...prev, products: stock, query: ""}))}
+            onFocus={() =>
+              setSearch((prev) => ({ ...prev, products: stock, query: "" }))
+            }
             onSelect={onAddProduct}
             onClear={onClearQuery}
           ></SearchSuggest>
@@ -164,30 +170,39 @@ export default function StockForm({ initialData, stock, onClear }) {
           {selectedProducts && selectedProducts.length > 0 ? (
             <div className="grid grid-cols-12 gap-3">
               {selectedProducts.map((product) => (
-                <div key={product.id} className="col-span-12 md:col-span-6 flex flex-col p-3 border-2 border-base-300 rounded-box">      
+                <div
+                  key={product.id}
+                  className="rounded-box col-span-12 flex flex-col border-2 border-base-300 p-3 md:col-span-6"
+                >
                   <div className="mb-3 flex justify-between">
                     <div>
-                      <span className="text-lg font-semibold">{product.name}</span>
-                      <span className="text-neutral block text-sm">Product</span>
+                      <span className="text-lg font-semibold">
+                        {product.name}
+                      </span>
+                      <span className="block text-sm text-neutral">
+                        Product
+                      </span>
                     </div>
                     <button
                       type="button"
                       className="btn-accent btn-sm btn-circle btn"
                       onClick={() => onRemoveProduct(product.id)}
                     >
-                      <span><BiX className="h-6 w-6"></BiX></span>
-                    </button>                            
+                      <span>
+                        <BiX className="h-6 w-6"></BiX>
+                      </span>
+                    </button>
                   </div>
-                  <div className="flex gap-2 mb-2">
+                  <div className="mb-2 flex gap-2">
                     <div className="w-6/12">
-                      <label className="custom-label inline-block mb-2">Qty</label>
+                      <label className="custom-label mb-2 inline-block">
+                        Qty
+                      </label>
                       <NumberInput
                         id={`quantity${product.id}`}
                         name={`quantity${product.id}`}
                         placeholder="Qty"
-                        value={
-                          stockForm.values[`quantity${product.id}`]
-                        }
+                        value={stockForm.values[`quantity${product.id}`]}
                         onChange={stockForm.handleChange}
                         min="0"
                         max="99999"
@@ -195,12 +210,16 @@ export default function StockForm({ initialData, stock, onClear }) {
                       ></NumberInput>
                     </div>
                     <div className="w-6/12">
-                      <label className="custom-label inline-block mb-2">Unit</label>
+                      <label className="custom-label mb-2 inline-block">
+                        Unit
+                      </label>
                       <SelectInput
                         form={stockForm}
                         field={`unit${product.id}`}
                         name={`unit${product.id}`}
-                        options={product.measures.map((measure) => measure.unitCode.split("_")[1])}
+                        options={product.measures.map(
+                          (measure) => measure.unitCode.split("_")[1]
+                        )}
                         selected={stockForm.values[`unit${product.id}`]}
                       ></SelectInput>
                     </div>
@@ -236,7 +255,7 @@ export default function StockForm({ initialData, stock, onClear }) {
             <div className="mt-5">
               <Alert message={formState.error} type="error"></Alert>
             </div>
-          ) : null}          
+          ) : null}
           {formState.success ? (
             <div className="mt-5">
               <Alert message={formState.success} type="success"></Alert>
