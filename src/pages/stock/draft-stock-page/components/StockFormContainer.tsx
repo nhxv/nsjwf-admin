@@ -1,48 +1,50 @@
 import { useEffect, useState } from "react";
 import useFirstRender from "../../../../commons/hooks/first-render.hook";
-import { ProductStockChangeReason } from "../../../../commons/product-stock-change-reason.enum";
+import { ProductStockChangeReason } from "../../../../commons/enums/stock-change-reason.enum";
 import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
-import ProductStockForm from "./ProductStockForm";
+import ProductStockForm from "./StockForm";
 
-export default function ProductStockFormContainer() {
+export default function StockFormContainer() {
   const isFirstRender = useFirstRender();
   const [reload, setReload] = useState(false);
-  const [formState, setFormState] = useState({
-    errorMessage: "",
-    emptyMessage: "",
+  const [fetchData, setFetchData] = useState({
+    stock: [],
+    error: "",
+    empty: "",
     loading: true,
   });
   const [initialFields, setInitialFields] = useState({});
-  const [productStock, setProductStock] = useState([]);
 
   useEffect(() => {
     api
-      .get(`/product-stock`)
+      .get(`/stock`)
       .then((res) => {
         if (res.data?.length === 0) {
-          setFormState((prev) => ({
+          setFetchData((prev) => ({
             ...prev,
-            errorMessage: "",
-            emptyMessage: "Such hollow, much empty...",
+            stock: [],
+            error: "",
+            empty: "Such hollow, much empty...",
             loading: false,
           }));
         } else {
-          const formFieldData = {};
+          const stockFieldData = {};
           for (const s of res.data) {
-            formFieldData[`quantity${s.id}`] = s.quantity;
+            stockFieldData[`quantity${s.id}`] = s.quantity;
+            stockFieldData[`unit${s.id}`] = "BOX";
           }
           setInitialFields((prev) => ({
             ...prev,
             reason: ProductStockChangeReason.DAMAGED,
-            ...formFieldData,
+            ...stockFieldData,
           }));
-          setProductStock(res.data);
-          setFormState((prev) => ({
+          setFetchData((prev) => ({
             ...prev,
-            errorMessage: "",
-            emptyMessage: "",
+            stock: res.data,
+            error: "",
+            empty: "",
             loading: false,
           }));
         }
@@ -51,10 +53,11 @@ export default function ProductStockFormContainer() {
         const error = JSON.parse(
           JSON.stringify(e.response ? e.response.data.error : e)
         );
-        setFormState((prev) => ({
+        setFetchData((prev) => ({
           ...prev,
-          emptyMessage: "",
-          errorMessage: error.message,
+          stock: [],
+          empty: "",
+          error: error.message,
           loading: false,
         }));
       });
@@ -62,10 +65,10 @@ export default function ProductStockFormContainer() {
 
   useEffect(() => {
     if (!isFirstRender) {
-      setFormState((prev) => ({
+      setFetchData((prev) => ({
         ...prev,
-        errorMessage: "",
-        emptyMessage: "",
+        error: "",
+        empty: "",
         loading: false,
       }));
     }
@@ -73,25 +76,26 @@ export default function ProductStockFormContainer() {
 
   const onClear = () => {
     setReload(!reload);
-    setFormState((prev) => ({
+    setFetchData((prev) => ({
       ...prev,
-      erorrMessage: "",
-      emptyMessage: "",
+      stock: [],
+      error: "",
+      empty: "",
       loading: true,
     }));
   };
 
-  if (formState.loading) return <Spinner></Spinner>;
-  if (formState.errorMessage)
-    return <Alert message={formState.errorMessage} type="error"></Alert>;
-  if (formState.emptyMessage)
-    return <Alert message={formState.emptyMessage} type="empty"></Alert>;
+  if (fetchData.loading) return <Spinner></Spinner>;
+  if (fetchData.error)
+    return <Alert message={fetchData.error} type="error"></Alert>;
+  if (fetchData.empty)
+    return <Alert message={fetchData.empty} type="empty"></Alert>;
 
   return (
     <div className="custom-card mb-12">
       <ProductStockForm
         initialData={initialFields}
-        stocks={productStock}
+        stock={fetchData.stock}
         onClear={onClear}
       />
     </div>

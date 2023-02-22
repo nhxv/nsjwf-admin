@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../../../stores/api";
 import useFirstRender from "../../../commons/hooks/first-render.hook";
-import { OrderStatus } from "../../../commons/order-status.enum";
+import { OrderStatus } from "../../../commons/enums/order-status.enum";
 import Alert from "../../../components/Alert";
 
 export default function OverviewCustomerOrderPage() {

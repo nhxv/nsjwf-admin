@@ -1,7 +1,7 @@
 import { useFormik } from "formik";
 import { useState } from "react";
 import { BiLeftArrowAlt, BiRightArrowAlt, BiX } from "react-icons/bi";
-import { OrderStatus } from "../../../../commons/order-status.enum";
+import { OrderStatus } from "../../../../commons/enums/order-status.enum";
 import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
 import Checkbox from "../../../../components/forms/Checkbox";
@@ -32,11 +32,13 @@ export default function CustomerOrderForm({
     page: 0,
   });
 
-  const [query, setQuery] = useState("");
   const [selectedProducts, setSelectedProducts] = useState(
     editedProducts ? editedProducts : []
   );
-  const [searchedProducts, setSearchedProducts] = useState([]);
+  const [search, setSearch] = useState({
+    products: [],
+    query: "",
+  });
 
   const customerOrderForm = useFormik({
     enableReinitialize: true,
@@ -77,6 +79,15 @@ export default function CustomerOrderForm({
                 quantity: data[property],
               });
             }
+          } else if (property.includes("unit")) {
+            const id = +property.replace("unit", "");
+            const selected = selectedProducts.find((p) => p.id === id);
+            if (selected) {
+              productOrders.set(selected.id, {
+                ...productOrders.get(selected.id),
+                unitCode: `${selected.id}_${data[property]}`,
+              });
+            }
           }
         }
         reqData["productCustomerOrders"] = [...productOrders.values()];
@@ -94,7 +105,12 @@ export default function CustomerOrderForm({
             loading: false,
           }));
           setTimeout(() => {
-            setFormState((prev) => ({ ...prev, success: "" }));
+            setFormState((prev) => ({
+              ...prev,
+              success: "",
+              error: "",
+              loading: false,
+            }));
             onClear();
           }, 2000);
         } else {
@@ -107,7 +123,12 @@ export default function CustomerOrderForm({
             loading: false,
           }));
           setTimeout(() => {
-            setFormState((prev) => ({ ...prev, success: "" }));
+            setFormState((prev) => ({
+              ...prev,
+              success: "",
+              empty: "",
+              loading: false,
+            }));
             onClear();
           }, 2000);
         }
@@ -149,10 +170,19 @@ export default function CustomerOrderForm({
         const selected = [];
         for (const product of template) {
           const found = allProducts.find((p) => p.name === product.name);
-          selected.push({ id: found.id, name: product.name });
+          selected.push({
+            id: found.id,
+            name: found.name,
+            sell_price: found.sell_price,
+            units: found.units,
+          });
           customerOrderForm.setFieldValue(
             `quantity${found.id}`,
             product.quantity
+          );
+          customerOrderForm.setFieldValue(
+            `unit${found.id}`,
+            product.unit_code.split("_")[1]
           );
           updatePrice(product.quantity, `quantity${found.id}`);
           customerOrderForm.setFieldValue(`price${found.id}`, 0);
@@ -181,11 +211,14 @@ export default function CustomerOrderForm({
           .replace(/\s+/g, "")
           .includes(e.target.value.toLowerCase().replace(/\s+/g, ""))
       );
-      setSearchedProducts(searched);
+      setSearch((prev) => ({
+        ...prev,
+        products: searched,
+        query: e.target.value,
+      }));
     } else {
-      setSearchedProducts([]);
+      setSearch((prev) => ({ ...prev, products: [], query: e.target.value }));
     }
-    setQuery(e.target.value);
   };
 
   const onAddProduct = (product) => {
@@ -194,15 +227,14 @@ export default function CustomerOrderForm({
       setSelectedProducts([product, ...selectedProducts]);
       customerOrderForm.setFieldValue(`quantity${product.id}`, 0);
       customerOrderForm.setFieldValue(`price${product.id}`, 0);
-      setSearchedProducts([]);
-      setQuery("");
     }
+    setSearch((prev) => ({ ...prev, products: [], query: "" }));
   };
 
   const onRemoveProduct = (id) => {
-    setSearchedProducts([]);
-    setQuery("");
+    setSearch((prev) => ({ ...prev, products: [], query: "" }));
     customerOrderForm.setFieldValue(`quantity${id}`, 0);
+    customerOrderForm.setFieldValue(`unit${id}`, "BOX");
     customerOrderForm.setFieldValue(`price${id}`, 0);
     updatePrice(0, `remove${id}`);
     setSelectedProducts(
@@ -211,8 +243,7 @@ export default function CustomerOrderForm({
   };
 
   const onClearQuery = () => {
-    setSearchedProducts([]);
-    setQuery("");
+    setSearch((prev) => ({ ...prev, products: [], query: "" }));
   };
 
   return (
@@ -243,8 +274,8 @@ export default function CustomerOrderForm({
               form={customerOrderForm}
               field={"customerName"}
               name="customer"
-              value={customerOrderForm.values["customerName"]}
               options={customers.map((customer) => customer.name)}
+              selected={customerOrderForm.values["customerName"]}
             />
           </div>
 
@@ -276,8 +307,8 @@ export default function CustomerOrderForm({
               form={customerOrderForm}
               field={"employeeName"}
               name="employeeName"
-              value={customerOrderForm.values["employeeName"]}
               options={employees.map((employee) => employee.nickname)}
+              selected={customerOrderForm.values["employeeName"]}
             ></SelectInput>
           </div>
 
@@ -288,11 +319,11 @@ export default function CustomerOrderForm({
             <SelectInput
               form={customerOrderForm}
               field={"status"}
+              name="status"
               options={Object.values(OrderStatus).filter(
                 (status) => status !== OrderStatus.CANCELED
               )}
-              name="status"
-              value={customerOrderForm.values["status"]}
+              selected={customerOrderForm.values["status"]}
             ></SelectInput>
           </div>
 
@@ -315,86 +346,45 @@ export default function CustomerOrderForm({
             <>
               <div className="mb-5">
                 <SearchSuggest
-                  query={query}
-                  items={searchedProducts}
+                  query={search.query}
+                  items={search.products}
                   onChange={(e) => onChangeSearch(e)}
-                  onFocus={() => setSearchedProducts(allProducts)}
+                  onFocus={() =>
+                    setSearch((prev) => ({
+                      ...prev,
+                      products: allProducts,
+                      query: "",
+                    }))
+                  }
                   onSelect={onAddProduct}
                   onClear={onClearQuery}
                 ></SearchSuggest>
               </div>
 
-              {selectedProducts?.length > 0 ? (
-                <>
-                  <div className="mb-2 flex items-center justify-between">
-                    <div className="w-5/12 xl:w-6/12">
-                      <span className="custom-label">Product</span>
-                    </div>
-                    <div className="flex w-7/12 xl:w-6/12">
-                      <div className="mr-2 w-5/12">
-                        <span className="custom-label">Qty</span>
-                      </div>
-                      <div className="w-5/12">
-                        <span className="custom-label">Price</span>
-                      </div>
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <div className="mt-5 mb-2 flex justify-center">
-                  <span>Empty.</span>
-                </div>
-              )}
-
-              {selectedProducts.map((product) => {
-                return (
-                  <div key={product.id}>
-                    <div className="flex items-center justify-between">
-                      <div className="w-5/12 xl:w-6/12">
-                        <p className="mb-1">{product.name}</p>
-                        {product.sell_price ? (
-                          <div className="custom-badge bg-info text-info-content">
-                            <span className="hidden sm:inline">Suggest: </span>
-                            <span>
-                              {"> "}${product.sell_price}
+              <div className="mb-5">
+                {selectedProducts && selectedProducts.length > 0 ? (
+                  <div className="grid grid-cols-12 gap-3">
+                    {selectedProducts.map((product) => (
+                      <div
+                        key={product.id}
+                        className="rounded-box col-span-12 flex flex-col border-2 border-base-300 p-3 md:col-span-6"
+                      >
+                        <div className="mb-3 flex justify-between">
+                          <div>
+                            <span className="text-lg font-semibold">
+                              {product.name}
                             </span>
+                            {product.sell_price ? (
+                              <div className="custom-badge mt-1 bg-info text-info-content">
+                                <span className="hidden sm:inline">
+                                  Suggest:
+                                </span>
+                                <span>
+                                  {" > "}${product.sell_price}
+                                </span>
+                              </div>
+                            ) : null}
                           </div>
-                        ) : null}
-                      </div>
-                      <div className="flex w-7/12 xl:w-6/12">
-                        <div className="mr-2 w-5/12">
-                          <NumberInput
-                            id={`quantity${product.id}`}
-                            name={`quantity${product.id}`}
-                            placeholder="Qty"
-                            value={
-                              customerOrderForm.values[`quantity${product.id}`]
-                            }
-                            onChange={(e) =>
-                              handlePriceChange(e, `quantity${product.id}`)
-                            }
-                            min="0"
-                            max="99999"
-                            disabled={false}
-                          ></NumberInput>
-                        </div>
-
-                        <div className="mr-2 w-5/12">
-                          <TextInput
-                            id={`price${product.id}`}
-                            type="text"
-                            name={`price${product.id}`}
-                            placeholder="Price"
-                            value={
-                              customerOrderForm.values[`price${product.id}`]
-                            }
-                            onChange={(e) =>
-                              handlePriceChange(e, `price${product.id}`)
-                            }
-                          ></TextInput>
-                        </div>
-
-                        <div className="flex w-2/12 items-center">
                           <button
                             type="button"
                             className="btn-accent btn-sm btn-circle btn"
@@ -405,12 +395,71 @@ export default function CustomerOrderForm({
                             </span>
                           </button>
                         </div>
+                        <div className="mb-2 grid grid-cols-12 gap-2">
+                          <div className="col-span-6">
+                            <label className="custom-label mb-2 inline-block">
+                              Qty
+                            </label>
+                            <NumberInput
+                              id={`quantity${product.id}`}
+                              name={`quantity${product.id}`}
+                              placeholder="Qty"
+                              value={
+                                customerOrderForm.values[
+                                  `quantity${product.id}`
+                                ]
+                              }
+                              onChange={(e) =>
+                                handlePriceChange(e, `quantity${product.id}`)
+                              }
+                              min="0"
+                              max="99999"
+                              disabled={false}
+                            ></NumberInput>
+                          </div>
+                          <div className="col-span-6">
+                            <label className="custom-label mb-2 inline-block">
+                              Unit
+                            </label>
+                            <SelectInput
+                              form={customerOrderForm}
+                              field={`unit${product.id}`}
+                              name={`unit${product.id}`}
+                              options={product.units.map(
+                                (unit) => unit.code.split("_")[1]
+                              )}
+                              selected={
+                                customerOrderForm.values[`unit${product.id}`]
+                              }
+                            ></SelectInput>
+                          </div>
+                          <div className="col-span-12">
+                            <label className="custom-label mb-2 inline-block">
+                              Unit Price
+                            </label>
+                            <TextInput
+                              id={`price${product.id}`}
+                              type="text"
+                              name={`price${product.id}`}
+                              placeholder="Price"
+                              value={
+                                customerOrderForm.values[`price${product.id}`]
+                              }
+                              onChange={(e) =>
+                                handlePriceChange(e, `price${product.id}`)
+                              }
+                            ></TextInput>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                    <div className="divider my-1"></div>
+                    ))}
                   </div>
-                );
-              })}
+                ) : (
+                  <div className="mt-5 mb-2 flex justify-center">
+                    <span>Empty.</span>
+                  </div>
+                )}
+              </div>
 
               <div className="mt-3 mb-5 flex items-center">
                 <div>
@@ -434,10 +483,10 @@ export default function CustomerOrderForm({
                 ></Checkbox>
               </div>
 
-              <div className="mt-3 flex justify-between">
+              <div className="grid grid-cols-12 gap-3">
                 <button
                   type="button"
-                  className="btn-outline-primary btn w-[49%]"
+                  className="btn-outline-primary btn col-span-6"
                   onClick={onPreviousPage}
                 >
                   <span>
@@ -447,7 +496,7 @@ export default function CustomerOrderForm({
                 </button>
                 <button
                   type="submit"
-                  className="btn-primary btn w-[49%]"
+                  className="btn-primary btn col-span-6"
                   disabled={formState.loading}
                 >
                   <span>{edit ? "Update" : "Create"}</span>
@@ -470,14 +519,14 @@ export default function CustomerOrderForm({
             <Spinner></Spinner>
           </div>
         ) : null}
-        {formState.success ? (
-          <div className="mt-5">
-            <Alert message={formState.success} type="success"></Alert>
-          </div>
-        ) : null}
         {formState.error ? (
           <div className="mt-5">
             <Alert message={formState.error} type="error"></Alert>
+          </div>
+        ) : null}
+        {formState.success ? (
+          <div className="mt-5">
+            <Alert message={formState.success} type="success"></Alert>
           </div>
         ) : null}
       </div>

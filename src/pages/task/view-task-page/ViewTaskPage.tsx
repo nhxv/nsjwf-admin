@@ -1,27 +1,23 @@
 import { useState, useEffect } from "react";
 import api from "../../../stores/api";
-import { OrderStatus } from "../../../commons/order-status.enum";
+import { OrderStatus } from "../../../commons/enums/order-status.enum";
 import SelectInput from "../../../components/forms/SelectInput";
 import Spinner from "../../../components/Spinner";
 import { BiError, BiBot, BiX } from "react-icons/bi";
 import TaskList from "./components/TaskList";
-import useFirstRender from "../../../commons/hooks/first-render.hook";
 import { useAuthStore } from "../../../stores/auth.store";
 import Alert from "../../../components/Alert";
 import Stepper from "../../../components/Stepper";
 
 export default function ViewTaskPage() {
-  const isFirstRender = useFirstRender();
-  const [listState, setListState] = useState({
-    listError: "",
-    listEmpty: "",
-    listLoading: true,
-  });
-  const [status, setStatus] = useState(OrderStatus.PICKING);
-  const [dataState, setDataState] = useState({
+  const [fetchData, setFetchData] = useState({
     tasks: [],
     toast: "",
+    error: "",
+    empty: "",
+    loading: true,
   });
+  const [status, setStatus] = useState(OrderStatus.PICKING);
   const nickname = useAuthStore((state) => JSON.parse(state.nickname));
   const [reload, setReload] = useState(false);
 
@@ -37,17 +33,6 @@ export default function ViewTaskPage() {
     };
   }, [status, reload]);
 
-  useEffect(() => {
-    if (!isFirstRender) {
-      setListState((prev) => ({
-        ...prev,
-        listError: "",
-        listEmpty: "",
-        listLoading: false,
-      }));
-    }
-  }, [dataState]);
-
   const getOrderList = () => {
     let orderPromise = null;
     if (status === OrderStatus.PICKING || status === OrderStatus.SHIPPING) {
@@ -60,18 +45,18 @@ export default function ViewTaskPage() {
     orderPromise
       .then((res) => {
         if (res.data.length === 0) {
-          setListState((prev) => ({
+          setFetchData((prev) => ({
             ...prev,
-            listError: "",
-            listEmpty: "Such hollow, much empty...",
-            listLoading: false,
+            error: "",
+            empty: "Such hollow, much empty...",
+            loading: false,
           }));
         } else {
-          setListState((prev) => ({
+          setFetchData((prev) => ({
             ...prev,
-            listError: "",
-            listEmpty: "",
-            listLoading: false,
+            error: "",
+            empty: "",
+            loading: false,
           }));
           // TODO: notification
           // const oldTaskList = [...dataState.tasks];
@@ -115,29 +100,36 @@ export default function ViewTaskPage() {
           //   }
           // }
           // const toastMessage = updates.reduce((prev, curr) => prev + ", " +, "");
-          // console.log(toastMessage);
-          setDataState((prev) => ({ ...prev, tasks: res.data }));
+          setFetchData((prev) => ({
+            ...prev,
+            tasks: res.data,
+            error: "",
+            empty: "",
+            loading: false,
+          }));
         }
       })
       .catch((e) => {
         const error = JSON.parse(
           JSON.stringify(e.response ? e.response.data.error : e)
         );
-        setListState((prev) => ({
+        setFetchData((prev) => ({
           ...prev,
-          listError: error.message,
-          listLoading: false,
+          tasks: [],
+          error: error.message,
+          empty: "",
+          loading: false,
         }));
       });
   };
 
   const forceReload = () => {
     setReload(!reload);
-    setListState((prev) => ({
+    setFetchData((prev) => ({
       ...prev,
-      listError: "",
-      listEmpty: "",
-      listLoading: true,
+      error: "",
+      empty: "",
+      loading: true,
     }));
   };
 
@@ -161,30 +153,13 @@ export default function ViewTaskPage() {
       setStatus(OrderStatus.DELIVERED);
     }
     if (s !== status) {
-      setListState((prev) => ({
+      setFetchData((prev) => ({
         ...prev,
-        listError: "",
-        listEmpty: "",
-        listLoading: true,
+        error: "",
+        empty: "",
+        loading: true,
       }));
     }
-  };
-
-  const checkStep = (step: string) => {
-    const s = step.toUpperCase();
-    if (s === status) {
-      return true;
-    } else if (s === OrderStatus.PICKING) {
-      return true;
-    } else if (
-      s === OrderStatus.CHECKING &&
-      (status === OrderStatus.SHIPPING || status === OrderStatus.DELIVERED)
-    ) {
-      return true;
-    } else if (s === OrderStatus.SHIPPING && status === OrderStatus.DELIVERED) {
-      return true;
-    }
-    return false;
   };
 
   return (
@@ -202,22 +177,22 @@ export default function ViewTaskPage() {
             ></Stepper>
           </div>
 
-          {listState.listLoading ? (
+          {fetchData.loading ? (
             <div className="flex justify-center">
               <Spinner></Spinner>
             </div>
           ) : (
             <>
-              {listState.listError ? (
-                <Alert message={listState.listError} type="error"></Alert>
+              {fetchData.error ? (
+                <Alert message={fetchData.error} type="error"></Alert>
               ) : (
                 <>
-                  {listState.listEmpty ? (
-                    <Alert message={listState.listEmpty} type="empty"></Alert>
+                  {fetchData.empty ? (
+                    <Alert message={fetchData.empty} type="empty"></Alert>
                   ) : (
                     <>
                       <TaskList
-                        orders={dataState.tasks}
+                        orders={fetchData.tasks}
                         reload={forceReload}
                         status={status}
                       />

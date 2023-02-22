@@ -1,49 +1,42 @@
-import { useState } from "react";
-import Modal from "../../../../components/Modal";
-import Alert from "../../../../components/Alert";
-import Spinner from "../../../../components/Spinner";
-import TextInput from "../../../../components/forms/TextInput";
-import Checkbox from "../../../../components/forms/Checkbox";
 import { useFormik } from "formik";
-import api from "../../../../stores/api";
-import { FormType } from "../../../../commons/form-type.enum";
+import { useState } from "react";
 import { BiX } from "react-icons/bi";
+import Alert from "../../../../components/Alert";
+import Checkbox from "../../../../components/forms/Checkbox";
+import TextInput from "../../../../components/forms/TextInput";
+import Modal from "../../../../components/Modal";
+import Spinner from "../../../../components/Spinner";
+import api from "../../../../stores/api";
 
-export default function ProductForm({
-  isOpen,
-  onClose,
-  product,
-  onReload,
-  type,
-}) {
+export default function DraftUnitForm({ productId, unit, isOpen, onClose }) {
   const [formState, setFormState] = useState({
     error: "",
     loading: false,
   });
 
-  const productForm = useFormik({
+  const unitForm = useFormik({
     enableReinitialize: true,
     initialValues: {
-      name: product.name,
-      discontinued: product.discontinued,
+      name: unit ? unit.name : "",
+      ratio: "1/2",
+      discontinued: unit ? unit.discontinued : false,
     },
     onSubmit: async (data) => {
-      setFormState((prev) => ({
-        ...prev,
-        error: "",
-        loading: true,
-      }));
+      setFormState((prev) => ({ ...prev, loading: true, error: "" }));
       try {
-        if (type === FormType.CREATE) {
-          const res = await api.post(`/products`, data);
-          setFormState((prev) => ({ ...prev, error: "", loading: false }));
-          onReload();
-          onClose();
-        } else if (type === FormType.EDIT) {
-          const res = await api.put(`/products/${product.id}`, data);
-          setFormState((prev) => ({ ...prev, error: "", loading: false }));
-          onReload();
-          onClose();
+        let res = null;
+        if (unit?.id > 0) {
+          res = await api.put(`/units/${unit.id}`, data);
+          if (res) {
+            setFormState((prev) => ({ ...prev, loading: false, error: "" }));
+            onCloseForm();
+          }
+        } else {
+          res = await api.post(`/units/by-product/${productId}`, data);
+          if (res) {
+            setFormState((prev) => ({ ...prev, loading: false, error: "" }));
+            onCloseForm();
+          }
         }
       } catch (e) {
         const error = JSON.parse(
@@ -59,7 +52,7 @@ export default function ProductForm({
   });
 
   const onCloseForm = () => {
-    setFormState((prev) => ({ ...prev, error: "", loading: false }));
+    unitForm.resetForm();
     onClose();
   };
 
@@ -72,10 +65,12 @@ export default function ProductForm({
             className="btn-accent btn-sm btn-circle btn"
             onClick={onCloseForm}
           >
-            <BiX className="h-6 w-6"></BiX>
+            <span>
+              <BiX className="h-6 w-6"></BiX>
+            </span>
           </button>
         </div>
-        <form onSubmit={productForm.handleSubmit}>
+        <form onSubmit={unitForm.handleSubmit}>
           <div className="mb-5">
             <label htmlFor="name" className="custom-label mb-2 inline-block">
               <span>Name</span>
@@ -86,30 +81,49 @@ export default function ProductForm({
               type="text"
               placeholder={`Name`}
               name="name"
-              value={productForm.values.name}
-              onChange={productForm.handleChange}
+              value={unitForm.values.name}
+              onChange={unitForm.handleChange}
             ></TextInput>
           </div>
+
+          {!unit ? (
+            <div className="mb-5">
+              <label htmlFor="ratio" className="custom-label mb-2 inline-block">
+                <span>Ratio to box</span>
+                <span className="text-red-500">*</span>
+              </label>
+              <TextInput
+                id="ratio"
+                type="text"
+                placeholder={`1/4`}
+                name="ratio"
+                value={unitForm.values.ratio}
+                onChange={unitForm.handleChange}
+              ></TextInput>
+            </div>
+          ) : null}
+
           <div className="mb-5 flex items-center">
             <Checkbox
               id="discontinued"
               name="discontinued"
               onChange={() =>
-                productForm.setFieldValue(
+                unitForm.setFieldValue(
                   "discontinued",
-                  !productForm.values.discontinued
+                  !unitForm.values.discontinued
                 )
               }
-              checked={!productForm.values.discontinued}
+              checked={!unitForm.values.discontinued}
               label="In use"
             ></Checkbox>
           </div>
+
           <button
             type="submit"
-            className="btn-primary btn mt-1 w-full"
+            className="btn-primary btn mt-3 w-full"
             disabled={formState.loading}
           >
-            <span>{type} product</span>
+            <span>{unit ? "Edit" : "Add"} unit</span>
           </button>
           <div>
             {formState.loading ? (

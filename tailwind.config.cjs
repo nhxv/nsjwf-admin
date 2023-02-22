@@ -8,7 +8,7 @@ module.exports = {
       center: true,
     },
     screens: {
-      xs: "420px",
+      xs: "480px",
       ...defaultTheme.screens,
     },
     extend: {},

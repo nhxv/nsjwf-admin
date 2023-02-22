@@ -1,10 +1,9 @@
-import { useState, useEffect } from "react";
-import Spinner from "../../../../components/Spinner";
+import { useEffect, useState } from "react";
+import { BiEdit, BiPlus } from "react-icons/bi";
+import { useNavigate } from "react-router-dom";
 import Alert from "../../../../components/Alert";
 import SearchInput from "../../../../components/forms/SearchInput";
-import { BiEdit, BiPlus } from "react-icons/bi";
-import ProductForm from "./ProductForm";
-import { FormType } from "../../../../commons/form-type.enum";
+import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
 
 export default function ProductList() {
@@ -14,20 +13,11 @@ export default function ProductList() {
     empty: "",
     loading: true,
   });
-  const [modal, setModal] = useState({
-    product: {
-      id: -1,
-      name: "",
-      discontinued: false,
-    },
-    type: FormType.CREATE,
-    isOpen: false,
-  });
-  const [reload, setReload] = useState(false);
   const [search, setSearch] = useState({
     products: [],
     query: "",
   });
+  const navigate = useNavigate();
 
   useEffect(() => {
     api
@@ -41,7 +31,7 @@ export default function ProductList() {
             loading: false,
           }));
         } else {
-          setSearch((prev) => ({ ...prev, products: res.data }));
+          setSearch((prev) => ({ ...prev, products: res.data, query: "" }));
           setFetchData((prev) => ({
             ...prev,
             products: res.data,
@@ -61,42 +51,14 @@ export default function ProductList() {
           loading: false,
         }));
       });
-  }, [reload]);
+  }, []);
 
   const onAdd = () => {
-    setModal((prev) => ({
-      ...prev,
-      product: {
-        ...prev.product,
-        id: -1,
-        name: "",
-        discontinued: false,
-      },
-      type: FormType.CREATE,
-      isOpen: true,
-    }));
+    navigate(`/configure/draft-product`);
   };
 
-  const onEdit = (data) => {
-    setModal((prev) => ({
-      ...prev,
-      product: {
-        ...prev.product,
-        id: data.id,
-        name: data.name,
-        discontinued: data.discontinued,
-      },
-      type: FormType.EDIT,
-      isOpen: true,
-    }));
-  };
-
-  const onCloseForm = () => {
-    setModal((prev) => ({ ...prev, isOpen: false }));
-  };
-
-  const onReload = () => {
-    setReload(!reload);
+  const onEdit = (id: number) => {
+    navigate(`/configure/draft-product/${id}`);
   };
 
   const onChangeSearch = (e) => {
@@ -135,17 +97,35 @@ export default function ProductList() {
 
   if (fetchData.error) {
     return (
-      <div className="mx-auto w-11/12 sm:w-8/12 xl:w-6/12">
-        <Alert type="error" message={fetchData.error}></Alert>
-      </div>
+      <>
+        <div className="fixed bottom-24 right-6 z-20 md:right-8">
+          <button className="btn-primary btn-circle btn" onClick={onAdd}>
+            <span>
+              <BiPlus className="h-8 w-8"></BiPlus>
+            </span>
+          </button>
+        </div>
+        <div className="mx-auto w-11/12 sm:w-8/12 xl:w-6/12">
+          <Alert type="error" message={fetchData.error}></Alert>
+        </div>
+      </>
     );
   }
 
   if (fetchData.empty) {
     return (
-      <div className="mx-auto w-11/12 sm:w-8/12 xl:w-6/12">
-        <Alert type="empty" message={fetchData.empty}></Alert>
-      </div>
+      <>
+        <div className="fixed bottom-24 right-6 z-20 md:right-8">
+          <button className="btn-primary btn-circle btn" onClick={onAdd}>
+            <span>
+              <BiPlus className="h-8 w-8"></BiPlus>
+            </span>
+          </button>
+        </div>
+        <div className="mx-auto w-11/12 sm:w-8/12 xl:w-6/12">
+          <Alert type="empty" message={fetchData.empty}></Alert>
+        </div>
+      </>
     );
   }
 
@@ -158,7 +138,7 @@ export default function ProductList() {
           </span>
         </button>
       </div>
-      <div className="mx-auto mb-5 w-11/12 sm:w-8/12 xl:w-6/12">
+      <div className="mx-auto mb-5 w-11/12 md:w-10/12 lg:w-6/12">
         <SearchInput
           id="product-search"
           placeholder="Search product"
@@ -172,12 +152,12 @@ export default function ProductList() {
       <div className="grid grid-cols-12 gap-4 px-4">
         {search.products.map((product) => (
           <div
-            key={product.name}
-            className="custom-card col-span-12 flex items-center sm:col-span-6 xl:col-span-3"
+            key={product.id}
+            className="custom-card col-span-12 flex items-center md:col-span-6 lg:col-span-3"
           >
             <button
               className="btn-accent btn-circle btn mr-4"
-              onClick={() => onEdit(product)}
+              onClick={() => onEdit(product.id)}
             >
               <span>
                 <BiEdit className="h-6 w-6"></BiEdit>
@@ -195,13 +175,6 @@ export default function ProductList() {
       {search.products?.length < 1 ? (
         <div className="text-center">Not found.</div>
       ) : null}
-      <ProductForm
-        isOpen={modal.isOpen}
-        onClose={onCloseForm}
-        product={modal.product}
-        onReload={onReload}
-        type={modal.type}
-      ></ProductForm>
     </>
   );
 }

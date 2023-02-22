@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { OrderStatus } from "../../../../commons/order-status.enum";
-import { convertTime } from "../../../../commons/time.util";
+import { OrderStatus } from "../../../../commons/enums/order-status.enum";
+import { convertTime } from "../../../../commons/utils/time.util";
 import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
 import StatusTag from "../../../../components/StatusTag";

@@ -1,65 +1,54 @@
 import { useEffect, useState } from "react";
-import { BackorderStatus } from "../../../commons/backorder-status.enum";
-import useFirstRender from "../../../commons/hooks/first-render.hook";
+import { BackorderStatus } from "../../../commons/enums/backorder-status.enum";
 import Alert from "../../../components/Alert";
 import Spinner from "../../../components/Spinner";
+import Stepper from "../../../components/Stepper";
 import api from "../../../stores/api";
 import BackorderList from "./components/BackorderList";
-import Stepper from "../../../components/Stepper";
 
 export default function ViewBackorderPage() {
-  const isFirstRender = useFirstRender();
-  const [listState, setListState] = useState({
-    listError: "",
-    listEmpty: "",
-    listLoading: true,
+  const [fetchData, setFetchData] = useState({
+    backorders: [],
+    error: "",
+    empty: "",
+    loading: true,
   });
   const [status, setStatus] = useState(BackorderStatus.PENDING);
-  const [backorderList, setBackorderList] = useState([]);
 
   useEffect(() => {
     api
       .get(`/backorders/basic-list/${status}`)
       .then((res) => {
         if (res.data.length === 0) {
-          setListState((prev) => ({
+          setFetchData((prev) => ({
             ...prev,
-            listError: "",
-            listEmpty: "Such hollow, much empty...",
-            listLoading: false,
+            error: "",
+            empty: "Such hollow, much empty...",
+            loading: false,
           }));
         } else {
-          setListState((prev) => ({
+          setFetchData((prev) => ({
             ...prev,
-            listError: "",
-            listEmpty: "",
-            listLoading: false,
+            backorders: res.data,
+            error: "",
+            empty: "",
+            loading: false,
           }));
-          setBackorderList(res.data);
         }
       })
       .catch((e) => {
         const error = JSON.parse(
           JSON.stringify(e.response ? e.response.data.error : e)
         );
-        setListState((prev) => ({
+        setFetchData((prev) => ({
           ...prev,
-          listError: error.message,
-          listLoading: false,
+          backorders: [],
+          error: error.message,
+          empty: "",
+          loading: false,
         }));
       });
   }, [status]);
-
-  useEffect(() => {
-    if (!isFirstRender) {
-      setListState((prev) => ({
-        ...prev,
-        listError: "",
-        listEmpty: "",
-        listLoading: false,
-      }));
-    }
-  }, [backorderList]);
 
   const capitalizeFirst = (str: string) => {
     return str.charAt(0).toUpperCase() + str.slice(1);
@@ -73,11 +62,12 @@ export default function ViewBackorderPage() {
       setStatus(BackorderStatus.ARCHIVED);
     }
     if (s !== status) {
-      setListState((prev) => ({
+      setFetchData((prev) => ({
         ...prev,
-        listError: "",
-        listEmpty: "",
-        listLoading: true,
+        backorders: [],
+        error: "",
+        empty: "",
+        loading: true,
       }));
     }
   };
@@ -86,7 +76,7 @@ export default function ViewBackorderPage() {
     <>
       <section className="min-h-screen">
         <div className="flex justify-center">
-          <div className="w-11/12 sm:w-8/12 xl:w-6/12">
+          <div className="w-11/12 md:w-8/12 lg:w-6/12 xl:w-5/12">
             <div className="my-6">
               <Stepper
                 steps={Object.values(BackorderStatus)}
@@ -96,18 +86,18 @@ export default function ViewBackorderPage() {
               ></Stepper>
             </div>
 
-            {listState.listLoading ? (
+            {fetchData.loading ? (
               <Spinner></Spinner>
             ) : (
               <>
-                {listState.listError ? (
-                  <Alert message={listState.listError} type="error"></Alert>
+                {fetchData.error ? (
+                  <Alert message={fetchData.error} type="error"></Alert>
                 ) : (
                   <>
-                    {listState.listEmpty ? (
-                      <Alert message={listState.listEmpty} type="empty"></Alert>
+                    {fetchData.empty ? (
+                      <Alert message={fetchData.empty} type="empty"></Alert>
                     ) : (
-                      <BackorderList orders={backorderList} />
+                      <BackorderList orders={fetchData.backorders} />
                     )}
                   </>
                 )}

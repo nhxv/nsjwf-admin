@@ -1,24 +1,23 @@
 import { useEffect, useRef, useState } from "react";
 import { BiLayer } from "react-icons/bi";
 import { useReactToPrint } from "react-to-print";
-import useFirstRender from "../../../commons/hooks/first-render.hook";
-import { OrderStatus } from "../../../commons/order-status.enum";
+import { OrderStatus } from "../../../commons/enums/order-status.enum";
 import Alert from "../../../components/Alert";
 import Spinner from "../../../components/Spinner";
+import Stepper from "../../../components/Stepper";
 import api from "../../../stores/api";
 import CustomerOrderList from "./components/CustomerOrderList";
 import PackingSlipToPrint from "./components/PackingSlipToPrint";
-import Stepper from "../../../components/Stepper";
 
 export default function ViewCustomerOrderPage() {
-  const isFirstRender = useFirstRender();
-  const [listState, setListState] = useState({
-    listError: "",
-    listEmpty: "",
-    listLoading: true,
+  const [fetchData, setFetchData] = useState({
+    orders: [],
+    error: "",
+    empty: "",
+    loading: true,
   });
   const [status, setStatus] = useState(OrderStatus.PICKING);
-  const [customerOrderList, setCustomerOrderList] = useState([]);
+  // const [customerOrderList, setCustomerOrderList] = useState([]);
   const batchToPrintRef = useRef<HTMLDivElement>(null);
   const handleBatchPrint = useReactToPrint({
     content: () => batchToPrintRef.current,
@@ -36,52 +35,54 @@ export default function ViewCustomerOrderPage() {
     };
   }, [status]);
 
-  useEffect(() => {
-    if (!isFirstRender) {
-      setListState((prev) => ({
-        ...prev,
-        listError: "",
-        listEmpty: "",
-        listLoading: false,
-      }));
-    }
-  }, [customerOrderList]);
+  // useEffect(() => {
+  //   if (!isFirstRender) {
+  //     setFetchData((prev) => ({
+  //       ...prev,
+  //       error: "",
+  //       empty: "",
+  //       loading: false,
+  //     }));
+  //   }
+  // }, [fetchData.orders]);
 
   const getCustomerOrders = () => {
-    setListState((prev) => ({
+    setFetchData((prev) => ({
       ...prev,
-      listError: "",
-      listEmpty: "",
-      listLoading: true,
+      error: "",
+      empty: "",
+      loading: true,
     }));
     api
       .get(`/customer-orders/basic-list/${status}`)
       .then((res) => {
         if (res.data.length === 0) {
-          setListState((prev) => ({
+          setFetchData((prev) => ({
             ...prev,
-            listError: "",
-            listEmpty: "Such hollow, much empty...",
-            listLoading: false,
+            error: "",
+            empty: "Such hollow, much empty...",
+            loading: false,
           }));
         } else {
-          setListState((prev) => ({
+          setFetchData((prev) => ({
             ...prev,
-            listError: "",
-            listEmpty: "",
-            listLoading: false,
+            orders: res.data,
+            error: "",
+            empty: "",
+            loading: false,
           }));
-          setCustomerOrderList(res.data);
         }
       })
       .catch((e) => {
         const error = JSON.parse(
           JSON.stringify(e.response ? e.response.data.error : e)
         );
-        setListState((prev) => ({
+        setFetchData((prev) => ({
           ...prev,
-          listError: error.message,
-          listLoading: false,
+          orders: [],
+          empty: "",
+          error: error.message,
+          loading: false,
         }));
       });
   };
@@ -106,11 +107,12 @@ export default function ViewCustomerOrderPage() {
       setStatus(OrderStatus.DELIVERED);
     }
     if (s !== status) {
-      setListState((prev) => ({
+      setFetchData((prev) => ({
         ...prev,
-        listError: "",
-        listEmpty: "",
-        listLoading: true,
+        orders: [],
+        error: "",
+        empty: "",
+        loading: true,
       }));
     }
   };
@@ -118,7 +120,7 @@ export default function ViewCustomerOrderPage() {
   return (
     <section className="min-h-screen">
       <div className="flex justify-center">
-        <div className="w-11/12 sm:w-8/12 xl:w-6/12">
+        <div className="w-11/12 md:w-8/12 lg:w-6/12 xl:w-5/12">
           <div className="my-6">
             <Stepper
               steps={Object.values(OrderStatus).filter(
@@ -132,7 +134,7 @@ export default function ViewCustomerOrderPage() {
 
           <div className="hidden">
             <div ref={batchToPrintRef}>
-              {customerOrderList.map((order, index) => (
+              {fetchData.orders.map((order, index) => (
                 <div key={`customer-order-${index}`}>
                   <PackingSlipToPrint printRef={null} order={order} />
                 </div>
@@ -140,27 +142,27 @@ export default function ViewCustomerOrderPage() {
             </div>
           </div>
 
-          {listState.listLoading ? (
+          {fetchData.loading ? (
             <Spinner></Spinner>
           ) : (
             <>
-              {listState.listError ? (
-                <Alert message={listState.listError} type="error"></Alert>
+              {fetchData.error ? (
+                <Alert message={fetchData.error} type="error"></Alert>
               ) : (
                 <>
-                  {listState.listEmpty ? (
-                    <Alert message={listState.listEmpty} type="empty"></Alert>
+                  {fetchData.empty ? (
+                    <Alert message={fetchData.empty} type="empty"></Alert>
                   ) : (
                     <div>
                       <CustomerOrderList
-                        orders={customerOrderList}
+                        orders={fetchData.orders}
                         printMode={
                           status !== OrderStatus.COMPLETED ? true : false
                         }
                       />
-                      {!listState.listEmpty &&
-                      !listState.listError &&
-                      !listState.listLoading ? (
+                      {!fetchData.empty &&
+                      !fetchData.error &&
+                      !fetchData.loading ? (
                         <div className="mb-6 flex justify-center">
                           <button
                             type="button"

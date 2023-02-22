@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import useFirstRender from "../../../../commons/hooks/first-render.hook";
-import { OrderStatus } from "../../../../commons/order-status.enum";
-import { convertTime } from "../../../../commons/time.util";
+import { OrderStatus } from "../../../../commons/enums/order-status.enum";
+import { convertTime } from "../../../../commons/utils/time.util";
 import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
@@ -12,9 +12,9 @@ export default function CustomerOrderFormContainer() {
   const isFirstRender = useFirstRender();
   const params = useParams();
   const [reload, setReload] = useState(false);
-  const [formState, setFormState] = useState({
-    errorMessage: "",
-    emptyMessage: "",
+  const [fetchData, setFetchData] = useState({
+    error: "",
+    empty: "",
     loading: true,
   });
   const [initialFields, setInitialFields] = useState({});
@@ -52,17 +52,15 @@ export default function CustomerOrderFormContainer() {
           const employeeRes = res[2];
           const orderRes = res[3];
           if (
-            !productRes ||
-            productRes.data.length === 0 ||
-            !customerRes ||
-            customerRes.data.length === 0 ||
-            !employeeRes ||
-            employeeRes.data.length === 0 ||
+            productRes?.data?.length === 0 ||
+            customerRes?.data?.length === 0 ||
+            employeeRes?.data?.length === 0 ||
             !orderRes.data
           ) {
-            setFormState((prev) => ({
+            setFetchData((prev) => ({
               ...prev,
-              emptyMessage: "Such hollow, much empty...",
+              error: "",
+              empty: "Such hollow, much empty...",
               loading: false,
             }));
           } else {
@@ -79,18 +77,25 @@ export default function CustomerOrderFormContainer() {
               if (productOrder) {
                 productFieldData[`quantity${product.id}`] =
                   productOrder.quantity;
+                productFieldData[`unit${product.id}`] =
+                  productOrder.unit_code.split("_")[1];
                 productFieldData[`price${product.id}`] =
                   productOrder.unit_price;
-                updatedPrices.push({
-                  id: product.id,
-                  quantity: productFieldData[`quantity${product.id}`],
-                  price: productFieldData[`price${product.id}`],
-                });
                 editedProductsRes.push({
                   id: product.id,
                   name: product.name,
+                  units: product.units,
                 });
+              } else {
+                productFieldData[`quantity${product.id}`] = 0;
+                productFieldData[`unit${product.id}`] = "BOX";
+                productFieldData[`price${product.id}`] = 0;
               }
+              updatedPrices.push({
+                id: product.id,
+                quantity: productFieldData[`quantity${product.id}`],
+                price: productFieldData[`price${product.id}`],
+              });
             }
             setInitialFields((prev) => ({
               ...prev,
@@ -119,9 +124,9 @@ export default function CustomerOrderFormContainer() {
           const error = JSON.parse(
             JSON.stringify(e.response ? e.response.data.error : e)
           );
-          setFormState((prev) => ({
+          setFetchData((prev) => ({
             ...prev,
-            errorMessage: error.message,
+            error: error.message,
             loading: false,
           }));
         });
@@ -133,16 +138,14 @@ export default function CustomerOrderFormContainer() {
           const customerRes = res[1];
           const employeeRes = res[2];
           if (
-            !productRes ||
-            productRes.data.length === 0 ||
-            !customerRes ||
-            customerRes.data?.length === 0 ||
-            !employeeRes ||
-            employeeRes.data?.length === 0
+            productRes?.data?.length === 0 ||
+            customerRes?.data?.length === 0 ||
+            employeeRes?.data?.length === 0
           ) {
-            setFormState((prev) => ({
+            setFetchData((prev) => ({
               ...prev,
-              emptyMessage: "Such hollow, much empty...",
+              empty: "Such hollow, much empty...",
+              error: "",
               loading: false,
             }));
           } else {
@@ -151,6 +154,7 @@ export default function CustomerOrderFormContainer() {
             const productFieldData = {};
             for (const product of productRes.data) {
               productFieldData[`quantity${product.id}`] = 0;
+              productFieldData[`unit${product.id}`] = "BOX";
               productFieldData[`price${product.id}`] = 0;
               updatedPrices.push({
                 id: product.id,
@@ -183,9 +187,9 @@ export default function CustomerOrderFormContainer() {
           const error = JSON.parse(
             JSON.stringify(e.response ? e.response.data.error : e)
           );
-          setFormState((prev) => ({
+          setFetchData((prev) => ({
             ...prev,
-            errorMessage: error.message,
+            error: error.message,
             loading: false,
           }));
         });
@@ -194,16 +198,16 @@ export default function CustomerOrderFormContainer() {
 
   useEffect(() => {
     if (!isFirstRender) {
-      setFormState((prev) => ({ ...prev, loading: false }));
+      setFetchData((prev) => ({ ...prev, loading: false }));
     }
   }, [initialFields]);
 
   const onClear = () => {
     setReload(!reload);
-    setFormState((prev) => ({
+    setFetchData((prev) => ({
       ...prev,
-      errorMessage: "",
-      emptyMessage: "",
+      error: "",
+      empty: "",
       loading: true,
     }));
   };
@@ -231,26 +235,28 @@ export default function CustomerOrderFormContainer() {
     if (!params.code) {
       // load template when create
       try {
-        const response = await api.get(`/customers/tendency/${customerName}`);
+        const response = await api.get(
+          `/customers/active/tendency/${encodeURIComponent(customerName)}`
+        );
         return response.data.customerProductTendencies;
       } catch (e) {
         const error = JSON.parse(
           JSON.stringify(e.response ? e.response.data.error : e)
         );
-        setFormState((prev) => ({
+        setFetchData((prev) => ({
           ...prev,
-          errorMessage: error.message,
+          error: error.message,
           loading: false,
         }));
       }
     }
   };
 
-  if (formState.loading) return <Spinner></Spinner>;
-  if (formState.errorMessage)
-    return <Alert message={formState.errorMessage} type="error"></Alert>;
-  if (formState.emptyMessage)
-    return <Alert message={formState.emptyMessage} type="empty"></Alert>;
+  if (fetchData.loading) return <Spinner></Spinner>;
+  if (fetchData.error)
+    return <Alert message={fetchData.error} type="error"></Alert>;
+  if (fetchData.empty)
+    return <Alert message={fetchData.empty} type="empty"></Alert>;
 
   return (
     <div className="custom-card mb-12">

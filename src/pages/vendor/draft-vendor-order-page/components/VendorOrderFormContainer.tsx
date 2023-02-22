@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import useFirstRender from "../../../../commons/hooks/first-render.hook";
-import { OrderStatus } from "../../../../commons/order-status.enum";
-import { convertTime } from "../../../../commons/time.util";
+import { OrderStatus } from "../../../../commons/enums/order-status.enum";
+import { convertTime } from "../../../../commons/utils/time.util";
 import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
@@ -12,9 +12,9 @@ export default function VendorOrderFormContainer() {
   const isFirstRender = useFirstRender();
   const params = useParams();
   const [reload, setReload] = useState(false);
-  const [formState, setFormState] = useState({
-    errorMessage: "",
-    emptyMessage: "",
+  const [fetchData, setFetchData] = useState({
+    error: "",
+    empty: "",
     loading: true,
   });
   const [initialFields, setInitialFields] = useState({});
@@ -36,7 +36,7 @@ export default function VendorOrderFormContainer() {
     const productPromise = api.get(`/products/active`);
     const vendorPromise = api.get(`/vendors/active`);
     if (params.code) {
-      // edit mode
+      // 1. edit mode
       const orderPromise = api.get(`/vendor-orders/${params.code}`);
       Promise.all([productPromise, vendorPromise, orderPromise])
         .then((res) => {
@@ -44,16 +44,14 @@ export default function VendorOrderFormContainer() {
           const vendorRes = res[1];
           const orderRes = res[2];
           if (
-            !productRes ||
-            productRes.data.length === 0 ||
-            !vendorRes ||
-            vendorRes.data.length === 0 ||
+            productRes?.data?.length === 0 ||
+            vendorRes?.data?.length === 0 ||
             !orderRes.data
           ) {
-            setFormState((prev) => ({
+            setFetchData((prev) => ({
               ...prev,
-              emptyMessage: "Such hollow, much empty...",
-              errorMessage: "",
+              empty: "Such hollow, much empty...",
+              error: "",
               loading: false,
             }));
           } else {
@@ -70,18 +68,25 @@ export default function VendorOrderFormContainer() {
               if (productOrder) {
                 productFieldData[`quantity${product.id}`] =
                   productOrder.quantity;
+                productFieldData[`unit${product.id}`] =
+                  productOrder.unit_code.split("_")[1];
                 productFieldData[`price${product.id}`] =
                   productOrder.unit_price;
-                updatedPrices.push({
-                  id: product.id,
-                  quantity: productFieldData[`quantity${product.id}`],
-                  price: productFieldData[`price${product.id}`],
-                });
                 editedProductsRes.push({
                   id: product.id,
                   name: product.name,
+                  units: product.units,
                 });
+              } else {
+                productFieldData[`quantity${product.id}`] = 0;
+                productFieldData[`unit${product.id}`] = "BOX";
+                productFieldData[`price${product.id}`] = 0;
               }
+              updatedPrices.push({
+                id: product.id,
+                quantity: productFieldData[`quantity${product.id}`],
+                price: productFieldData[`price${product.id}`],
+              });
             }
             setInitialFields((prev) => ({
               ...prev,
@@ -105,29 +110,24 @@ export default function VendorOrderFormContainer() {
           const error = JSON.parse(
             JSON.stringify(e.response ? e.response.data.error : e)
           );
-          setFormState((prev) => ({
+          setFetchData((prev) => ({
             ...prev,
-            errorMessage: error.message,
-            emptyMessage: "",
+            error: error.message,
+            empty: "",
             loading: false,
           }));
         });
     } else {
-      // create mode
+      // 2. create mode
       Promise.all([productPromise, vendorPromise])
         .then((res) => {
           const productRes = res[0];
           const vendorRes = res[1];
-          if (
-            !productRes ||
-            productRes.data.length === 0 ||
-            !vendorRes ||
-            vendorRes.data?.length === 0
-          ) {
-            setFormState((prev) => ({
+          if (productRes?.data?.length === 0 || vendorRes?.data?.length === 0) {
+            setFetchData((prev) => ({
               ...prev,
-              emptyMessage: "Such hollow, much empty...",
-              errorMessage: "",
+              empty: "Such hollow, much empty...",
+              error: "",
               loading: false,
             }));
           } else {
@@ -136,6 +136,7 @@ export default function VendorOrderFormContainer() {
             const productFieldData = {};
             for (const product of productRes.data) {
               productFieldData[`quantity${product.id}`] = 0;
+              productFieldData[`unit${product.id}`] = "BOX";
               productFieldData[`price${product.id}`] = 0;
               updatedPrices.push({
                 id: product.id,
@@ -166,10 +167,10 @@ export default function VendorOrderFormContainer() {
           const error = JSON.parse(
             JSON.stringify(e.response ? e.response.data.error : e)
           );
-          setFormState((prev) => ({
+          setFetchData((prev) => ({
             ...prev,
-            errorMessage: error.message,
-            emptyMessage: "",
+            error: error.message,
+            empty: "",
             loading: false,
           }));
         });
@@ -178,16 +179,16 @@ export default function VendorOrderFormContainer() {
 
   useEffect(() => {
     if (!isFirstRender) {
-      setFormState((prev) => ({ ...prev, loading: false }));
+      setFetchData((prev) => ({ ...prev, loading: false }));
     }
   }, [initialFields]);
 
   const onClear = () => {
     setReload(!reload);
-    setFormState((prev) => ({
+    setFetchData((prev) => ({
       ...prev,
-      errorMessage: "",
-      emptyMessage: "",
+      error: "",
+      empty: "",
       loading: true,
     }));
   };
@@ -215,27 +216,29 @@ export default function VendorOrderFormContainer() {
     if (!params.code) {
       // load template when create
       try {
-        const response = await api.get(`/vendors/tendency/${vendorName}`);
+        const response = await api.get(
+          `/vendors/active/tendency/${encodeURIComponent(vendorName)}`
+        );
         return response.data.vendorProductTendencies;
       } catch (e) {
         const error = JSON.parse(
           JSON.stringify(e.response ? e.response.data.error : e)
         );
-        setFormState((prev) => ({
+        setFetchData((prev) => ({
           ...prev,
-          errorMessage: error.message,
-          emptyMessage: "",
+          error: error.message,
+          empty: "",
           loading: false,
         }));
       }
     }
   };
 
-  if (formState.loading) return <Spinner></Spinner>;
-  if (formState.errorMessage)
-    return <Alert message={formState.errorMessage} type="error"></Alert>;
-  if (formState.emptyMessage)
-    return <Alert message={formState.emptyMessage} type="empty"></Alert>;
+  if (fetchData.loading) return <Spinner></Spinner>;
+  if (fetchData.error)
+    return <Alert message={fetchData.error} type="error"></Alert>;
+  if (fetchData.empty)
+    return <Alert message={fetchData.empty} type="empty"></Alert>;
 
   return (
     <div className="custom-card mb-12">

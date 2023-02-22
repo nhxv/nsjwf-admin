@@ -1,7 +1,7 @@
 import { useFormik } from "formik";
 import { useState } from "react";
 import { BiLeftArrowAlt, BiRightArrowAlt, BiX } from "react-icons/bi";
-import { OrderStatus } from "../../../../commons/order-status.enum";
+import { OrderStatus } from "../../../../commons/enums/order-status.enum";
 import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
 import Checkbox from "../../../../components/forms/Checkbox";
@@ -30,11 +30,15 @@ export default function VendorOrderForm({
     loading: false,
     page: 0,
   });
-  const [query, setQuery] = useState("");
+  // const [query, setQuery] = useState("");
   const [selectedProducts, setSelectedProducts] = useState(
     editedProducts ? editedProducts : []
   );
-  const [searchedProducts, setSearchedProducts] = useState([]);
+  // const [searchedProducts, setSearchedProducts] = useState([]);
+  const [search, setSearch] = useState({
+    products: [],
+    query: "",
+  });
 
   const vendorOrderForm = useFormik({
     enableReinitialize: true,
@@ -71,6 +75,15 @@ export default function VendorOrderForm({
               productOrders.set(id, {
                 ...productOrders.get(id),
                 quantity: data[property],
+              });
+            }
+          } else if (property.includes("unit")) {
+            const id = +property.replace("unit", "");
+            const selected = selectedProducts.find((p) => p.id === id);
+            if (selected) {
+              productOrders.set(selected.id, {
+                ...productOrders.get(selected.id),
+                unitCode: `${selected.id}_${data[property]}`,
               });
             }
           }
@@ -142,10 +155,18 @@ export default function VendorOrderForm({
         const selected = [];
         for (const product of template) {
           const found = allProducts.find((p) => p.name === product.name);
-          selected.push({ id: found.id, name: product.name });
+          selected.push({
+            id: found.id,
+            name: product.name,
+            units: found.units,
+          });
           vendorOrderForm.setFieldValue(
             `quantity${found.id}`,
             product.quantity
+          );
+          vendorOrderForm.setFieldValue(
+            `unit${found.id}`,
+            product.unit_code.split("_")[1]
           );
           updatePrice(product.quantity, `quantity${found.id}`);
           vendorOrderForm.setFieldValue(`price${found.id}`, 0);
@@ -174,11 +195,14 @@ export default function VendorOrderForm({
           .replace(/\s+/g, "")
           .includes(e.target.value.toLowerCase().replace(/\s+/g, ""))
       );
-      setSearchedProducts(searched);
+      setSearch((prev) => ({
+        ...prev,
+        products: searched,
+        query: e.target.value,
+      }));
     } else {
-      setSearchedProducts([]);
+      setSearch((prev) => ({ ...prev, products: [], query: e.target.value }));
     }
-    setQuery(e.target.value);
   };
 
   const onAddProduct = (product) => {
@@ -186,16 +210,16 @@ export default function VendorOrderForm({
     if (!found) {
       setSelectedProducts([product, ...selectedProducts]);
       vendorOrderForm.setFieldValue(`quantity${product.id}`, 0);
+      vendorOrderForm.setFieldValue(`unit${product.id}`, "BOX");
       vendorOrderForm.setFieldValue(`price${product.id}`, 0);
-      setSearchedProducts([]);
-      setQuery("");
     }
+    setSearch((prev) => ({ ...prev, products: [], query: "" }));
   };
 
   const onRemoveProduct = (id) => {
-    setSearchedProducts([]);
-    setQuery("");
+    setSearch((prev) => ({ ...prev, products: [], query: "" }));
     vendorOrderForm.setFieldValue(`quantity${id}`, 0);
+    vendorOrderForm.setFieldValue(`unit${id}`, "BOX");
     vendorOrderForm.setFieldValue(`price${id}`, 0);
     updatePrice(0, `remove${id}`);
     setSelectedProducts(
@@ -204,8 +228,7 @@ export default function VendorOrderForm({
   };
 
   const onClearQuery = () => {
-    setSearchedProducts([]);
-    setQuery("");
+    setSearch((prev) => ({ ...prev, products: [], query: "" }));
   };
 
   return (
@@ -223,7 +246,7 @@ export default function VendorOrderForm({
               form={vendorOrderForm}
               field={"vendorName"}
               options={vendors.map((vendor) => vendor.name)}
-              value={vendorOrderForm.values["vendorName"]}
+              selected={vendorOrderForm.values["vendorName"]}
             ></SelectSearch>
           </div>
 
@@ -257,7 +280,7 @@ export default function VendorOrderForm({
                   status !== OrderStatus.DELIVERED &&
                   status !== OrderStatus.CANCELED
               )}
-              value={vendorOrderForm.values["status"]}
+              selected={vendorOrderForm.values["status"]}
             ></SelectInput>
           </div>
 
@@ -281,75 +304,38 @@ export default function VendorOrderForm({
             <>
               <div className="mb-5">
                 <SearchSuggest
-                  query={query}
-                  items={searchedProducts}
+                  query={search.query}
+                  items={search.products}
                   onChange={(e) => onChangeSearch(e)}
-                  onFocus={() => setSearchedProducts(allProducts)}
+                  onFocus={() =>
+                    setSearch((prev) => ({
+                      ...prev,
+                      products: allProducts,
+                      query: "",
+                    }))
+                  }
                   onSelect={onAddProduct}
                   onClear={onClearQuery}
                 ></SearchSuggest>
               </div>
-              {selectedProducts?.length > 0 ? (
-                <>
-                  <div className="mb-2 flex items-center justify-between">
-                    <div className="w-5/12">
-                      <span className="custom-label">Product</span>
-                    </div>
-                    <div className="flex w-7/12">
-                      <div className="mr-2 w-5/12">
-                        <span className="custom-label">Qty</span>
-                      </div>
-                      <div className="w-5/12">
-                        <span className="custom-label">Price</span>
-                      </div>
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <div className="mt-5 mb-2 flex justify-center">
-                  <span>Empty.</span>
-                </div>
-              )}
 
-              {selectedProducts.map((product) => {
-                return (
-                  <div key={product.id}>
-                    <div className="flex items-center justify-between">
-                      <div className="w-5/12">
-                        <span>{product.name}</span>
-                      </div>
-                      <div className="flex w-7/12">
-                        <div className="mr-2 w-5/12">
-                          <NumberInput
-                            id={`quantity${product.id}`}
-                            name={`quantity${product.id}`}
-                            placeholder="Qty"
-                            value={
-                              vendorOrderForm.values[`quantity${product.id}`]
-                            }
-                            onChange={(e) =>
-                              handlePriceChange(e, `quantity${product.id}`)
-                            }
-                            min="0"
-                            max="99999"
-                            disabled={false}
-                          ></NumberInput>
-                        </div>
-
-                        <div className="mr-2 w-5/12">
-                          <TextInput
-                            id={`price${product.id}`}
-                            type="text"
-                            name={`price${product.id}`}
-                            placeholder="Price"
-                            value={vendorOrderForm.values[`price${product.id}`]}
-                            onChange={(e) =>
-                              handlePriceChange(e, `price${product.id}`)
-                            }
-                          ></TextInput>
-                        </div>
-
-                        <div className="flex w-2/12 items-center">
+              <div className="mb-5">
+                {selectedProducts && selectedProducts.length > 0 ? (
+                  <div className="grid grid-cols-12 gap-3">
+                    {selectedProducts.map((product) => (
+                      <div
+                        key={product.id}
+                        className="rounded-box col-span-12 flex flex-col border-2 border-base-300 p-3 md:col-span-6"
+                      >
+                        <div className="mb-3 flex justify-between">
+                          <div>
+                            <span className="text-lg font-semibold">
+                              {product.name}
+                            </span>
+                            <span className="block text-sm text-neutral">
+                              Product
+                            </span>
+                          </div>
                           <button
                             type="button"
                             className="btn-accent btn-sm btn-circle btn"
@@ -360,12 +346,69 @@ export default function VendorOrderForm({
                             </span>
                           </button>
                         </div>
+                        <div className="mb-2 grid grid-cols-12 gap-2">
+                          <div className="col-span-6">
+                            <label className="custom-label mb-2 inline-block">
+                              Qty
+                            </label>
+                            <NumberInput
+                              id={`quantity${product.id}`}
+                              name={`quantity${product.id}`}
+                              placeholder="Qty"
+                              value={
+                                vendorOrderForm.values[`quantity${product.id}`]
+                              }
+                              onChange={(e) =>
+                                handlePriceChange(e, `quantity${product.id}`)
+                              }
+                              min="0"
+                              max="99999"
+                              disabled={false}
+                            ></NumberInput>
+                          </div>
+                          <div className="col-span-6">
+                            <label className="custom-label mb-2 inline-block">
+                              Unit
+                            </label>
+                            <SelectInput
+                              form={vendorOrderForm}
+                              field={`unit${product.id}`}
+                              name={`unit${product.id}`}
+                              options={product.units.map(
+                                (unit) => unit.code.split("_")[1]
+                              )}
+                              selected={
+                                vendorOrderForm.values[`unit${product.id}`]
+                              }
+                            ></SelectInput>
+                          </div>
+                          <div className="col-span-12">
+                            <label className="custom-label mb-2 inline-block">
+                              Unit Price
+                            </label>
+                            <TextInput
+                              id={`price${product.id}`}
+                              type="text"
+                              name={`price${product.id}`}
+                              placeholder="Price"
+                              value={
+                                vendorOrderForm.values[`price${product.id}`]
+                              }
+                              onChange={(e) =>
+                                handlePriceChange(e, `price${product.id}`)
+                              }
+                            ></TextInput>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                    <div className="divider my-1"></div>
+                    ))}
                   </div>
-                );
-              })}
+                ) : (
+                  <div className="mt-5 mb-2 flex justify-center">
+                    <span>Empty.</span>
+                  </div>
+                )}
+              </div>
 
               <div className="mt-3 mb-5 flex items-center">
                 <div>
@@ -389,10 +432,10 @@ export default function VendorOrderForm({
                 ></Checkbox>
               </div>
 
-              <div className="mt-3 flex justify-between">
+              <div className="grid grid-cols-12 gap-3">
                 <button
                   type="button"
-                  className="btn-outline-primary btn w-[49%]"
+                  className="btn-outline-primary btn col-span-6"
                   onClick={onPreviousPage}
                 >
                   <span>
@@ -402,7 +445,7 @@ export default function VendorOrderForm({
                 </button>
                 <button
                   type="submit"
-                  className="btn-primary btn w-[49%]"
+                  className="btn-primary btn col-span-6"
                   disabled={formState.loading}
                 >
                   <span>{edit ? "Update" : "Create"}</span>
@@ -425,14 +468,14 @@ export default function VendorOrderForm({
             <Spinner></Spinner>
           </div>
         ) : null}
-        {formState.success ? (
-          <div className="mt-5">
-            <Alert message={formState.success} type="success"></Alert>
-          </div>
-        ) : null}
         {formState.error ? (
           <div className="mt-5">
             <Alert message={formState.error} type="error"></Alert>
+          </div>
+        ) : null}
+        {formState.success ? (
+          <div className="mt-5">
+            <Alert message={formState.success} type="success"></Alert>
           </div>
         ) : null}
       </div>

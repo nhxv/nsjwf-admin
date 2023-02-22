@@ -6,7 +6,7 @@ import {
   BiExit,
 } from "react-icons/bi";
 import { useAuthStore } from "../stores/auth.store";
-import { Role } from "../commons/role.enum";
+import { Role } from "../commons/enums/role.enum";
 import BottomNav from "./BottomNav";
 
 export default function Layout({ children }) {
@@ -130,7 +130,7 @@ export default function Layout({ children }) {
       subItems: [
         {
           itemName: "Product",
-          href: "/configure/product",
+          href: "/configure/view-product",
           visible: [Role.MASTER, Role.ADMIN],
         },
         {

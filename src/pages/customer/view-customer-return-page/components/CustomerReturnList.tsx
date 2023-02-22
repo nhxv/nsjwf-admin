@@ -3,10 +3,7 @@ export default function CustomerReturnList({ returns }) {
     <>
       {returns.map((customerReturn) => {
         return (
-          <div
-            key={customerReturn.orderCode}
-            className="rounded-box mb-8 bg-base-100 p-6 shadow-md"
-          >
+          <div key={customerReturn.orderCode} className="custom-card mb-8">
             {/* basic order info */}
             <div className="flex flex-row justify-between">
               <div>
@@ -30,7 +27,7 @@ export default function CustomerReturnList({ returns }) {
                 <span className="font-medium">Qty</span>
               </div>
               <div className="w-3/12 text-center">
-                <span className="font-medium">Unit Price</span>
+                <span className="font-medium">Price</span>
               </div>
             </div>
             {customerReturn.productCustomerReturns.map((productReturn) => {
@@ -43,10 +40,12 @@ export default function CustomerReturnList({ returns }) {
                     <span>{productReturn.productName}</span>
                   </div>
                   <div className="w-3/12 text-center">
-                    <span>{productReturn.quantity}</span>
+                    <span>
+                      {productReturn.quantity} ({productReturn.unitCode})
+                    </span>
                   </div>
                   <div className="w-3/12 text-center">
-                    <span>{productReturn.unitPrice}</span>
+                    <span>${productReturn.unitPrice}</span>
                   </div>
                 </div>
               );
