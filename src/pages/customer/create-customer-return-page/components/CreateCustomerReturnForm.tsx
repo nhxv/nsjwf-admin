@@ -1,15 +1,11 @@
 import { useFormik } from "formik";
 import { useState } from "react";
-import {
-  BiCloudLightRain,
-  BiLeftArrowAlt,
-  BiRightArrowAlt,
-} from "react-icons/bi";
-import { convertTime } from "../../../../commons/time.util";
+import { BiLeftArrowAlt, BiRightArrowAlt } from "react-icons/bi";
+import { convertTime } from "../../../../commons/utils/time.util";
 import Alert from "../../../../components/Alert";
-import Spinner from "../../../../components/Spinner";
 import NumberInput from "../../../../components/forms/NumberInput";
 import TextInput from "../../../../components/forms/TextInput";
+import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
 
 export default function CreateCustomerReturnForm({
@@ -54,6 +50,7 @@ export default function CreateCustomerReturnForm({
               ...productReturns.get(productIndex),
               productName: product.product_name,
               quantity: data[property],
+              unitCode: product.unit_code,
               unitPrice: product.unit_price,
             });
           }
@@ -79,6 +76,7 @@ export default function CreateCustomerReturnForm({
         setFormState((prev) => ({
           ...prev,
           error: error.message,
+          success: "",
           loading: false,
         }));
       }
@@ -128,11 +126,11 @@ export default function CreateCustomerReturnForm({
 
       <div className="divider my-1"></div>
       <div className="mb-2 flex items-center justify-between">
-        <div className="w-6/12">
+        <div className="w-5/12">
           <span className="custom-label">Product</span>
         </div>
-        <div className="flex w-6/12">
-          <div className="mr-2 w-6/12">
+        <div className="flex w-7/12 gap-2">
+          <div className="w-6/12">
             <span className="custom-label">Qty</span>
           </div>
           <div className="flex w-6/12 items-center justify-center">
@@ -144,11 +142,14 @@ export default function CreateCustomerReturnForm({
         return (
           <div key={index}>
             <div className="flex items-center justify-between">
-              <div className="w-6/12">
+              <div className="w-5/12">
                 <span>{product.product_name}</span>
+                <span className="custom-badge mt-1 block bg-info text-info-content">
+                  Sold in {product.unit_code.split("_")[1].toLowerCase()}
+                </span>
               </div>
-              <div className="flex w-6/12">
-                <div className="mr-2 w-6/12">
+              <div className="flex w-7/12 gap-2">
+                <div className="w-6/12">
                   <NumberInput
                     id={`quantity${index}`}
                     min="0"
@@ -158,15 +159,13 @@ export default function CreateCustomerReturnForm({
                     value={customerReturnForm.values[`quantity${index}`]}
                     onChange={(e) => handlePriceChange(e, `quantity${index}`)}
                     disabled={
-                      product.quantity === 0 || formState.page === 1
-                        ? true
-                        : false
+                      !!(product.quantity === 0 || formState.page === 1)
                     }
                   ></NumberInput>
                 </div>
 
                 <div className="flex w-6/12 items-center justify-center">
-                  <span>{product.unit_price}</span>
+                  <span>${product.unit_price}</span>
                 </div>
               </div>
             </div>
@@ -197,7 +196,7 @@ export default function CreateCustomerReturnForm({
           {formState.page === 0 ? (
             <button
               type="button"
-              className="btn-primary btn w-full"
+              className="btn-primary btn mt-3 w-full"
               onClick={onNextPage}
             >
               <span>Confirm price</span>

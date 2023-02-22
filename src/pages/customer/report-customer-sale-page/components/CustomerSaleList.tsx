@@ -1,4 +1,4 @@
-import { convertTime } from "../../../../commons/time.util";
+import { convertTime } from "../../../../commons/utils/time.util";
 
 export default function CustomerSaleList({ reports }) {
   return (
@@ -52,10 +52,13 @@ export default function CustomerSaleList({ reports }) {
                     <span>{productOrder.product_name}</span>
                   </div>
                   <div className="w-3/12 text-center">
-                    <span>{productOrder.quantity}</span>
+                    <span>
+                      {productOrder.quantity} (
+                      {productOrder.unit_code.split("_")[1].toLowerCase()})
+                    </span>
                   </div>
                   <div className="w-3/12 text-center">
-                    <span>{productOrder.unit_price}</span>
+                    <span>${productOrder.unit_price}</span>
                   </div>
                 </div>
               );

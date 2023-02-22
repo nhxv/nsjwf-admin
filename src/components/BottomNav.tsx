@@ -8,7 +8,7 @@ import {
   BiBarChartAlt2,
 } from "react-icons/bi";
 import { NavLink } from "react-router-dom";
-import { Role } from "../commons/role.enum";
+import { Role } from "../commons/enums/role.enum";
 import { useAuthStore } from "../stores/auth.store";
 
 export default function BottomNav() {

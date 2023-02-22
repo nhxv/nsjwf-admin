@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import useFirstRender from "../../../commons/hooks/first-render.hook";
-import { OrderStatus } from "../../../commons/order-status.enum";
+import { OrderStatus } from "../../../commons/enums/order-status.enum";
 import Alert from "../../../components/Alert";
 import Spinner from "../../../components/Spinner";
 import api from "../../../stores/api";
@@ -8,33 +7,33 @@ import VendorOrderList from "./components/VendorOrderList";
 import Stepper from "../../../components/Stepper";
 
 export default function ViewVendorOrderPage() {
-  const isFirstRender = useFirstRender();
-  const [listState, setListState] = useState({
-    listError: "",
-    listEmpty: "",
-    listLoading: true,
+  const [fetchData, setFetchData] = useState({
+    orders: [],
+    error: "",
+    empty: "",
+    loading: true,
   });
   const [status, setStatus] = useState(OrderStatus.SHIPPING);
-  const [vendorOrderList, setVendorOrderList] = useState([]);
 
   useEffect(() => {
     api
       .get(`/vendor-orders/basic-list/${status}`)
       .then((res) => {
         if (res.data.length === 0) {
-          setListState((prev) => ({
+          setFetchData((prev) => ({
             ...prev,
-            listError: "",
-            listEmpty: "Such hollow, much empty...",
-            listLoading: false,
+            orders: [],
+            error: "",
+            empty: "Such hollow, much empty...",
+            loading: false,
           }));
         } else {
-          setVendorOrderList(res.data);
-          setListState((prev) => ({
+          setFetchData((prev) => ({
             ...prev,
-            listError: "",
-            listEmpty: "",
-            listLoading: false,
+            orders: res.data,
+            error: "",
+            empty: "",
+            loading: false,
           }));
         }
       })
@@ -42,24 +41,15 @@ export default function ViewVendorOrderPage() {
         const error = JSON.parse(
           JSON.stringify(e.response ? e.response.data.error : e)
         );
-        setListState((prev) => ({
+        setFetchData((prev) => ({
           ...prev,
-          listError: error.message,
-          listLoading: false,
+          orders: [],
+          error: error.message,
+          empty: "",
+          loading: false,
         }));
       });
   }, [status]);
-
-  useEffect(() => {
-    if (!isFirstRender) {
-      setListState((prev) => ({
-        ...prev,
-        listError: "",
-        listEmpty: "",
-        listLoading: false,
-      }));
-    }
-  }, [vendorOrderList]);
 
   const capitalizeFirst = (str: string) => {
     return str.charAt(0).toUpperCase() + str.slice(1);
@@ -73,11 +63,12 @@ export default function ViewVendorOrderPage() {
       setStatus(OrderStatus.COMPLETED);
     }
     if (s !== status) {
-      setListState((prev) => ({
+      setFetchData((prev) => ({
         ...prev,
-        listError: "",
-        listEmpty: "",
-        listLoading: true,
+        orders: [],
+        error: "",
+        empty: "",
+        loading: true,
       }));
     }
   };
@@ -86,7 +77,7 @@ export default function ViewVendorOrderPage() {
     <>
       <section className="min-h-screen">
         <div className="flex justify-center">
-          <div className="w-11/12 sm:w-8/12 xl:w-6/12">
+          <div className="w-11/12 md:w-8/12 lg:w-6/12 xl:w-5/12">
             <div className="my-6">
               <Stepper
                 steps={Object.values(OrderStatus).filter(
@@ -102,18 +93,18 @@ export default function ViewVendorOrderPage() {
               ></Stepper>
             </div>
 
-            {listState.listLoading ? (
+            {fetchData.loading ? (
               <Spinner></Spinner>
             ) : (
               <>
-                {listState.listError ? (
-                  <Alert message={listState.listError} type="error"></Alert>
+                {fetchData.error ? (
+                  <Alert message={fetchData.error} type="error"></Alert>
                 ) : (
                   <>
-                    {listState.listEmpty ? (
-                      <Alert message={listState.listEmpty} type="empty"></Alert>
+                    {fetchData.empty ? (
+                      <Alert message={fetchData.empty} type="empty"></Alert>
                     ) : (
-                      <VendorOrderList orders={vendorOrderList} />
+                      <VendorOrderList orders={fetchData.orders} />
                     )}
                   </>
                 )}

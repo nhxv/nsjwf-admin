@@ -1,4 +1,4 @@
-import { OrderStatus } from "../../../commons/order-status.enum";
+import { OrderStatus } from "../../../commons/enums/order-status.enum";
 import { useEffect, useState } from "react";
 import Spinner from "../../../components/Spinner";
 import useFirstRender from "../../../commons/hooks/first-render.hook";

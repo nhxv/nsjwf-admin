@@ -1,15 +1,15 @@
 import { useFormik } from "formik";
-import api from "../../../stores/api";
-import Spinner from "../../../components/Spinner";
-import SearchInput from "../../../components/forms/SearchInput";
-import DateInput from "../../../components/forms/DateInput";
 import { useState } from "react";
-import { convertTime } from "../../../commons/time.util";
 import { BiTrash } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
+import { convertTime } from "../../../commons/utils/time.util";
+import DateInput from "../../../components/forms/DateInput";
+import SearchInput from "../../../components/forms/SearchInput";
+import Spinner from "../../../components/Spinner";
+import api from "../../../stores/api";
 
 export default function SearchVendorSalePage() {
-  const [searchState, setSearchState] = useState({
+  const [search, setSearch] = useState({
     greet: "Your search result will appear here.",
     error: "",
     empty: "",
@@ -24,30 +24,50 @@ export default function SearchVendorSalePage() {
       date: convertTime(new Date()),
     },
     onSubmit: async (data) => {
-      setSearchState((prev) => ({ ...prev, found: [], loading: true }));
+      setSearch((prev) => ({
+        ...prev,
+        found: [],
+        error: "",
+        empty: "",
+        loading: true,
+      }));
       try {
         const res = await api.get(
-          `/vendor-orders/sold/search?keyword=${data.keyword}&date=${data.date}`
+          `/vendor-orders/sold/search?keyword=${encodeURIComponent(
+            data.keyword
+          )}&date=${data.date}`
         );
         const resData = res.data;
         if (resData.length < 1) {
-          setSearchState((prev) => ({
+          setSearch((prev) => ({
             ...prev,
             greet: "",
+            error: "",
             empty: "No result found.",
             loading: false,
+            found: [],
+          }));
+        } else {
+          setSearch((prev) => ({
+            ...prev,
+            greet: "",
+            error: "",
+            empty: "",
+            loading: false,
+            found: resData,
           }));
         }
-        setSearchState((prev) => ({ ...prev, loading: false, found: resData }));
       } catch (e) {
         const error = JSON.parse(
           JSON.stringify(e.response ? e.response.data.error : e)
         );
-        setSearchState((prev) => ({
+        setSearch((prev) => ({
           ...prev,
           greet: "",
+          empty: "",
           error: error.message,
           loading: false,
+          found: [],
         }));
         searchForm.resetForm();
       }
@@ -55,7 +75,7 @@ export default function SearchVendorSalePage() {
   });
 
   const onClearAll = () => {
-    setSearchState((prev) => ({
+    setSearch((prev) => ({
       ...prev,
       greet: "Your search result will appear here.",
       error: "",
@@ -77,7 +97,7 @@ export default function SearchVendorSalePage() {
         <div className="mb-8 flex flex-col items-center">
           <form
             onSubmit={searchForm.handleSubmit}
-            className="custom-card w-11/12 sm:w-8/12 xl:w-6/12"
+            className="custom-card w-11/12 md:w-8/12 lg:w-6/12 xl:w-5/12"
           >
             <div className="mb-6 flex flex-col">
               <div className="mb-4">
@@ -113,17 +133,17 @@ export default function SearchVendorSalePage() {
           </form>
         </div>
         <div className="flex flex-col items-center">
-          {searchState.loading ? (
+          {search.loading ? (
             <Spinner></Spinner>
           ) : (
             <>
-              {searchState.found && searchState.found.length > 0 ? (
+              {search.found && search.found.length > 0 ? (
                 <>
-                  {searchState.found.map((sale) => {
+                  {search.found.map((sale) => {
                     return (
                       <div
                         key={sale.code}
-                        className="custom-card mb-4 w-11/12 sm:w-8/12 xl:w-6/12"
+                        className="custom-card mb-4 w-11/12 md:w-8/12 lg:w-6/12 xl:w-5/12"
                       >
                         {/* basic sale info */}
                         <div className="flex flex-row justify-between">
@@ -154,37 +174,49 @@ export default function SearchVendorSalePage() {
                             <span className="font-medium">Qty</span>
                           </div>
                           <div className="w-3/12 text-center">
-                            <span className="font-medium">Unit price</span>
+                            <span className="font-medium">Price</span>
                           </div>
                         </div>
                         {sale.productVendorOrders.map((productOrder) => {
                           return (
                             <div
                               key={productOrder.productName}
-                              className="rounded-btn mb-2 flex items-center justify-center bg-base-200 py-3"
+                              className="rounded-btn mb-2 flex items-center justify-center bg-base-200 py-3 dark:bg-base-300"
                             >
                               <div className="ml-3 w-6/12">
                                 <span>{productOrder.productName}</span>
                               </div>
                               <div className="w-3/12 text-center">
-                                <span>{productOrder.quantity}</span>
+                                <span>
+                                  {productOrder.quantity} (
+                                  {productOrder.unitCode})
+                                </span>
                               </div>
                               <div className="w-3/12 text-center">
-                                <span>{productOrder.unitPrice}</span>
+                                <span>${productOrder.unitPrice}</span>
                               </div>
                             </div>
                           );
                         })}
+                        <div className="divider"></div>
+                        <div className="my-2 flex items-center">
+                          <span className="mr-2">Total:</span>
+                          <span className="mr-2 text-xl font-medium">
+                            $
+                            {sale.productVendorOrders.reduce(
+                              (prev, curr) =>
+                                prev + curr.quantity * curr.unitPrice,
+                              0
+                            )}
+                          </span>
+                        </div>
                         {!sale.fullReturn ? (
-                          <>
-                            <div className="divider"></div>
-                            <button
-                              className="btn-primary btn mt-2 w-full"
-                              onClick={() => onCreateReturn(sale.code)}
-                            >
-                              Create return
-                            </button>
-                          </>
+                          <button
+                            className="btn-primary btn mt-3 w-full"
+                            onClick={() => onCreateReturn(sale.code)}
+                          >
+                            Create return
+                          </button>
                         ) : null}
                       </div>
                     );
@@ -198,16 +230,16 @@ export default function SearchVendorSalePage() {
                 </>
               ) : (
                 <>
-                  {searchState.error ? (
-                    <p className=" text-neutral">{searchState.error}</p>
+                  {search.error ? (
+                    <p className=" text-neutral">{search.error}</p>
                   ) : (
                     <>
-                      {searchState.empty ? (
-                        <p className=" text-neutral">{searchState.empty}</p>
+                      {search.empty ? (
+                        <p className="text-neutral">{search.empty}</p>
                       ) : (
                         <>
-                          {searchState.greet ? (
-                            <p className=" text-neutral">{searchState.greet}</p>
+                          {search.greet ? (
+                            <p className="text-neutral">{search.greet}</p>
                           ) : null}
                         </>
                       )}

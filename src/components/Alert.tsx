@@ -5,7 +5,7 @@ export default function Alert({ message, type }) {
     return (
       <div className="alert alert-error justify-center text-error-content">
         <div>
-          <BiError className="h-6 w-6 md:mr-2"></BiError>
+          <BiError className="h-6 w-6"></BiError>
           <span>{message}</span>
         </div>
       </div>

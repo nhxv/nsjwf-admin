@@ -1,4 +1,4 @@
-import { convertTime } from "../../../../commons/time.util";
+import { convertTime } from "../../../../commons/utils/time.util";
 
 export default function PalletLabelToPrint({ printRef, pallet, order }) {
   return (
