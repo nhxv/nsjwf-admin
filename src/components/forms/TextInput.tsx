@@ -1,3 +1,4 @@
+// accept input type due to email & password
 export default function TextInput({
   id,
   type,

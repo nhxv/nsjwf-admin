@@ -199,9 +199,9 @@ export default function SearchVendorSalePage() {
                           );
                         })}
                         <div className="divider"></div>
-                        <div className="my-2 flex items-center">
-                          <span className="mr-2">Total:</span>
-                          <span className="mr-2 text-xl font-medium">
+                        <div className="my-2 flex gap-2 items-center">
+                          <span>Total:</span>
+                          <span className="text-xl font-medium">
                             $
                             {sale.productVendorOrders.reduce(
                               (prev, curr) =>

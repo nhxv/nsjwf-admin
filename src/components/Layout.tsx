@@ -39,16 +39,16 @@ export default function Layout({ children }) {
           href: "/customer/overview-customer-order",
           visible: [Role.MASTER, Role.ADMIN],
         },
-        {
-          itemName: "Draft Backorder",
-          href: "/customer/draft-backorder",
-          visible: [Role.MASTER, Role.ADMIN],
-        },
-        {
-          itemName: "View Backorder",
-          href: "/customer/view-backorder",
-          visible: [Role.MASTER, Role.ADMIN],
-        },
+        // {
+        //   itemName: "Draft Backorder",
+        //   href: "/customer/draft-backorder",
+        //   visible: [Role.MASTER, Role.ADMIN],
+        // },
+        // {
+        //   itemName: "View Backorder",
+        //   href: "/customer/view-backorder",
+        //   visible: [Role.MASTER, Role.ADMIN],
+        // },
         {
           itemName: "Search Sale",
           href: "/customer/search-customer-sale",

@@ -1,22 +1,20 @@
-import { OrderStatus } from "../../../commons/enums/order-status.enum";
 import { useEffect, useState } from "react";
-import Spinner from "../../../components/Spinner";
-import useFirstRender from "../../../commons/hooks/first-render.hook";
+import { OrderStatus } from "../../../commons/enums/order-status.enum";
 import Alert from "../../../components/Alert";
-import EmployeeTaskList from "./components/EmployeeTaskList";
-import api from "../../../stores/api";
+import Spinner from "../../../components/Spinner";
 import TabGroup from "../../../components/TabGroup";
+import api from "../../../stores/api";
+import EmployeeTaskList from "./components/EmployeeTaskList";
 
 export default function UpdateOrderPriorityPage() {
-  const isFirstRender = useFirstRender();
   const [status, setStatus] = useState(OrderStatus.PICKING);
-  const [listState, setListState] = useState({
-    listError: "",
-    listEmpty: "",
-    listLoading: true,
+  const [fetchData, setFetchData] = useState({
+    tasks: [],
+    error: "",
+    empty: "",
+    loading: true,
   });
   const [reload, setReload] = useState(false);
-  const [employeeTaskList, setEmployeeTaskList] = useState([]);
 
   useEffect(() => {
     getEmployeeTaskList();
@@ -30,61 +28,55 @@ export default function UpdateOrderPriorityPage() {
     };
   }, [status, reload]);
 
-  useEffect(() => {
-    if (!isFirstRender) {
-      setListState((prev) => ({
-        ...prev,
-        listError: "",
-        listEmpty: "",
-        listLoading: false,
-      }));
-    }
-  }, [employeeTaskList]);
-
   const getEmployeeTaskList = () => {
-    setListState((prev) => ({
+    setFetchData((prev) => ({
       ...prev,
-      listError: "",
-      listEmpty: "",
-      listLoading: true,
+      tasks: [],
+      error: "",
+      empty: "",
+      loading: true,
     }));
     api
       .get(`/accounts/employee-tasks/${status}`)
       .then((res) => {
         if (res.data.length === 0) {
-          setListState((prev) => ({
+          setFetchData((prev) => ({
             ...prev,
-            listError: "",
-            listEmpty: "Such hollow, much empty...",
-            listLoading: false,
+            tasks: [],
+            error: "",
+            empty: "Such hollow, much empty...",
+            loading: false,
           }));
         }
-        setEmployeeTaskList(res.data);
-        setListState((prev) => ({
+        setFetchData((prev) => ({
           ...prev,
-          listError: "",
-          listEmpty: "",
-          listLoading: false,
+          tasks: res.data,
+          error: "",
+          empty: "",
+          loading: false,
         }));
       })
       .catch((e) => {
         const error = JSON.parse(
           JSON.stringify(e.response ? e.response.data.error : e)
         );
-        setListState((prev) => ({
+        setFetchData((prev) => ({
           ...prev,
-          listError: error.message,
-          listLoading: false,
+          tasks: [],
+          error: error.message,
+          empty: "",
+          loading: false,
         }));
       });
   };
 
   const onClear = () => {
     setReload(!reload);
-    setListState((prev) => ({
+    setFetchData((prev) => ({
       ...prev,
-      listError: "",
-      listEmpty: "",
+      tasks: [],
+      error: "",
+      empty: "",
       loading: true,
     }));
   };
@@ -111,21 +103,21 @@ export default function UpdateOrderPriorityPage() {
       </div>
 
       <div className="w-full">
-        {listState.listLoading ? (
+        {fetchData.loading ? (
           <div className="flex justify-center">
             <Spinner></Spinner>
           </div>
         ) : (
           <>
-            {listState.listError ? (
-              <Alert message={listState.listError} type="error"></Alert>
+            {fetchData.error ? (
+              <Alert message={fetchData.error} type="error"></Alert>
             ) : (
               <>
-                {listState.listEmpty ? (
-                  <Alert message={listState.listEmpty} type="empty"></Alert>
+                {fetchData.empty ? (
+                  <Alert message={fetchData.empty} type="empty"></Alert>
                 ) : (
                   <EmployeeTaskList
-                    employeeTasks={employeeTaskList}
+                    employeeTasks={fetchData.tasks}
                     reload={onClear}
                   />
                 )}

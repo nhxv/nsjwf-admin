@@ -1,13 +1,11 @@
-import useFirstRender from "../../../../commons/hooks/first-render.hook";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { useState, useEffect } from "react";
-import api from "../../../../stores/api";
-import Spinner from "../../../../components/Spinner";
 import Alert from "../../../../components/Alert";
+import Spinner from "../../../../components/Spinner";
+import api from "../../../../stores/api";
 import VendorForm from "./VendorForm";
 
 export default function VendorFormContainer() {
-  const isFirstRender = useFirstRender();
   const params = useParams();
   const [reload, setReload] = useState(false);
   const [fetchData, setFetchData] = useState({
@@ -121,17 +119,6 @@ export default function VendorFormContainer() {
         });
     }
   }, [reload, params]);
-
-  useEffect(() => {
-    if (!isFirstRender) {
-      setFetchData((prev) => ({
-        ...prev,
-        error: "",
-        empty: "",
-        loading: false,
-      }));
-    }
-  }, [initialFields]);
 
   const onClear = () => {
     setReload(!reload);

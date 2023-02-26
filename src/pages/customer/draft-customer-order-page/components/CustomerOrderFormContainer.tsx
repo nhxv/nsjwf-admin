@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import useFirstRender from "../../../../commons/hooks/first-render.hook";
 import { OrderStatus } from "../../../../commons/enums/order-status.enum";
 import { convertTime } from "../../../../commons/utils/time.util";
 import Alert from "../../../../components/Alert";
@@ -9,29 +8,26 @@ import api from "../../../../stores/api";
 import CustomerOrderForm from "./CustomerOrderForm";
 
 export default function CustomerOrderFormContainer() {
-  const isFirstRender = useFirstRender();
   const params = useParams();
   const [reload, setReload] = useState(false);
   const [fetchData, setFetchData] = useState({
-    error: "",
-    empty: "",
-    loading: true,
-  });
-  const [initialFields, setInitialFields] = useState({});
-  const [dataState, setDataState] = useState({
     editedProducts: [],
     allProducts: [],
     customers: [],
     employees: [],
     prices: [],
+    error: "",
+    empty: "",
+    loading: true,
   });
+  const [initialFields, setInitialFields] = useState({});
   const total = useMemo(() => {
-    if (dataState.prices.length > 0) {
-      return +dataState.prices
+    if (fetchData.prices.length > 0) {
+      return +fetchData.prices
         .reduce((prev, current) => prev + current.quantity * current.price, 0)
         .toFixed(2);
     } else return 0;
-  }, [dataState.prices]);
+  }, [fetchData.prices]);
 
   useEffect(() => {
     const productPromise = api.get(`/products/active`);
@@ -110,13 +106,16 @@ export default function CustomerOrderFormContainer() {
               expectedAt: convertTime(new Date(orderRes.data.expected_at)),
               ...productFieldData,
             }));
-            setDataState((prev) => ({
+            setFetchData((prev) => ({
               ...prev,
               editedProducts: editedProductsRes,
               allProducts: allProductsRes,
               customers: customerRes.data,
               employees: employeeRes.data,
               prices: updatedPrices,
+              error: "",
+              empty: "",
+              loading: false,
             }));
           }
         })
@@ -126,7 +125,13 @@ export default function CustomerOrderFormContainer() {
           );
           setFetchData((prev) => ({
             ...prev,
+            editedProducts: [],
+            allProducts: [],
+            customers: [],
+            employees: [],
+            prices: [],
             error: error.message,
+            empty: "",
             loading: false,
           }));
         });
@@ -174,12 +179,15 @@ export default function CustomerOrderFormContainer() {
               expectedAt: convertTime(nextDay),
               ...productFieldData,
             }));
-            setDataState((prev) => ({
+            setFetchData((prev) => ({
               ...prev,
               allProducts: productRes.data,
               customers: customerRes.data,
               employees: employeeRes.data,
               prices: updatedPrices,
+              error: "",
+              empty: "",
+              loading: false,
             }));
           }
         })
@@ -196,16 +204,15 @@ export default function CustomerOrderFormContainer() {
     }
   }, [reload, params]);
 
-  useEffect(() => {
-    if (!isFirstRender) {
-      setFetchData((prev) => ({ ...prev, loading: false }));
-    }
-  }, [initialFields]);
-
   const onClear = () => {
     setReload(!reload);
     setFetchData((prev) => ({
       ...prev,
+      editedProducts: [],
+      allProducts: [],
+      customers: [],
+      employees: [],
+      prices: [],
       error: "",
       empty: "",
       loading: true,
@@ -213,7 +220,7 @@ export default function CustomerOrderFormContainer() {
   };
 
   const updatePrice = (value: number, inputId: string) => {
-    let updatedPrices = [...dataState.prices];
+    let updatedPrices = [...fetchData.prices];
     if (inputId.includes("quantity")) {
       const id = +inputId.replace("quantity", "");
       const index = updatedPrices.findIndex((p) => p.id === id);
@@ -228,7 +235,7 @@ export default function CustomerOrderFormContainer() {
       updatedPrices[index].quantity = 0;
       updatedPrices[index].price = 0;
     }
-    setDataState((prev) => ({ ...prev, prices: updatedPrices }));
+    setFetchData((prev) => ({ ...prev, prices: updatedPrices }));
   };
 
   const loadTemplate = async (customerName: string) => {
@@ -263,12 +270,12 @@ export default function CustomerOrderFormContainer() {
       <CustomerOrderForm
         edit={!!params.code}
         initialData={initialFields}
-        customers={dataState.customers}
+        customers={fetchData.customers}
         editedProducts={
-          dataState.editedProducts?.length > 0 ? dataState.editedProducts : null
+          fetchData.editedProducts?.length > 0 ? fetchData.editedProducts : null
         }
-        allProducts={dataState.allProducts}
-        employees={dataState.employees}
+        allProducts={fetchData.allProducts}
+        employees={fetchData.employees}
         updatePrice={updatePrice}
         total={total}
         loadTemplate={loadTemplate}

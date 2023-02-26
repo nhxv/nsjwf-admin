@@ -1,98 +1,89 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import useFirstRender from "../../../../commons/hooks/first-render.hook";
 import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
 import CreateCustomerReturnForm from "./CreateCustomerReturnForm";
 
 export default function CreateCustomerReturnFormContainer({}) {
-  const isFirstRender = useFirstRender();
   const params = useParams();
   const [reload, setReload] = useState(false);
   const [fetchData, setFetchData] = useState({
+    sold: null,
+    products: [],
     error: "",
     empty: "",
     loading: true,
   });
   const [initialFields, setInitialFields] = useState({});
-  const [dataState, setDataState] = useState({
-    sold: null,
-    products: [],
-    prices: [],
-  });
-  const total = useMemo(() => {
-    if (dataState.prices.length > 0) {
-      return +dataState.prices
-        .reduce((prev, current) => prev + current[0] * current[1], 0)
-        .toFixed(2);
-    } else return 0;
-  }, [dataState.prices]);
 
   useEffect(() => {
-    api
-      .get(`/customer-sale-returns/${params.code}`)
-      .then((res) => {
-        const saleReturn = res.data;
-        const updatedPrices = [];
-        const productFieldData = {};
-        for (let i = 0; i < saleReturn.productCustomerSaleReturns.length; i++) {
-          productFieldData[`quantity${i}`] =
-            saleReturn.productCustomerSaleReturns[i].quantity;
-          updatedPrices.push([
-            productFieldData[`quantity${i}`],
-            saleReturn.productCustomerSaleReturns[i].unit_price,
-          ]);
-        }
-        setInitialFields((prev) => ({
-          ...prev,
-          customerName: saleReturn.customer_name,
-          orderCode: saleReturn.sale_code,
-          ...productFieldData,
-        }));
-        setDataState((prev) => ({
-          ...prev,
-          products: saleReturn.productCustomerSaleReturns,
-          sold: saleReturn,
-          prices: updatedPrices,
-        }));
-      })
-      .catch((e) => {
-        const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e)
+    const saleReturnPromise = api.get(`/customer-sale-returns/${params.code}`);
+    const productPromise = api.get(`/products/active`);
+    Promise.all([saleReturnPromise, productPromise])
+    .then((res) => {       
+      const saleReturnRes = res[0].data;
+      const allProductsRes = res[1].data;
+      const productFieldData = {};
+      const allProductReturns = [];
+      for (const product of allProductsRes) {
+        const productReturn = saleReturnRes.productCustomerSaleReturns.find(
+          (pr) => pr.product_name === product.name
         );
-        setFetchData((prev) => ({
-          ...prev,
-          error: error.message,
-          empty: "",
-          loading: false,
-        }));
-      });
+        if (productReturn) {
+          productFieldData[`quantity${product.id}`] = productReturn.quantity;
+          productFieldData[`unit${product.id}`] = productReturn.unit_code.split("_")[1];
+          allProductReturns.push({
+            id: product.id, // to query unit
+            name: productReturn.product_name,
+            quantity: productReturn.quantity,
+            unit_code: productReturn.unit_code,
+            units: product.units,              
+            unit_price: productReturn.unit_price,
+          });
+        }    
+      }
+      setInitialFields((prev) => ({
+        ...prev,
+        customerName: saleReturnRes.customer_name,
+        orderCode: saleReturnRes.sale_code,
+        refund: saleReturnRes.refund ? saleReturnRes.refund : "0",
+        ...productFieldData,
+      }));
+      setFetchData((prev) => ({
+        ...prev,
+        sold: saleReturnRes,
+        products: allProductReturns,
+        error: "",
+        empty: "",
+        loading: false,
+      }));
+    })
+    .catch((e) => {
+      const error = JSON.parse(
+        JSON.stringify(e.response ? e.response.data.error : e)
+      );
+      setFetchData((prev) => ({
+        ...prev,
+        sold: null,
+        products: [],
+        error: error.message,
+        empty: "",
+        loading: false,
+      }));
+    });
   }, [reload, params]);
-
-  useEffect(() => {
-    if (!isFirstRender) {
-      setFetchData((prev) => ({ ...prev, loading: false }));
-    }
-  }, [initialFields]);
 
   const onClear = () => {
     setReload(!reload);
     setFetchData((prev) => ({
       ...prev,
+      sold: null,
+      products: [],
       error: "",
       empty: "",
       loading: true,
     }));
-  };
-
-  const updatePrice = (e, inputId: string) => {
-    let updatedPrices = [...dataState.prices];
-    if (inputId.includes("quantity")) {
-      const index = +inputId.replace("quantity", "");
-      updatedPrices[index][0] = +e.target.value;
-    }
-    setDataState((prev) => ({ ...prev, prices: updatedPrices }));
   };
 
   if (fetchData.loading) return <Spinner></Spinner>;
@@ -105,10 +96,8 @@ export default function CreateCustomerReturnFormContainer({}) {
     <div className="custom-card mb-12">
       <CreateCustomerReturnForm
         initialData={initialFields}
-        products={dataState.products}
-        sold={dataState.sold}
-        updatePrice={updatePrice}
-        total={total}
+        products={fetchData.products}
+        sold={fetchData.sold}
         onClear={onClear}
       />
     </div>

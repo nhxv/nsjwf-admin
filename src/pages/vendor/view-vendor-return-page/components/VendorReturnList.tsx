@@ -23,11 +23,8 @@ export default function VendorReturnList({ returns }) {
               <div className="w-6/12">
                 <span className="font-medium">Product</span>
               </div>
-              <div className="w-3/12 text-center">
+              <div className="w-6/12 text-center">
                 <span className="font-medium">Qty</span>
-              </div>
-              <div className="w-3/12 text-center">
-                <span className="font-medium">Price</span>
               </div>
             </div>
             {vendorReturn.productVendorReturns.map((productReturn) => {
@@ -39,17 +36,19 @@ export default function VendorReturnList({ returns }) {
                   <div className="ml-3 w-6/12">
                     <span>{productReturn.productName}</span>
                   </div>
-                  <div className="w-3/12 text-center">
+                  <div className="w-6/12 text-center">
                     <span>
                       {productReturn.quantity} ({productReturn.unitCode})
                     </span>
                   </div>
-                  <div className="w-3/12 text-center">
-                    <span>${productReturn.unitPrice}</span>
-                  </div>
                 </div>
               );
             })}
+            <div className="divider"></div>
+            <div className="mt-2 flex gap-2 items-center">
+              <span>Refund:</span>
+              <span className="text-xl font-medium">${vendorReturn.refund}</span>
+            </div>
           </div>
         );
       })}

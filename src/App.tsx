@@ -63,7 +63,7 @@ export default function App() {
             path="/customer/update-order-priority"
             element={<UpdateOrderPriorityPage />}
           ></Route>
-          <Route
+          {/* <Route
             path="/customer/draft-backorder"
             element={<DraftBackorderPage />}
           >
@@ -72,7 +72,7 @@ export default function App() {
           <Route
             path="/customer/view-backorder"
             element={<ViewBackorderPage />}
-          ></Route>
+          ></Route> */}
           <Route
             path="/customer/create-customer-return/:code"
             element={<CreateCustomerReturnPage />}

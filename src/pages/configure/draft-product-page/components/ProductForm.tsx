@@ -1,11 +1,13 @@
 import { useFormik } from "formik";
 import { useState } from "react";
+import { BiEditAlt, BiPlus } from "react-icons/bi";
+import { Location } from "../../../../commons/enums/location.enum";
 import Alert from "../../../../components/Alert";
 import Checkbox from "../../../../components/forms/Checkbox";
+import SelectInput from "../../../../components/forms/SelectInput";
 import TextInput from "../../../../components/forms/TextInput";
 import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
-import { BiPlus, BiEditAlt } from "react-icons/bi";
 import UnitForm from "./UnitForm";
 
 export default function ProductForm({ editedId, units, initialData, onClear }) {
@@ -109,6 +111,18 @@ export default function ProductForm({ editedId, units, initialData, onClear }) {
             value={productForm.values.name}
             onChange={productForm.handleChange}
           ></TextInput>
+        </div>
+        <div className="mb-5">
+          <label className="custom-label inline-block mb-2">Location</label>
+          <SelectInput
+            form={productForm}
+            field={`location`}
+            name={`location`}
+            options={Object.values(Location)}
+            selected={
+              productForm.values[`location`]
+            }
+          ></SelectInput>      
         </div>
 
         {editedId ? (
