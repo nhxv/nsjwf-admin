@@ -1,7 +1,6 @@
 import csvDownload from "json-to-csv-export";
 import { useEffect, useState } from "react";
 import { BiDownload } from "react-icons/bi";
-import useFirstRender from "../../../commons/hooks/first-render.hook";
 import { convertTime } from "../../../commons/utils/time.util";
 import Alert from "../../../components/Alert";
 import Spinner from "../../../components/Spinner";
@@ -9,15 +8,12 @@ import api from "../../../stores/api";
 import CustomerSaleList from "./components/CustomerSaleList";
 
 export default function ReportCustomerSalePage() {
-  const isFirstRender = useFirstRender();
   const [fetchData, setFetchData] = useState({
+    reports: [],
+    display: [],
     error: "",
     empty: "",
     loading: true,
-  });
-  const [data, setData] = useState({
-    reports: [],
-    display: [],
   });
 
   useEffect(() => {
@@ -32,17 +28,6 @@ export default function ReportCustomerSalePage() {
     };
   }, []);
 
-  useEffect(() => {
-    if (!isFirstRender) {
-      setFetchData((prev) => ({
-        ...prev,
-        error: "",
-        empty: "",
-        loading: false,
-      }));
-    }
-  }, [data]);
-
   const getReportData = () => {
     api
       .get(`/customer-orders/sold/report`)
@@ -50,15 +35,20 @@ export default function ReportCustomerSalePage() {
         if (res.data.length === 0) {
           setFetchData((prev) => ({
             ...prev,
+            reports: [],
+            display: [],
             empty: "Such hollow, much empty...",
             error: "",
             loading: false,
           }));
         } else {
-          setData((prev) => ({
+          setFetchData((prev) => ({
             ...prev,
             reports: res.data,
             display: res.data.filter((report) => report.sale > 0),
+            error: "",
+            empty: "",
+            loading: false,
           }));
         }
       })
@@ -68,14 +58,17 @@ export default function ReportCustomerSalePage() {
         );
         setFetchData((prev) => ({
           ...prev,
+          reports: [],
+          display: [],
           error: error.message,
+          empty: "",
           loading: false,
         }));
       });
   };
 
   const onDownloadReport = () => {
-    const reportData = data.reports
+    const reportData = fetchData.reports
       .filter((report) => report.is_test)
       .map((report) => ({
         code: `#${report.manual_code ? report.manual_code : report.order_code}`,
@@ -130,7 +123,7 @@ export default function ReportCustomerSalePage() {
                 {fetchData.empty ? (
                   <Alert message={fetchData.empty} type="empty"></Alert>
                 ) : (
-                  <CustomerSaleList reports={data.display} />
+                  <CustomerSaleList reports={fetchData.display} />
                 )}
               </>
             )}

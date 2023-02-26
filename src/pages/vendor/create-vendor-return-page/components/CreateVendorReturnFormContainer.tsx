@@ -1,61 +1,63 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import useFirstRender from "../../../../commons/hooks/first-render.hook";
 import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
 import CreateVendorReturnForm from "./CreateVendorReturnForm";
 
 export default function CreateVendorReturnFormContainer({}) {
-  const isFirstRender = useFirstRender();
   const params = useParams();
   const [reload, setReload] = useState(false);
   const [fetchData, setFetchData] = useState({
+    sold: null,
+    products: [],
     error: "",
     empty: "",
     loading: true,
   });
   const [initialFields, setInitialFields] = useState({});
-  const [dataState, setDataState] = useState({
-    sold: null,
-    products: [],
-    prices: [],
-  });
-  const total = useMemo(() => {
-    if (dataState.prices.length > 0) {
-      return dataState.prices.reduce(
-        (prev, current) => prev + current[0] * current[1],
-        0
-      );
-    } else return 0;
-  }, [dataState.prices]);
 
   useEffect(() => {
-    api
-      .get(`/vendor-sale-returns/${params.code}`)
+    const saleReturnPromise = api.get(`/vendor-sale-returns/${params.code}`);
+    const productPromise = api.get(`/products/active`);
+    Promise.all([saleReturnPromise, productPromise])
       .then((res) => {
-        const saleReturn = res.data;
-        const updatedPrices = [];
+        const saleReturnRes = res[0].data;
+        const allProductsRes = res[1].data;
         const productFieldData = {};
-        for (let i = 0; i < saleReturn.productVendorSaleReturns.length; i++) {
-          productFieldData[`quantity${i}`] =
-            saleReturn.productVendorSaleReturns[i].quantity;
-          updatedPrices.push([
-            productFieldData[`quantity${i}`],
-            saleReturn.productVendorSaleReturns[i].unit_price,
-          ]);
+        const allProductReturns = [];
+        for (const product of allProductsRes) {
+          const productReturn = saleReturnRes.productVendorSaleReturns.find(
+            (pr) => pr.product_name === product.name
+          );
+          if (productReturn) {
+            productFieldData[`quantity${product.id}`] = productReturn.quantity;
+            productFieldData[`unit${product.id}`] =
+              productReturn.unit_code.split("_")[1];
+            allProductReturns.push({
+              id: product.id, // to query unit
+              name: productReturn.product_name,
+              quantity: productReturn.quantity,
+              unit_code: productReturn.unit_code,
+              units: product.units,
+              unit_price: productReturn.unit_price,
+            });
+          }
         }
         setInitialFields((prev) => ({
           ...prev,
-          vendorName: saleReturn.vendor_name,
-          orderCode: saleReturn.sale_code,
+          vendorName: saleReturnRes.vendor_name,
+          orderCode: saleReturnRes.sale_code,
+          refund: saleReturnRes.refund ? saleReturnRes.refund : "0",
           ...productFieldData,
         }));
-        setDataState((prev) => ({
+        setFetchData((prev) => ({
           ...prev,
-          products: saleReturn.productVendorSaleReturns,
-          sold: saleReturn,
-          prices: updatedPrices,
+          sold: saleReturnRes,
+          products: allProductReturns,
+          error: "",
+          empty: "",
+          loading: false,
         }));
       })
       .catch((e) => {
@@ -64,6 +66,8 @@ export default function CreateVendorReturnFormContainer({}) {
         );
         setFetchData((prev) => ({
           ...prev,
+          sold: null,
+          products: [],
           error: error.message,
           empty: "",
           loading: false,
@@ -71,34 +75,16 @@ export default function CreateVendorReturnFormContainer({}) {
       });
   }, [reload, params]);
 
-  useEffect(() => {
-    if (!isFirstRender) {
-      setFetchData((prev) => ({
-        ...prev,
-        error: "",
-        empty: "",
-        loading: false,
-      }));
-    }
-  }, [initialFields]);
-
   const onClear = () => {
     setReload(!reload);
     setFetchData((prev) => ({
       ...prev,
+      sold: null,
+      products: [],
       error: "",
       empty: "",
       loading: true,
     }));
-  };
-
-  const updatePrice = (e, inputId: string) => {
-    let updatedPrices = [...dataState.prices];
-    if (inputId.includes("quantity")) {
-      const index = +inputId.replace("quantity", "");
-      updatedPrices[index][0] = +e.target.value;
-    }
-    setDataState((prev) => ({ ...prev, prices: updatedPrices }));
   };
 
   if (fetchData.loading) return <Spinner></Spinner>;
@@ -111,10 +97,8 @@ export default function CreateVendorReturnFormContainer({}) {
     <div className="custom-card mb-12">
       <CreateVendorReturnForm
         initialData={initialFields}
-        products={dataState.products}
-        sold={dataState.sold}
-        updatePrice={updatePrice}
-        total={total}
+        products={fetchData.products}
+        sold={fetchData.sold}
         onClear={onClear}
       />
     </div>

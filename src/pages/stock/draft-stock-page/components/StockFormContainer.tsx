@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
-import useFirstRender from "../../../../commons/hooks/first-render.hook";
-import { ProductStockChangeReason } from "../../../../commons/enums/stock-change-reason.enum";
+import { StockChangeReason } from "../../../../commons/enums/stock-change-reason.enum";
 import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
 import ProductStockForm from "./StockForm";
 
 export default function StockFormContainer() {
-  const isFirstRender = useFirstRender();
   const [reload, setReload] = useState(false);
   const [fetchData, setFetchData] = useState({
     stock: [],
@@ -37,7 +35,7 @@ export default function StockFormContainer() {
           }
           setInitialFields((prev) => ({
             ...prev,
-            reason: ProductStockChangeReason.DAMAGED,
+            reason: StockChangeReason.DAMAGED,
             ...stockFieldData,
           }));
           setFetchData((prev) => ({
@@ -62,17 +60,6 @@ export default function StockFormContainer() {
         }));
       });
   }, [reload]);
-
-  useEffect(() => {
-    if (!isFirstRender) {
-      setFetchData((prev) => ({
-        ...prev,
-        error: "",
-        empty: "",
-        loading: false,
-      }));
-    }
-  }, [initialFields]);
 
   const onClear = () => {
     setReload(!reload);

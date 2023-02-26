@@ -1,7 +1,7 @@
 import { useFormik } from "formik";
 import { useState } from "react";
 import { BiX } from "react-icons/bi";
-import { ProductStockChangeReason } from "../../../../commons/enums/stock-change-reason.enum";
+import { StockChangeReason } from "../../../../commons/enums/stock-change-reason.enum";
 import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
 import NumberInput from "../../../../components/forms/NumberInput";
@@ -140,14 +140,13 @@ export default function StockForm({ initialData, stock, onClear }) {
             name="reason"
             form={stockForm}
             field={"reason"}
-            options={Object.values(ProductStockChangeReason).filter(
+            options={Object.values(StockChangeReason).filter(
               (reason) =>
-                reason !== ProductStockChangeReason.CUSTOMER_ORDER_CREATE &&
-                reason !== ProductStockChangeReason.CUSTOMER_ORDER_EDIT &&
-                reason !== ProductStockChangeReason.CUSTOMER_RETURN_RECEIVED &&
-                reason !== ProductStockChangeReason.VENDOR_ORDER_COMPLETED &&
-                reason !== ProductStockChangeReason.VENDOR_RETURN_RECEIVED &&
-                reason !== ProductStockChangeReason.EMPLOYEE_BORROW
+                reason !== StockChangeReason.CUSTOMER_ORDER_COMPLETED &&
+                reason !== StockChangeReason.CUSTOMER_RETURN_RECEIVED &&
+                reason !== StockChangeReason.VENDOR_ORDER_COMPLETED &&
+                reason !== StockChangeReason.VENDOR_RETURN_RECEIVED &&
+                reason !== StockChangeReason.EMPLOYEE_BORROW
             )}
             selected={stockForm.values["reason"]}
           ></SelectInput>

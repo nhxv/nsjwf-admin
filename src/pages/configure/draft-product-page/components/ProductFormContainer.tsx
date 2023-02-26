@@ -1,13 +1,12 @@
-import useFirstRender from "../../../../commons/hooks/first-render.hook";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import api from "../../../../stores/api";
-import Spinner from "../../../../components/Spinner";
+import { Location } from "../../../../commons/enums/location.enum";
 import Alert from "../../../../components/Alert";
+import Spinner from "../../../../components/Spinner";
+import api from "../../../../stores/api";
 import ProductForm from "./ProductForm";
 
 export default function ProductFormContainer() {
-  const isFirstRender = useFirstRender();
   const params = useParams();
   const [reload, setReload] = useState(false);
   const [fetchData, setFetchData] = useState({
@@ -26,6 +25,9 @@ export default function ProductFormContainer() {
           setInitialFields((prev) => ({
             ...prev,
             name: res.data.name,
+            location: res.data.location_name
+              ? res.data.location_name
+              : Location.COOLER_1,
             discontinued: res.data.discontinued,
           }));
           setFetchData((prev) => ({
@@ -55,20 +57,14 @@ export default function ProductFormContainer() {
         loading: false,
       }));
       // create product
-      setInitialFields((prev) => ({ ...prev, name: "", discontinued: false }));
-    }
-  }, [reload, params]);
-
-  useEffect(() => {
-    if (!isFirstRender) {
-      setFetchData((prev) => ({
+      setInitialFields((prev) => ({
         ...prev,
-        error: "",
-        empty: "",
-        loading: false,
+        name: "",
+        location: Location.COOLER_1,
+        discontinued: false,
       }));
     }
-  }, [initialFields]);
+  }, [reload, params]);
 
   const onClear = () => {
     setReload(!reload);
