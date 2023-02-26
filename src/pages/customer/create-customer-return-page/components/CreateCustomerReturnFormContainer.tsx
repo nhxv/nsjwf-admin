@@ -21,57 +21,58 @@ export default function CreateCustomerReturnFormContainer({}) {
     const saleReturnPromise = api.get(`/customer-sale-returns/${params.code}`);
     const productPromise = api.get(`/products/active`);
     Promise.all([saleReturnPromise, productPromise])
-    .then((res) => {       
-      const saleReturnRes = res[0].data;
-      const allProductsRes = res[1].data;
-      const productFieldData = {};
-      const allProductReturns = [];
-      for (const product of allProductsRes) {
-        const productReturn = saleReturnRes.productCustomerSaleReturns.find(
-          (pr) => pr.product_name === product.name
+      .then((res) => {
+        const saleReturnRes = res[0].data;
+        const allProductsRes = res[1].data;
+        const productFieldData = {};
+        const allProductReturns = [];
+        for (const product of allProductsRes) {
+          const productReturn = saleReturnRes.productCustomerSaleReturns.find(
+            (pr) => pr.product_name === product.name
+          );
+          if (productReturn) {
+            productFieldData[`quantity${product.id}`] = productReturn.quantity;
+            productFieldData[`unit${product.id}`] =
+              productReturn.unit_code.split("_")[1];
+            allProductReturns.push({
+              id: product.id, // to query unit
+              name: productReturn.product_name,
+              quantity: productReturn.quantity,
+              unit_code: productReturn.unit_code,
+              units: product.units,
+              unit_price: productReturn.unit_price,
+            });
+          }
+        }
+        setInitialFields((prev) => ({
+          ...prev,
+          customerName: saleReturnRes.customer_name,
+          orderCode: saleReturnRes.sale_code,
+          refund: saleReturnRes.refund ? saleReturnRes.refund : "0",
+          ...productFieldData,
+        }));
+        setFetchData((prev) => ({
+          ...prev,
+          sold: saleReturnRes,
+          products: allProductReturns,
+          error: "",
+          empty: "",
+          loading: false,
+        }));
+      })
+      .catch((e) => {
+        const error = JSON.parse(
+          JSON.stringify(e.response ? e.response.data.error : e)
         );
-        if (productReturn) {
-          productFieldData[`quantity${product.id}`] = productReturn.quantity;
-          productFieldData[`unit${product.id}`] = productReturn.unit_code.split("_")[1];
-          allProductReturns.push({
-            id: product.id, // to query unit
-            name: productReturn.product_name,
-            quantity: productReturn.quantity,
-            unit_code: productReturn.unit_code,
-            units: product.units,              
-            unit_price: productReturn.unit_price,
-          });
-        }    
-      }
-      setInitialFields((prev) => ({
-        ...prev,
-        customerName: saleReturnRes.customer_name,
-        orderCode: saleReturnRes.sale_code,
-        refund: saleReturnRes.refund ? saleReturnRes.refund : "0",
-        ...productFieldData,
-      }));
-      setFetchData((prev) => ({
-        ...prev,
-        sold: saleReturnRes,
-        products: allProductReturns,
-        error: "",
-        empty: "",
-        loading: false,
-      }));
-    })
-    .catch((e) => {
-      const error = JSON.parse(
-        JSON.stringify(e.response ? e.response.data.error : e)
-      );
-      setFetchData((prev) => ({
-        ...prev,
-        sold: null,
-        products: [],
-        error: error.message,
-        empty: "",
-        loading: false,
-      }));
-    });
+        setFetchData((prev) => ({
+          ...prev,
+          sold: null,
+          products: [],
+          error: error.message,
+          empty: "",
+          loading: false,
+        }));
+      });
   }, [reload, params]);
 
   const onClear = () => {

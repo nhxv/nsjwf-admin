@@ -199,7 +199,7 @@ export default function SearchVendorSalePage() {
                           );
                         })}
                         <div className="divider"></div>
-                        <div className="my-2 flex gap-2 items-center">
+                        <div className="my-2 flex items-center gap-2">
                           <span>Total:</span>
                           <span className="text-xl font-medium">
                             $

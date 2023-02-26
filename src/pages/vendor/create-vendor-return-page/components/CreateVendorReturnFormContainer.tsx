@@ -32,16 +32,17 @@ export default function CreateVendorReturnFormContainer({}) {
           );
           if (productReturn) {
             productFieldData[`quantity${product.id}`] = productReturn.quantity;
-            productFieldData[`unit${product.id}`] = productReturn.unit_code.split("_")[1];
+            productFieldData[`unit${product.id}`] =
+              productReturn.unit_code.split("_")[1];
             allProductReturns.push({
               id: product.id, // to query unit
               name: productReturn.product_name,
               quantity: productReturn.quantity,
               unit_code: productReturn.unit_code,
-              units: product.units,              
+              units: product.units,
               unit_price: productReturn.unit_price,
             });
-          }    
+          }
         }
         setInitialFields((prev) => ({
           ...prev,

@@ -113,16 +113,14 @@ export default function ProductForm({ editedId, units, initialData, onClear }) {
           ></TextInput>
         </div>
         <div className="mb-5">
-          <label className="custom-label inline-block mb-2">Location</label>
+          <label className="custom-label mb-2 inline-block">Location</label>
           <SelectInput
             form={productForm}
             field={`location`}
             name={`location`}
             options={Object.values(Location)}
-            selected={
-              productForm.values[`location`]
-            }
-          ></SelectInput>      
+            selected={productForm.values[`location`]}
+          ></SelectInput>
         </div>
 
         {editedId ? (

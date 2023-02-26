@@ -25,7 +25,9 @@ export default function ProductFormContainer() {
           setInitialFields((prev) => ({
             ...prev,
             name: res.data.name,
-            location: res.data.location_name ? res.data.location_name : Location.COOLER_1,
+            location: res.data.location_name
+              ? res.data.location_name
+              : Location.COOLER_1,
             discontinued: res.data.discontinued,
           }));
           setFetchData((prev) => ({
@@ -55,11 +57,11 @@ export default function ProductFormContainer() {
         loading: false,
       }));
       // create product
-      setInitialFields((prev) => ({ 
-        ...prev, 
-        name: "", 
-        location: Location.COOLER_1, 
-        discontinued: false 
+      setInitialFields((prev) => ({
+        ...prev,
+        name: "",
+        location: Location.COOLER_1,
+        discontinued: false,
       }));
     }
   }, [reload, params]);

@@ -45,9 +45,11 @@ export default function VendorReturnList({ returns }) {
               );
             })}
             <div className="divider"></div>
-            <div className="mt-2 flex gap-2 items-center">
+            <div className="mt-2 flex items-center gap-2">
               <span>Refund:</span>
-              <span className="text-xl font-medium">${vendorReturn.refund}</span>
+              <span className="text-xl font-medium">
+                ${vendorReturn.refund}
+              </span>
             </div>
           </div>
         );

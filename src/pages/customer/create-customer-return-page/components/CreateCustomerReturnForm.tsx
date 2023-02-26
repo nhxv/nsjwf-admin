@@ -42,14 +42,14 @@ export default function CreateCustomerReturnForm({
         for (const property of properties) {
           if (property.includes("quantity")) {
             const id = +property.replace("quantity", "");
-            const found = products.find(p => p.id === id);
+            const found = products.find((p) => p.id === id);
             productReturns.set(found.id, {
               productName: found.name,
               quantity: data[property],
             });
           } else if (property.includes("unit")) {
             const id = +property.replace("unit", "");
-            const found = products.find(p => p.id === id);
+            const found = products.find((p) => p.id === id);
             productReturns.set(found.id, {
               ...productReturns.get(found.id),
               unitCode: `${found.id}_${data[property]}`,
@@ -114,7 +114,7 @@ export default function CreateCustomerReturnForm({
         </div>
       </div>
 
-      <div className="grid grid-cols-12 gap-3 mt-5">
+      <div className="mt-5 grid grid-cols-12 gap-3">
         {products.map((product) => (
           <div
             key={product.id}
@@ -122,26 +122,21 @@ export default function CreateCustomerReturnForm({
           >
             <div className="mb-3 flex justify-between">
               <div>
-                <span className="text-lg font-semibold">
-                  {product.name}
-                </span>
+                <span className="text-lg font-semibold">{product.name}</span>
                 <span className="custom-badge mt-1 block bg-info text-info-content">
-                  Sold for ${product.unit_price}/{product.unit_code.split("_")[1].toLowerCase()}
+                  Sold for ${product.unit_price}/
+                  {product.unit_code.split("_")[1].toLowerCase()}
                 </span>
               </div>
             </div>
             <div className="mb-2 flex gap-2">
               <div className="w-6/12">
-                <label className="custom-label mb-2 inline-block">
-                  Qty
-                </label>
+                <label className="custom-label mb-2 inline-block">Qty</label>
                 <NumberInput
                   id={`quantity${product.id}`}
                   name={`quantity${product.id}`}
                   placeholder="Qty"
-                  value={
-                    customerReturnForm.values[`quantity${product.id}`]
-                  }
+                  value={customerReturnForm.values[`quantity${product.id}`]}
                   onChange={customerReturnForm.handleChange}
                   min="0"
                   max={product.quantity}
@@ -149,19 +144,13 @@ export default function CreateCustomerReturnForm({
                 ></NumberInput>
               </div>
               <div className="w-6/12">
-                <label className="custom-label mb-2 inline-block">
-                  Unit
-                </label>
+                <label className="custom-label mb-2 inline-block">Unit</label>
                 <SelectInput
                   form={customerReturnForm}
                   field={`unit${product.id}`}
                   name={`unit${product.id}`}
-                  options={product.units.map(
-                    (unit) => unit.code.split("_")[1]
-                  )}
-                  selected={
-                    customerReturnForm.values[`unit${product.id}`]
-                  }
+                  options={product.units.map((unit) => unit.code.split("_")[1])}
+                  selected={customerReturnForm.values[`unit${product.id}`]}
                 ></SelectInput>
               </div>
             </div>
