@@ -23,33 +23,34 @@ export default function CustomerReturnList({ returns }) {
               <div className="w-6/12">
                 <span className="font-medium">Product</span>
               </div>
-              <div className="w-3/12 text-center">
+              <div className="w-6/12 text-center">
                 <span className="font-medium">Qty</span>
-              </div>
-              <div className="w-3/12 text-center">
-                <span className="font-medium">Price</span>
               </div>
             </div>
             {customerReturn.productCustomerReturns.map((productReturn) => {
               return (
                 <div
                   key={productReturn.productName}
-                  className="rounded-btn mb-2 flex items-center justify-center bg-base-200 py-3 dark:bg-base-300"
+                  className="rounded-btn mb-2 flex items-center bg-base-200 py-3 dark:bg-base-300"
                 >
                   <div className="ml-3 w-6/12">
                     <span>{productReturn.productName}</span>
                   </div>
-                  <div className="w-3/12 text-center">
+                  <div className="w-6/12 text-center">
                     <span>
                       {productReturn.quantity} ({productReturn.unitCode})
                     </span>
                   </div>
-                  <div className="w-3/12 text-center">
-                    <span>${productReturn.unitPrice}</span>
-                  </div>
                 </div>
               );
             })}
+            <div className="divider"></div>
+            <div className="mt-2 flex items-center gap-2">
+              <span>Refund:</span>
+              <span className="text-xl font-medium">
+                ${customerReturn.refund}
+              </span>
+            </div>
           </div>
         );
       })}

@@ -4,6 +4,7 @@ import { BiLeftArrowAlt, BiRightArrowAlt } from "react-icons/bi";
 import { convertTime } from "../../../../commons/utils/time.util";
 import Alert from "../../../../components/Alert";
 import NumberInput from "../../../../components/forms/NumberInput";
+import SelectInput from "../../../../components/forms/SelectInput";
 import TextInput from "../../../../components/forms/TextInput";
 import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
@@ -12,8 +13,6 @@ export default function CreateCustomerReturnForm({
   initialData,
   products,
   sold,
-  updatePrice,
-  total,
   onClear,
 }) {
   const [formState, setFormState] = useState({
@@ -22,7 +21,6 @@ export default function CreateCustomerReturnForm({
     loading: false,
     page: 0,
   });
-  const [finalPrice, setFinalPrice] = useState(0);
 
   const customerReturnForm = useFormik({
     enableReinitialize: true,
@@ -39,19 +37,22 @@ export default function CreateCustomerReturnForm({
         let productReturns = new Map();
         reqData["customerName"] = data["customerName"];
         reqData["orderCode"] = data["orderCode"];
-        reqData["recommendedPrice"] = total;
-        reqData["finalPrice"] = finalPrice;
+        reqData["refund"] = data["refund"];
         const properties = Object.keys(data).sort();
         for (const property of properties) {
           if (property.includes("quantity")) {
-            const productIndex = +property.replace("quantity", "");
-            const product = products[productIndex];
-            productReturns.set(productIndex, {
-              ...productReturns.get(productIndex),
-              productName: product.product_name,
+            const id = +property.replace("quantity", "");
+            const found = products.find((p) => p.id === id);
+            productReturns.set(found.id, {
+              productName: found.name,
               quantity: data[property],
-              unitCode: product.unit_code,
-              unitPrice: product.unit_price,
+            });
+          } else if (property.includes("unit")) {
+            const id = +property.replace("unit", "");
+            const found = products.find((p) => p.id === id);
+            productReturns.set(found.id, {
+              ...productReturns.get(found.id),
+              unitCode: `${found.id}_${data[property]}`,
             });
           }
         }
@@ -83,27 +84,16 @@ export default function CreateCustomerReturnForm({
     },
   });
 
-  const handlePriceChange = (e, inputId: string) => {
-    customerReturnForm.setFieldValue(inputId, e.target.value);
-    updatePrice(e, inputId);
-  };
-
   const onClearForm = () => {
     onClear();
   };
 
   const onNextPage = () => {
-    setFinalPrice(total);
     setFormState((prev) => ({ ...prev, page: 1 }));
   };
 
   const onPreviousPage = () => {
-    setFinalPrice(total);
     setFormState((prev) => ({ ...prev, page: 0 }));
-  };
-
-  const handleFinalPriceChange = (e) => {
-    setFinalPrice(e.target.value);
   };
 
   return (
@@ -124,55 +114,50 @@ export default function CreateCustomerReturnForm({
         </div>
       </div>
 
-      <div className="divider my-1"></div>
-      <div className="mb-2 flex items-center justify-between">
-        <div className="w-5/12">
-          <span className="custom-label">Product</span>
-        </div>
-        <div className="flex w-7/12 gap-2">
-          <div className="w-6/12">
-            <span className="custom-label">Qty</span>
-          </div>
-          <div className="flex w-6/12 items-center justify-center">
-            <span className="custom-label">Unit price</span>
-          </div>
-        </div>
-      </div>
-      {products.map((product, index) => {
-        return (
-          <div key={index}>
-            <div className="flex items-center justify-between">
-              <div className="w-5/12">
-                <span>{product.product_name}</span>
+      <div className="mt-5 grid grid-cols-12 gap-3">
+        {products.map((product) => (
+          <div
+            key={product.id}
+            className="rounded-box col-span-12 flex flex-col border-2 border-base-300 p-3 md:col-span-6"
+          >
+            <div className="mb-3 flex justify-between">
+              <div>
+                <span className="text-lg font-semibold">{product.name}</span>
                 <span className="custom-badge mt-1 block bg-info text-info-content">
-                  Sold in {product.unit_code.split("_")[1].toLowerCase()}
+                  Sold for ${product.unit_price}/
+                  {product.unit_code.split("_")[1].toLowerCase()}
                 </span>
               </div>
-              <div className="flex w-7/12 gap-2">
-                <div className="w-6/12">
-                  <NumberInput
-                    id={`quantity${index}`}
-                    min="0"
-                    max={product.quantity}
-                    placeholder="Qty"
-                    name={`quantity${index}`}
-                    value={customerReturnForm.values[`quantity${index}`]}
-                    onChange={(e) => handlePriceChange(e, `quantity${index}`)}
-                    disabled={
-                      !!(product.quantity === 0 || formState.page === 1)
-                    }
-                  ></NumberInput>
-                </div>
-
-                <div className="flex w-6/12 items-center justify-center">
-                  <span>${product.unit_price}</span>
-                </div>
+            </div>
+            <div className="mb-2 flex gap-2">
+              <div className="w-6/12">
+                <label className="custom-label mb-2 inline-block">Qty</label>
+                <NumberInput
+                  id={`quantity${product.id}`}
+                  name={`quantity${product.id}`}
+                  placeholder="Qty"
+                  value={customerReturnForm.values[`quantity${product.id}`]}
+                  onChange={customerReturnForm.handleChange}
+                  min="0"
+                  max={product.quantity}
+                  disabled={false}
+                ></NumberInput>
+              </div>
+              <div className="w-6/12">
+                <label className="custom-label mb-2 inline-block">Unit</label>
+                <SelectInput
+                  form={customerReturnForm}
+                  field={`unit${product.id}`}
+                  name={`unit${product.id}`}
+                  options={product.units.map((unit) => unit.code.split("_")[1])}
+                  selected={customerReturnForm.values[`unit${product.id}`]}
+                ></SelectInput>
               </div>
             </div>
-            <div className="divider my-1"></div>
           </div>
-        );
-      })}
+        ))}
+      </div>
+
       {formState.page === 1 ? (
         <div className="my-5 flex flex-col">
           <label htmlFor="total" className="custom-label mb-2">
@@ -180,12 +165,12 @@ export default function CreateCustomerReturnForm({
           </label>
           <div className="w-24">
             <TextInput
-              id={`total`}
+              id={`refund`}
               type="text"
-              name={`total`}
               placeholder="Total"
-              value={finalPrice}
-              onChange={(e) => handleFinalPriceChange(e)}
+              name={`refund`}
+              value={customerReturnForm.values["refund"]}
+              onChange={customerReturnForm.handleChange}
             ></TextInput>
           </div>
         </div>

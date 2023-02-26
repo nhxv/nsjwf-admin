@@ -1,13 +1,11 @@
-import useFirstRender from "../../../../commons/hooks/first-render.hook";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { useState, useEffect } from "react";
-import api from "../../../../stores/api";
-import Spinner from "../../../../components/Spinner";
 import Alert from "../../../../components/Alert";
+import Spinner from "../../../../components/Spinner";
+import api from "../../../../stores/api";
 import CustomerForm from "./CustomerForm";
 
 export default function CustomerFormContainer() {
-  const isFirstRender = useFirstRender();
   const params = useParams();
   const [reload, setReload] = useState(false);
   const [fetchData, setFetchData] = useState({
@@ -120,17 +118,6 @@ export default function CustomerFormContainer() {
         });
     }
   }, [reload, params]);
-
-  useEffect(() => {
-    if (!isFirstRender) {
-      setFetchData((prev) => ({
-        ...prev,
-        error: "",
-        empty: "",
-        loading: false,
-      }));
-    }
-  }, [initialFields]);
 
   const onClear = () => {
     setReload(!reload);

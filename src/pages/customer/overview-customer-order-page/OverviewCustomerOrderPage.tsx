@@ -1,53 +1,53 @@
 import { useEffect, useState } from "react";
-import api from "../../../stores/api";
-import useFirstRender from "../../../commons/hooks/first-render.hook";
 import { OrderStatus } from "../../../commons/enums/order-status.enum";
 import Alert from "../../../components/Alert";
+import api from "../../../stores/api";
 
 export default function OverviewCustomerOrderPage() {
-  const isFirstRender = useFirstRender();
-  const [listState, setListState] = useState({
-    listError: "",
-    listEmpty: "",
-    listLoading: true,
+  const [fetchData, setFetchData] = useState({
+    orders: [],
+    error: "",
+    empty: "",
+    loading: true,
   });
-  const [customerOrderList, setCustomerOrderList] = useState([]);
 
   useEffect(() => {
     api
       .get(`/customer-orders/daily`)
       .then((res) => {
         if (res.data.length === 0) {
-          setListState((prev) => ({
+          setFetchData((prev) => ({
             ...prev,
-            listEmpty: "Such hollow, much empty...",
-            listLoading: false,
+            empty: "Such hollow, much empty...",
+            loading: false,
           }));
         } else {
-          setListState((prev) => ({
+          setFetchData((prev) => ({
             ...prev,
-            listError: "",
-            listEmpty: "",
-            listLoading: false,
+            orders: res.data,
+            error: "",
+            empty: "",
+            loading: false,
           }));
-          setCustomerOrderList(res.data);
         }
       })
       .catch((e) => {
         const error = JSON.parse(
           JSON.stringify(e.response ? e.response.data.error : e)
         );
-        setListState((prev) => ({
+        setFetchData((prev) => ({
           ...prev,
-          listError: error.message,
-          listLoading: false,
+          orders: [],
+          error: error.message,
+          empty: "",
+          loading: false,
         }));
       });
   }, []);
 
   return (
     <section className="min-h-screen">
-      {listState.listEmpty ? (
+      {fetchData.empty ? (
         <div className="my-8 flex justify-center">
           <div className="w-11/12 sm:w-6/12">
             <Alert message="Such hollow, much empty..." type="empty"></Alert>
@@ -56,7 +56,7 @@ export default function OverviewCustomerOrderPage() {
       ) : null}
 
       <div className="mt-8 grid grid-cols-12 gap-2 px-4">
-        {customerOrderList.map((order) => (
+        {fetchData.orders.map((order) => (
           <div
             key={order.code}
             className={`rounded-box col-span-12 border-2 p-3 shadow-md sm:col-span-6 md:col-span-4 lg:col-span-3 xl:col-span-2

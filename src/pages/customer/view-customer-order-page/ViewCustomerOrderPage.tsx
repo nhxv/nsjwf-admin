@@ -35,17 +35,6 @@ export default function ViewCustomerOrderPage() {
     };
   }, [status]);
 
-  // useEffect(() => {
-  //   if (!isFirstRender) {
-  //     setFetchData((prev) => ({
-  //       ...prev,
-  //       error: "",
-  //       empty: "",
-  //       loading: false,
-  //     }));
-  //   }
-  // }, [fetchData.orders]);
-
   const getCustomerOrders = () => {
     setFetchData((prev) => ({
       ...prev,

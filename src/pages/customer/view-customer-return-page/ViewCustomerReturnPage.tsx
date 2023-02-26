@@ -1,13 +1,10 @@
-import Spinner from "../../../components/Spinner";
-import { BiError, BiBot } from "react-icons/bi";
-import useFirstRender from "../../../commons/hooks/first-render.hook";
-import { useState, useEffect } from "react";
-import CustomerReturnList from "./components/CustomerReturnList";
-import api from "../../../stores/api";
+import { useEffect, useState } from "react";
 import Alert from "../../../components/Alert";
+import Spinner from "../../../components/Spinner";
+import api from "../../../stores/api";
+import CustomerReturnList from "./components/CustomerReturnList";
 
 export default function ViewCustomerReturnPage() {
-  const isFirstRender = useFirstRender();
   const [fetchData, setFetchData] = useState({
     returns: [],
     error: "",

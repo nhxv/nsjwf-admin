@@ -198,7 +198,7 @@ export default function SearchCustomerSalePage() {
                               </span>
                             </div>
                             <div className="w-3/12 text-center">
-                              <span>{productOrder.unitPrice}</span>
+                              <span>${productOrder.unitPrice}</span>
                             </div>
                           </div>
                         );
