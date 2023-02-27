@@ -127,10 +127,10 @@ export default function Task({ order, reload, status }) {
       <div className="divider"></div>
       {/* products in order */}
       <div className="mb-2 flex items-center">
-        <div className="w-10/12">
+        <div className="w-9/12">
           <span className="font-medium">Product</span>
         </div>
-        <div className="w-2/12 text-center">
+        <div className="w-3/12 text-center">
           <span className="font-medium">Qty</span>
         </div>
       </div>
@@ -138,13 +138,13 @@ export default function Task({ order, reload, status }) {
         return (
           <div
             key={productOrder.productName}
-            className="rounded-btn mb-2 flex items-center justify-center bg-base-200 py-3"
+            className="rounded-btn mb-2 flex items-center justify-center bg-base-200 py-3 dark:bg-base-300"
           >
-            <div className="ml-3 w-10/12">
+            <div className="ml-3 w-9/12">
               <span>{productOrder.productName}</span>
             </div>
-            <div className="w-2/12 text-center">
-              <span>{productOrder.quantity}</span>
+            <div className="w-3/12 text-center">
+              <span>{productOrder.quantity} ({productOrder.unitCode})</span>
             </div>
           </div>
         );
