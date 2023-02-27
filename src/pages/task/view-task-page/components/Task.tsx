@@ -144,7 +144,9 @@ export default function Task({ order, reload, status }) {
               <span>{productOrder.productName}</span>
             </div>
             <div className="w-3/12 text-center">
-              <span>{productOrder.quantity} ({productOrder.unitCode})</span>
+              <span>
+                {productOrder.quantity} ({productOrder.unitCode})
+              </span>
             </div>
           </div>
         );
