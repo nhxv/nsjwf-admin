@@ -98,16 +98,16 @@ export default function EmployeeForm({ isOpen, onClose, employee, onReload }) {
             Update
           </button>
 
-          {formState.loading ? (
+          {formState.loading && (
             <div className="mt-5">
               <Spinner></Spinner>
             </div>
-          ) : null}
-          {formState.error ? (
+          )}
+          {formState.error && (
             <div className="mt-5">
               <Alert message={formState.error} type="error"></Alert>
             </div>
-          ) : null}
+          )}
         </form>
       </div>
     </Modal>

@@ -93,7 +93,7 @@ export default function CustomerOrderPrint({ order }) {
           tabIndex={0}
           className="btn-ghost btn-circle btn bg-base-200 text-neutral dark:bg-base-300 dark:text-neutral-content"
         >
-          <BiPrinter className="inline-block h-6 w-6"></BiPrinter>
+          <BiPrinter className="h-6 w-6"></BiPrinter>
         </label>
         <ul
           tabIndex={0}
@@ -102,7 +102,7 @@ export default function CustomerOrderPrint({ order }) {
           <li>
             <a
               onClick={handleOrderPrint}
-              className="hover:bg-base-200 focus:bg-base-200 dark:hover:bg-base-300 dark:focus:bg-base-300"
+              className="text-base-content hover:bg-base-200 focus:bg-base-200 dark:hover:bg-base-300 dark:focus:bg-base-300"
             >
               <span>Packing Slip</span>
             </a>
@@ -110,7 +110,7 @@ export default function CustomerOrderPrint({ order }) {
           <li>
             <a
               onClick={onOpenModal}
-              className="hover:bg-base-200 focus:bg-base-200 dark:hover:bg-base-300 dark:focus:bg-base-300"
+              className="text-base-content hover:bg-base-200 focus:bg-base-200 dark:hover:bg-base-300 dark:focus:bg-base-300"
             >
               <span>Pallet Label</span>
             </a>

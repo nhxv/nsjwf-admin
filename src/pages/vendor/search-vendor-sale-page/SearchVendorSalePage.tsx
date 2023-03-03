@@ -210,14 +210,14 @@ export default function SearchVendorSalePage() {
                             )}
                           </span>
                         </div>
-                        {!sale.fullReturn ? (
+                        {!sale.fullReturn && (
                           <button
                             className="btn-primary btn mt-3 w-full"
                             onClick={() => onCreateReturn(sale.code)}
                           >
                             Create return
                           </button>
-                        ) : null}
+                        )}
                       </div>
                     );
                   })}
@@ -238,9 +238,9 @@ export default function SearchVendorSalePage() {
                         <p className="text-neutral">{search.empty}</p>
                       ) : (
                         <>
-                          {search.greet ? (
+                          {search.greet && (
                             <p className="text-neutral">{search.greet}</p>
-                          ) : null}
+                          )}
                         </>
                       )}
                     </>

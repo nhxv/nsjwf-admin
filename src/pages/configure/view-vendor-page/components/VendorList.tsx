@@ -173,9 +173,9 @@ export default function VendorList() {
           </div>
         ))}
       </div>
-      {search.vendors?.length < 1 ? (
+      {search.vendors?.length < 1 && (
         <div className="text-center">Not found.</div>
-      ) : null}
+      )}
     </>
   );
 }

@@ -1,6 +1,7 @@
 import csvDownload from "json-to-csv-export";
 import { useEffect, useState } from "react";
-import { BiDownload } from "react-icons/bi";
+import { BiDownload, BiSearch } from "react-icons/bi";
+import { useNavigate } from "react-router-dom";
 import { convertTime } from "../../../commons/utils/time.util";
 import Alert from "../../../components/Alert";
 import Spinner from "../../../components/Spinner";
@@ -15,6 +16,8 @@ export default function ReportCustomerSalePage() {
     empty: "",
     loading: true,
   });
+  const [reload, setReload] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     getReportData();
@@ -26,7 +29,7 @@ export default function ReportCustomerSalePage() {
     return () => {
       clearInterval(reRender);
     };
-  }, []);
+  }, [reload]);
 
   const getReportData = () => {
     api
@@ -69,36 +72,53 @@ export default function ReportCustomerSalePage() {
 
   const onDownloadReport = () => {
     const reportData = fetchData.reports
-      .filter((report) => report.is_test)
       .map((report) => ({
         code: `#${report.manual_code ? report.manual_code : report.order_code}`,
-        refund_code: `#${report.refund_order}`,
+        refund_code: report.refund_order ? `#${report.refund_order}` : "",
         customer: report.customer_name,
         date: convertTime(new Date(report.date)),
         sale: report.sale,
         refund: report.refund,
+        payment_status: report.payment_status,
+        test: report.is_test ? "L" : "S",
       }));
-    const dataToConvert = {
+    const saleFile = {
       data: reportData,
       filename: `${convertTime(new Date()).split("-").join("")}_report`,
       delimiter: ",",
       headers: [
-        "Order Code",
-        "Refund Order Code",
+        "Order",
+        "Refund",
         "Customer",
         "Date",
         "Sale",
         "Refund",
+        "Payment",
+        "Type",
       ],
     };
-    csvDownload(dataToConvert);
+    csvDownload(saleFile);
   };
+
+  const onReload = () => {
+    setReload(!reload);
+    setFetchData((prev) => ({
+      ...prev,
+      error: "",
+      empty: "",
+      loading: true,
+    }));
+  }
+
+  const onSearch = () => {
+    navigate(`/customer/search-customer-sale`);
+  }
 
   return (
     <section className="min-h-screen">
       <div className="flex flex-col items-center">
-        <div className={`my-6`}>
-          {!fetchData.empty && !fetchData.error && !fetchData.loading ? (
+        <div className="my-6">
+          {!fetchData.empty && !fetchData.error && !fetchData.loading && (
             <div className="text-end">
               <button
                 type="button"
@@ -109,8 +129,15 @@ export default function ReportCustomerSalePage() {
                 <BiDownload className="h-6 w-6"></BiDownload>
               </button>
             </div>
-          ) : null}
+          )}
         </div>
+        <div className="fixed bottom-24 right-6 z-20 md:right-8">
+          <button className="btn-accent btn-circle btn" onClick={onSearch}>
+            <span>
+              <BiSearch className="h-6 w-6"></BiSearch>
+            </span>
+          </button>
+        </div>        
 
         {fetchData.loading ? (
           <Spinner></Spinner>
@@ -123,7 +150,7 @@ export default function ReportCustomerSalePage() {
                 {fetchData.empty ? (
                   <Alert message={fetchData.empty} type="empty"></Alert>
                 ) : (
-                  <CustomerSaleList reports={fetchData.display} />
+                  <CustomerSaleList reports={fetchData.display} reload={onReload} />
                 )}
               </>
             )}

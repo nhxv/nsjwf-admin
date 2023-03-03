@@ -123,7 +123,7 @@ export default function ProductForm({ editedId, units, initialData, onClear }) {
           ></SelectInput>
         </div>
 
-        {editedId ? (
+        {editedId && (
           <>
             <div className="mb-5">
               <p className="custom-label mb-2">Custom unit</p>
@@ -139,25 +139,23 @@ export default function ProductForm({ editedId, units, initialData, onClear }) {
               </button>
             </div>
 
-            {units
-              ? units.map((unit) => (
-                  <button
-                    type="button"
-                    key={unit.id}
-                    className="btn-outline-accent btn mb-5 w-full justify-start p-3 font-normal"
-                    onClick={() => onEditUnit(unit)}
-                  >
-                    <span>
-                      <BiEditAlt className="mr-2 h-6 w-6"></BiEditAlt>
-                    </span>
-                    <span>
-                      1 {unit.name} = {unit.ratio} BOX
-                    </span>
-                  </button>
-                ))
-              : null}
+            {units && units.map((unit) => (
+              <button
+                type="button"
+                key={unit.id}
+                className="btn-outline-accent btn mb-5 w-full justify-start p-3 font-normal"
+                onClick={() => onEditUnit(unit)}
+              >
+                <span>
+                  <BiEditAlt className="mr-2 h-6 w-6"></BiEditAlt>
+                </span>
+                <span>
+                  1 {unit.name} = {unit.ratio} BOX
+                </span>
+              </button>
+            ))}
           </>
-        ) : null}
+        )}
 
         <div className="mb-5 flex items-center">
           <Checkbox
@@ -181,21 +179,21 @@ export default function ProductForm({ editedId, units, initialData, onClear }) {
           <span>{editedId ? "Edit" : "Create"} product</span>
         </button>
         <div>
-          {formState.loading ? (
+          {formState.loading && (
             <div className="mt-5">
               <Spinner></Spinner>
             </div>
-          ) : null}
-          {formState.error ? (
+          )}
+          {formState.error && (
             <div className="mt-5">
               <Alert message={formState.error} type="error"></Alert>
             </div>
-          ) : null}
-          {formState.success ? (
+          )}
+          {formState.success && (
             <div className="mt-5">
               <Alert message={formState.success} type="success"></Alert>
             </div>
-          ) : null}
+          )}
         </div>
       </form>
       <UnitForm

@@ -1,6 +1,44 @@
+import { useState } from "react";
+import { BiRevision } from "react-icons/bi";
+import { PaymentStatus } from "../../../../commons/enums/payment-status.enum";
 import { convertTime } from "../../../../commons/utils/time.util";
+import Alert from "../../../../components/Alert";
+import Spinner from "../../../../components/Spinner";
+import StatusTag from "../../../../components/StatusTag";
+import api from "../../../../stores/api";
 
-export default function CustomerSaleList({ reports }) {
+export default function CustomerSaleList({ reports, reload }) {
+  const [formState, setFormState] = useState({
+    loading: false,
+    error: "",
+  });
+
+  const onUpdatePayment = (status: string, code: string) => {
+    setFormState(prev => ({...prev, loading: true, error: ""}));
+    const reqData = {
+      status: status,
+    };
+    api.put(`/customer-payment/status/${code}`, reqData)
+    .then((res) => {
+      setFormState(prev => ({...prev, loading: false, error: ""}));
+      reload();
+    })
+    .catch((e) => {
+      const error = JSON.parse(
+        JSON.stringify(e.response ? e.response.data.error : e)
+      );
+      setFormState((prev) => ({
+        ...prev,
+        error: error.message,
+        loading: false,
+      }));
+      setTimeout(() => {
+        setFormState((prev) => ({ ...prev, error: "", loading: false }));
+        reload();
+      }, 2000);
+    });
+  }
+
   return (
     <>
       {reports.map((report) => {
@@ -9,25 +47,26 @@ export default function CustomerSaleList({ reports }) {
             {/* basic report info */}
             <div className="flex flex-row justify-between">
               <div>
-                <div>
-                  <span>
-                    #
-                    {report.manual_code
-                      ? report.manual_code
-                      : report.order_code}
-                  </span>
-                </div>
-                <div>
-                  <span className="text-xl font-semibold">
-                    {report.customer_name}
-                  </span>
-                </div>
-                <div className="">
-                  <span className="text-sm text-neutral">
-                    Completed at {convertTime(new Date(report.date))}
-                  </span>
-                </div>
+                <p>
+                  #{report.manual_code ? report.manual_code : report.order_code}
+                </p>
+                <p className="text-xl font-semibold">
+                  {report.customer_name}
+                </p>
+                <p className="text-sm text-neutral">
+                  Completed at {convertTime(new Date(report.date))}
+                </p>
+                <div className="mt-5">
+                  <StatusTag status={report.payment_status}></StatusTag>
+                </div>                
               </div>
+              <button 
+              type="button" 
+              className="btn btn-ghost btn-circle bg-base-200 text-neutral dark:bg-base-300 dark:text-neutral-content"
+              onClick={() => onUpdatePayment(PaymentStatus.RECEIVABLE, report.order_code)}
+              >
+                <BiRevision className="w-6 h-6"></BiRevision>
+              </button>
             </div>
             <div className="divider"></div>
             {/* products in report */}
@@ -69,6 +108,30 @@ export default function CustomerSaleList({ reports }) {
               <span className="mr-2 text-xl font-medium">${report.sale}</span>
               <span className="text-red-600">-${report.refund}</span>
             </div>
+            <div className="grid grid-cols-12 gap-3 mt-5">
+              <button 
+              type="button" 
+              className="col-span-6 btn btn-outline-primary w-full" 
+              onClick={() => onUpdatePayment(PaymentStatus.CHECK, report.order_code)}
+              >Check</button>
+              <button 
+              type="button" 
+              className="col-span-6 btn btn-primary w-full" 
+              onClick={() => onUpdatePayment(PaymentStatus.CASH, report.order_code)}
+              >Cash</button>
+            </div>      
+            <div>
+              {formState.loading && (
+                <div className="mt-5">
+                  <Spinner></Spinner>
+                </div>
+              )}
+              {formState.error && (
+                <div className="mt-5">
+                  <Alert message={formState.error} type="error"></Alert>
+                </div>
+              )}
+            </div>    
           </div>
         );
       })}

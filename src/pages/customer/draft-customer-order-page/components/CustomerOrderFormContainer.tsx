@@ -6,7 +6,7 @@ import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
 import CustomerOrderForm from "./CustomerOrderForm";
-
+0
 export default function CustomerOrderFormContainer() {
   const params = useParams();
   const [reload, setReload] = useState(false);
@@ -81,6 +81,7 @@ export default function CustomerOrderFormContainer() {
                   id: product.id,
                   name: product.name,
                   units: product.units,
+                  sell_price: product.sell_price,
                 });
               } else {
                 productFieldData[`quantity${product.id}`] = 0;

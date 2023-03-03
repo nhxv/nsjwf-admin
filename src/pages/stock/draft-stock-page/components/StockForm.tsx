@@ -245,21 +245,21 @@ export default function StockForm({ initialData, stock, onClear }) {
         </button>
 
         <div>
-          {formState.loading ? (
+          {formState.loading && (
             <div className="mt-5">
               <Spinner></Spinner>
             </div>
-          ) : null}
-          {formState.error ? (
+          )}
+          {formState.error && (
             <div className="mt-5">
               <Alert message={formState.error} type="error"></Alert>
             </div>
-          ) : null}
-          {formState.success ? (
+          )}
+          {formState.success && (
             <div className="mt-5">
               <Alert message={formState.success} type="success"></Alert>
             </div>
-          ) : null}
+          )}
         </div>
       </form>
     </>

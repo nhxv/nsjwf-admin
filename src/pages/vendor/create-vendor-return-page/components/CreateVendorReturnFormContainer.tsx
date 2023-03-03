@@ -4,6 +4,7 @@ import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
 import CreateVendorReturnForm from "./CreateVendorReturnForm";
+import { parseFraction } from "../../../../commons/utils/fraction.util";
 
 export default function CreateVendorReturnFormContainer({}) {
   const params = useParams();
@@ -31,7 +32,7 @@ export default function CreateVendorReturnFormContainer({}) {
             (pr) => pr.product_name === product.name
           );
           if (productReturn) {
-            productFieldData[`quantity${product.id}`] = productReturn.quantity;
+            productFieldData[`quantity${product.id}`] = parseFraction(productReturn.quantity);
             productFieldData[`unit${product.id}`] =
               productReturn.unit_code.split("_")[1];
             allProductReturns.push({

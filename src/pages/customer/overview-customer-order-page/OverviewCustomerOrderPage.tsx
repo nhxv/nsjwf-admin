@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { BiSortDown } from "react-icons/bi";
+import { useNavigate } from "react-router-dom";
 import { OrderStatus } from "../../../commons/enums/order-status.enum";
 import Alert from "../../../components/Alert";
 import api from "../../../stores/api";
@@ -10,6 +12,7 @@ export default function OverviewCustomerOrderPage() {
     empty: "",
     loading: true,
   });
+  const navigate = useNavigate();
 
   useEffect(() => {
     api
@@ -45,15 +48,27 @@ export default function OverviewCustomerOrderPage() {
       });
   }, []);
 
+  const onSwitchView = () => {
+    navigate(`/customer/view-customer-order`);
+  }
+
   return (
     <section className="min-h-screen">
-      {fetchData.empty ? (
+      {fetchData.empty && (
         <div className="my-8 flex justify-center">
           <div className="w-11/12 sm:w-6/12">
             <Alert message="Such hollow, much empty..." type="empty"></Alert>
           </div>
         </div>
-      ) : null}
+      )}
+
+      <div className="fixed bottom-24 right-6 z-20 md:right-8">
+        <button className="btn-primary btn-circle btn shadow-md" onClick={onSwitchView}>
+          <span>
+            <BiSortDown className="h-6 w-6"></BiSortDown>
+          </span>
+        </button>
+      </div>      
 
       <div className="mt-8 grid grid-cols-12 gap-2 px-4">
         {fetchData.orders.map((order) => (

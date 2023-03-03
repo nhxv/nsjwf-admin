@@ -282,7 +282,7 @@ export default function CustomerForm({
         </>
       ) : (
         <>
-          {formState.page === 1 ? (
+          {formState.page === 1 && (
             <>
               {/* 2nd Page */}
               <div className="mb-5">
@@ -393,7 +393,7 @@ export default function CustomerForm({
                 </button>
               </div>
             </>
-          ) : null}
+          )}
         </>
       )}
       <button
@@ -404,21 +404,21 @@ export default function CustomerForm({
         <span>Clear change(s)</span>
       </button>
       <div>
-        {formState.loading ? (
+        {formState.loading && (
           <div className="mt-5">
             <Spinner></Spinner>
           </div>
-        ) : null}
-        {formState.error ? (
+        )}
+        {formState.error && (
           <div className="mt-5">
             <Alert message={formState.error} type="error"></Alert>
           </div>
-        ) : null}
-        {formState.success ? (
+        )}
+        {formState.success && (
           <div className="mt-5">
             <Alert message={formState.success} type="success"></Alert>
           </div>
-        ) : null}
+        )}
       </div>
     </form>
   );

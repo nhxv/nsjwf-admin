@@ -327,7 +327,7 @@ export default function CustomerOrderForm({
             ></SelectInput>
           </div>
 
-          {customerOrderForm.values[`customerName`] ? (
+          {customerOrderForm.values[`customerName`] && (
             <button
               type="button"
               className="btn-primary btn mt-3 w-full"
@@ -338,11 +338,11 @@ export default function CustomerOrderForm({
                 <BiRightArrowAlt className="ml-1 h-7 w-7"></BiRightArrowAlt>
               </span>
             </button>
-          ) : null}
+          )}
         </>
       ) : (
         <>
-          {formState.page === 1 ? (
+          {formState.page === 1 && (
             <>
               <div className="mb-5">
                 <SearchSuggest
@@ -383,7 +383,11 @@ export default function CustomerOrderForm({
                                   {" > "}${product.sell_price}
                                 </span>
                               </div>
-                            ) : null}
+                            ) : (
+                              <div className="custom-badge mt-1 bg-accent text-accent-content">
+                                <span>Product</span>
+                              </div>
+                            )}
                           </div>
                           <button
                             type="button"
@@ -503,7 +507,7 @@ export default function CustomerOrderForm({
                 </button>
               </div>
             </>
-          ) : null}
+          )}
         </>
       )}
       <button
@@ -514,21 +518,21 @@ export default function CustomerOrderForm({
         <span>Clear change(s)</span>
       </button>
       <div>
-        {formState.loading ? (
+        {formState.loading && (
           <div className="mt-5">
             <Spinner></Spinner>
           </div>
-        ) : null}
-        {formState.error ? (
+        )}
+        {formState.error && (
           <div className="mt-5">
             <Alert message={formState.error} type="error"></Alert>
           </div>
-        ) : null}
-        {formState.success ? (
+        )}
+        {formState.success && (
           <div className="mt-5">
             <Alert message={formState.success} type="success"></Alert>
           </div>
-        ) : null}
+        )}
       </div>
     </form>
   );
