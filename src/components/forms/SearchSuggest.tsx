@@ -8,30 +8,30 @@ export default function SearchSuggest({
   onChange,
   onFocus,
   onSelect,
-  onClear, 
+  onClear,
 }) {
   const [open, setOpen] = useState(items.length > 0);
   const searchRef = useRef(null);
-  
+
   const onFocusSearch = () => {
     setOpen(true);
     onFocus();
-  }
+  };
 
   const onChangeSearch = (e) => {
     setOpen(true);
     onChange(e);
-  }
+  };
 
   const onSelectItem = (item) => {
     setOpen(false);
     onSelect(item);
-  }
+  };
 
   const onClearSuggest = () => {
     setOpen(false);
     onClear();
-  }
+  };
 
   return (
     <div className="w-full">
@@ -41,11 +41,12 @@ export default function SearchSuggest({
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
               <BiSearch className="h-6 w-6 text-neutral placeholder:text-base-300 dark:placeholder:text-base-300" />
             </div>
-            <Combobox.Input ref={searchRef}
+            <Combobox.Input
+              ref={searchRef}
               className="input w-full border-2 border-base-300 bg-transparent pl-10 focus:border-primary focus:outline-none dark:bg-transparent dark:placeholder:text-neutral"
               displayValue={() => ""}
-              onChange={e => onChangeSearch(e)}
-              onFocus={onFocusSearch} 
+              onChange={(e) => onChangeSearch(e)}
+              onFocus={onFocusSearch}
             />
             {document.activeElement === searchRef.current && (
               <div
@@ -57,7 +58,10 @@ export default function SearchSuggest({
             )}
           </div>
           {open && (
-            <Combobox.Options static className="rounded-btn absolute z-10 mt-1 max-h-72 w-full overflow-auto border-2 border-base-300 bg-base-100 py-2 shadow-md focus:outline-none dark:bg-base-200">
+            <Combobox.Options
+              static
+              className="rounded-btn absolute z-10 mt-1 max-h-72 w-full overflow-auto border-2 border-base-300 bg-base-100 py-2 shadow-md focus:outline-none dark:bg-base-200"
+            >
               {items.length === 0 ? (
                 <div className="relative cursor-default select-none py-3 px-4">
                   Nothing found.

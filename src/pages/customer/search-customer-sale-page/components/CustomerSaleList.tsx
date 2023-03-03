@@ -22,33 +22,34 @@ export default function CustomerSaleList({ search, reload, clear }) {
 
   const onClearAll = () => {
     clear();
-  }
+  };
 
   const onUpdatePayment = (status: string, code: string) => {
-    setFormState(prev => ({...prev, loading: true, error: ""}));
+    setFormState((prev) => ({ ...prev, loading: true, error: "" }));
     const reqData = {
       status: status,
     };
-    api.put(`/customer-payment/status/${code}`, reqData)
-    .then((res) => {
-      setFormState(prev => ({...prev, loading: false, error: ""}));
-      reload();
-    })
-    .catch((e) => {
-      const error = JSON.parse(
-        JSON.stringify(e.response ? e.response.data.error : e)
-      );
-      setFormState((prev) => ({
-        ...prev,
-        error: error.message,
-        loading: false,
-      }));
-      setTimeout(() => {
-        setFormState((prev) => ({ ...prev, error: "", loading: false }));
+    api
+      .put(`/customer-payment/status/${code}`, reqData)
+      .then((res) => {
+        setFormState((prev) => ({ ...prev, loading: false, error: "" }));
         reload();
-      }, 2000);
-    });
-  }
+      })
+      .catch((e) => {
+        const error = JSON.parse(
+          JSON.stringify(e.response ? e.response.data.error : e)
+        );
+        setFormState((prev) => ({
+          ...prev,
+          error: error.message,
+          loading: false,
+        }));
+        setTimeout(() => {
+          setFormState((prev) => ({ ...prev, error: "", loading: false }));
+          reload();
+        }, 2000);
+      });
+  };
 
   if (search.found.length > 0) {
     return (
@@ -62,16 +63,11 @@ export default function CustomerSaleList({ search, reload, clear }) {
               {/* basic sale info */}
               <div className="flex flex-row justify-between">
                 <div>
-                  <p>
-                    #{sale.manualCode ? sale.manualCode : sale.code}
-                  </p>
-                  <p className="text-xl font-semibold">
-                    {sale.customerName}
-                  </p>
+                  <p>#{sale.manualCode ? sale.manualCode : sale.code}</p>
+                  <p className="text-xl font-semibold">{sale.customerName}</p>
                   <div>
                     <span className="text-sm text-neutral">
-                      Completed at{" "}
-                      {convertTime(new Date(sale.updatedAt))}
+                      Completed at {convertTime(new Date(sale.updatedAt))}
                     </span>
                   </div>
                   <div className="mt-5">
@@ -79,10 +75,13 @@ export default function CustomerSaleList({ search, reload, clear }) {
                   </div>
                 </div>
                 <button
-                type="button"
-                className="btn btn-ghost btn-circle bg-base-200 text-neutral dark:bg-base-300 dark:text-neutral-content"
-                onClick={() => onUpdatePayment(PaymentStatus.RECEIVABLE, sale.code)}>
-                  <BiRevision className="w-6 h-6"></BiRevision>
+                  type="button"
+                  className="btn-ghost btn-circle btn bg-base-200 text-neutral dark:bg-base-300 dark:text-neutral-content"
+                  onClick={() =>
+                    onUpdatePayment(PaymentStatus.RECEIVABLE, sale.code)
+                  }
+                >
+                  <BiRevision className="h-6 w-6"></BiRevision>
                 </button>
               </div>
               <div className="divider"></div>
@@ -109,8 +108,7 @@ export default function CustomerSaleList({ search, reload, clear }) {
                     </div>
                     <div className="w-3/12 text-center">
                       <span>
-                        {productOrder.quantity} ({productOrder.unitCode}
-                        )
+                        {productOrder.quantity} ({productOrder.unitCode})
                       </span>
                     </div>
                     <div className="w-3/12 text-center">
@@ -121,8 +119,20 @@ export default function CustomerSaleList({ search, reload, clear }) {
               })}
               <div className="divider"></div>
               <div className="grid grid-cols-12 gap-3">
-                <button className="col-span-6 btn btn-outline-primary w-full" onClick={() => onUpdatePayment(PaymentStatus.CHECK, sale.code)}>Check</button>
-                <button className="col-span-6 btn btn-primary w-full" onClick={() => onUpdatePayment(PaymentStatus.CASH, sale.code)}>Cash</button>
+                <button
+                  className="btn-outline-primary btn col-span-6 w-full"
+                  onClick={() =>
+                    onUpdatePayment(PaymentStatus.CHECK, sale.code)
+                  }
+                >
+                  Check
+                </button>
+                <button
+                  className="btn-primary btn col-span-6 w-full"
+                  onClick={() => onUpdatePayment(PaymentStatus.CASH, sale.code)}
+                >
+                  Cash
+                </button>
               </div>
               {!sale.fullReturn && (
                 <button
@@ -143,7 +153,7 @@ export default function CustomerSaleList({ search, reload, clear }) {
                     <Alert message={formState.error} type="error"></Alert>
                   </div>
                 )}
-              </div>              
+              </div>
             </div>
           );
         })}
@@ -158,27 +168,19 @@ export default function CustomerSaleList({ search, reload, clear }) {
   }
 
   if (search.loading) {
-    return (
-      <Spinner></Spinner>
-    );
+    return <Spinner></Spinner>;
   }
 
   if (search.greet) {
-    return (
-      <p className="text-neutral">{search.greet}</p>
-    );
+    return <p className="text-neutral">{search.greet}</p>;
   }
 
   if (search.error) {
-    return (
-      <p className="text-neutral">{search.error}</p>
-    );
+    return <p className="text-neutral">{search.error}</p>;
   }
 
   if (search.empty) {
-    return (
-      <p className="text-neutral">{search.empty}</p>
-    );
+    return <p className="text-neutral">{search.empty}</p>;
   }
 
   return null;

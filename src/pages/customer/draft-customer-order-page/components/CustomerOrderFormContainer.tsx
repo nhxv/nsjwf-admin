@@ -6,7 +6,7 @@ import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
 import CustomerOrderForm from "./CustomerOrderForm";
-0
+0;
 export default function CustomerOrderFormContainer() {
   const params = useParams();
   const [reload, setReload] = useState(false);

@@ -85,7 +85,7 @@ export default function SearchCustomerSaleForm() {
 
   const forceReload = () => {
     searchForm.submitForm();
-  }
+  };
 
   return (
     <>
@@ -102,9 +102,7 @@ export default function SearchCustomerSaleForm() {
               placeholder="Date"
               name="date"
               value={searchForm.values[`date`]}
-              onChange={(e) =>
-                searchForm.setFieldValue("date", e.target.value)
-              }
+              onChange={(e) => searchForm.setFieldValue("date", e.target.value)}
             ></DateInput>
           </div>
           <div>
@@ -129,7 +127,11 @@ export default function SearchCustomerSaleForm() {
           </button>
         </div>
       </form>
-      <CustomerSaleList search={search} reload={forceReload} clear={onClearAll}></CustomerSaleList>    
+      <CustomerSaleList
+        search={search}
+        reload={forceReload}
+        clear={onClearAll}
+      ></CustomerSaleList>
     </>
   );
 }

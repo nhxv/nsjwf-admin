@@ -70,17 +70,17 @@ export default function CustomerOrderList({ orders, printMode }) {
               );
             })}
             {order.status !== OrderStatus.COMPLETED &&
-            (role === Role.MASTER || role === Role.ADMIN) && (
-              <>
-                <div className="divider"></div>
-                <button
-                  className="btn-primary btn w-full"
-                  onClick={() => onUpdateOrder(order.code)}
-                >
-                  Update order
-                </button>
-              </>
-            )}
+              (role === Role.MASTER || role === Role.ADMIN) && (
+                <>
+                  <div className="divider"></div>
+                  <button
+                    className="btn-primary btn w-full"
+                    onClick={() => onUpdateOrder(order.code)}
+                  >
+                    Update order
+                  </button>
+                </>
+              )}
           </div>
         );
       })}

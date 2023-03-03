@@ -197,7 +197,7 @@ export default function Layout({ children }) {
                 >
                   <li>
                     <a
-                      className="hover:bg-base-200 focus:bg-base-200 dark:hover:bg-base-300 dark:focus:bg-base-300 text-base-content"
+                      className="text-base-content hover:bg-base-200 focus:bg-base-200 dark:hover:bg-base-300 dark:focus:bg-base-300"
                       onClick={onProfile}
                     >
                       <span>
@@ -263,9 +263,9 @@ export default function Layout({ children }) {
                           );
                         })}
                         {index !== categories.length - 1 &&
-                        categories[index + 1].visible.includes(role) && (
-                          <li></li>
-                        )}
+                          categories[index + 1].visible.includes(role) && (
+                            <li></li>
+                          )}
                       </>
                     )}
                   </div>

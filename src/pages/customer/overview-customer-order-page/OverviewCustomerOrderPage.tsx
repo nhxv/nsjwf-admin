@@ -50,7 +50,7 @@ export default function OverviewCustomerOrderPage() {
 
   const onSwitchView = () => {
     navigate(`/customer/view-customer-order`);
-  }
+  };
 
   return (
     <section className="min-h-screen">
@@ -63,12 +63,15 @@ export default function OverviewCustomerOrderPage() {
       )}
 
       <div className="fixed bottom-24 right-6 z-20 md:right-8">
-        <button className="btn-primary btn-circle btn shadow-md" onClick={onSwitchView}>
+        <button
+          className="btn-primary btn-circle btn shadow-md"
+          onClick={onSwitchView}
+        >
           <span>
             <BiSortDown className="h-6 w-6"></BiSortDown>
           </span>
         </button>
-      </div>      
+      </div>
 
       <div className="mt-8 grid grid-cols-12 gap-2 px-4">
         {fetchData.orders.map((order) => (

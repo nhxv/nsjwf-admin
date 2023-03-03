@@ -139,21 +139,22 @@ export default function ProductForm({ editedId, units, initialData, onClear }) {
               </button>
             </div>
 
-            {units && units.map((unit) => (
-              <button
-                type="button"
-                key={unit.id}
-                className="btn-outline-accent btn mb-5 w-full justify-start p-3 font-normal"
-                onClick={() => onEditUnit(unit)}
-              >
-                <span>
-                  <BiEditAlt className="mr-2 h-6 w-6"></BiEditAlt>
-                </span>
-                <span>
-                  1 {unit.name} = {unit.ratio} BOX
-                </span>
-              </button>
-            ))}
+            {units &&
+              units.map((unit) => (
+                <button
+                  type="button"
+                  key={unit.id}
+                  className="btn-outline-accent btn mb-5 w-full justify-start p-3 font-normal"
+                  onClick={() => onEditUnit(unit)}
+                >
+                  <span>
+                    <BiEditAlt className="mr-2 h-6 w-6"></BiEditAlt>
+                  </span>
+                  <span>
+                    1 {unit.name} = {unit.ratio} BOX
+                  </span>
+                </button>
+              ))}
           </>
         )}
 

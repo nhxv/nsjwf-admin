@@ -7,4 +7,4 @@ export const parseFraction = (s) => {
   }
   const [numerator, denominator] = s.split("/");
   return Math.floor(parseInt(numerator) / parseInt(denominator));
-}
+};

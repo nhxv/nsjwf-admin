@@ -71,17 +71,16 @@ export default function ReportCustomerSalePage() {
   };
 
   const onDownloadReport = () => {
-    const reportData = fetchData.reports
-      .map((report) => ({
-        code: `#${report.manual_code ? report.manual_code : report.order_code}`,
-        refund_code: report.refund_order ? `#${report.refund_order}` : "",
-        customer: report.customer_name,
-        date: convertTime(new Date(report.date)),
-        sale: report.sale,
-        refund: report.refund,
-        payment_status: report.payment_status,
-        test: report.is_test ? "L" : "S",
-      }));
+    const reportData = fetchData.reports.map((report) => ({
+      code: `#${report.manual_code ? report.manual_code : report.order_code}`,
+      refund_code: report.refund_order ? `#${report.refund_order}` : "",
+      customer: report.customer_name,
+      date: convertTime(new Date(report.date)),
+      sale: report.sale,
+      refund: report.refund,
+      payment_status: report.payment_status,
+      test: report.is_test ? "L" : "S",
+    }));
     const saleFile = {
       data: reportData,
       filename: `${convertTime(new Date()).split("-").join("")}_report`,
@@ -108,11 +107,11 @@ export default function ReportCustomerSalePage() {
       empty: "",
       loading: true,
     }));
-  }
+  };
 
   const onSearch = () => {
     navigate(`/customer/search-customer-sale`);
-  }
+  };
 
   return (
     <section className="min-h-screen">
@@ -137,7 +136,7 @@ export default function ReportCustomerSalePage() {
               <BiSearch className="h-6 w-6"></BiSearch>
             </span>
           </button>
-        </div>        
+        </div>
 
         {fetchData.loading ? (
           <Spinner></Spinner>
@@ -150,7 +149,10 @@ export default function ReportCustomerSalePage() {
                 {fetchData.empty ? (
                   <Alert message={fetchData.empty} type="empty"></Alert>
                 ) : (
-                  <CustomerSaleList reports={fetchData.display} reload={onReload} />
+                  <CustomerSaleList
+                    reports={fetchData.display}
+                    reload={onReload}
+                  />
                 )}
               </>
             )}

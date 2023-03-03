@@ -110,7 +110,7 @@ export default function ViewCustomerOrderPage() {
 
   const onSwitchView = () => {
     navigate(`/customer/overview-customer-order`);
-  }
+  };
 
   return (
     <section className="min-h-screen">
@@ -120,7 +120,7 @@ export default function ViewCustomerOrderPage() {
             <BiGridAlt className="h-6 w-6"></BiGridAlt>
           </span>
         </button>
-      </div>      
+      </div>
       <div className="flex justify-center">
         <div className="w-11/12 md:w-8/12 lg:w-6/12 xl:w-5/12">
           <div className="my-6">
@@ -163,19 +163,19 @@ export default function ViewCustomerOrderPage() {
                         }
                       />
                       {!fetchData.empty &&
-                      !fetchData.error &&
-                      !fetchData.loading && (
-                        <div className="mb-6 flex justify-center">
-                          <button
-                            type="button"
-                            className="btn-accent btn"
-                            onClick={onBatchPrint}
-                          >
-                            <span className="mr-2">Print all orders</span>
-                            <BiLayer className="h-6 w-6"></BiLayer>
-                          </button>
-                        </div>
-                      )}
+                        !fetchData.error &&
+                        !fetchData.loading && (
+                          <div className="mb-6 flex justify-center">
+                            <button
+                              type="button"
+                              className="btn-accent btn"
+                              onClick={onBatchPrint}
+                            >
+                              <span className="mr-2">Print all orders</span>
+                              <BiLayer className="h-6 w-6"></BiLayer>
+                            </button>
+                          </div>
+                        )}
                     </div>
                   )}
                 </>

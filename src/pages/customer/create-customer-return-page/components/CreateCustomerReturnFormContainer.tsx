@@ -32,7 +32,9 @@ export default function CreateCustomerReturnFormContainer({}) {
             (pr) => pr.product_name === product.name
           );
           if (productReturn) {
-            productFieldData[`quantity${product.id}`] = parseFraction(productReturn.quantity);
+            productFieldData[`quantity${product.id}`] = parseFraction(
+              productReturn.quantity
+            );
             productFieldData[`unit${product.id}`] =
               productReturn.unit_code.split("_")[1];
             allProductReturns.push({

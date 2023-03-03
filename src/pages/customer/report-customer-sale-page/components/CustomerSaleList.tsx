@@ -14,30 +14,31 @@ export default function CustomerSaleList({ reports, reload }) {
   });
 
   const onUpdatePayment = (status: string, code: string) => {
-    setFormState(prev => ({...prev, loading: true, error: ""}));
+    setFormState((prev) => ({ ...prev, loading: true, error: "" }));
     const reqData = {
       status: status,
     };
-    api.put(`/customer-payment/status/${code}`, reqData)
-    .then((res) => {
-      setFormState(prev => ({...prev, loading: false, error: ""}));
-      reload();
-    })
-    .catch((e) => {
-      const error = JSON.parse(
-        JSON.stringify(e.response ? e.response.data.error : e)
-      );
-      setFormState((prev) => ({
-        ...prev,
-        error: error.message,
-        loading: false,
-      }));
-      setTimeout(() => {
-        setFormState((prev) => ({ ...prev, error: "", loading: false }));
+    api
+      .put(`/customer-payment/status/${code}`, reqData)
+      .then((res) => {
+        setFormState((prev) => ({ ...prev, loading: false, error: "" }));
         reload();
-      }, 2000);
-    });
-  }
+      })
+      .catch((e) => {
+        const error = JSON.parse(
+          JSON.stringify(e.response ? e.response.data.error : e)
+        );
+        setFormState((prev) => ({
+          ...prev,
+          error: error.message,
+          loading: false,
+        }));
+        setTimeout(() => {
+          setFormState((prev) => ({ ...prev, error: "", loading: false }));
+          reload();
+        }, 2000);
+      });
+  };
 
   return (
     <>
@@ -50,22 +51,22 @@ export default function CustomerSaleList({ reports, reload }) {
                 <p>
                   #{report.manual_code ? report.manual_code : report.order_code}
                 </p>
-                <p className="text-xl font-semibold">
-                  {report.customer_name}
-                </p>
+                <p className="text-xl font-semibold">{report.customer_name}</p>
                 <p className="text-sm text-neutral">
                   Completed at {convertTime(new Date(report.date))}
                 </p>
                 <div className="mt-5">
                   <StatusTag status={report.payment_status}></StatusTag>
-                </div>                
+                </div>
               </div>
-              <button 
-              type="button" 
-              className="btn btn-ghost btn-circle bg-base-200 text-neutral dark:bg-base-300 dark:text-neutral-content"
-              onClick={() => onUpdatePayment(PaymentStatus.RECEIVABLE, report.order_code)}
+              <button
+                type="button"
+                className="btn-ghost btn-circle btn bg-base-200 text-neutral dark:bg-base-300 dark:text-neutral-content"
+                onClick={() =>
+                  onUpdatePayment(PaymentStatus.RECEIVABLE, report.order_code)
+                }
               >
-                <BiRevision className="w-6 h-6"></BiRevision>
+                <BiRevision className="h-6 w-6"></BiRevision>
               </button>
             </div>
             <div className="divider"></div>
@@ -108,18 +109,26 @@ export default function CustomerSaleList({ reports, reload }) {
               <span className="mr-2 text-xl font-medium">${report.sale}</span>
               <span className="text-red-600">-${report.refund}</span>
             </div>
-            <div className="grid grid-cols-12 gap-3 mt-5">
-              <button 
-              type="button" 
-              className="col-span-6 btn btn-outline-primary w-full" 
-              onClick={() => onUpdatePayment(PaymentStatus.CHECK, report.order_code)}
-              >Check</button>
-              <button 
-              type="button" 
-              className="col-span-6 btn btn-primary w-full" 
-              onClick={() => onUpdatePayment(PaymentStatus.CASH, report.order_code)}
-              >Cash</button>
-            </div>      
+            <div className="mt-5 grid grid-cols-12 gap-3">
+              <button
+                type="button"
+                className="btn-outline-primary btn col-span-6 w-full"
+                onClick={() =>
+                  onUpdatePayment(PaymentStatus.CHECK, report.order_code)
+                }
+              >
+                Check
+              </button>
+              <button
+                type="button"
+                className="btn-primary btn col-span-6 w-full"
+                onClick={() =>
+                  onUpdatePayment(PaymentStatus.CASH, report.order_code)
+                }
+              >
+                Cash
+              </button>
+            </div>
             <div>
               {formState.loading && (
                 <div className="mt-5">
@@ -131,7 +140,7 @@ export default function CustomerSaleList({ reports, reload }) {
                   <Alert message={formState.error} type="error"></Alert>
                 </div>
               )}
-            </div>    
+            </div>
           </div>
         );
       })}
