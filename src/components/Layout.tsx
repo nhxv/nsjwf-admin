@@ -262,8 +262,9 @@ export default function Layout({ children }) {
                             </div>
                           );
                         })}
-                        {index !== categories.length - 1 &&
-                          categories[index + 1].visible.includes(role) && (
+                        {(index !== categories.length - 1 
+                        && categories[index + 1].visible.includes(role)) 
+                        && (
                             <li></li>
                           )}
                       </>
