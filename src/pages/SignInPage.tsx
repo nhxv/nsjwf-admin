@@ -54,11 +54,11 @@ export default function SignInPage() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-base-200 p-4 dark:bg-base-100">
       <form onSubmit={signInForm.handleSubmit} className="custom-card">
-        {formState.error ? (
+        {formState.error && (
           <div className="mb-5">
             <Alert message={formState.error} type="error"></Alert>
           </div>
-        ) : null}
+        )}
         <div className="mb-5">
           <label htmlFor="username" className="custom-label mb-2 inline-block">
             Username
@@ -93,11 +93,11 @@ export default function SignInPage() {
           Sign in
         </button>
       </form>
-      {formState.loading ? (
+      {formState.loading && (
         <div className="mt-5">
           <Spinner></Spinner>
         </div>
-      ) : null}
+      )}
     </div>
   );
 }

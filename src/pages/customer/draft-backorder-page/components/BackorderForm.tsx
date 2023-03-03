@@ -296,7 +296,7 @@ export default function BackorderForm({
             ></SelectInput>
           </div>
 
-          {backorderForm.values[`customerName`] ? (
+          {backorderForm.values[`customerName`] && (
             <button
               type="button"
               className="btn-primary btn mt-3 w-full"
@@ -307,11 +307,11 @@ export default function BackorderForm({
                 <BiRightArrowAlt className="ml-1 h-7 w-7"></BiRightArrowAlt>
               </span>
             </button>
-          ) : null}
+          )}
         </>
       ) : (
         <>
-          {formState.page === 1 ? (
+          {formState.page === 1 && (
             <>
               <div className="mb-5">
                 <SearchSuggest
@@ -343,7 +343,7 @@ export default function BackorderForm({
                             <span className="text-lg font-semibold">
                               {product.name}
                             </span>
-                            {product.sell_price ? (
+                            {product.sell_price && (
                               <div className="custom-badge mt-1 bg-info text-info-content">
                                 <span className="hidden sm:inline">
                                   Suggest:
@@ -352,7 +352,7 @@ export default function BackorderForm({
                                   {" > "}${product.sell_price}
                                 </span>
                               </div>
-                            ) : null}
+                            )}
                           </div>
                           <button
                             type="button"
@@ -433,7 +433,7 @@ export default function BackorderForm({
                 <span className="ml-2 text-xl font-medium">${total}</span>
               </div>
 
-              {edit ? (
+              {edit && (
                 <div className="mb-5 flex items-center">
                   <Checkbox
                     id="archived"
@@ -448,7 +448,7 @@ export default function BackorderForm({
                     label="Convert to order"
                   ></Checkbox>
                 </div>
-              ) : null}
+              )}
 
               <div className="mb-5 flex items-center">
                 <Checkbox
@@ -481,7 +481,7 @@ export default function BackorderForm({
                 </button>
               </div>
             </>
-          ) : null}
+          )}
         </>
       )}
       <button
@@ -493,21 +493,21 @@ export default function BackorderForm({
         <span>Clear change(s)</span>
       </button>
       <div>
-        {formState.loading ? (
+        {formState.loading && (
           <div className="mt-5">
             <Spinner></Spinner>
           </div>
-        ) : null}
-        {formState.error ? (
+        )}
+        {formState.error && (
           <div className="mt-5">
             <Alert message={formState.error} type="error"></Alert>
           </div>
-        ) : null}
-        {formState.success ? (
+        )}
+        {formState.success && (
           <div className="mt-5">
             <Alert message={formState.success} type="success"></Alert>
           </div>
-        ) : null}
+        )}
       </div>
     </form>
   );

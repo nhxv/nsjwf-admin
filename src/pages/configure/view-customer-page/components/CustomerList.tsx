@@ -173,9 +173,9 @@ export default function CustomerList() {
           </div>
         ))}
       </div>
-      {search.customers?.length < 1 ? (
+      {search.customers?.length < 1 && (
         <div className="text-center">Not found.</div>
-      ) : null}
+      )}
     </>
   );
 }

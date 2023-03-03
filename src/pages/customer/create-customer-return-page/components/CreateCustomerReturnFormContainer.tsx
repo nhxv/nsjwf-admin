@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { parseFraction } from "../../../../commons/utils/fraction.util";
 import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
@@ -31,7 +32,9 @@ export default function CreateCustomerReturnFormContainer({}) {
             (pr) => pr.product_name === product.name
           );
           if (productReturn) {
-            productFieldData[`quantity${product.id}`] = productReturn.quantity;
+            productFieldData[`quantity${product.id}`] = parseFraction(
+              productReturn.quantity
+            );
             productFieldData[`unit${product.id}`] =
               productReturn.unit_code.split("_")[1];
             allProductReturns.push({

@@ -34,11 +34,6 @@ export default function Layout({ children }) {
           href: "/customer/view-customer-order",
           visible: [Role.MASTER, Role.ADMIN],
         },
-        {
-          itemName: "Overview Order",
-          href: "/customer/overview-customer-order",
-          visible: [Role.MASTER, Role.ADMIN],
-        },
         // {
         //   itemName: "Draft Backorder",
         //   href: "/customer/draft-backorder",
@@ -49,19 +44,19 @@ export default function Layout({ children }) {
         //   href: "/customer/view-backorder",
         //   visible: [Role.MASTER, Role.ADMIN],
         // },
-        {
-          itemName: "Search Sale",
-          href: "/customer/search-customer-sale",
-          visible: [Role.MASTER, Role.ADMIN],
-        },
+        // {
+        //   itemName: "Search Sale",
+        //   href: "/customer/search-customer-sale",
+        //   visible: [Role.MASTER, Role.ADMIN],
+        // },
         {
           itemName: "View Return",
           href: "/customer/view-customer-return",
           visible: [Role.MASTER, Role.ADMIN],
         },
         {
-          itemName: "Report Sale",
-          href: "/customer/report-sale",
+          itemName: "View Sale",
+          href: "/customer/view-sale",
           visible: [Role.MASTER, Role.ADMIN],
         },
       ],
@@ -202,7 +197,7 @@ export default function Layout({ children }) {
                 >
                   <li>
                     <a
-                      className="hover:bg-base-200 focus:bg-base-200 dark:hover:bg-base-300 dark:focus:bg-base-300"
+                      className="text-base-content hover:bg-base-200 focus:bg-base-200 dark:hover:bg-base-300 dark:focus:bg-base-300"
                       onClick={onProfile}
                     >
                       <span>
@@ -213,7 +208,7 @@ export default function Layout({ children }) {
                   </li>
                   <li>
                     <a
-                      className="hover:bg-base-200 focus:bg-base-200 dark:hover:bg-base-300 dark:focus:bg-base-300"
+                      className="text-base-content hover:bg-base-200 focus:bg-base-200 dark:hover:bg-base-300 dark:focus:bg-base-300"
                       onClick={onSignOut}
                     >
                       <span>
@@ -242,7 +237,7 @@ export default function Layout({ children }) {
               {categories.map((category, index) => {
                 return (
                   <div key={index}>
-                    {category.visible.includes(role) ? (
+                    {category.visible.includes(role) && (
                       <>
                         <li className="menu-title">
                           <span>{category.name}</span>
@@ -250,7 +245,7 @@ export default function Layout({ children }) {
                         {category.subItems.map((item, i) => {
                           return (
                             <div key={i}>
-                              {item.visible.includes(role) ? (
+                              {item.visible.includes(role) && (
                                 <li>
                                   <NavLink
                                     to={item.href}
@@ -263,16 +258,16 @@ export default function Layout({ children }) {
                                     {item.itemName}
                                   </NavLink>
                                 </li>
-                              ) : null}
+                              )}
                             </div>
                           );
                         })}
                         {index !== categories.length - 1 &&
-                        categories[index + 1].visible.includes(role) ? (
-                          <li></li>
-                        ) : null}
+                          categories[index + 1].visible.includes(role) && (
+                            <li></li>
+                          )}
                       </>
-                    ) : null}
+                    )}
                   </div>
                 );
               })}

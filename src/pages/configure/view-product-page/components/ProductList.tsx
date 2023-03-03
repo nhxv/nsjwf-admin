@@ -172,9 +172,9 @@ export default function ProductList() {
           </div>
         ))}
       </div>
-      {search.products?.length < 1 ? (
+      {search.products?.length < 1 && (
         <div className="text-center">Not found.</div>
-      ) : null}
+      )}
     </>
   );
 }

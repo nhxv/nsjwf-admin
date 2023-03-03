@@ -50,13 +50,13 @@ export default function ResetPage() {
   return (
     <div className="flex min-h-screen flex-col items-center p-6">
       <h1 className="mb-8 text-xl font-bold">Version 1</h1>
-      {message ? (
+      {message && (
         <div className="mockup-code mb-8 bg-black">
           <pre data-prefix=">" className="text-white">
             <code>{message}</code>
           </pre>
         </div>
-      ) : null}
+      )}
       <div className="mb-8 flex flex-col items-center justify-center">
         <h2 className="font-medium underline underline-offset-4">Configure</h2>
         <button className="btn-secondary btn mt-4" onClick={onResetConfigure}>

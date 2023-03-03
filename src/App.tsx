@@ -86,7 +86,7 @@ export default function App() {
             element={<ViewCustomerReturnPage />}
           ></Route>
           <Route
-            path="/customer/report-sale"
+            path="/customer/view-sale"
             element={<ReportCustomerSalePage />}
           ></Route>
           <Route

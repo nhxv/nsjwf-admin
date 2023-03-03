@@ -20,23 +20,17 @@ export default function CustomerOrderList({ orders, printMode }) {
         return (
           <div key={order.code} className="custom-card mb-8">
             {/* basic order info */}
-            <div className="flex flex-row justify-between">
+            <div className="flex justify-between">
               <div>
-                <div>
-                  <span>
-                    #{order.manualCode ? order.manualCode : order.code}
-                  </span>
-                </div>
-                <div>
-                  <span className="text-xl font-semibold">
-                    {order.customerName}
-                  </span>
-                </div>
-                <div>
-                  <span className="text-sm text-neutral">
-                    Expected at {convertTime(new Date(order.expectedAt))}
-                  </span>
-                </div>
+                <span className="block">
+                  #{order.manualCode ? order.manualCode : order.code}
+                </span>
+                <span className="block text-xl font-semibold">
+                  {order.customerName}
+                </span>
+                <span className="block text-sm text-neutral">
+                  Expected at {convertTime(new Date(order.expectedAt))}
+                </span>
                 <div className="mb-6">
                   <span className="text-sm text-neutral">
                     by {order.assignTo}
@@ -46,7 +40,7 @@ export default function CustomerOrderList({ orders, printMode }) {
                   <StatusTag status={order.status}></StatusTag>
                 </div>
               </div>
-              {printMode ? <CustomerOrderPrint order={order} /> : null}
+              {printMode && <CustomerOrderPrint order={order} />}
             </div>
             <div className="divider"></div>
             {/* products in order */}
@@ -76,17 +70,17 @@ export default function CustomerOrderList({ orders, printMode }) {
               );
             })}
             {order.status !== OrderStatus.COMPLETED &&
-            (role === Role.MASTER || role === Role.ADMIN) ? (
-              <>
-                <div className="divider"></div>
-                <button
-                  className="btn-primary btn w-full"
-                  onClick={() => onUpdateOrder(order.code)}
-                >
-                  Update order
-                </button>
-              </>
-            ) : null}
+              (role === Role.MASTER || role === Role.ADMIN) && (
+                <>
+                  <div className="divider"></div>
+                  <button
+                    className="btn-primary btn w-full"
+                    onClick={() => onUpdateOrder(order.code)}
+                  >
+                    Update order
+                  </button>
+                </>
+              )}
           </div>
         );
       })}

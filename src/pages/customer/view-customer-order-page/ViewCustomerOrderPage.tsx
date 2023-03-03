@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { BiLayer } from "react-icons/bi";
+import { BiGridAlt, BiLayer } from "react-icons/bi";
+import { useNavigate } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
 import { OrderStatus } from "../../../commons/enums/order-status.enum";
 import Alert from "../../../components/Alert";
@@ -22,6 +23,7 @@ export default function ViewCustomerOrderPage() {
   const handleBatchPrint = useReactToPrint({
     content: () => batchToPrintRef.current,
   });
+  const navigate = useNavigate();
 
   useEffect(() => {
     getCustomerOrders();
@@ -106,8 +108,19 @@ export default function ViewCustomerOrderPage() {
     }
   };
 
+  const onSwitchView = () => {
+    navigate(`/customer/overview-customer-order`);
+  };
+
   return (
     <section className="min-h-screen">
+      <div className="fixed bottom-24 right-6 z-20 md:right-8">
+        <button className="btn-accent btn-circle btn" onClick={onSwitchView}>
+          <span>
+            <BiGridAlt className="h-6 w-6"></BiGridAlt>
+          </span>
+        </button>
+      </div>
       <div className="flex justify-center">
         <div className="w-11/12 md:w-8/12 lg:w-6/12 xl:w-5/12">
           <div className="my-6">
@@ -150,19 +163,19 @@ export default function ViewCustomerOrderPage() {
                         }
                       />
                       {!fetchData.empty &&
-                      !fetchData.error &&
-                      !fetchData.loading ? (
-                        <div className="mb-6 flex justify-center">
-                          <button
-                            type="button"
-                            className="btn-accent btn"
-                            onClick={onBatchPrint}
-                          >
-                            <span className="mr-2">Print all orders</span>
-                            <BiLayer className="h-6 w-6"></BiLayer>
-                          </button>
-                        </div>
-                      ) : null}
+                        !fetchData.error &&
+                        !fetchData.loading && (
+                          <div className="mb-6 flex justify-center">
+                            <button
+                              type="button"
+                              className="btn-accent btn"
+                              onClick={onBatchPrint}
+                            >
+                              <span className="mr-2">Print all orders</span>
+                              <BiLayer className="h-6 w-6"></BiLayer>
+                            </button>
+                          </div>
+                        )}
                     </div>
                   )}
                 </>

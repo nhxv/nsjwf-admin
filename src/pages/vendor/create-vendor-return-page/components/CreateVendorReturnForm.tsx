@@ -208,7 +208,7 @@ export default function CreateVendorReturnForm({
             </div>
           );
         })} */}
-        {formState.page === 1 ? (
+        {formState.page === 1 && (
           <div className="my-5 flex flex-col">
             <label htmlFor="total" className="custom-label mb-2">
               Refund ($)
@@ -224,7 +224,7 @@ export default function CreateVendorReturnForm({
               ></TextInput>
             </div>
           </div>
-        ) : null}
+        )}
 
         <div className="flex flex-col">
           <div className="my-3">
@@ -241,7 +241,7 @@ export default function CreateVendorReturnForm({
               </button>
             ) : (
               <>
-                {formState.page === 1 ? (
+                {formState.page === 1 && (
                   <div className="flex justify-between">
                     <button
                       type="button"
@@ -264,7 +264,7 @@ export default function CreateVendorReturnForm({
                       </span>
                     </button>
                   </div>
-                ) : null}
+                )}
               </>
             )}
           </div>
@@ -279,21 +279,21 @@ export default function CreateVendorReturnForm({
           </div>
         </div>
         <div>
-          {formState.loading ? (
+          {formState.loading && (
             <div className="mt-5">
               <Spinner></Spinner>
             </div>
-          ) : null}
-          {formState.success ? (
+          )}
+          {formState.success && (
             <div className="mt-5">
               <Alert message={formState.success} type="success"></Alert>
             </div>
-          ) : null}
-          {formState.error ? (
+          )}
+          {formState.error && (
             <div className="mt-5">
               <Alert message={formState.error} type="error"></Alert>
             </div>
-          ) : null}
+          )}
         </div>
       </form>
     </>
