@@ -69,7 +69,7 @@ export default function CustomerOrderList({ orders, printMode }) {
                 </div>
               );
             })}
-            {(order.status !== OrderStatus.COMPLETED) &&
+            {order.status !== OrderStatus.COMPLETED &&
               (role === Role.MASTER || role === Role.ADMIN) && (
                 <>
                   <div className="divider"></div>
