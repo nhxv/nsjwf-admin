@@ -20,14 +20,14 @@ export default function SearchInput({
           <BiSearch className="h-6 w-6 text-neutral placeholder:text-base-300 dark:placeholder:text-base-300" />
         </div>
 
-        {value && document.activeElement === searchRef.current ? (
+        {document.activeElement === searchRef.current && (
           <div
             className="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3"
             onClick={onClear}
           >
             <BiX className="h-6 w-6 text-neutral" />
           </div>
-        ) : null}
+        )}
 
         <input
           ref={searchRef}
@@ -38,7 +38,7 @@ export default function SearchInput({
           value={value}
           onChange={onChange}
           onFocus={onFocus}
-          className="input w-full border-2 border-base-300 bg-base-100 pl-10 focus:border-primary focus:outline-none dark:bg-transparent dark:placeholder:text-neutral"
+          className="input w-full border-2 border-base-300 bg-base-100 pl-10 focus:border-primary focus:outline-none dark:bg-base-200 dark:placeholder:text-neutral"
         />
       </div>
     </>

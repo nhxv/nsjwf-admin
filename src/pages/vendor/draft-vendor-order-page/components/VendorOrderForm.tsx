@@ -284,7 +284,7 @@ export default function VendorOrderForm({
             ></SelectInput>
           </div>
 
-          {vendorOrderForm.values[`vendorName`] ? (
+          {vendorOrderForm.values[`vendorName`] && (
             <button
               type="button"
               className="btn-primary btn mt-3 w-full"
@@ -295,12 +295,12 @@ export default function VendorOrderForm({
                 <BiRightArrowAlt className="ml-1 h-7 w-7"></BiRightArrowAlt>
               </span>
             </button>
-          ) : null}
+          )}
         </>
       ) : (
         <>
           {/* 2nd Page */}
-          {formState.page === 1 ? (
+          {formState.page === 1 && (
             <>
               <div className="mb-5">
                 <SearchSuggest
@@ -452,7 +452,7 @@ export default function VendorOrderForm({
                 </button>
               </div>
             </>
-          ) : null}
+          )}
         </>
       )}
       <button
@@ -463,21 +463,21 @@ export default function VendorOrderForm({
         <span>Clear change(s)</span>
       </button>
       <div>
-        {formState.loading ? (
+        {formState.loading && (
           <div className="mt-5">
             <Spinner></Spinner>
           </div>
-        ) : null}
-        {formState.error ? (
+        )}
+        {formState.error && (
           <div className="mt-5">
             <Alert message={formState.error} type="error"></Alert>
           </div>
-        ) : null}
-        {formState.success ? (
+        )}
+        {formState.success && (
           <div className="mt-5">
             <Alert message={formState.success} type="success"></Alert>
           </div>
-        ) : null}
+        )}
       </div>
     </form>
   );

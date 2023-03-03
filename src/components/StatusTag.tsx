@@ -1,5 +1,5 @@
-import { BackorderStatus } from "../commons/enums/backorder-status.enum";
 import { OrderStatus } from "../commons/enums/order-status.enum";
+import { PaymentStatus } from "../commons/enums/payment-status.enum";
 
 export default function StatusTag({ status }) {
   if (
@@ -7,7 +7,7 @@ export default function StatusTag({ status }) {
     status === OrderStatus.CHECKING ||
     status === OrderStatus.SHIPPING ||
     status === OrderStatus.DELIVERED ||
-    status === BackorderStatus.PENDING
+    status === PaymentStatus.RECEIVABLE
   ) {
     return (
       <span
@@ -17,8 +17,11 @@ export default function StatusTag({ status }) {
       </span>
     );
   }
-
-  if (status === OrderStatus.COMPLETED || status === BackorderStatus.ARCHIVED) {
+  if (
+    status === OrderStatus.COMPLETED ||
+    status === PaymentStatus.CASH ||
+    status === PaymentStatus.CHECK
+  ) {
     return (
       <span
         className={`rounded-full bg-success p-2.5 text-sm font-medium text-success-content`}
@@ -27,6 +30,5 @@ export default function StatusTag({ status }) {
       </span>
     );
   }
-
   return null;
 }

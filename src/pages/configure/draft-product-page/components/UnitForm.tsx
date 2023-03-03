@@ -86,7 +86,7 @@ export default function DraftUnitForm({ productId, unit, isOpen, onClose }) {
             ></TextInput>
           </div>
 
-          {!unit ? (
+          {!unit && (
             <div className="mb-5">
               <label htmlFor="ratio" className="custom-label mb-2 inline-block">
                 <span>Ratio to box</span>
@@ -101,7 +101,7 @@ export default function DraftUnitForm({ productId, unit, isOpen, onClose }) {
                 onChange={unitForm.handleChange}
               ></TextInput>
             </div>
-          ) : null}
+          )}
 
           <div className="mb-5 flex items-center">
             <Checkbox
@@ -126,16 +126,16 @@ export default function DraftUnitForm({ productId, unit, isOpen, onClose }) {
             <span>{unit ? "Edit" : "Add"} unit</span>
           </button>
           <div>
-            {formState.loading ? (
+            {formState.loading && (
               <div className="mt-5">
                 <Spinner></Spinner>
               </div>
-            ) : null}
-            {formState.error ? (
+            )}
+            {formState.error && (
               <div className="mt-5">
                 <Alert message={formState.error} type="error"></Alert>
               </div>
-            ) : null}
+            )}
           </div>
         </form>
       </div>

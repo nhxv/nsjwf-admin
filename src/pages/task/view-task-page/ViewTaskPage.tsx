@@ -165,7 +165,7 @@ export default function ViewTaskPage() {
   return (
     <section className="min-h-screen">
       <div className="flex justify-center">
-        <div className="w-11/12 sm:w-8/12 xl:w-6/12">
+        <div className="w-11/12 md:w-8/12 lg:w-6/12 xl:w-5/12">
           <div className="my-6">
             <Stepper
               steps={Object.values(OrderStatus).filter(

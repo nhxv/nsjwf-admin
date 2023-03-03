@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { BiEdit } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import { Role } from "../../../../commons/enums/role.enum";
+import { parseFraction } from "../../../../commons/utils/fraction.util";
 import Alert from "../../../../components/Alert";
 import SearchInput from "../../../../components/forms/SearchInput";
 import Spinner from "../../../../components/Spinner";
@@ -95,14 +96,6 @@ export default function StockList() {
     setSearch((prev) => ({ ...prev, stock: fetchData.stock, query: "" }));
   };
 
-  const parseFraction = (s) => {
-    if (!s.includes("/")) {
-      return Math.floor(parseInt(s));
-    }
-    const [numerator, denominator] = s.split("/");
-    return Math.floor(numerator / denominator);
-  };
-
   if (fetchData.loading) {
     return <Spinner></Spinner>;
   }
@@ -125,19 +118,20 @@ export default function StockList() {
 
   return (
     <>
-      {role === Role.MASTER || role === Role.ADMIN ? (
-        <div className="fixed bottom-24 right-6 z-20 md:right-8">
-          <button
-            type="button"
-            className="btn-primary btn-circle btn"
-            onClick={onChangeStock}
-          >
-            <span>
-              <BiEdit className="h-6 w-6"></BiEdit>
-            </span>
-          </button>
-        </div>
-      ) : null}
+      {role === Role.MASTER ||
+        (role === Role.ADMIN && (
+          <div className="fixed bottom-24 right-6 z-20 md:right-8">
+            <button
+              type="button"
+              className="btn-primary btn-circle btn"
+              onClick={onChangeStock}
+            >
+              <span>
+                <BiEdit className="h-6 w-6"></BiEdit>
+              </span>
+            </button>
+          </div>
+        ))}
       <div className="mx-auto mb-5 w-11/12 md:w-10/12 lg:w-6/12">
         <SearchInput
           id="stock-search"
@@ -164,9 +158,9 @@ export default function StockList() {
           </div>
         ))}
       </div>
-      {search.stock?.length < 1 ? (
+      {search.stock?.length < 1 && (
         <div className="text-center">Not found.</div>
-      ) : null}
+      )}
     </>
   );
 }
