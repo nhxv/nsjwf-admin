@@ -118,20 +118,19 @@ export default function StockList() {
 
   return (
     <>
-      {role === Role.MASTER ||
-        (role === Role.ADMIN && (
-          <div className="fixed bottom-24 right-6 z-20 md:right-8">
-            <button
-              type="button"
-              className="btn-primary btn-circle btn"
-              onClick={onChangeStock}
-            >
-              <span>
-                <BiEdit className="h-6 w-6"></BiEdit>
-              </span>
-            </button>
-          </div>
-        ))}
+      {(role === Role.MASTER || role === Role.ADMIN) && (
+        <div className="fixed bottom-24 right-6 z-20 md:right-8">
+          <button
+            type="button"
+            className="btn-primary btn-circle btn"
+            onClick={onChangeStock}
+          >
+            <span>
+              <BiEdit className="h-6 w-6"></BiEdit>
+            </span>
+          </button>
+        </div>
+      )}
       <div className="mx-auto mb-5 w-11/12 md:w-10/12 lg:w-6/12">
         <SearchInput
           id="stock-search"
