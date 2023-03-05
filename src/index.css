@@ -46,5 +46,5 @@ input {
 
 .steps .step-primary + .step-primary:before,
 .steps .step-primary:after {
-  color: white;
+  @apply text-white;
 }

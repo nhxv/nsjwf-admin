@@ -62,7 +62,7 @@ export default function CustomerOrderFormContainer() {
           } else {
             // setup initial field values
             const updatedPrices = [];
-            const editedProductsRes = [];
+            const editedProducts = [];
             const allProductsRes = productRes.data;
             const productFieldData = {};
             const productOrders = orderRes.data.productCustomerOrders;
@@ -77,7 +77,7 @@ export default function CustomerOrderFormContainer() {
                   productOrder.unit_code.split("_")[1];
                 productFieldData[`price${product.id}`] =
                   productOrder.unit_price;
-                editedProductsRes.push({
+                editedProducts.push({
                   id: product.id,
                   name: product.name,
                   units: product.units,
@@ -109,7 +109,7 @@ export default function CustomerOrderFormContainer() {
             }));
             setFetchData((prev) => ({
               ...prev,
-              editedProducts: editedProductsRes,
+              editedProducts: editedProducts,
               allProducts: allProductsRes,
               customers: customerRes.data,
               employees: employeeRes.data,
@@ -156,7 +156,7 @@ export default function CustomerOrderFormContainer() {
             }));
           } else {
             // setup initial field values
-            let updatedPrices = [];
+            const updatedPrices = [];
             const productFieldData = {};
             for (const product of productRes.data) {
               productFieldData[`quantity${product.id}`] = 0;
@@ -199,6 +199,7 @@ export default function CustomerOrderFormContainer() {
           setFetchData((prev) => ({
             ...prev,
             error: error.message,
+            empty: "",
             loading: false,
           }));
         });
@@ -254,10 +255,15 @@ export default function CustomerOrderFormContainer() {
         setFetchData((prev) => ({
           ...prev,
           error: error.message,
+          empty: "",
           loading: false,
         }));
       }
     }
+  };
+
+  const resetPrice = (newPrices) => {
+    setFetchData((prev) => ({ ...prev, prices: newPrices }));
   };
 
   if (fetchData.loading) return <Spinner></Spinner>;
@@ -278,6 +284,7 @@ export default function CustomerOrderFormContainer() {
         allProducts={fetchData.allProducts}
         employees={fetchData.employees}
         updatePrice={updatePrice}
+        resetPrice={resetPrice}
         total={total}
         loadTemplate={loadTemplate}
         onClear={onClear}

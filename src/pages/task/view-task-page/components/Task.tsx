@@ -151,38 +151,37 @@ export default function Task({ order, reload, status }) {
           </div>
         );
       })}
-      {status === OrderStatus.PICKING ||
-        (status === OrderStatus.SHIPPING && (
-          <>
-            <div className="divider"></div>
-            {order.isDoing ? (
-              <>
-                <button
-                  className="btn-primary btn w-full"
-                  onClick={() => onFinishTask(order.code)}
-                  disabled={formState.loading}
-                >
-                  Done {order.status.toLowerCase()}
-                </button>
-                <button
-                  className="btn-outline-primary btn mt-3 w-full"
-                  onClick={() => onStopTask(order.code)}
-                  disabled={formState.loading}
-                >
-                  Stop doing
-                </button>
-              </>
-            ) : (
+      {(status === OrderStatus.PICKING || status === OrderStatus.SHIPPING) && (
+        <>
+          <div className="divider"></div>
+          {order.isDoing ? (
+            <>
               <button
                 className="btn-primary btn w-full"
-                onClick={() => onStartTask(order.code)}
+                onClick={() => onFinishTask(order.code)}
                 disabled={formState.loading}
               >
-                Start doing
+                Done {order.status.toLowerCase()}
               </button>
-            )}
-          </>
-        ))}
+              <button
+                className="btn-outline-primary btn mt-3 w-full"
+                onClick={() => onStopTask(order.code)}
+                disabled={formState.loading}
+              >
+                Stop doing
+              </button>
+            </>
+          ) : (
+            <button
+              className="btn-primary btn w-full"
+              onClick={() => onStartTask(order.code)}
+              disabled={formState.loading}
+            >
+              Start doing
+            </button>
+          )}
+        </>
+      )}
       <div>
         {formState.loading && (
           <div className="mt-5">
