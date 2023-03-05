@@ -263,8 +263,8 @@ export default function CustomerOrderFormContainer() {
   };
 
   const resetPrice = (newPrices) => {
-    setFetchData(prev => ({...prev, prices: newPrices}));
-  }
+    setFetchData((prev) => ({ ...prev, prices: newPrices }));
+  };
 
   if (fetchData.loading) return <Spinner></Spinner>;
   if (fetchData.error)
