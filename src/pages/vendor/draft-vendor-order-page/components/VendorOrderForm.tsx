@@ -20,6 +20,7 @@ export default function VendorOrderForm({
   editedProducts,
   allProducts,
   updatePrice,
+  resetPrice,
   total,
   loadTemplate,
   onClear,
@@ -30,11 +31,9 @@ export default function VendorOrderForm({
     loading: false,
     page: 0,
   });
-  // const [query, setQuery] = useState("");
   const [selectedProducts, setSelectedProducts] = useState(
     editedProducts ? editedProducts : []
   );
-  // const [searchedProducts, setSearchedProducts] = useState([]);
   const [search, setSearch] = useState({
     products: [],
     query: "",
@@ -153,24 +152,38 @@ export default function VendorOrderForm({
       const template = await loadTemplate(vendorOrderForm.values[`vendorName`]);
       if (template) {
         const selected = [];
-        for (const product of template) {
-          const found = allProducts.find((p) => p.name === product.name);
-          selected.push({
-            id: found.id,
-            name: product.name,
-            units: found.units,
-          });
-          vendorOrderForm.setFieldValue(
-            `quantity${found.id}`,
-            product.quantity
-          );
-          vendorOrderForm.setFieldValue(
-            `unit${found.id}`,
-            product.unit_code.split("_")[1]
-          );
-          updatePrice(product.quantity, `quantity${found.id}`);
-          vendorOrderForm.setFieldValue(`price${found.id}`, 0);
+        const updatedPrices = [];
+        for (const product of allProducts) {
+          const found = template.find((p) => p.name === product.name);
+          if (found) {
+            selected.push({
+              id: product.id,
+              name: product.name,
+              units: product.units,
+            });
+            vendorOrderForm.setFieldValue(
+              `quantity${product.id}`,
+              product.quantity
+            );
+            vendorOrderForm.setFieldValue(
+              `unit${product.id}`,
+              product.unit_code.split("_")[1]
+            );
+            vendorOrderForm.setFieldValue(`price${product.id}`, 0);
+            updatedPrices.push({
+              id: product.id,
+              quantity: found.quantity,
+              price: 0,
+            });
+          } else {
+            updatedPrices.push({
+              id: product.id,
+              quantity: 0,
+              price: 0,
+            });
+          }
         }
+        resetPrice(updatedPrices);
         setSelectedProducts(selected);
       }
       setFormState((prev) => ({

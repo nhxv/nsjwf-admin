@@ -20,12 +20,6 @@ export default function VendorOrderFormContainer() {
     loading: true,
   });
   const [initialFields, setInitialFields] = useState({});
-  // const [dataState, setDataState] = useState({
-  //   editedProducts: [],
-  //   allProducts: [],
-  //   vendors: [],
-  //   prices: [],
-  // });
   const total = useMemo(() => {
     if (fetchData.prices.length > 0) {
       return +fetchData.prices
@@ -236,6 +230,10 @@ export default function VendorOrderFormContainer() {
     }
   };
 
+  const resetPrice = (newPrices) => {
+    setFetchData((prev) => ({ ...prev, prices: newPrices }));
+  };
+
   if (fetchData.loading) return <Spinner></Spinner>;
   if (fetchData.error)
     return <Alert message={fetchData.error} type="error"></Alert>;
@@ -253,6 +251,7 @@ export default function VendorOrderFormContainer() {
         }
         allProducts={fetchData.allProducts}
         updatePrice={updatePrice}
+        resetPrice={resetPrice}
         total={total}
         loadTemplate={loadTemplate}
         onClear={onClear}
