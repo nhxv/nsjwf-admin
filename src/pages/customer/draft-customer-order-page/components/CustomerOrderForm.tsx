@@ -21,6 +21,7 @@ export default function CustomerOrderForm({
   allProducts,
   employees,
   updatePrice,
+  resetPrice,
   total,
   loadTemplate,
   onClear,
@@ -168,25 +169,39 @@ export default function CustomerOrderForm({
       );
       if (template) {
         const selected = [];
-        for (const product of template) {
-          const found = allProducts.find((p) => p.name === product.name);
-          selected.push({
-            id: found.id,
-            name: found.name,
-            sell_price: found.sell_price,
-            units: found.units,
-          });
-          customerOrderForm.setFieldValue(
-            `quantity${found.id}`,
-            product.quantity
-          );
-          customerOrderForm.setFieldValue(
-            `unit${found.id}`,
-            product.unit_code.split("_")[1]
-          );
-          updatePrice(product.quantity, `quantity${found.id}`);
-          customerOrderForm.setFieldValue(`price${found.id}`, 0);
+        const updatedPrices = [];
+        for (const product of allProducts) {
+          const found = template.find((p) => p.name === product.name);
+          if (found) {
+            selected.push({
+              id: product.id,
+              name: product.name,
+              sell_price: product.sell_price,
+              units: product.units,
+            });
+            customerOrderForm.setFieldValue(
+              `quantity${product.id}`,
+              found.quantity
+            );
+            customerOrderForm.setFieldValue(
+              `unit${product.id}`,
+              found.unit_code.split("_")[1]
+            );
+            customerOrderForm.setFieldValue(`price${product.id}`, 0);
+            updatedPrices.push({
+              id: product.id,
+              quantity: found.quantity,
+              price: 0,
+            });
+          } else {
+            updatedPrices.push({
+              id: product.id,
+              quantity: 0,
+              price: 0,
+            });
+          }
         }
+        resetPrice(updatedPrices);
         setSelectedProducts(selected);
       }
       setFormState((prev) => ({
