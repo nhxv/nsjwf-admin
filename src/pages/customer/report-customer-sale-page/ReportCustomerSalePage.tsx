@@ -113,10 +113,10 @@ export default function ReportCustomerSalePage() {
 
   return (
     <section className="min-h-screen">
-      <h1 className="mt-4 text-center text-xl font-bold">Daily sale</h1>
+      <h1 className="my-4 text-center text-xl font-bold">Daily sale</h1>
       <div className="flex flex-col items-center">
         {!fetchData.empty && !fetchData.error && !fetchData.loading && (
-          <div className="my-6 text-end">
+          <div className="mb-6 text-end">
             <button
               type="button"
               className="btn-accent btn"
