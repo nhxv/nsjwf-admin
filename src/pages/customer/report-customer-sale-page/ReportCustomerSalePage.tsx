@@ -73,11 +73,10 @@ export default function ReportCustomerSalePage() {
   const onDownloadReport = () => {
     const reportData = fetchData.reports.map((report) => ({
       code: `#${report.manual_code ? report.manual_code : report.order_code}`,
-      refund_code: report.refund_order ? `#${report.refund_order}` : "",
       customer: report.customer_name,
       date: convertTime(new Date(report.date)),
       sale: report.sale,
-      refund: report.refund,
+      refund: parseFloat(report.refund),
       payment_status: report.payment_status,
       test: report.is_test ? "L" : "S",
     }));
@@ -87,7 +86,6 @@ export default function ReportCustomerSalePage() {
       delimiter: ",",
       headers: [
         "Order",
-        "Refund",
         "Customer",
         "Date",
         "Sale",
