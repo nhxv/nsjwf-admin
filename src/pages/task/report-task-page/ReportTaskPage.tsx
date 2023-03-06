@@ -68,6 +68,7 @@ export default function ReportTaskPage() {
   return (
     <>
       <section className="min-h-screen">
+        <h1 className="my-4 text-center text-xl font-bold">Statistics</h1>
         <div className="flex justify-center">
           <div className="w-11/12 sm:w-8/12 md:w-7/12 lg:w-6/12">
             {dataState.loading ? (
