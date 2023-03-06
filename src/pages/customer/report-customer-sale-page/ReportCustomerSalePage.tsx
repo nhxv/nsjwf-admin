@@ -116,7 +116,7 @@ export default function ReportCustomerSalePage() {
       <h1 className="mt-4 text-center text-xl font-bold">Daily sale</h1>
       <div className="flex flex-col items-center">
         {!fetchData.empty && !fetchData.error && !fetchData.loading && (
-          <div className="text-end my-6">
+          <div className="my-6 text-end">
             <button
               type="button"
               className="btn-accent btn"
