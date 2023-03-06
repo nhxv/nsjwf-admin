@@ -115,20 +115,18 @@ export default function ReportCustomerSalePage() {
     <section className="min-h-screen">
       <h1 className="mt-4 text-center text-xl font-bold">Daily sale</h1>
       <div className="flex flex-col items-center">
-        <div className="my-6">
-          {!fetchData.empty && !fetchData.error && !fetchData.loading && (
-            <div className="text-end">
-              <button
-                type="button"
-                className="btn-accent btn"
-                onClick={onDownloadReport}
-              >
-                <span className="mr-2">Download report</span>
-                <BiDownload className="h-6 w-6"></BiDownload>
-              </button>
-            </div>
-          )}
-        </div>
+        {!fetchData.empty && !fetchData.error && !fetchData.loading && (
+          <div className="text-end my-6">
+            <button
+              type="button"
+              className="btn-accent btn"
+              onClick={onDownloadReport}
+            >
+              <span className="mr-2">Download report</span>
+              <BiDownload className="h-6 w-6"></BiDownload>
+            </button>
+          </div>
+        )}
         <div className="fixed bottom-24 right-6 z-20 md:right-8">
           <button className="btn-accent btn-circle btn" onClick={onSearch}>
             <span>
