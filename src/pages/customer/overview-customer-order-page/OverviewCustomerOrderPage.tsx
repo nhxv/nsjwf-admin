@@ -54,9 +54,9 @@ export default function OverviewCustomerOrderPage() {
 
   return (
     <section className="min-h-screen">
-      <h1 className="mt-4 text-center text-xl font-bold">Overview</h1>
+      <h1 className="my-4 text-center text-xl font-bold">Overview</h1>
       {fetchData.empty && (
-        <div className="my-8 flex justify-center">
+        <div className="flex justify-center">
           <div className="w-11/12 sm:w-8/12 lg:w-6/12 xl:w-5/12">
             <Alert message="Such hollow, much empty..." type="empty"></Alert>
           </div>
@@ -74,7 +74,7 @@ export default function OverviewCustomerOrderPage() {
         </button>
       </div>
 
-      <div className="mt-8 grid grid-cols-12 gap-2 px-4">
+      <div className="grid grid-cols-12 gap-2 px-4">
         {fetchData.orders.map((order) => (
           <div
             key={order.code}
