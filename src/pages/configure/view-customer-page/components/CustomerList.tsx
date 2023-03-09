@@ -150,7 +150,7 @@ export default function CustomerList() {
           onFocus={null}
         ></SearchInput>
       </div>
-      <div className="grid grid-cols-12 gap-4 px-4 items-center">
+      <div className="grid grid-cols-12 items-center gap-4 px-4">
         {search.customers.map((customer) => (
           <div
             key={customer.id}
