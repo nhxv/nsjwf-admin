@@ -76,7 +76,7 @@ export default function Layout({ children }) {
           visible: [Role.MASTER, Role.ADMIN],
         },
         {
-          itemName: "Search sale",
+          itemName: "Search Sale",
           href: "/vendor/search-vendor-sale",
           visible: [Role.MASTER, Role.ADMIN],
         },
