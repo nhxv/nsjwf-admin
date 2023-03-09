@@ -7,11 +7,11 @@
 @layer base {
   html {
     font-family: "Inter", sans-serif;
-    height: 100vh;
+    height: 100dvh;
   }
 
   body {
-    min-height: 100vh;
+    min-height: 100dvh;
     min-height: -webkit-fill-available;
   }
 }

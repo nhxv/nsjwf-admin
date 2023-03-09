@@ -150,7 +150,7 @@ export default function VendorList() {
           onFocus={null}
         ></SearchInput>
       </div>
-      <div className="grid grid-cols-12 gap-4 px-4">
+      <div className="grid grid-cols-12 items-center gap-4 px-4">
         {search.vendors.map((vendor) => (
           <div
             key={vendor.id}

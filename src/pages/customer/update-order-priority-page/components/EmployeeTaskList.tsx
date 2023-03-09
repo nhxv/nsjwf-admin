@@ -93,7 +93,7 @@ export default function EmployeeTaskList({ employeeTasks, reload }) {
 
   return (
     <>
-      <div className="grid grid-cols-1 gap-4 px-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+      <div className="grid grid-cols-1 items-start gap-4 px-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
         <DragDropContext onDragEnd={onDragEnd}>
           {employees.map((employee) => (
             <Droppable key={employee.nickname} droppableId={employee.nickname}>
