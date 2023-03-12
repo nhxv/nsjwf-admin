@@ -16,7 +16,8 @@ export default function StockFormContainer() {
   const [initialFields, setInitialFields] = useState({});
 
   useEffect(() => {
-    api.get(`/stock/active`)
+    api
+      .get(`/stock/active`)
       .then((res) => {
         if (res?.data?.length === 0) {
           setFetchData((prev) => ({
