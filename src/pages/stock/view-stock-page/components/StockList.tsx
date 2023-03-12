@@ -11,7 +11,7 @@ import { useAuthStore } from "../../../../stores/auth.store";
 
 export default function StockList() {
   const [fetchData, setFetchData] = useState({
-    stock: [],
+    products: [],
     error: "",
     empty: "",
     loading: true,
@@ -19,33 +19,27 @@ export default function StockList() {
   const navigate = useNavigate();
   const role = useAuthStore((state) => state.role);
   const [search, setSearch] = useState({
-    stock: [],
+    products: [],
     query: "",
   });
 
   useEffect(() => {
     api
-      .get(`/stock`)
+      .get(`/stock/active`)
       .then((res) => {
         if (res.data?.length === 0) {
           setFetchData((prev) => ({
             ...prev,
-            stock: [],
+            products: [],
             error: "",
             empty: "Such hollow, much empty...",
             loading: false,
           }));
         } else {
-          const boxStock = res.data.map((s) => ({
-            name: s.name,
-            measures: s.measures.filter(
-              (m) => m.unitCode.split("_")[1] === "BOX"
-            ),
-          }));
-          setSearch((prev) => ({ ...prev, stock: boxStock, query: "" }));
+          setSearch((prev) => ({ ...prev, products: res.data, query: "" }));
           setFetchData((prev) => ({
             ...prev,
-            stock: boxStock,
+            products: res.data,
             error: "",
             empty: "",
             loading: false,
@@ -58,7 +52,7 @@ export default function StockList() {
         );
         setFetchData((prev) => ({
           ...prev,
-          stock: [],
+          products: [],
           error: error.message,
           empty: "",
           loading: false,
@@ -72,7 +66,7 @@ export default function StockList() {
 
   const onChangeSearch = (e) => {
     if (e.target.value) {
-      const searched = fetchData.stock.filter((product) =>
+      const searched = fetchData.products.filter((product) =>
         product.name
           .toLowerCase()
           .replace(/\s+/g, "")
@@ -80,20 +74,20 @@ export default function StockList() {
       );
       setSearch((prev) => ({
         ...prev,
-        stock: searched,
+        products: searched,
         query: e.target.value,
       }));
     } else {
       setSearch((prev) => ({
         ...prev,
-        stock: fetchData.stock,
+        products: fetchData.products,
         query: e.target.value,
       }));
     }
   };
 
   const onClearQuery = () => {
-    setSearch((prev) => ({ ...prev, stock: fetchData.stock, query: "" }));
+    setSearch((prev) => ({ ...prev, products: fetchData.products, query: "" }));
   };
 
   if (fetchData.loading) {
@@ -133,9 +127,9 @@ export default function StockList() {
       )}
       <div className="mx-auto mb-5 w-11/12 md:w-10/12 lg:w-6/12">
         <SearchInput
-          id="stock-search"
-          name="stock-search"
-          placeholder="Search stock"
+          id="products-search"
+          name="products-search"
+          placeholder="Search products"
           value={search.query}
           onChange={(e) => onChangeSearch(e)}
           onClear={onClearQuery}
@@ -143,21 +137,21 @@ export default function StockList() {
         ></SearchInput>
       </div>
       <div className="grid grid-cols-12 gap-2 px-4">
-        {search.stock.map((product) => (
+        {search.products.map((p) => (
           <div
-            key={product.name}
+            key={p.name}
             className="rounded-btn col-span-12 flex items-center justify-between bg-base-100 p-3 shadow-md dark:bg-base-200 md:col-span-6 lg:col-span-3"
           >
             <div>
-              <span>{product.name}</span>
+              <span>{p.name}</span>
             </div>
             <div>
-              <span>{parseFraction(product.measures[0].quantity)}</span>
+              <span>{parseFraction(p.stock.quantity)}</span>
             </div>
           </div>
         ))}
       </div>
-      {search.stock?.length < 1 && (
+      {search.products?.length < 1 && (
         <div className="text-center">Not found.</div>
       )}
     </>

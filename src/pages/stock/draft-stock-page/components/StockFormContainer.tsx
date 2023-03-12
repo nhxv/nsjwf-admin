@@ -8,7 +8,7 @@ import ProductStockForm from "./StockForm";
 export default function StockFormContainer() {
   const [reload, setReload] = useState(false);
   const [fetchData, setFetchData] = useState({
-    stock: [],
+    products: [],
     error: "",
     empty: "",
     loading: true,
@@ -17,21 +17,21 @@ export default function StockFormContainer() {
 
   useEffect(() => {
     api
-      .get(`/stock`)
+      .get(`/stock/active`)
       .then((res) => {
-        if (res.data?.length === 0) {
+        if (res?.data?.length === 0) {
           setFetchData((prev) => ({
             ...prev,
-            stock: [],
+            products: [],
             error: "",
             empty: "Such hollow, much empty...",
             loading: false,
           }));
         } else {
           const stockFieldData = {};
-          for (const s of res.data) {
-            stockFieldData[`quantity${s.id}`] = s.quantity;
-            stockFieldData[`unit${s.id}`] = "BOX";
+          for (const product of res.data) {
+            stockFieldData[`quantity${product.id}`] = product.stock.quantity;
+            stockFieldData[`unit${product.id}`] = "BOX";
           }
           setInitialFields((prev) => ({
             ...prev,
@@ -40,7 +40,7 @@ export default function StockFormContainer() {
           }));
           setFetchData((prev) => ({
             ...prev,
-            stock: res.data,
+            products: res.data,
             error: "",
             empty: "",
             loading: false,
@@ -53,7 +53,7 @@ export default function StockFormContainer() {
         );
         setFetchData((prev) => ({
           ...prev,
-          stock: [],
+          products: [],
           empty: "",
           error: error.message,
           loading: false,
@@ -65,7 +65,7 @@ export default function StockFormContainer() {
     setReload(!reload);
     setFetchData((prev) => ({
       ...prev,
-      stock: [],
+      products: [],
       error: "",
       empty: "",
       loading: true,
@@ -82,7 +82,7 @@ export default function StockFormContainer() {
     <div className="custom-card mb-12">
       <ProductStockForm
         initialData={initialFields}
-        stock={fetchData.stock}
+        products={fetchData.products}
         onClear={onClear}
       />
     </div>

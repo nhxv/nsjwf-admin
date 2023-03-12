@@ -9,7 +9,7 @@ import SearchSuggest from "../../../../components/forms/SearchSuggest";
 import SelectInput from "../../../../components/forms/SelectInput";
 import api from "../../../../stores/api";
 
-export default function StockForm({ initialData, stock, onClear }) {
+export default function StockForm({ initialData, products, onClear }) {
   const [formState, setFormState] = useState({
     success: "",
     error: "",
@@ -59,7 +59,6 @@ export default function StockForm({ initialData, stock, onClear }) {
           }
         }
         reqData["stock"] = [...stock.values()];
-        console.log(reqData);
         const res = await api.put(`/stock`, reqData);
         setFormState((prev) => ({
           ...prev,
@@ -91,7 +90,7 @@ export default function StockForm({ initialData, stock, onClear }) {
 
   const onChangeSearch = (e) => {
     if (e.target.value) {
-      const searched = stock.filter((product) =>
+      const searched = products.filter((product) =>
         product.name
           .toLowerCase()
           .replace(/\s+/g, "")
@@ -158,7 +157,7 @@ export default function StockForm({ initialData, stock, onClear }) {
             items={search.products}
             onChange={(e) => onChangeSearch(e)}
             onFocus={() =>
-              setSearch((prev) => ({ ...prev, products: stock, query: "" }))
+              setSearch((prev) => ({ ...prev, products: products, query: "" }))
             }
             onSelect={onAddProduct}
             onClear={onClearQuery}
@@ -216,8 +215,8 @@ export default function StockForm({ initialData, stock, onClear }) {
                         form={stockForm}
                         field={`unit${product.id}`}
                         name={`unit${product.id}`}
-                        options={product.measures.map(
-                          (measure) => measure.unitCode.split("_")[1]
+                        options={product.units.map(
+                          (unit) => unit.code.split("_")[1]
                         )}
                         selected={stockForm.values[`unit${product.id}`]}
                       ></SelectInput>

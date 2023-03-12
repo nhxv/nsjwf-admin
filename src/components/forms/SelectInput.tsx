@@ -10,9 +10,6 @@ export default function SelectInput({ name, form, field, options, selected }) {
     setSelectedOption(v);
   };
 
-  // console.log(selected);
-  // console.log(options);
-
   return (
     <div className="w-full">
       <Listbox name={name} value={selectedOption} onChange={onChangeValue}>
