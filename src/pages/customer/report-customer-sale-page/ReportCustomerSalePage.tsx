@@ -2,6 +2,7 @@ import csvDownload from "json-to-csv-export";
 import { useEffect, useState } from "react";
 import { BiDownload, BiSearch } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
+import { PaymentStatus } from "../../../commons/enums/payment-status.enum";
 import { convertTime } from "../../../commons/utils/time.util";
 import Alert from "../../../components/Alert";
 import Spinner from "../../../components/Spinner";
@@ -75,11 +76,29 @@ export default function ReportCustomerSalePage() {
       code: `#${report.manual_code ? report.manual_code : report.order_code}`,
       customer: report.customer_name,
       date: convertTime(new Date(report.date)),
-      sale: report.sale,
+      sale: parseFloat(report.sale),
       refund: parseFloat(report.refund),
       payment_status: report.payment_status,
       test: report.is_test ? "L" : "S",
+      cash: 0,
+      check: 0,
+      receivable: 0,
     }));
+    let cash = 0;
+    let check = 0;
+    let receivable = 0;
+    for (const report of fetchData.reports) {
+      if (report.payment_status === PaymentStatus.CASH) {
+        cash += parseFloat(report.sale);
+      } else if (report.payment_status === PaymentStatus.CHECK) {
+        check += parseFloat(report.sale);
+      } else if (report.payment_status === PaymentStatus.RECEIVABLE) {
+        receivable += parseFloat(report.sale);
+      }
+    }
+    reportData[0]["cash"] = cash;
+    reportData[0]["check"] = check;
+    reportData[0]["receivable"] = receivable;
     const saleFile = {
       data: reportData,
       filename: `${convertTime(new Date()).split("-").join("")}_report`,
@@ -92,6 +111,9 @@ export default function ReportCustomerSalePage() {
         "Refund",
         "Payment",
         "Type",
+        "Cash",
+        "Check",
+        "Receivable",
       ],
     };
     csvDownload(saleFile);
