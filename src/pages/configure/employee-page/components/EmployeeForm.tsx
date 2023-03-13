@@ -17,6 +17,8 @@ export default function EmployeeForm({ isOpen, onClose, employee, onReload }) {
   const employeeForm = useFormik({
     enableReinitialize: true,
     initialValues: {
+      username: "",
+      password: "",
       nickname: employee.nickname,
       active: employee.active,
     },
@@ -63,9 +65,45 @@ export default function EmployeeForm({ isOpen, onClose, employee, onReload }) {
         </div>
         <form onSubmit={employeeForm.handleSubmit}>
           <div className="mb-5">
-            <label htmlFor="name" className="custom-label mb-2 inline-block">
+            <label
+              htmlFor="username"
+              className="custom-label mb-2 inline-block"
+            >
+              <span>Username</span>
+            </label>
+            <TextInput
+              id="username"
+              type="text"
+              placeholder={`Username`}
+              name="username"
+              value={employeeForm.values.username}
+              onChange={employeeForm.handleChange}
+            ></TextInput>
+          </div>
+
+          <div className="mb-5">
+            <label
+              htmlFor="password"
+              className="custom-label mb-2 inline-block"
+            >
+              <span>Password</span>
+            </label>
+            <TextInput
+              id="password"
+              type="password"
+              placeholder={`Password`}
+              name="password"
+              value={employeeForm.values.password}
+              onChange={employeeForm.handleChange}
+            ></TextInput>
+          </div>
+
+          <div className="mb-5">
+            <label
+              htmlFor="nickname"
+              className="custom-label mb-2 inline-block"
+            >
               <span>Nickname</span>
-              <span className="text-red-500">*</span>
             </label>
             <TextInput
               id="nickname"
@@ -76,6 +114,7 @@ export default function EmployeeForm({ isOpen, onClose, employee, onReload }) {
               onChange={employeeForm.handleChange}
             ></TextInput>
           </div>
+
           <div className="mb-5 flex items-center">
             <Checkbox
               id="active"

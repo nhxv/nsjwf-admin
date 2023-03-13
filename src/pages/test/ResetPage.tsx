@@ -49,7 +49,6 @@ export default function ResetPage() {
 
   return (
     <div className="flex min-h-screen flex-col items-center p-6">
-      <h1 className="mb-8 text-xl font-bold">Version 1</h1>
       {message && (
         <div className="mockup-code mb-8 bg-black">
           <pre data-prefix=">" className="text-white">
