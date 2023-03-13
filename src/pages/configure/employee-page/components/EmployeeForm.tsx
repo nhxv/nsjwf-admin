@@ -65,7 +65,10 @@ export default function EmployeeForm({ isOpen, onClose, employee, onReload }) {
         </div>
         <form onSubmit={employeeForm.handleSubmit}>
           <div className="mb-5">
-            <label htmlFor="username" className="custom-label mb-2 inline-block">
+            <label
+              htmlFor="username"
+              className="custom-label mb-2 inline-block"
+            >
               <span>Username</span>
             </label>
             <TextInput
@@ -79,7 +82,10 @@ export default function EmployeeForm({ isOpen, onClose, employee, onReload }) {
           </div>
 
           <div className="mb-5">
-            <label htmlFor="password" className="custom-label mb-2 inline-block">
+            <label
+              htmlFor="password"
+              className="custom-label mb-2 inline-block"
+            >
               <span>Password</span>
             </label>
             <TextInput
@@ -90,10 +96,13 @@ export default function EmployeeForm({ isOpen, onClose, employee, onReload }) {
               value={employeeForm.values.password}
               onChange={employeeForm.handleChange}
             ></TextInput>
-          </div>   
+          </div>
 
           <div className="mb-5">
-            <label htmlFor="nickname" className="custom-label mb-2 inline-block">
+            <label
+              htmlFor="nickname"
+              className="custom-label mb-2 inline-block"
+            >
               <span>Nickname</span>
             </label>
             <TextInput
@@ -105,7 +114,7 @@ export default function EmployeeForm({ isOpen, onClose, employee, onReload }) {
               onChange={employeeForm.handleChange}
             ></TextInput>
           </div>
-          
+
           <div className="mb-5 flex items-center">
             <Checkbox
               id="active"
