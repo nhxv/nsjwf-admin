@@ -232,7 +232,7 @@ export default function Layout({ children }) {
         {/* Sidebar */}
         <aside className="drawer-side">
           <label htmlFor="mobile-drawer" className="drawer-overlay"></label>
-          <div className="min-h-screen w-60 overflow-y-auto bg-base-100 shadow-md dark:bg-base-200">
+          <div className="min-h-screen w-56 overflow-y-auto bg-base-100 shadow-md dark:bg-base-200">
             <ul className="menu p-4">
               {categories.map((category, index) => {
                 return (
