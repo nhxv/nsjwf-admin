@@ -144,14 +144,14 @@ export default function VendorOrderFormContainer() {
               });
             }
             const today = new Date();
-            const nextDay = new Date(today);
-            nextDay.setDate(today.getDate() + 1);
+            // const nextDay = new Date(today);
+            // nextDay.setDate(today.getDate() + 1);
             setInitialFields((prev) => ({
               ...prev,
               vendorName: ``,
               status: OrderStatus.SHIPPING,
               isTest: false,
-              expectedAt: convertTime(nextDay),
+              expectedAt: convertTime(today),
               ...productFieldData,
             }));
             setFetchData((prev) => ({

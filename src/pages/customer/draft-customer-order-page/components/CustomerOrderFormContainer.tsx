@@ -169,15 +169,15 @@ export default function CustomerOrderFormContainer() {
               });
             }
             const today = new Date();
-            const nextDay = new Date(today);
-            nextDay.setDate(today.getDate() + 1);
+            // const nextDay = new Date(today);
+            // nextDay.setDate(today.getDate() + 1);
             setInitialFields((prev) => ({
               ...prev,
               customerName: ``,
               employeeName: employeeRes.data[0].nickname,
               status: OrderStatus.PICKING,
               isTest: false,
-              expectedAt: convertTime(nextDay),
+              expectedAt: convertTime(today),
               ...productFieldData,
             }));
             setFetchData((prev) => ({
