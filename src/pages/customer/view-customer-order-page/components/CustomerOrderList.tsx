@@ -63,7 +63,10 @@ export default function CustomerOrderList({ orders, printMode }) {
                   </div>
                   <div className="w-3/12 text-center">
                     <span>
-                      {productOrder.quantity} ({productOrder.unitCode})
+                      {productOrder.quantity}{" "}
+                      {productOrder.unitCode === "box"
+                        ? ``
+                        : `(${productOrder.unitCode})`}
                     </span>
                   </div>
                 </div>
