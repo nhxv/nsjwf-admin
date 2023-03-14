@@ -79,7 +79,7 @@ export default function ReportCustomerSalePage() {
       sale: parseFloat(report.sale),
       refund: parseFloat(report.refund),
       payment_status: report.payment_status,
-      test: report.is_test ? "L" : "S",
+      test: report.is_test ? "S" : "L",
       cash: 0,
       check: 0,
       receivable: 0,
