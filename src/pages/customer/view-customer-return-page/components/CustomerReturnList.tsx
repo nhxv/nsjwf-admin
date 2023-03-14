@@ -38,7 +38,10 @@ export default function CustomerReturnList({ returns }) {
                   </div>
                   <div className="w-6/12 text-center">
                     <span>
-                      {productReturn.quantity} {productReturn.unitCode === "box" ? `` : `(${productReturn.unitCode})`}
+                      {productReturn.quantity}{" "}
+                      {productReturn.unitCode === "box"
+                        ? ``
+                        : `(${productReturn.unitCode})`}
                     </span>
                   </div>
                 </div>
