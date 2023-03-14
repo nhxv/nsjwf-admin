@@ -9,16 +9,10 @@ export default function PalletLabelToPrint({ printRef, pallet, order }) {
           key={`pallet-label-${index}`}
         >
           <div>
-            <div className="block text-[8px]">
-              #{order.manualCode ? order.manualCode : order.code}
-            </div>
-            <div className="block text-[16px] font-bold">
+            <div className="block text-[20px] font-bold">
               {order.customerName}
             </div>
             <div className="block text-[8px]">
-              Ship at: {convertTime(new Date(order.expectedAt))}
-            </div>
-            <div className="block text-[4px]">
               Page {index + 1} of {pallet.list.length}
             </div>
           </div>
