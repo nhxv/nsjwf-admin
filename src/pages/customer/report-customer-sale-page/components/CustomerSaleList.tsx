@@ -1,17 +1,20 @@
 import { useState } from "react";
 import { BiRevision } from "react-icons/bi";
 import { PaymentStatus } from "../../../../commons/enums/payment-status.enum";
+import { Role } from "../../../../commons/enums/role.enum";
 import { convertTime } from "../../../../commons/utils/time.util";
 import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
 import StatusTag from "../../../../components/StatusTag";
 import api from "../../../../stores/api";
+import { useAuthStore } from "../../../../stores/auth.store";
 
 export default function CustomerSaleList({ reports, reload }) {
   const [formState, setFormState] = useState({
     loading: false,
     error: "",
   });
+  const role = useAuthStore(state => state.role);
 
   const onUpdatePayment = (status: string, code: string) => {
     setFormState((prev) => ({ ...prev, loading: true, error: "" }));
@@ -39,6 +42,28 @@ export default function CustomerSaleList({ reports, reload }) {
         }, 2000);
       });
   };
+
+  const onRevert = (code: string) => {
+    api.put(`/customer-orders/revert/${code}`)
+    .then((res) => {
+      setFormState((prev) => ({ ...prev, loading: false, error: "" }));
+      reload();
+    })
+    .catch((e) => {
+      const error = JSON.parse(
+        JSON.stringify(e.response ? e.response.data.error : e)
+      );
+      setFormState((prev) => ({
+        ...prev,
+        error: error.message,
+        loading: false,
+      }));
+      setTimeout(() => {
+        setFormState((prev) => ({ ...prev, error: "", loading: false }));
+        reload();
+      }, 2000);
+    });
+  }
 
   return (
     <>
@@ -129,6 +154,9 @@ export default function CustomerSaleList({ reports, reload }) {
                 Cash
               </button>
             </div>
+            {role === Role.MASTER && (
+              <button type="button" className="mt-3 w-full btn-accent btn" onClick={() => onRevert(report.order_code)}>Revert</button>
+            )}
             <div>
               {formState.loading && (
                 <div className="mt-5">
