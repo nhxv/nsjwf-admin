@@ -14,7 +14,7 @@ export default function CustomerSaleList({ reports, reload }) {
     loading: false,
     error: "",
   });
-  const role = useAuthStore(state => state.role);
+  const role = useAuthStore((state) => state.role);
 
   const onUpdatePayment = (status: string, code: string) => {
     setFormState((prev) => ({ ...prev, loading: true, error: "" }));
@@ -44,26 +44,27 @@ export default function CustomerSaleList({ reports, reload }) {
   };
 
   const onRevert = (code: string) => {
-    api.put(`/customer-orders/revert/${code}`)
-    .then((res) => {
-      setFormState((prev) => ({ ...prev, loading: false, error: "" }));
-      reload();
-    })
-    .catch((e) => {
-      const error = JSON.parse(
-        JSON.stringify(e.response ? e.response.data.error : e)
-      );
-      setFormState((prev) => ({
-        ...prev,
-        error: error.message,
-        loading: false,
-      }));
-      setTimeout(() => {
-        setFormState((prev) => ({ ...prev, error: "", loading: false }));
+    api
+      .put(`/customer-orders/revert/${code}`)
+      .then((res) => {
+        setFormState((prev) => ({ ...prev, loading: false, error: "" }));
         reload();
-      }, 2000);
-    });
-  }
+      })
+      .catch((e) => {
+        const error = JSON.parse(
+          JSON.stringify(e.response ? e.response.data.error : e)
+        );
+        setFormState((prev) => ({
+          ...prev,
+          error: error.message,
+          loading: false,
+        }));
+        setTimeout(() => {
+          setFormState((prev) => ({ ...prev, error: "", loading: false }));
+          reload();
+        }, 2000);
+      });
+  };
 
   return (
     <>
@@ -155,7 +156,13 @@ export default function CustomerSaleList({ reports, reload }) {
               </button>
             </div>
             {role === Role.MASTER && (
-              <button type="button" className="mt-3 w-full btn-accent btn" onClick={() => onRevert(report.order_code)}>Revert</button>
+              <button
+                type="button"
+                className="btn-accent btn mt-3 w-full"
+                onClick={() => onRevert(report.order_code)}
+              >
+                Revert
+              </button>
             )}
             <div>
               {formState.loading && (
