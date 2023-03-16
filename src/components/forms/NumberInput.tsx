@@ -9,8 +9,7 @@ export default function NumberInput({
   disabled,
 }) {
   const onSelectAll = (e) => {
-    e.preventDefault();
-    e.target.select();
+    setTimeout(() => e.target.select(), 0);
   };
 
   return (
