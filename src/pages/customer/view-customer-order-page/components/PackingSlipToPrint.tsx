@@ -50,13 +50,13 @@ export default function PackingSlipToPrint({ printRef, order }) {
             key={productOrder.productName}
             className="ml-24 flex w-9/12 border-b border-black py-2"
           >
-            <div className="w-[64px] text-sm font-semibold">
+            <div className="w-[64px] font-semibold">
               {productOrder.quantity}{" "}
               {productOrder.unitCode === "box"
                 ? ``
                 : `(${productOrder.unitCode})`}
             </div>
-            <div className="ml-8 text-sm">{productOrder.productName}</div>
+            <div className="ml-8">{productOrder.productName}</div>
           </div>
         ))}
       </div>

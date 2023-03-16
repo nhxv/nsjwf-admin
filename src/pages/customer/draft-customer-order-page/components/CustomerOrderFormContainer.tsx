@@ -273,7 +273,7 @@ export default function CustomerOrderFormContainer() {
     return <Alert message={fetchData.empty} type="empty"></Alert>;
 
   return (
-    <div className="custom-card mb-12">
+    <div className="mb-12">
       <CustomerOrderForm
         edit={!!params.code}
         initialData={initialFields}

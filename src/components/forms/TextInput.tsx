@@ -7,6 +7,11 @@ export default function TextInput({
   value,
   onChange,
 }) {
+  const onSelectAll = (e) => {
+    e.preventDefault();
+    e.target.select();
+  }
+
   return (
     <>
       <input
@@ -16,7 +21,7 @@ export default function TextInput({
         name={name}
         value={value}
         onChange={onChange}
-        onFocus={(e) => e.target.select()}
+        onFocus={(e) => onSelectAll(e)}
         className="input w-full border-2 border-base-300 placeholder:text-base-300 focus:border-primary focus:outline-none dark:bg-base-200 dark:placeholder:text-neutral"
       />
     </>
