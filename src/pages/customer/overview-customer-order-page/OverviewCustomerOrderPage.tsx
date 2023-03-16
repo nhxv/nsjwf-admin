@@ -81,27 +81,27 @@ export default function OverviewCustomerOrderPage() {
             className={`rounded-box col-span-12 border-2 p-3 shadow-md sm:col-span-6 md:col-span-4 lg:col-span-3 xl:col-span-2
       ${
         order.status === OrderStatus.PICKING
-          ? "border-yellow-700 bg-yellow-100 text-yellow-700 dark:bg-base-100 dark:shadow-yellow-700"
+          ? "border-yellow-700 bg-yellow-100 text-yellow-700 dark:border-yellow-700 dark:bg-yellow-900 dark:bg-opacity-10"
           : ""
       }
       ${
         order.status === OrderStatus.CHECKING
-          ? "border-secondary bg-base-100 dark:shadow-secondary"
+          ? "border-neutral bg-base-100 dark:border-neutral dark:bg-base-200"
           : ""
       }
       ${
         order.status === OrderStatus.SHIPPING
-          ? "border-purple-700 bg-purple-100 text-purple-700 dark:bg-base-100 dark:shadow-purple-700"
+          ? "border-purple-700 bg-purple-100 text-purple-700 dark:border-purple-700 dark:bg-purple-900 dark:bg-opacity-10"
           : ""
       }
       ${
         order.status === OrderStatus.DELIVERED
-          ? "border-sky-700 bg-sky-100 text-sky-700 dark:bg-base-100 dark:shadow-sky-700"
+          ? "border-sky-700 bg-sky-100 text-sky-700 dark:border-sky-700 dark:bg-sky-900 dark:bg-opacity-10"
           : ""
       }
       ${
         order.status === OrderStatus.COMPLETED
-          ? "border-emerald-700 bg-emerald-100 text-emerald-700 dark:bg-base-100 dark:shadow-emerald-700"
+          ? "border-emerald-700 bg-emerald-100 text-emerald-700 dark:border-emerald-700 dark:bg-emerald-900 dark:bg-opacity-10"
           : ""
       }`}
           >

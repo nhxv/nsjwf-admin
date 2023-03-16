@@ -172,7 +172,7 @@ export default function ViewCustomerOrderPage() {
                               className="btn-accent btn"
                               onClick={onBatchPrint}
                             >
-                              <span className="mr-2">Print all orders</span>
+                              <span className="mr-2">Print packing slips</span>
                               <BiLayer className="h-6 w-6"></BiLayer>
                             </button>
                           </div>

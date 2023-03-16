@@ -264,9 +264,9 @@ export default function CustomerOrderForm({
   return (
     <form onSubmit={customerOrderForm.handleSubmit}>
       {formState.page === 0 ? (
-        <>
+        <div className="custom-card mx-auto grid grid-cols-12 gap-x-2 xl:w-7/12">
           {/* 1st page */}
-          <div className="mb-5">
+          <div className="col-span-12 mb-5 xl:col-span-6">
             <label className="custom-label mb-2 inline-block">
               <span>Manual code</span>
             </label>
@@ -280,7 +280,7 @@ export default function CustomerOrderForm({
             ></TextInput>
           </div>
 
-          <div className="mb-5">
+          <div className="col-span-12 mb-5 xl:col-span-6">
             <label className="custom-label mb-2 inline-block">
               <span>Order from customer</span>
               <span className="text-red-500">*</span>
@@ -294,7 +294,7 @@ export default function CustomerOrderForm({
             />
           </div>
 
-          <div className="mb-5">
+          <div className="col-span-12 mb-5 xl:col-span-6">
             <label htmlFor="expect" className="custom-label mb-2 inline-block">
               Expected delivery date
             </label>
@@ -311,7 +311,7 @@ export default function CustomerOrderForm({
             ></DateInput>
           </div>
 
-          <div className="mb-5">
+          <div className="col-span-12 mb-5 xl:col-span-3">
             <label
               htmlFor="employee"
               className="custom-label mb-2 inline-block"
@@ -327,7 +327,7 @@ export default function CustomerOrderForm({
             ></SelectInput>
           </div>
 
-          <div className="mb-5">
+          <div className="col-span-12 mb-5 xl:col-span-3">
             <label htmlFor="status" className="custom-label mb-2 inline-block">
               Status
             </label>
@@ -345,7 +345,7 @@ export default function CustomerOrderForm({
           {customerOrderForm.values[`customerName`] && (
             <button
               type="button"
-              className="btn-primary btn mt-3 w-full"
+              className="btn-primary btn col-span-12 mt-3"
               onClick={onNextPage}
             >
               <span>Set product</span>
@@ -354,12 +354,19 @@ export default function CustomerOrderForm({
               </span>
             </button>
           )}
-        </>
+          <button
+            type="button"
+            className="btn-accent btn col-span-12 mt-3"
+            onClick={onClearForm}
+          >
+            <span>Clear change(s)</span>
+          </button>
+        </div>
       ) : (
         <>
           {formState.page === 1 && (
-            <>
-              <div className="mb-5">
+            <div className="flex flex-col items-start gap-4 xl:flex-row-reverse">
+              <div className="custom-card w-full xl:w-5/12">
                 <SearchSuggest
                   query={search.query}
                   items={search.products}
@@ -374,18 +381,93 @@ export default function CustomerOrderForm({
                   onSelect={onAddProduct}
                   onClear={onClearQuery}
                 ></SearchSuggest>
+
+                <div className="mt-3 mb-4 flex items-center">
+                  <span className="">Total price:</span>
+                  <span className="ml-2 text-xl font-medium">${total}</span>
+                </div>
+
+                <div className="mb-5 flex items-center">
+                  <Checkbox
+                    id="test"
+                    name="test"
+                    label="Test"
+                    onChange={() =>
+                      customerOrderForm.setFieldValue(
+                        "isTest",
+                        !customerOrderForm.values["isTest"]
+                      )
+                    }
+                    checked={customerOrderForm.values["isTest"]}
+                  ></Checkbox>
+                </div>
+
+                <div className="grid grid-cols-12 gap-3">
+                  <button
+                    type="button"
+                    className="btn-outline-primary btn col-span-6"
+                    onClick={onPreviousPage}
+                  >
+                    <span>
+                      <BiLeftArrowAlt className="mr-1 h-7 w-7"></BiLeftArrowAlt>
+                    </span>
+                    <span>Go back</span>
+                  </button>
+                  <button
+                    type="submit"
+                    className="btn-primary btn col-span-6"
+                    disabled={formState.loading}
+                  >
+                    <span>{edit ? "Update" : "Create"}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    className="btn-accent btn col-span-12"
+                    onClick={onClearForm}
+                  >
+                    <span>Clear change(s)</span>
+                  </button>
+                </div>
+
+                <div>
+                  {formState.loading && (
+                    <div className="mt-5">
+                      <Spinner></Spinner>
+                    </div>
+                  )}
+                  {formState.error && (
+                    <div className="mt-5">
+                      <Alert message={formState.error} type="error"></Alert>
+                    </div>
+                  )}
+                  {formState.success && (
+                    <div className="mt-5">
+                      <Alert message={formState.success} type="success"></Alert>
+                    </div>
+                  )}
+                </div>
               </div>
 
-              <div className="mb-5">
+              <div className="mb-5 w-full xl:w-7/12">
                 {selectedProducts && selectedProducts.length > 0 ? (
-                  <div className="grid grid-cols-12 gap-3">
+                  <div className="flex flex-col gap-4">
                     {selectedProducts.map((product) => (
                       <div
                         key={product.id}
-                        className="rounded-box col-span-12 flex flex-col border-2 border-base-300 p-3 md:col-span-6"
+                        className="custom-card relative w-full p-3"
                       >
-                        <div className="mb-3 flex justify-between">
-                          <div>
+                        <button
+                          type="button"
+                          className="btn-accent btn-sm btn-circle btn absolute -top-3 -right-3 shadow-md"
+                          onClick={() => onRemoveProduct(product.id)}
+                        >
+                          <span>
+                            <BiX className="h-6 w-6"></BiX>
+                          </span>
+                        </button>
+                        <div className="mb-2 grid grid-cols-12 items-center gap-2">
+                          <div className="col-span-12 xl:col-span-4">
                             <span className="text-lg font-semibold">
                               {product.name}
                             </span>
@@ -404,18 +486,7 @@ export default function CustomerOrderForm({
                               </div>
                             )}
                           </div>
-                          <button
-                            type="button"
-                            className="btn-accent btn-sm btn-circle btn"
-                            onClick={() => onRemoveProduct(product.id)}
-                          >
-                            <span>
-                              <BiX className="h-6 w-6"></BiX>
-                            </span>
-                          </button>
-                        </div>
-                        <div className="mb-2 grid grid-cols-12 gap-2">
-                          <div className="col-span-6">
+                          <div className="col-span-6 xl:col-span-2">
                             <label className="custom-label mb-2 inline-block">
                               Qty
                             </label>
@@ -436,7 +507,7 @@ export default function CustomerOrderForm({
                               disabled={false}
                             ></NumberInput>
                           </div>
-                          <div className="col-span-6">
+                          <div className="col-span-6 xl:col-span-2">
                             <label className="custom-label mb-2 inline-block">
                               Unit
                             </label>
@@ -452,7 +523,7 @@ export default function CustomerOrderForm({
                               }
                             ></SelectInput>
                           </div>
-                          <div className="col-span-12">
+                          <div className="col-span-6 xl:col-span-2">
                             <label className="custom-label mb-2 inline-block">
                               Unit Price
                             </label>
@@ -469,86 +540,24 @@ export default function CustomerOrderForm({
                               }
                             ></TextInput>
                           </div>
+                          <div className="col-span-6 xl:col-span-2">
+                            <div className="custom-label mb-2">Amount</div>
+                            <div className="rounded-box flex h-12 items-center bg-base-300 px-3">
+                              TBD
+                            </div>
+                          </div>
                         </div>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <div className="mt-5 mb-2 flex justify-center">
-                    <span>Empty.</span>
-                  </div>
+                  <Alert message={"No product selected."} type="empty"></Alert>
                 )}
               </div>
-
-              <div className="mt-3 mb-5 flex items-center">
-                <div>
-                  <span className="">Total price:</span>
-                </div>
-                <span className="ml-2 text-xl font-medium">${total}</span>
-              </div>
-
-              <div className="mb-5 flex items-center">
-                <Checkbox
-                  id="test"
-                  name="test"
-                  label="Test"
-                  onChange={() =>
-                    customerOrderForm.setFieldValue(
-                      "isTest",
-                      !customerOrderForm.values["isTest"]
-                    )
-                  }
-                  checked={customerOrderForm.values["isTest"]}
-                ></Checkbox>
-              </div>
-
-              <div className="grid grid-cols-12 gap-3">
-                <button
-                  type="button"
-                  className="btn-outline-primary btn col-span-6"
-                  onClick={onPreviousPage}
-                >
-                  <span>
-                    <BiLeftArrowAlt className="mr-1 h-7 w-7"></BiLeftArrowAlt>
-                  </span>
-                  <span>Go back</span>
-                </button>
-                <button
-                  type="submit"
-                  className="btn-primary btn col-span-6"
-                  disabled={formState.loading}
-                >
-                  <span>{edit ? "Update" : "Create"}</span>
-                </button>
-              </div>
-            </>
+            </div>
           )}
         </>
       )}
-      <button
-        type="button"
-        className="btn-accent btn mt-3 w-full"
-        onClick={onClearForm}
-      >
-        <span>Clear change(s)</span>
-      </button>
-      <div>
-        {formState.loading && (
-          <div className="mt-5">
-            <Spinner></Spinner>
-          </div>
-        )}
-        {formState.error && (
-          <div className="mt-5">
-            <Alert message={formState.error} type="error"></Alert>
-          </div>
-        )}
-        {formState.success && (
-          <div className="mt-5">
-            <Alert message={formState.success} type="success"></Alert>
-          </div>
-        )}
-      </div>
     </form>
   );
 }

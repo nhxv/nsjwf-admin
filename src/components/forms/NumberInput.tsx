@@ -8,6 +8,11 @@ export default function NumberInput({
   max,
   disabled,
 }) {
+  const onSelectAll = (e) => {
+    e.preventDefault();
+    e.target.select();
+  };
+
   return (
     <>
       <input
@@ -19,7 +24,7 @@ export default function NumberInput({
         name={name}
         value={value}
         onChange={onChange}
-        onFocus={(e) => e.target.select()}
+        onFocus={(e) => onSelectAll(e)}
         disabled={disabled}
         className="input w-full border-2 border-base-300 bg-transparent placeholder:text-base-300 focus:border-primary focus:outline-none dark:placeholder:text-neutral dark:disabled:bg-base-300"
       />
