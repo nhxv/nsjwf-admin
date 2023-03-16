@@ -11,7 +11,7 @@ export default function NumberInput({
   const onSelectAll = (e) => {
     e.preventDefault();
     e.target.select();
-  }
+  };
 
   return (
     <>

@@ -10,7 +10,7 @@ export default function TextInput({
   const onSelectAll = (e) => {
     e.preventDefault();
     e.target.select();
-  }
+  };
 
   return (
     <>

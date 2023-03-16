@@ -264,9 +264,9 @@ export default function CustomerOrderForm({
   return (
     <form onSubmit={customerOrderForm.handleSubmit}>
       {formState.page === 0 ? (
-        <div className="grid grid-cols-12 mx-auto gap-x-2 xl:w-7/12 custom-card">
+        <div className="custom-card mx-auto grid grid-cols-12 gap-x-2 xl:w-7/12">
           {/* 1st page */}
-          <div className="mb-5 col-span-12 xl:col-span-6">
+          <div className="col-span-12 mb-5 xl:col-span-6">
             <label className="custom-label mb-2 inline-block">
               <span>Manual code</span>
             </label>
@@ -280,7 +280,7 @@ export default function CustomerOrderForm({
             ></TextInput>
           </div>
 
-          <div className="mb-5 col-span-12 xl:col-span-6">
+          <div className="col-span-12 mb-5 xl:col-span-6">
             <label className="custom-label mb-2 inline-block">
               <span>Order from customer</span>
               <span className="text-red-500">*</span>
@@ -294,7 +294,7 @@ export default function CustomerOrderForm({
             />
           </div>
 
-          <div className="mb-5 col-span-12 xl:col-span-6">
+          <div className="col-span-12 mb-5 xl:col-span-6">
             <label htmlFor="expect" className="custom-label mb-2 inline-block">
               Expected delivery date
             </label>
@@ -311,7 +311,7 @@ export default function CustomerOrderForm({
             ></DateInput>
           </div>
 
-          <div className="mb-5 col-span-12 xl:col-span-3">
+          <div className="col-span-12 mb-5 xl:col-span-3">
             <label
               htmlFor="employee"
               className="custom-label mb-2 inline-block"
@@ -327,7 +327,7 @@ export default function CustomerOrderForm({
             ></SelectInput>
           </div>
 
-          <div className="mb-5 col-span-12 xl:col-span-3">
+          <div className="col-span-12 mb-5 xl:col-span-3">
             <label htmlFor="status" className="custom-label mb-2 inline-block">
               Status
             </label>
@@ -345,7 +345,7 @@ export default function CustomerOrderForm({
           {customerOrderForm.values[`customerName`] && (
             <button
               type="button"
-              className="btn-primary btn mt-3 col-span-12"
+              className="btn-primary btn col-span-12 mt-3"
               onClick={onNextPage}
             >
               <span>Set product</span>
@@ -356,17 +356,17 @@ export default function CustomerOrderForm({
           )}
           <button
             type="button"
-            className="btn-accent btn mt-3 col-span-12"
+            className="btn-accent btn col-span-12 mt-3"
             onClick={onClearForm}
           >
             <span>Clear change(s)</span>
-          </button>             
+          </button>
         </div>
       ) : (
         <>
           {formState.page === 1 && (
-            <div className="flex flex-col xl:flex-row-reverse gap-4 items-start">
-              <div className="w-full xl:w-5/12 custom-card">
+            <div className="flex flex-col items-start gap-4 xl:flex-row-reverse">
+              <div className="custom-card w-full xl:w-5/12">
                 <SearchSuggest
                   query={search.query}
                   items={search.products}
@@ -427,7 +427,7 @@ export default function CustomerOrderForm({
                     onClick={onClearForm}
                   >
                     <span>Clear change(s)</span>
-                  </button>                  
+                  </button>
                 </div>
 
                 <div>
@@ -446,20 +446,20 @@ export default function CustomerOrderForm({
                       <Alert message={formState.success} type="success"></Alert>
                     </div>
                   )}
-                </div>                                                                
+                </div>
               </div>
 
-              <div className="w-full xl:w-7/12 mb-5">
+              <div className="mb-5 w-full xl:w-7/12">
                 {selectedProducts && selectedProducts.length > 0 ? (
                   <div className="flex flex-col gap-4">
                     {selectedProducts.map((product) => (
                       <div
                         key={product.id}
-                        className="custom-card p-3 relative w-full"
+                        className="custom-card relative w-full p-3"
                       >
                         <button
                           type="button"
-                          className="shadow-md absolute btn btn-accent btn-circle btn-sm -top-3 -right-3"
+                          className="btn-accent btn-sm btn-circle btn absolute -top-3 -right-3 shadow-md"
                           onClick={() => onRemoveProduct(product.id)}
                         >
                           <span>
@@ -485,7 +485,7 @@ export default function CustomerOrderForm({
                                 <span>Product</span>
                               </div>
                             )}
-                          </div>                          
+                          </div>
                           <div className="col-span-6 xl:col-span-2">
                             <label className="custom-label mb-2 inline-block">
                               Qty
@@ -542,7 +542,9 @@ export default function CustomerOrderForm({
                           </div>
                           <div className="col-span-6 xl:col-span-2">
                             <div className="custom-label mb-2">Amount</div>
-                            <div className="bg-base-300 h-12 flex items-center px-3 rounded-box">TBD</div>
+                            <div className="rounded-box flex h-12 items-center bg-base-300 px-3">
+                              TBD
+                            </div>
                           </div>
                         </div>
                       </div>
