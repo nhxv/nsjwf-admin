@@ -8,8 +8,7 @@ export default function TextInput({
   onChange,
 }) {
   const onSelectAll = (e) => {
-    e.preventDefault();
-    e.target.select();
+    setTimeout(() => e.target.select(), 0);
   };
 
   return (
