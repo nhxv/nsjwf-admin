@@ -25,7 +25,7 @@ export default function PackingSlipToPrint({ printRef, order }) {
               <p className="text-xs">
                 Invoice No.:{" "}
                 <span className="font-semibold">
-                  #{order.manualCode ? order.manualCode : order.code}
+                  {order.manualCode ? order.manualCode : order.code}
                 </span>
               </p>
               <p className="text-xs">

@@ -543,7 +543,7 @@ export default function CustomerOrderForm({
                           <div className="col-span-6 xl:col-span-2">
                             <div className="custom-label mb-2">Amount</div>
                             <div className="rounded-box flex h-12 items-center bg-base-300 px-3">
-                              TBD
+                              {customerOrderForm.values[`quantity${product.id}`] * customerOrderForm.values[`price${product.id}`]}
                             </div>
                           </div>
                         </div>
