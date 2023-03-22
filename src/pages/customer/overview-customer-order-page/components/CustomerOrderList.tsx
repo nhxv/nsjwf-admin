@@ -29,7 +29,7 @@ export default function CustomerOrderList() {
 
     return () => {
       clearInterval(reRender);
-    };    
+    };
   }, []);
 
   const getCustomerOrders = () => {
@@ -72,7 +72,7 @@ export default function CustomerOrderList() {
           loading: false,
         }));
       });
-  }
+  };
 
   const onToDetails = (code: string) => {
     navigate(`/customer/view-customer-order-detail/${code}`);
