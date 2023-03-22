@@ -21,6 +21,25 @@ export default function CustomerOrderList() {
   });
 
   useEffect(() => {
+    getCustomerOrders();
+    // re-render after 1 min
+    const reRender = setInterval(() => {
+      getCustomerOrders();
+    }, 60000);
+
+    return () => {
+      clearInterval(reRender);
+    };    
+  }, []);
+
+  const getCustomerOrders = () => {
+    setFetchData((prev) => ({
+      ...prev,
+      error: "",
+      empty: "",
+      loading: true,
+    }));
+
     api
       .get(`/customer-orders/daily`)
       .then((res) => {
@@ -53,7 +72,7 @@ export default function CustomerOrderList() {
           loading: false,
         }));
       });
-  }, []);
+  }
 
   const onToDetails = (code: string) => {
     navigate(`/customer/view-customer-order-detail/${code}`);
