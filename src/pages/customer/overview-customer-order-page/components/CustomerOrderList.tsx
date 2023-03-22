@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { OrderStatus } from "../../../../commons/enums/order-status.enum";
+import { convertTimeToText } from "../../../../commons/utils/time.util";
 import Alert from "../../../../components/Alert";
+import SearchInput from "../../../../components/forms/SearchInput";
 import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
-import SearchInput from "../../../../components/forms/SearchInput";
 
 export default function CustomerOrderList() {
   const [fetchData, setFetchData] = useState({
@@ -146,11 +147,7 @@ export default function CustomerOrderList() {
             <div>#{order.manual_code ? order.manual_code : order.code}</div>
             <div className="font-semibold">{order.customer_name}</div>
             <div className="text-sm">
-              {order.status.toLowerCase()} by{" "}
-              {order.status === OrderStatus.CHECKING ||
-              order.status === OrderStatus.COMPLETED
-                ? "Admin"
-                : order.assign_to}
+              {convertTimeToText(new Date(order.expected_at))}
             </div>
             <button
               className={`rounded-btn btn-sm btn mt-3 w-full
