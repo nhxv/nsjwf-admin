@@ -64,7 +64,6 @@ export default function CustomerOrderDetail() {
             {fetchData.order.customer_name}
           </span>
           <span className="block text-sm text-neutral">
-            Expected at{" "}
             {convertTimeToText(new Date(fetchData.order.expected_at))}
           </span>
           <div className="mb-6">
