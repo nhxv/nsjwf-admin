@@ -39,6 +39,7 @@ import OverviewCustomerOrderPage from "./pages/customer/overview-customer-order-
 import EmployeePage from "./pages/configure/employee-page/EmployeePage";
 import DraftProductPage from "./pages/configure/draft-product-page/DraftProductPage";
 import ViewProductPage from "./pages/configure/view-product-page/ViewProductPage";
+import CustomerOrderDetailPage from "./pages/customer/view-customer-order-detail-page/CustomerOrderDetailPage";
 
 export default function App() {
   return (
@@ -92,7 +93,8 @@ export default function App() {
           <Route
             path="/customer/view-customer-order"
             element={<ViewCustomerOrderPage />}
-          ></Route>
+          ></Route>          
+          <Route path="/customer/view-customer-order-detail/:code" element={<CustomerOrderDetailPage />}></Route>
           <Route
             path="/customer/overview-customer-order"
             element={<OverviewCustomerOrderPage />}

@@ -1,9 +1,9 @@
 import { useFormik } from "formik";
 import { useState } from "react";
 import { BiLeftArrowAlt, BiRightArrowAlt, BiX } from "react-icons/bi";
+import { useNavigate } from "react-router-dom";
 import { OrderStatus } from "../../../../commons/enums/order-status.enum";
 import Alert from "../../../../components/Alert";
-import Spinner from "../../../../components/Spinner";
 import Checkbox from "../../../../components/forms/Checkbox";
 import DateInput from "../../../../components/forms/DateInput";
 import NumberInput from "../../../../components/forms/NumberInput";
@@ -11,6 +11,7 @@ import SearchSuggest from "../../../../components/forms/SearchSuggest";
 import SelectInput from "../../../../components/forms/SelectInput";
 import SelectSearch from "../../../../components/forms/SelectSearch";
 import TextInput from "../../../../components/forms/TextInput";
+import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
 
 export default function CustomerOrderForm({
@@ -32,6 +33,8 @@ export default function CustomerOrderForm({
     loading: false,
     page: 0,
   });
+
+  const navigate = useNavigate();
 
   const [selectedProducts, setSelectedProducts] = useState(
     editedProducts ? editedProducts : []
@@ -99,39 +102,15 @@ export default function CustomerOrderForm({
             `/customer-orders/${reqData["code"]}`,
             reqData
           );
-          setFormState((prev) => ({
-            ...prev,
-            success: "Updated order successfully.",
-            error: "",
-            loading: false,
-          }));
-          setTimeout(() => {
-            setFormState((prev) => ({
-              ...prev,
-              success: "",
-              error: "",
-              loading: false,
-            }));
-            onClear();
-          }, 2000);
+          if (res) {
+            navigate(`/customer/view-customer-order-detail/${reqData["code"]}`);
+          }
         } else {
           // create order
           const res = await api.post(`/customer-orders`, reqData);
-          setFormState((prev) => ({
-            ...prev,
-            success: "Created order successfully.",
-            error: "",
-            loading: false,
-          }));
-          setTimeout(() => {
-            setFormState((prev) => ({
-              ...prev,
-              success: "",
-              empty: "",
-              loading: false,
-            }));
-            onClear();
-          }, 2000);
+          if (res) {
+            navigate(`/customer/view-customer-order-detail/${res.data.code}`);
+          }
         }
       } catch (e) {
         const error = JSON.parse(
