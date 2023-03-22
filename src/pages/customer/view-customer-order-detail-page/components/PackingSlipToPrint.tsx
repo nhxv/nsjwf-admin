@@ -37,7 +37,7 @@ export default function PackingSlipToPrint({ printRef, order }) {
             </div>
           </div>
         </div>
-        <div className="mb-6 ml-24">
+        <div className="mb-4 ml-24">
           <div className="block text-xl">Packing Slip</div>
           <div className="block text-2xl font-bold">{order.customer_name}</div>
         </div>

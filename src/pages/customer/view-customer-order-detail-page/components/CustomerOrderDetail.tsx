@@ -114,7 +114,7 @@ export default function CustomerOrderDetail() {
       <div className="divider"></div>
       <div className="mt-2 flex items-center">
         <span className="mr-2">Total:</span>
-        <span className="mr-2 text-xl font-medium">
+        <span className="text-xl font-medium">
           $
           {fetchData.order.productCustomerOrders.reduce(
             (prev, curr) => prev + curr.quantity * curr.unit_price,

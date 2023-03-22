@@ -344,7 +344,7 @@ export default function CustomerOrderForm({
       ) : (
         <>
           {formState.page === 1 && (
-            <div className="flex flex-col items-start gap-4 xl:flex-row-reverse">
+            <div className="flex flex-col items-start gap-6 xl:flex-row-reverse">
               <div className="custom-card w-full xl:w-5/12">
                 <SearchSuggest
                   query={search.query}
@@ -438,7 +438,7 @@ export default function CustomerOrderForm({
                       >
                         <button
                           type="button"
-                          className="btn-accent btn-sm btn-circle btn absolute -top-3 -right-3 shadow-md"
+                          className="btn-accent btn-sm btn-circle btn absolute -top-4 -right-4 shadow-md"
                           onClick={() => onRemoveProduct(product.id)}
                         >
                           <span>
