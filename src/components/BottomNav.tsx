@@ -74,7 +74,7 @@ export default function BottomNav() {
         </NavLink>
 
         <NavLink
-          to="/customer/view-customer-order"
+          to="/customer/overview-customer-order"
           className={(navData) =>
             navData.isActive
               ? `rounded-btn mx-1 bg-info text-info-content`

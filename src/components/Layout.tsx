@@ -1,12 +1,12 @@
-import { NavLink, useNavigate } from "react-router-dom";
 import {
-  BiMenuAltLeft,
   BiDotsHorizontalRounded,
-  BiUser,
   BiExit,
+  BiMenuAltLeft,
+  BiUser,
 } from "react-icons/bi";
-import { useAuthStore } from "../stores/auth.store";
+import { NavLink, useNavigate } from "react-router-dom";
 import { Role } from "../commons/enums/role.enum";
+import { useAuthStore } from "../stores/auth.store";
 import BottomNav from "./BottomNav";
 
 export default function Layout({ children }) {
@@ -31,7 +31,7 @@ export default function Layout({ children }) {
         },
         {
           itemName: "View Order",
-          href: "/customer/view-customer-order",
+          href: "/customer/overview-customer-order",
           visible: [Role.MASTER, Role.ADMIN],
         },
         // {
