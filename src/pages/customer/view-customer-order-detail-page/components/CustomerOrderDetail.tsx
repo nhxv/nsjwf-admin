@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { convertTime } from "../../../../commons/utils/time.util";
+import { convertTimeToText } from "../../../../commons/utils/time.util";
 import Spinner from "../../../../components/Spinner";
 import StatusTag from "../../../../components/StatusTag";
 import api from "../../../../stores/api";
@@ -64,7 +64,8 @@ export default function CustomerOrderDetail() {
             {fetchData.order.customer_name}
           </span>
           <span className="block text-sm text-neutral">
-            Expected at {convertTime(new Date(fetchData.order.expected_at))}
+            Expected at{" "}
+            {convertTimeToText(new Date(fetchData.order.expected_at))}
           </span>
           <div className="mb-6">
             <span className="text-sm text-neutral">
