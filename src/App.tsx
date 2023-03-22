@@ -93,8 +93,11 @@ export default function App() {
           <Route
             path="/customer/view-customer-order"
             element={<ViewCustomerOrderPage />}
-          ></Route>          
-          <Route path="/customer/view-customer-order-detail/:code" element={<CustomerOrderDetailPage />}></Route>
+          ></Route>
+          <Route
+            path="/customer/view-customer-order-detail/:code"
+            element={<CustomerOrderDetailPage />}
+          ></Route>
           <Route
             path="/customer/overview-customer-order"
             element={<OverviewCustomerOrderPage />}

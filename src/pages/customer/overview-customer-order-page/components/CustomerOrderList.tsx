@@ -30,7 +30,7 @@ export default function CustomerOrderList() {
             loading: false,
           }));
         } else {
-          setSearch((prev) => ({...prev, orders: res.data, query: ""}));
+          setSearch((prev) => ({ ...prev, orders: res.data, query: "" }));
           setFetchData((prev) => ({
             ...prev,
             orders: res.data,
@@ -52,11 +52,11 @@ export default function CustomerOrderList() {
           loading: false,
         }));
       });
-  }, []); 
+  }, []);
 
   const onToDetails = (code: string) => {
     navigate(`/customer/view-customer-order-detail/${code}`);
-  }
+  };
 
   const onChangeSearch = (e) => {
     if (e.target.value) {
@@ -102,7 +102,7 @@ export default function CustomerOrderList() {
         <Alert type="empty" message={fetchData.empty}></Alert>
       </div>
     );
-  }  
+  }
 
   return (
     <>
@@ -153,28 +153,28 @@ export default function CustomerOrderList() {
                 : order.assign_to}
             </div>
             <button
-            className={`btn btn-sm rounded-btn w-full mt-3
+              className={`rounded-btn btn-sm btn mt-3 w-full
             ${
               order.status === OrderStatus.PICKING
-                ? "border-yellow-700 bg-transparent text-yellow-700 hover:bg-yellow-700 hover:text-white hover:border-yellow-700"
+                ? "border-yellow-700 bg-transparent text-yellow-700 hover:border-yellow-700 hover:bg-yellow-700 hover:text-white"
                 : ""
             }
             ${
               order.status === OrderStatus.CHECKING
-                ? "border-neutral bg-transparent text-neutral hover:bg-neutral hover:text-white hover:border-neutral"
+                ? "border-neutral bg-transparent text-neutral hover:border-neutral hover:bg-neutral hover:text-white"
                 : ""
             }
             ${
               order.status === OrderStatus.SHIPPING
-                ? "border-purple-700 bg-transparent text-purple-700 hover:bg-purple-700 hover:text-white hover:border-purple-700"
+                ? "border-purple-700 bg-transparent text-purple-700 hover:border-purple-700 hover:bg-purple-700 hover:text-white"
                 : ""
             }
             ${
               order.status === OrderStatus.DELIVERED
-                ? "border-sky-700 bg-transparent text-sky-700 hover:bg-sky-700 hover:text-white hover:border-sky-700"
+                ? "border-sky-700 bg-transparent text-sky-700 hover:border-sky-700 hover:bg-sky-700 hover:text-white"
                 : ""
-            }`} 
-            onClick={() => onToDetails(order.code)}
+            }`}
+              onClick={() => onToDetails(order.code)}
             >
               Details
             </button>
@@ -183,7 +183,7 @@ export default function CustomerOrderList() {
       </div>
       {search.orders?.length < 1 && (
         <div className="text-center">Not found.</div>
-      )}        
-    </>    
+      )}
+    </>
   );
 }

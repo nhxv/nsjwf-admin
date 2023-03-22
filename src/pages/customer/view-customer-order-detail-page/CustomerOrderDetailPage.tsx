@@ -1,4 +1,4 @@
-import CustomerOrderDetail from "./components/CustomerOrderDetail"
+import CustomerOrderDetail from "./components/CustomerOrderDetail";
 
 export default function CustomerOrderDetailPage() {
   return (

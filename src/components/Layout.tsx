@@ -1,5 +1,8 @@
 import {
-  BiDotsHorizontalRounded, BiExit, BiMenuAltLeft, BiUser
+  BiDotsHorizontalRounded,
+  BiExit,
+  BiMenuAltLeft,
+  BiUser,
 } from "react-icons/bi";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Role } from "../commons/enums/role.enum";

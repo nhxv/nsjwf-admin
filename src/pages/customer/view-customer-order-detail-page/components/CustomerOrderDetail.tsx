@@ -17,27 +17,36 @@ export default function CustomerOrderDetail() {
 
   useEffect(() => {
     if (params.code) {
-      api.get(`/customer-orders/${params.code}`)
-      .then((res) => {
-        setFetchData(prev => ({...prev, order: res.data, loading: false, error: ""}));
-      })
-      .catch((e) => {
-        const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e)
-        );
-        setFetchData(prev => ({...prev, order: null, loading: false, error: error.message}));
-      });
+      api
+        .get(`/customer-orders/${params.code}`)
+        .then((res) => {
+          setFetchData((prev) => ({
+            ...prev,
+            order: res.data,
+            loading: false,
+            error: "",
+          }));
+        })
+        .catch((e) => {
+          const error = JSON.parse(
+            JSON.stringify(e.response ? e.response.data.error : e)
+          );
+          setFetchData((prev) => ({
+            ...prev,
+            order: null,
+            loading: false,
+            error: error.message,
+          }));
+        });
     }
   }, []);
 
   const onUpdateOrder = (code: string) => {
     navigate(`/customer/draft-customer-order/${code}`);
   };
-  
+
   if (fetchData.loading) {
-    return (
-      <Spinner></Spinner>
-    );
+    return <Spinner></Spinner>;
   }
 
   return (
@@ -46,7 +55,10 @@ export default function CustomerOrderDetail() {
       <div className="flex justify-between">
         <div>
           <span className="block">
-            #{fetchData.order.manual_code ? fetchData.order.manual_code : fetchData.order.code}
+            #
+            {fetchData.order.manual_code
+              ? fetchData.order.manual_code
+              : fetchData.order.code}
           </span>
           <span className="block text-xl font-semibold">
             {fetchData.order.customer_name}
@@ -95,23 +107,27 @@ export default function CustomerOrderDetail() {
                   : `(${productOrder.unit_code.split("_")[1].toLowerCase()})`}
               </span>
             </div>
-            <div className="w-3/12 text-center">
-              {productOrder.unit_price}
-            </div>
+            <div className="w-3/12 text-center">{productOrder.unit_price}</div>
           </div>
         );
       })}
       <div className="divider"></div>
       <div className="mt-2 flex items-center">
         <span className="mr-2">Total:</span>
-        <span className="mr-2 text-xl font-medium">${fetchData.order.productCustomerOrders.reduce((prev, curr) => prev + curr.quantity*curr.unit_price, 0)}</span>
+        <span className="mr-2 text-xl font-medium">
+          $
+          {fetchData.order.productCustomerOrders.reduce(
+            (prev, curr) => prev + curr.quantity * curr.unit_price,
+            0
+          )}
+        </span>
       </div>
       <button
-        className="btn-primary btn w-full mt-5"
+        className="btn-primary btn mt-5 w-full"
         onClick={() => onUpdateOrder(fetchData.order.code)}
       >
         Update order
-      </button>    
-    </div>    
+      </button>
+    </div>
   );
 }
