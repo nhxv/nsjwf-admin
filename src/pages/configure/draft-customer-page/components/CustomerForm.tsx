@@ -178,7 +178,7 @@ export default function CustomerForm({
 
   const onChangeUnit = (field: string, v) => {
     customerForm.setFieldValue(field, v);
-  }
+  };
 
   return (
     <form onSubmit={customerForm.handleSubmit}>
@@ -357,10 +357,13 @@ export default function CustomerForm({
                             </label>
                             <SelectInput
                               name={`unit${product.id}`}
-                              value={
-                                customerForm.values[`unit${product.id}`]
+                              value={customerForm.values[`unit${product.id}`]}
+                              setValue={(v) =>
+                                customerForm.setFieldValue(
+                                  `unit${product.id}`,
+                                  v
+                                )
                               }
-                              setValue={(v) => customerForm.setFieldValue(`unit${product.id}`, v)}
                               options={product.units.map(
                                 (unit) => unit.code.split("_")[1]
                               )}

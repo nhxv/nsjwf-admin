@@ -147,7 +147,9 @@ export default function CreateVendorReturnForm({
                   <SelectInput
                     name={`unit${product.id}`}
                     value={vendorReturnForm.values[`unit${product.id}`]}
-                    setValue={(v) => vendorReturnForm.setFieldValue(`unit${product.id}`, v)}
+                    setValue={(v) =>
+                      vendorReturnForm.setFieldValue(`unit${product.id}`, v)
+                    }
                     options={product.units.map(
                       (unit) => unit.code.split("_")[1]
                     )}

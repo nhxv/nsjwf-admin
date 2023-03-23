@@ -213,7 +213,9 @@ export default function StockForm({ initialData, products, onClear }) {
                       <SelectInput
                         name={`unit${product.id}`}
                         value={stockForm.values[`unit${product.id}`]}
-                        setValue={(v) => stockForm.setFieldValue(`unit${product.id}`, v)}
+                        setValue={(v) =>
+                          stockForm.setFieldValue(`unit${product.id}`, v)
+                        }
                         options={product.units.map(
                           (unit) => unit.code.split("_")[1]
                         )}

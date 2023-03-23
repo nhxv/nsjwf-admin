@@ -267,7 +267,9 @@ export default function CustomerOrderForm({
             <SelectSearch
               name="customer"
               value={customerOrderForm.values["customerName"]}
-              setValue={(v) => customerOrderForm.setFieldValue("customerName", v)}
+              setValue={(v) =>
+                customerOrderForm.setFieldValue("customerName", v)
+              }
               options={customers.map((customer) => customer.name)}
             />
           </div>
@@ -298,10 +300,10 @@ export default function CustomerOrderForm({
             </label>
             <SelectInput
               name="employeeName"
-              value={
-                customerOrderForm.values["employeeName"]
+              value={customerOrderForm.values["employeeName"]}
+              setValue={(v) =>
+                customerOrderForm.setFieldValue("employeeName", v)
               }
-              setValue={(v) => customerOrderForm.setFieldValue("employeeName", v)}
               options={employees.map((employee) => employee.nickname)}
             ></SelectInput>
           </div>
@@ -494,7 +496,12 @@ export default function CustomerOrderForm({
                               value={
                                 customerOrderForm.values[`unit${product.id}`]
                               }
-                              setValue={(v) => customerOrderForm.setFieldValue(`unit${product.id}`, v)}
+                              setValue={(v) =>
+                                customerOrderForm.setFieldValue(
+                                  `unit${product.id}`,
+                                  v
+                                )
+                              }
                               options={product.units.map(
                                 (unit) => unit.code.split("_")[1]
                               )}
