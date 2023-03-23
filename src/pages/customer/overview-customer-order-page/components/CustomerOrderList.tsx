@@ -169,7 +169,7 @@ export default function CustomerOrderList() {
               {convertTimeToText(new Date(order.expected_at))}
             </div>
             <button
-              className={`rounded-btn btn-sm btn mt-3 w-full
+              className={`btn-sm btn mt-3 w-full
             ${
               order.status === OrderStatus.PICKING
                 ? "border-yellow-700 bg-transparent text-yellow-700 hover:border-yellow-700 hover:bg-yellow-700 hover:text-white"

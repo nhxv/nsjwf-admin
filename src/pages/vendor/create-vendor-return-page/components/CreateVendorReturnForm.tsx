@@ -145,13 +145,14 @@ export default function CreateVendorReturnForm({
                 <div className="w-6/12">
                   <label className="custom-label mb-2 inline-block">Unit</label>
                   <SelectInput
-                    form={vendorReturnForm}
-                    field={`unit${product.id}`}
                     name={`unit${product.id}`}
+                    value={vendorReturnForm.values[`unit${product.id}`]}
+                    setValue={(v) =>
+                      vendorReturnForm.setFieldValue(`unit${product.id}`, v)
+                    }
                     options={product.units.map(
                       (unit) => unit.code.split("_")[1]
                     )}
-                    selected={vendorReturnForm.values[`unit${product.id}`]}
                   ></SelectInput>
                 </div>
               </div>

@@ -146,11 +146,12 @@ export default function CreateCustomerReturnForm({
               <div className="w-6/12">
                 <label className="custom-label mb-2 inline-block">Unit</label>
                 <SelectInput
-                  form={customerReturnForm}
-                  field={`unit${product.id}`}
                   name={`unit${product.id}`}
+                  value={customerReturnForm.values[`unit${product.id}`]}
+                  setValue={(v) =>
+                    customerReturnForm.setFieldValue(`unit${product.id}`, v)
+                  }
                   options={product.units.map((unit) => unit.code.split("_")[1])}
-                  selected={customerReturnForm.values[`unit${product.id}`]}
                 ></SelectInput>
               </div>
             </div>

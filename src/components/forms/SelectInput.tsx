@@ -2,17 +2,17 @@ import { useState } from "react";
 import { Listbox } from "@headlessui/react";
 import { BiChevronDown } from "react-icons/bi";
 
-export default function SelectInput({ name, form, field, options, selected }) {
-  const [selectedOption, setSelectedOption] = useState(selected);
+export default function SelectInput({ name, value, setValue, options }) {
+  const [selected, setSelected] = useState(value);
 
   const onChangeValue = (v) => {
-    form.setFieldValue(field, v);
-    setSelectedOption(v);
+    setValue(v);
+    setSelected(v);
   };
 
   return (
     <div className="w-full">
-      <Listbox name={name} value={selectedOption} onChange={onChangeValue}>
+      <Listbox name={name} value={selected} onChange={onChangeValue}>
         <div className="relative">
           <Listbox.Button className="rounded-btn relative h-12 w-full cursor-default border-2 border-base-300 bg-base-100 pl-3.5 pr-10 text-left text-sm font-semibold focus:border-primary ui-open:border-primary dark:bg-base-200">
             <span className="block truncate">{selected}</span>

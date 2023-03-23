@@ -256,10 +256,9 @@ export default function VendorOrderForm({
             </label>
             <SelectSearch
               name="vendor"
-              form={vendorOrderForm}
-              field={"vendorName"}
+              value={vendorOrderForm.values["vendorName"]}
+              setValue={(v) => vendorOrderForm.setFieldValue("vendorName", v)}
               options={vendors.map((vendor) => vendor.name)}
-              selected={vendorOrderForm.values["vendorName"]}
             ></SelectSearch>
           </div>
 
@@ -284,8 +283,8 @@ export default function VendorOrderForm({
             <label className="custom-label mb-2 inline-block">Status</label>
             <SelectInput
               name="status"
-              form={vendorOrderForm}
-              field={"status"}
+              value={vendorOrderForm.values["status"]}
+              setValue={(v) => vendorOrderForm.setFieldValue("status", v)}
               options={Object.values(OrderStatus).filter(
                 (status) =>
                   status !== OrderStatus.PICKING &&
@@ -293,7 +292,6 @@ export default function VendorOrderForm({
                   status !== OrderStatus.DELIVERED &&
                   status !== OrderStatus.CANCELED
               )}
-              selected={vendorOrderForm.values["status"]}
             ></SelectInput>
           </div>
 
@@ -384,15 +382,19 @@ export default function VendorOrderForm({
                               Unit
                             </label>
                             <SelectInput
-                              form={vendorOrderForm}
-                              field={`unit${product.id}`}
                               name={`unit${product.id}`}
+                              value={
+                                vendorOrderForm.values[`unit${product.id}`]
+                              }
+                              setValue={(v) =>
+                                vendorOrderForm.setFieldValue(
+                                  `unit${product.id}`,
+                                  v
+                                )
+                              }
                               options={product.units.map(
                                 (unit) => unit.code.split("_")[1]
                               )}
-                              selected={
-                                vendorOrderForm.values[`unit${product.id}`]
-                              }
                             ></SelectInput>
                           </div>
                           <div className="col-span-12">

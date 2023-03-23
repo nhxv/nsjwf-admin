@@ -265,11 +265,12 @@ export default function CustomerOrderForm({
               <span className="text-red-500">*</span>
             </label>
             <SelectSearch
-              form={customerOrderForm}
-              field={"customerName"}
               name="customer"
+              value={customerOrderForm.values["customerName"]}
+              setValue={(v) =>
+                customerOrderForm.setFieldValue("customerName", v)
+              }
               options={customers.map((customer) => customer.name)}
-              selected={customerOrderForm.values["customerName"]}
             />
           </div>
 
@@ -298,11 +299,12 @@ export default function CustomerOrderForm({
               Assign to
             </label>
             <SelectInput
-              form={customerOrderForm}
-              field={"employeeName"}
               name="employeeName"
+              value={customerOrderForm.values["employeeName"]}
+              setValue={(v) =>
+                customerOrderForm.setFieldValue("employeeName", v)
+              }
               options={employees.map((employee) => employee.nickname)}
-              selected={customerOrderForm.values["employeeName"]}
             ></SelectInput>
           </div>
 
@@ -311,13 +313,12 @@ export default function CustomerOrderForm({
               Status
             </label>
             <SelectInput
-              form={customerOrderForm}
-              field={"status"}
               name="status"
+              value={customerOrderForm.values["status"]}
+              setValue={(v) => customerOrderForm.setFieldValue("status", v)}
               options={Object.values(OrderStatus).filter(
                 (status) => status !== OrderStatus.CANCELED
               )}
-              selected={customerOrderForm.values["status"]}
             ></SelectInput>
           </div>
 
@@ -491,15 +492,19 @@ export default function CustomerOrderForm({
                               Unit
                             </label>
                             <SelectInput
-                              form={customerOrderForm}
-                              field={`unit${product.id}`}
                               name={`unit${product.id}`}
+                              value={
+                                customerOrderForm.values[`unit${product.id}`]
+                              }
+                              setValue={(v) =>
+                                customerOrderForm.setFieldValue(
+                                  `unit${product.id}`,
+                                  v
+                                )
+                              }
                               options={product.units.map(
                                 (unit) => unit.code.split("_")[1]
                               )}
-                              selected={
-                                customerOrderForm.values[`unit${product.id}`]
-                              }
                             ></SelectInput>
                           </div>
                           <div className="col-span-6 xl:col-span-2">
@@ -509,8 +514,8 @@ export default function CustomerOrderForm({
                             <TextInput
                               id={`price${product.id}`}
                               type="text"
-                              name={`price${product.id}`}
                               placeholder="Price"
+                              name={`price${product.id}`}
                               value={
                                 customerOrderForm.values[`price${product.id}`]
                               }
