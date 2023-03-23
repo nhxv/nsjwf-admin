@@ -176,6 +176,10 @@ export default function CustomerForm({
     setSearch((prev) => ({ ...prev, products: [], query: "" }));
   };
 
+  const onChangeUnit = (field: string, v) => {
+    customerForm.setFieldValue(field, v);
+  }
+
   return (
     <form onSubmit={customerForm.handleSubmit}>
       {formState.page === 0 ? (
@@ -352,15 +356,14 @@ export default function CustomerForm({
                               Unit
                             </label>
                             <SelectInput
-                              form={customerForm}
-                              field={`unit${product.id}`}
                               name={`unit${product.id}`}
+                              value={
+                                customerForm.values[`unit${product.id}`]
+                              }
+                              setValue={(v) => customerForm.setFieldValue(`unit${product.id}`, v)}
                               options={product.units.map(
                                 (unit) => unit.code.split("_")[1]
                               )}
-                              selected={
-                                customerForm.values[`unit${product.id}`]
-                              }
                             ></SelectInput>
                           </div>
                         </div>

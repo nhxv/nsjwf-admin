@@ -9,8 +9,6 @@ import NotFoundPage from "./pages/NotFoundPage";
 import ProfilePage from "./pages/ProfilePage";
 
 import DraftCustomerOrderPage from "./pages/customer/draft-customer-order-page/DraftCustomerOrderPage";
-import DraftBackorderPage from "./pages/customer/draft-backorder-page/DraftBackorderPage";
-import ViewBackorderPage from "./pages/customer/view-backorder-page/ViewBackorderPage";
 import ViewCustomerOrderPage from "./pages/customer/view-customer-order-page/ViewCustomerOrderPage";
 
 import DraftVendorOrderPage from "./pages/vendor/draft-vendor-order-page/DraftVendorOrderPage";
@@ -64,16 +62,6 @@ export default function App() {
             path="/customer/update-order-priority"
             element={<UpdateOrderPriorityPage />}
           ></Route>
-          {/* <Route
-            path="/customer/draft-backorder"
-            element={<DraftBackorderPage />}
-          >
-            <Route path=":id" element={<DraftBackorderPage />}></Route>
-          </Route>
-          <Route
-            path="/customer/view-backorder"
-            element={<ViewBackorderPage />}
-          ></Route> */}
           <Route
             path="/customer/create-customer-return/:code"
             element={<CreateCustomerReturnPage />}

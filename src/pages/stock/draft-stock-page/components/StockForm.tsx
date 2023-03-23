@@ -137,8 +137,8 @@ export default function StockForm({ initialData, products, onClear }) {
           </label>
           <SelectInput
             name="reason"
-            form={stockForm}
-            field={"reason"}
+            value={stockForm.values["reason"]}
+            setValue={(v) => stockForm.setFieldValue("reason", v)}
             options={Object.values(StockChangeReason).filter(
               (reason) =>
                 reason !== StockChangeReason.CUSTOMER_ORDER_COMPLETED &&
@@ -147,7 +147,6 @@ export default function StockForm({ initialData, products, onClear }) {
                 reason !== StockChangeReason.VENDOR_RETURN_RECEIVED &&
                 reason !== StockChangeReason.EMPLOYEE_BORROW
             )}
-            selected={stockForm.values["reason"]}
           ></SelectInput>
         </div>
 
@@ -212,13 +211,12 @@ export default function StockForm({ initialData, products, onClear }) {
                         Unit
                       </label>
                       <SelectInput
-                        form={stockForm}
-                        field={`unit${product.id}`}
                         name={`unit${product.id}`}
+                        value={stockForm.values[`unit${product.id}`]}
+                        setValue={(v) => stockForm.setFieldValue(`unit${product.id}`, v)}
                         options={product.units.map(
                           (unit) => unit.code.split("_")[1]
                         )}
-                        selected={stockForm.values[`unit${product.id}`]}
                       ></SelectInput>
                     </div>
                   </div>

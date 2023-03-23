@@ -115,11 +115,10 @@ export default function ProductForm({ editedId, units, initialData, onClear }) {
         <div className="mb-5">
           <label className="custom-label mb-2 inline-block">Location</label>
           <SelectInput
-            form={productForm}
-            field={`location`}
             name={`location`}
+            value={productForm.values[`location`]}
+            setValue={(v) => productForm.setFieldValue(`location`, v)}
             options={Object.values(Location)}
-            selected={productForm.values[`location`]}
           ></SelectInput>
         </div>
 

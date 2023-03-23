@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Combobox } from "@headlessui/react";
 import { BiChevronDown } from "react-icons/bi";
 
-export default function SelectSearch({ name, form, field, options, selected }) {
-  const [selectedOption, setSelectedOption] = useState(selected);
+export default function SelectSearch({ name, value, setValue, options }) {
+  const [selected, setSelected] = useState(value);
   const [query, setQuery] = useState("");
 
   const filteredOption =
@@ -17,8 +17,8 @@ export default function SelectSearch({ name, form, field, options, selected }) {
         );
 
   const onChangeValue = (v) => {
-    form.setFieldValue(field, v);
-    setSelectedOption(v);
+    setValue(v);
+    setSelected(v);
     setQuery("");
   };
 
@@ -26,7 +26,7 @@ export default function SelectSearch({ name, form, field, options, selected }) {
     <div className="w-full">
       <Combobox
         name={name}
-        value={selectedOption}
+        value={selected}
         onChange={(v) => onChangeValue(v)}
       >
         <div className="relative">

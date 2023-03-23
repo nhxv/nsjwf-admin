@@ -341,13 +341,12 @@ export default function VendorForm({
                               Unit
                             </label>
                             <SelectInput
-                              form={vendorForm}
-                              field={`unit${product.id}`}
                               name={`unit${product.id}`}
+                              value={vendorForm.values[`unit${product.id}`]}
+                              setValue={(v) => vendorForm.setFieldValue(`unit${product.id}`, v)}
                               options={product.units.map(
                                 (unit) => unit.code.split("_")[1]
                               )}
-                              selected={vendorForm.values[`unit${product.id}`]}
                             ></SelectInput>
                           </div>
                         </div>
