@@ -20,8 +20,16 @@ export default function CustomerOrderList() {
     query: "",
   });
   const total = useMemo(() => {
-    return search.orders.reduce((prev, curr) => prev + curr.productCustomerOrders.reduce((prev, curr) => prev + curr.quantity * curr.unit_price, 0), 0);
-  }, [search.orders])
+    return search.orders.reduce(
+      (prev, curr) =>
+        prev +
+        curr.productCustomerOrders.reduce(
+          (prev, curr) => prev + curr.quantity * curr.unit_price,
+          0
+        ),
+      0
+    );
+  }, [search.orders]);
 
   useEffect(() => {
     getCustomerOrders();
@@ -130,7 +138,7 @@ export default function CustomerOrderList() {
 
   return (
     <>
-      <div className="mx-auto mb-5 w-11/12 flex flex-col gap-3 items-center">
+      <div className="mx-auto mb-5 flex w-11/12 flex-col items-center gap-3">
         <div className="w-6/12">
           <SearchInput
             id="order-search"
@@ -143,14 +151,13 @@ export default function CustomerOrderList() {
           ></SearchInput>
         </div>
         <div className="flex gap-2">
-          <div className="rounded-btn bg-info text-info-content p-2 text-sm font-semibold flex items-center">
+          <div className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content">
             <span>Number of order: {search.orders.length}</span>
           </div>
-          <div className="rounded-btn bg-info text-info-content p-2 text-sm font-semibold flex items-center">
+          <div className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content">
             <span>Current total: ${total}</span>
           </div>
         </div>
-
       </div>
       <div className="grid grid-cols-12 gap-2 px-4">
         {search.orders.map((order) => (
