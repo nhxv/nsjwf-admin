@@ -172,9 +172,9 @@ export default function CustomerSaleList({ search, reload, clear }) {
                 </button>
               )}
               {role === Role.MASTER && (
-                <button 
-                className="btn-error btn mt-3 w-full"
-                onClick={() => onRevert(sale.code)}
+                <button
+                  className="btn-error btn mt-3 w-full"
+                  onClick={() => onRevert(sale.code)}
                 >
                   Revert
                 </button>
