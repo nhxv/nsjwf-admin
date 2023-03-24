@@ -137,7 +137,7 @@ export default function CustomerOrderList() {
 
   return (
     <>
-      <div className="mx-auto mb-5 flex w-11/12 flex-col items-center gap-3">
+      <div className="mx-auto mb-5 flex w-11/12 flex-col items-center justify-center gap-3 xl:flex-row">
         <div className="w-full xl:w-6/12">
           <div>
             <SearchInput
