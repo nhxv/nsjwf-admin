@@ -2,17 +2,20 @@ import { useState } from "react";
 import { BiRevision, BiTrash } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import { PaymentStatus } from "../../../../commons/enums/payment-status.enum";
+import { Role } from "../../../../commons/enums/role.enum";
 import { convertTime } from "../../../../commons/utils/time.util";
 import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
 import StatusTag from "../../../../components/StatusTag";
 import api from "../../../../stores/api";
+import { useAuthStore } from "../../../../stores/auth.store";
 
 export default function CustomerSaleList({ search, reload, clear }) {
   const [formState, setFormState] = useState({
     loading: false,
     error: "",
   });
+  const role = useAuthStore((state) => state.role);
 
   const navigate = useNavigate();
 
@@ -31,6 +34,29 @@ export default function CustomerSaleList({ search, reload, clear }) {
     };
     api
       .put(`/customer-payment/status/${code}`, reqData)
+      .then((res) => {
+        setFormState((prev) => ({ ...prev, loading: false, error: "" }));
+        reload();
+      })
+      .catch((e) => {
+        const error = JSON.parse(
+          JSON.stringify(e.response ? e.response.data.error : e)
+        );
+        setFormState((prev) => ({
+          ...prev,
+          error: error.message,
+          loading: false,
+        }));
+        setTimeout(() => {
+          setFormState((prev) => ({ ...prev, error: "", loading: false }));
+          reload();
+        }, 2000);
+      });
+  };
+
+  const onRevert = (code: string) => {
+    api
+      .put(`/customer-orders/revert/${code}`)
       .then((res) => {
         setFormState((prev) => ({ ...prev, loading: false, error: "" }));
         reload();
@@ -143,6 +169,14 @@ export default function CustomerSaleList({ search, reload, clear }) {
                   onClick={() => onCreateReturn(sale.code)}
                 >
                   Create return
+                </button>
+              )}
+              {role === Role.MASTER && (
+                <button 
+                className="btn-error btn mt-3 w-full"
+                onClick={() => onRevert(sale.code)}
+                >
+                  Revert
                 </button>
               )}
               <div>
