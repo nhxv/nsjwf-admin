@@ -61,7 +61,6 @@ export default function CustomerOrderList() {
             loading: false,
           }));
         } else {
-          console.log(res.data);
           setSearch((prev) => ({ ...prev, orders: res.data, query: "" }));
           setFetchData((prev) => ({
             ...prev,
@@ -139,23 +138,25 @@ export default function CustomerOrderList() {
   return (
     <>
       <div className="mx-auto mb-5 flex w-11/12 flex-col items-center gap-3">
-        <div className="w-6/12">
-          <SearchInput
-            id="order-search"
-            name="order-search"
-            placeholder="Search orders"
-            value={search.query}
-            onChange={(e) => onChangeSearch(e)}
-            onClear={onClearQuery}
-            onFocus={null}
-          ></SearchInput>
+        <div className="w-full xl:w-6/12">
+          <div>
+            <SearchInput
+              id="order-search"
+              name="order-search"
+              placeholder="Search orders"
+              value={search.query}
+              onChange={(e) => onChangeSearch(e)}
+              onClear={onClearQuery}
+              onFocus={null}
+            ></SearchInput>
+          </div>
         </div>
         <div className="flex gap-2">
           <div className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content">
-            <span>Number of order: {search.orders.length}</span>
+            <span>{search.orders.length} order(s)</span>
           </div>
           <div className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content">
-            <span>Current total: ${total}</span>
+            <span>${total} in total</span>
           </div>
         </div>
       </div>
