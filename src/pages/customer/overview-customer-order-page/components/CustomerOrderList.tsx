@@ -138,8 +138,8 @@ export default function CustomerOrderList() {
 
   return (
     <>
-      <div className="mt-4 mb-5 flex flex-col items-center justify-between gap-3 mx-4 xl:flex-row">
-        <div className="flex gap-2 items-center">
+      <div className="mx-4 mt-4 mb-5 flex flex-col items-center justify-between gap-3 xl:flex-row">
+        <div className="flex items-center gap-2">
           <h1 className="text-xl font-bold">Overview</h1>
           <div className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content">
             <span>{search.orders.length} order(s)</span>
@@ -162,7 +162,7 @@ export default function CustomerOrderList() {
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-12 gap-2 mx-4">
+      <div className="mx-4 grid grid-cols-12 gap-2">
         {search.orders.map((order) => (
           <div
             key={order.code}
