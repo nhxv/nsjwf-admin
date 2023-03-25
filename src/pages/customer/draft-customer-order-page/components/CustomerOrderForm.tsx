@@ -489,6 +489,23 @@ export default function CustomerOrderForm({
                           </div>
                           <div className="col-span-6 xl:col-span-2">
                             <label className="custom-label mb-2 inline-block">
+                              Unit Price
+                            </label>
+                            <TextInput
+                              id={`price${product.id}`}
+                              type="text"
+                              placeholder="Price"
+                              name={`price${product.id}`}
+                              value={
+                                customerOrderForm.values[`price${product.id}`]
+                              }
+                              onChange={(e) =>
+                                handlePriceChange(e, `price${product.id}`)
+                              }
+                            ></TextInput>
+                          </div>
+                          <div className="col-span-6 xl:col-span-2">
+                            <label className="custom-label mb-2 inline-block">
                               Unit
                             </label>
                             <SelectInput
@@ -506,23 +523,6 @@ export default function CustomerOrderForm({
                                 (unit) => unit.code.split("_")[1]
                               )}
                             ></SelectInput>
-                          </div>
-                          <div className="col-span-6 xl:col-span-2">
-                            <label className="custom-label mb-2 inline-block">
-                              Unit Price
-                            </label>
-                            <TextInput
-                              id={`price${product.id}`}
-                              type="text"
-                              placeholder="Price"
-                              name={`price${product.id}`}
-                              value={
-                                customerOrderForm.values[`price${product.id}`]
-                              }
-                              onChange={(e) =>
-                                handlePriceChange(e, `price${product.id}`)
-                              }
-                            ></TextInput>
                           </div>
                           <div className="col-span-6 xl:col-span-2">
                             <div className="custom-label mb-2">Amount</div>
