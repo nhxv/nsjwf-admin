@@ -11,7 +11,6 @@ export default function OverviewCustomerOrderPage() {
 
   return (
     <section className="min-h-screen">
-      <h1 className="my-4 text-center text-xl font-bold">Overview</h1>
       <div className="fixed bottom-24 right-6 z-20 md:right-8">
         <button
           className="btn-primary btn-circle btn shadow-md"
