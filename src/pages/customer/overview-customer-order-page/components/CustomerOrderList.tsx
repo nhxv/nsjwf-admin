@@ -6,6 +6,7 @@ import Alert from "../../../../components/Alert";
 import SearchInput from "../../../../components/forms/SearchInput";
 import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
+import { BiChevronRight } from "react-icons/bi";
 
 export default function CustomerOrderList() {
   const [fetchData, setFetchData] = useState({
@@ -137,8 +138,17 @@ export default function CustomerOrderList() {
 
   return (
     <>
-      <div className="mx-auto mb-5 flex w-11/12 flex-col items-center justify-center gap-3 xl:flex-row">
-        <div className="w-full xl:w-6/12">
+      <div className="mt-4 mb-5 flex flex-col items-center justify-between gap-3 mx-4 xl:flex-row">
+        <div className="flex gap-2 items-center">
+          <h1 className="text-xl font-bold">Overview</h1>
+          <div className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content">
+            <span>{search.orders.length} order(s)</span>
+          </div>
+          <div className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content">
+            <span>${total} in total</span>
+          </div>
+        </div>
+        <div className="">
           <div>
             <SearchInput
               id="order-search"
@@ -151,16 +161,8 @@ export default function CustomerOrderList() {
             ></SearchInput>
           </div>
         </div>
-        <div className="flex gap-2">
-          <div className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content">
-            <span>{search.orders.length} order(s)</span>
-          </div>
-          <div className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content">
-            <span>${total} in total</span>
-          </div>
-        </div>
       </div>
-      <div className="grid grid-cols-12 gap-2 px-4">
+      <div className="grid grid-cols-12 gap-2 mx-4">
         {search.orders.map((order) => (
           <div
             key={order.code}
