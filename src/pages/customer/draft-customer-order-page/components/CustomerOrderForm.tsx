@@ -67,7 +67,9 @@ export default function CustomerOrderForm({
         for (const property of properties) {
           if (property.includes("price")) {
             const [id, appear] = property.replace("price", "").split("-");
-            const selected = selectedProducts.find((p) => (p.id === +id && p.appear === +appear));
+            const selected = selectedProducts.find(
+              (p) => p.id === +id && p.appear === +appear
+            );
             if (selected) {
               productOrders.set(`${selected.id}-${selected.appear}`, {
                 productName: selected.name,
@@ -76,7 +78,9 @@ export default function CustomerOrderForm({
             }
           } else if (property.includes("quantity")) {
             const [id, appear] = property.replace("quantity", "").split("-");
-            const selected = selectedProducts.find((p) => (p.id === +id && p.appear === +appear));
+            const selected = selectedProducts.find(
+              (p) => p.id === +id && p.appear === +appear
+            );
             if (selected) {
               productOrders.set(`${selected.id}-${selected.appear}`, {
                 ...productOrders.get(`${selected.id}-${selected.appear}`),
@@ -85,7 +89,9 @@ export default function CustomerOrderForm({
             }
           } else if (property.includes("unit")) {
             const [id, appear] = property.replace("unit", "").split("-");
-            const selected = selectedProducts.find((p) => (p.id === +id && p.appear === +appear));
+            const selected = selectedProducts.find(
+              (p) => p.id === +id && p.appear === +appear
+            );
             if (selected) {
               productOrders.set(`${selected.id}-${selected.appear}`, {
                 ...productOrders.get(`${selected.id}-${selected.appear}`),
@@ -260,7 +266,7 @@ export default function CustomerOrderForm({
         }
       }
     }
-    const selectedProduct = {...product, appear: appear};
+    const selectedProduct = { ...product, appear: appear };
     setSelectedProducts([selectedProduct, ...selectedProducts]);
     customerOrderForm.setFieldValue(`quantity${product.id}-${appear}`, 0);
     customerOrderForm.setFieldValue(`price${product.id}-${appear}`, 0);
@@ -273,7 +279,9 @@ export default function CustomerOrderForm({
     customerOrderForm.setFieldValue(`price${id}-${appear}`, 0);
     updatePrice(0, `remove${id}-${appear}`);
     setSelectedProducts(
-      selectedProducts.filter((product) => (product.id !== id || product.appear !== appear))
+      selectedProducts.filter(
+        (product) => product.id !== id || product.appear !== appear
+      )
     );
   };
 
@@ -481,7 +489,9 @@ export default function CustomerOrderForm({
                         <button
                           type="button"
                           className="btn-accent btn-sm btn-circle btn absolute -top-4 -right-4 shadow-md"
-                          onClick={() => onRemoveProduct(product.id, product.appear)}
+                          onClick={() =>
+                            onRemoveProduct(product.id, product.appear)
+                          }
                         >
                           <span>
                             <BiX className="h-6 w-6"></BiX>
@@ -521,7 +531,10 @@ export default function CustomerOrderForm({
                                 ]
                               }
                               onChange={(e) =>
-                                handlePriceChange(e, `quantity${product.id}-${product.appear}`)
+                                handlePriceChange(
+                                  e,
+                                  `quantity${product.id}-${product.appear}`
+                                )
                               }
                               min="0"
                               max="99999"
@@ -538,10 +551,15 @@ export default function CustomerOrderForm({
                               placeholder="Price"
                               name={`price${product.id}-${product.appear}`}
                               value={
-                                customerOrderForm.values[`price${product.id}-${product.appear}`]
+                                customerOrderForm.values[
+                                  `price${product.id}-${product.appear}`
+                                ]
                               }
                               onChange={(e) =>
-                                handlePriceChange(e, `price${product.id}-${product.appear}`)
+                                handlePriceChange(
+                                  e,
+                                  `price${product.id}-${product.appear}`
+                                )
                               }
                             ></TextInput>
                           </div>
@@ -552,7 +570,9 @@ export default function CustomerOrderForm({
                             <SelectInput
                               name={`unit${product.id}-${product.appear}`}
                               value={
-                                customerOrderForm.values[`unit${product.id}-${product.appear}`]
+                                customerOrderForm.values[
+                                  `unit${product.id}-${product.appear}`
+                                ]
                               }
                               setValue={(v) =>
                                 customerOrderForm.setFieldValue(
@@ -571,7 +591,9 @@ export default function CustomerOrderForm({
                               {customerOrderForm.values[
                                 `quantity${product.id}-${product.appear}`
                               ] *
-                                customerOrderForm.values[`price${product.id}-${product.appear}`]}
+                                customerOrderForm.values[
+                                  `price${product.id}-${product.appear}`
+                                ]}
                             </div>
                           </div>
                         </div>

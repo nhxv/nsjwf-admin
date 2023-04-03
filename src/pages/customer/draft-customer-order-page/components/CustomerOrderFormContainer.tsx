@@ -74,9 +74,12 @@ export default function CustomerOrderFormContainer() {
                 for (let i = 0; i < similarProductOrders.length; i++) {
                   // similar products in existing order
                   let appear = i + 1;
-                  productFieldData[`quantity${product.id}-${appear}`] = similarProductOrders[i].quantity;
-                  productFieldData[`unit${product.id}-${appear}`] = similarProductOrders[i].unit_code.split("_")[1];
-                  productFieldData[`price${product.id}-${appear}`] = similarProductOrders[i].unit_price;
+                  productFieldData[`quantity${product.id}-${appear}`] =
+                    similarProductOrders[i].quantity;
+                  productFieldData[`unit${product.id}-${appear}`] =
+                    similarProductOrders[i].unit_code.split("_")[1];
+                  productFieldData[`price${product.id}-${appear}`] =
+                    similarProductOrders[i].unit_price;
                   editedProducts.push({
                     id: product.id,
                     appear: appear,
@@ -87,12 +90,17 @@ export default function CustomerOrderFormContainer() {
                   updatedPrices.push({
                     id: product.id,
                     appear: appear,
-                    quantity: productFieldData[`quantity${product.id}-${appear}`],
+                    quantity:
+                      productFieldData[`quantity${product.id}-${appear}`],
                     price: productFieldData[`price${product.id}-${appear}`],
                   });
                 }
 
-                for (let i = similarProductOrders.length + 1; i <= product.units.length; i++) {
+                for (
+                  let i = similarProductOrders.length + 1;
+                  i <= product.units.length;
+                  i++
+                ) {
                   productFieldData[`quantity${product.id}-${i}`] = 0;
                   productFieldData[`unit${product.id}-${i}`] = "BOX";
                   productFieldData[`price${product.id}-${i}`] = 0;
@@ -251,15 +259,21 @@ export default function CustomerOrderFormContainer() {
     let updatedPrices = [...fetchData.prices];
     if (inputId.includes("quantity")) {
       const [id, appear] = inputId.replace("quantity", "").split("-");
-      const index = updatedPrices.findIndex(p => p.id === +id && p.appear === +appear);
+      const index = updatedPrices.findIndex(
+        (p) => p.id === +id && p.appear === +appear
+      );
       updatedPrices[index].quantity = value;
     } else if (inputId.includes("price")) {
       const [id, appear] = inputId.replace("price", "").split("-");
-      const index = updatedPrices.findIndex(p => p.id === +id && p.appear === +appear);
+      const index = updatedPrices.findIndex(
+        (p) => p.id === +id && p.appear === +appear
+      );
       updatedPrices[index].price = value;
     } else if (inputId.includes("remove")) {
       const [id, appear] = inputId.replace("remove", "").split("-");
-      const index = updatedPrices.findIndex(p => p.id === +id && p.appear === +appear);
+      const index = updatedPrices.findIndex(
+        (p) => p.id === +id && p.appear === +appear
+      );
       updatedPrices[index].quantity = 0;
       updatedPrices[index].price = 0;
     }
