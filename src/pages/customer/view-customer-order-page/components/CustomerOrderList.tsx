@@ -55,7 +55,7 @@ export default function CustomerOrderList({ orders, printMode }) {
             {order.productCustomerOrders.map((productOrder) => {
               return (
                 <div
-                  key={productOrder.productName}
+                  key={`${productOrder.productName}_${productOrder.unitCode}`}
                   className="rounded-btn mb-2 flex items-center justify-center bg-base-200 py-3 dark:bg-base-300"
                 >
                   <div className="ml-3 w-9/12">

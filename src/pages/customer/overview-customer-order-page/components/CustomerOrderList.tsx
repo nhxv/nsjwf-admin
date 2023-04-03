@@ -6,7 +6,6 @@ import Alert from "../../../../components/Alert";
 import SearchInput from "../../../../components/forms/SearchInput";
 import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
-import { BiChevronRight } from "react-icons/bi";
 
 export default function CustomerOrderList() {
   const [fetchData, setFetchData] = useState({
@@ -122,7 +121,7 @@ export default function CustomerOrderList() {
 
   if (fetchData.error) {
     return (
-      <div className="mx-auto w-11/12 md:w-10/12 lg:w-6/12">
+      <div className="mx-auto mt-4 w-11/12 md:w-10/12 lg:w-6/12">
         <Alert type="error" message={fetchData.error}></Alert>
       </div>
     );
@@ -130,7 +129,7 @@ export default function CustomerOrderList() {
 
   if (fetchData.empty) {
     return (
-      <div className="mx-auto w-11/12 md:w-10/12 lg:w-6/12">
+      <div className="mx-auto mt-4 w-11/12 md:w-10/12 lg:w-6/12">
         <Alert type="empty" message={fetchData.empty}></Alert>
       </div>
     );
@@ -138,7 +137,7 @@ export default function CustomerOrderList() {
 
   return (
     <>
-      <div className="mx-4 mt-4 mb-5 flex flex-col items-center justify-between gap-3 xl:flex-row">
+      <div className="m-4 flex flex-col items-center justify-between gap-3 xl:flex-row">
         <div className="flex items-center gap-2">
           <h1 className="text-xl font-bold">Overview</h1>
           <div className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content">
@@ -148,7 +147,7 @@ export default function CustomerOrderList() {
             <span>${total} in total</span>
           </div>
         </div>
-        <div className="">
+        <div>
           <div>
             <SearchInput
               id="order-search"

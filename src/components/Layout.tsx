@@ -3,6 +3,24 @@ import {
   BiExit,
   BiMenuAltLeft,
   BiUser,
+  BiClipboard,
+  BiLogOutCircle,
+  BiSkipPreviousCircle,
+  BiDollar,
+  BiLogInCircle,
+  BiSearch,
+  BiShoppingBag,
+  BiSpreadsheet,
+  BiSkipNextCircle,
+  BiHome,
+  BiEdit,
+  BiTask,
+  BiBarChartAlt2,
+  BiPackage,
+  BiSupport,
+  BiGroup,
+  BiFingerprint,
+  BiReset,
 } from "react-icons/bi";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Role } from "../commons/enums/role.enum";
@@ -23,16 +41,19 @@ export default function Layout({ children }) {
           itemName: "Draft Order",
           href: "/customer/draft-customer-order",
           visible: [Role.MASTER, Role.ADMIN],
+          icon: <BiShoppingBag className="w-6 h-6" />
         },
         {
           itemName: "Update Priority",
           href: "/customer/update-order-priority",
           visible: [Role.MASTER, Role.ADMIN],
+          icon: <BiClipboard className="w-6 h-6" />
         },
         {
           itemName: "View Order",
           href: "/customer/overview-customer-order",
           visible: [Role.MASTER, Role.ADMIN],
+          icon: <BiLogOutCircle className="w-6 h-6" />
         },
         // {
         //   itemName: "Draft Backorder",
@@ -53,11 +74,13 @@ export default function Layout({ children }) {
           itemName: "View Return",
           href: "/customer/view-customer-return",
           visible: [Role.MASTER, Role.ADMIN],
+          icon: <BiSkipPreviousCircle className="w-6 h-6" />
         },
         {
           itemName: "View Sale",
           href: "/customer/view-sale",
           visible: [Role.MASTER, Role.ADMIN],
+          icon: <BiDollar className="w-6 h-6" />
         },
       ],
       visible: [Role.MASTER, Role.ADMIN],
@@ -69,21 +92,25 @@ export default function Layout({ children }) {
           itemName: "Draft Order",
           href: "/vendor/draft-vendor-order",
           visible: [Role.MASTER, Role.ADMIN],
+          icon: <BiSpreadsheet className="w-6 h-6" />
         },
         {
           itemName: "View Order",
           href: "/vendor/view-vendor-order",
           visible: [Role.MASTER, Role.ADMIN],
+          icon: <BiLogInCircle className="h-6 w-6" />
         },
         {
           itemName: "Search Sale",
           href: "/vendor/search-vendor-sale",
           visible: [Role.MASTER, Role.ADMIN],
+          icon: <BiSearch className="w-6 h-6" />
         },
         {
           itemName: "View Return",
           href: "/vendor/view-vendor-return",
           visible: [Role.MASTER, Role.ADMIN],
+          icon: <BiSkipNextCircle className="w-6 h-6" />
         },
       ],
       visible: [Role.MASTER, Role.ADMIN],
@@ -95,11 +122,13 @@ export default function Layout({ children }) {
           itemName: "View",
           href: "/stock/view-stock",
           visible: [Role.MASTER, Role.ADMIN, Role.OPERATOR],
+          icon: <BiHome className="w-6 h-6" />
         },
         {
           itemName: "Change",
           href: "/stock/change-stock",
           visible: [Role.MASTER, Role.ADMIN],
+          icon: <BiEdit className="w-6 h-6" />
         },
       ],
       visible: [Role.MASTER, Role.ADMIN, Role.OPERATOR],
@@ -111,11 +140,13 @@ export default function Layout({ children }) {
           itemName: "View",
           href: "/task/view-task",
           visible: [Role.MASTER, Role.ADMIN, Role.OPERATOR],
+          icon: <BiTask className="w-6 h-6" />
         },
         {
           itemName: "Report",
           href: "/task/report-task",
           visible: [Role.MASTER, Role.ADMIN, Role.OPERATOR],
+          icon: <BiBarChartAlt2 className="w-6 h-6" />
         },
       ],
       visible: [Role.MASTER, Role.ADMIN, Role.OPERATOR],
@@ -127,22 +158,26 @@ export default function Layout({ children }) {
           itemName: "Product",
           href: "/configure/view-product",
           visible: [Role.MASTER, Role.ADMIN],
+          icon: <BiPackage className="w-6 h-6" />
         },
         {
           itemName: "Customer",
           href: "/configure/view-customer",
           visible: [Role.MASTER, Role.ADMIN],
+          icon: <BiGroup className="w-6 h-6" />
         },
         {
           itemName: "Vendor",
           href: "/configure/view-vendor",
           visible: [Role.MASTER, Role.ADMIN],
+          icon: <BiSupport className="w-6 h-6" />
         },
         // {itemName: "Vehicle", href: "/configure/vehicle", visible: [Role.MASTER, Role.ADMIN]},
         {
           itemName: "Employee",
           href: "/configure/employee",
           visible: [Role.MASTER, Role.ADMIN],
+          icon: <BiFingerprint className="w-6 h-6" />
         },
       ],
       visible: [Role.MASTER, Role.ADMIN],
@@ -150,7 +185,12 @@ export default function Layout({ children }) {
     {
       name: "Test only",
       subItems: [
-        { itemName: "Reset", href: "/test/reset", visible: [Role.MASTER] },
+        { 
+          itemName: "Reset", 
+          href: "/test/reset", 
+          visible: [Role.MASTER],
+          icon: <BiReset className="w-6 h-6" /> 
+        },
       ],
       visible: [Role.MASTER],
     },
@@ -232,8 +272,8 @@ export default function Layout({ children }) {
         {/* Sidebar */}
         <aside className="drawer-side">
           <label htmlFor="mobile-drawer" className="drawer-overlay"></label>
-          <div className="min-h-screen w-56 overflow-y-auto bg-base-100 shadow-md dark:bg-base-200">
-            <ul className="menu p-4">
+          <div className="min-h-screen w-60 overflow-y-auto bg-base-100 shadow-md dark:bg-base-200">
+            <ul className="menu p-2">
               {categories.map((category, index) => {
                 return (
                   <div key={index}>
@@ -255,7 +295,7 @@ export default function Layout({ children }) {
                                         : ``
                                     }
                                   >
-                                    {item.itemName}
+                                    {item.icon} {item.itemName}
                                   </NavLink>
                                 </li>
                               )}
