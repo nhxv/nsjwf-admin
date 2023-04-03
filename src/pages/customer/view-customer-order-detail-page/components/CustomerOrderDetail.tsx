@@ -93,7 +93,7 @@ export default function CustomerOrderDetail() {
       {fetchData.order.productCustomerOrders.map((productOrder) => {
         return (
           <div
-            key={productOrder.product_name}
+            key={productOrder.unit_code}
             className="rounded-btn mb-2 flex items-center justify-center bg-base-200 py-3 dark:bg-base-300"
           >
             <div className="ml-3 w-6/12">

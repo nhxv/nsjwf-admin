@@ -47,7 +47,7 @@ export default function PackingSlipToPrint({ printRef, order }) {
         </div>
         {order.productCustomerOrders.map((productOrder) => (
           <div
-            key={productOrder.productName}
+            key={`${productOrder.productName}_${productOrder.unitCode}`}
             className="ml-24 flex w-9/12 border-b border-black py-2"
           >
             <div className="w-[64px] font-semibold">
