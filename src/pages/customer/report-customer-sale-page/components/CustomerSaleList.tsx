@@ -243,15 +243,15 @@ export default function CustomerSaleList() {
                   <StatusTag status={report.payment_status}></StatusTag>
                 </div>
               </div>
-              <button
+              {role === Role.MASTER && (
+                <button
                 type="button"
                 className="btn-ghost btn-circle btn bg-base-200 text-neutral dark:bg-base-300 dark:text-neutral-content"
-                onClick={() =>
-                  onUpdatePayment(PaymentStatus.RECEIVABLE, report.order_code)
-                }
-              >
-                <BiRevision className="h-6 w-6"></BiRevision>
-              </button>
+                onClick={() => onRevert(report.order_code)}
+                >
+                  <BiRevision className="h-6 w-6"></BiRevision>
+                </button>
+              )}
             </div>
             <div className="divider"></div>
             {/* products in report */}
@@ -313,15 +313,13 @@ export default function CustomerSaleList() {
                 Cash
               </button>
             </div>
-            {role === Role.MASTER && (
-              <button
-                type="button"
-                className="btn-accent btn mt-3 w-full"
-                onClick={() => onRevert(report.order_code)}
-              >
-                Revert
-              </button>
-            )}
+            <button
+              type="button"
+              className="btn-accent btn mt-3 w-full"
+              onClick={() => onUpdatePayment(PaymentStatus.RECEIVABLE, report.order_code)}
+            >
+              Receivable
+            </button>
             <div>
               {paymentState.loading && (
                 <div className="mt-5">
