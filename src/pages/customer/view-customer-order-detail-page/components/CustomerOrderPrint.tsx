@@ -77,7 +77,6 @@ export default function CustomerOrderPrint({ order }) {
               max={100}
               name="pallet"
               value={pallet.count}
-              disabled={false}
               onChange={onChange}
             ></NumberInput>
           </div>

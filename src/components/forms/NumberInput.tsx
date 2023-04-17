@@ -4,8 +4,8 @@ export default function NumberInput({
   name,
   value,
   onChange,
-  min = "0",
-  max = "99999",
+  min = 0,
+  max = 99999,
   disabled = false,
 }) {
   const onSelectAll = (e) => {

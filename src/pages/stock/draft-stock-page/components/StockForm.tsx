@@ -201,9 +201,6 @@ export default function StockForm({ initialData, products, onClear }) {
                         placeholder="Qty"
                         value={stockForm.values[`quantity${product.id}`]}
                         onChange={stockForm.handleChange}
-                        min="0"
-                        max="99999"
-                        disabled={false}
                       ></NumberInput>
                     </div>
                     <div className="w-6/12">

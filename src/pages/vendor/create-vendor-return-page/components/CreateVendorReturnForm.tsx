@@ -137,9 +137,7 @@ export default function CreateVendorReturnForm({
                     placeholder="Qty"
                     value={vendorReturnForm.values[`quantity${product.id}`]}
                     onChange={vendorReturnForm.handleChange}
-                    min="0"
-                    max={product.quantity}
-                    disabled={false}
+                    max={+product.quantity}
                   ></NumberInput>
                 </div>
                 <div className="w-6/12">

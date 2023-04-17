@@ -160,9 +160,6 @@ export default function VehicleForm() {
             name="volume"
             placeholder={`Volume`}
             value={vehicleForm.values.volume}
-            min="0"
-            max="999999"
-            disabled={false}
             onChange={vehicleForm.handleChange}
           ></NumberInput>
         </div>

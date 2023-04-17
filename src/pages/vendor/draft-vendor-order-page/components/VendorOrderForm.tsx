@@ -372,9 +372,6 @@ export default function VendorOrderForm({
                               onChange={(e) =>
                                 handlePriceChange(e, `quantity${product.id}`)
                               }
-                              min="0"
-                              max="99999"
-                              disabled={false}
                             ></NumberInput>
                           </div>
                           <div className="col-span-6">

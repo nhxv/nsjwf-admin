@@ -331,9 +331,6 @@ export default function VendorForm({
                               placeholder="Qty"
                               value={vendorForm.values[`quantity${product.id}`]}
                               onChange={vendorForm.handleChange}
-                              min="0"
-                              max="99999"
-                              disabled={false}
                             ></NumberInput>
                           </div>
                           <div className="w-6/12">
