@@ -4,9 +4,9 @@ export default function NumberInput({
   name,
   value,
   onChange,
-  min,
-  max,
-  disabled,
+  min = 0,
+  max = 99999,
+  disabled = false,
 }) {
   const onSelectAll = (e) => {
     setTimeout(() => e.target.select(), 0);

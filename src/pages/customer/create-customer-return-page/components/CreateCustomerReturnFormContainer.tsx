@@ -19,44 +19,50 @@ export default function CreateCustomerReturnFormContainer({}) {
   const [initialFields, setInitialFields] = useState({});
 
   useEffect(() => {
-    const saleReturnPromise = api.get(`/customer-sale-returns/${params.code}`);
+    const returnRemainPromise = api.get(
+      `/customer-return-remains/${params.code}`
+    );
     const productPromise = api.get(`/products/active`);
-    Promise.all([saleReturnPromise, productPromise])
+    Promise.all([returnRemainPromise, productPromise])
       .then((res) => {
-        const saleReturnRes = res[0].data;
+        const returnRemainRes = res[0].data;
         const allProductsRes = res[1].data;
         const productFieldData = {};
         const allProductReturns = [];
         for (const product of allProductsRes) {
-          const productReturn = saleReturnRes.productCustomerSaleReturns.find(
-            (pr) => pr.product_name === product.name
-          );
-          if (productReturn) {
-            productFieldData[`quantity${product.id}`] = parseFraction(
-              productReturn.quantity
+          const similarProductReturns =
+            returnRemainRes.productCustomerReturnRemains.filter(
+              (pr) => pr.product_name === product.name
             );
-            productFieldData[`unit${product.id}`] =
-              productReturn.unit_code.split("_")[1];
-            allProductReturns.push({
-              id: product.id, // to query unit
-              name: productReturn.product_name,
-              quantity: productReturn.quantity,
-              unit_code: productReturn.unit_code,
-              units: product.units,
-              unit_price: productReturn.unit_price,
-            });
+          if (similarProductReturns.length > 0) {
+            for (let i = 0; i < similarProductReturns.length; i++) {
+              let appear = i + 1;
+              productFieldData[`quantity${product.id}-${appear}`] =
+                parseFraction(similarProductReturns[i].quantity);
+              productFieldData[`unit${product.id}-${appear}`] =
+                similarProductReturns[i].unit_code.split("_")[1];
+              allProductReturns.push({
+                id: product.id,
+                appear: appear,
+                name: similarProductReturns[i].product_name,
+                quantity: similarProductReturns[i].quantity,
+                unit_code: similarProductReturns[i].unit_code,
+                units: product.units,
+                unit_price: similarProductReturns[i].unit_price,
+              });
+            }
           }
         }
         setInitialFields((prev) => ({
           ...prev,
-          customerName: saleReturnRes.customer_name,
-          orderCode: saleReturnRes.sale_code,
-          refund: saleReturnRes.refund ? saleReturnRes.refund : "0",
+          customerName: returnRemainRes.customer_name,
+          orderCode: returnRemainRes.order_code,
+          refund: returnRemainRes.refund ? returnRemainRes.refund : "0",
           ...productFieldData,
         }));
         setFetchData((prev) => ({
           ...prev,
-          sold: saleReturnRes,
+          sold: returnRemainRes,
           products: allProductReturns,
           error: "",
           empty: "",

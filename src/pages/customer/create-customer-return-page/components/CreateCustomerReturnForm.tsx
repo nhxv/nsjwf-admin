@@ -41,23 +41,28 @@ export default function CreateCustomerReturnForm({
         const properties = Object.keys(data).sort();
         for (const property of properties) {
           if (property.includes("quantity")) {
-            const id = +property.replace("quantity", "");
-            const found = products.find((p) => p.id === id);
-            productReturns.set(found.id, {
+            const [id, appear] = property.replace("quantity", "").split("-");
+            const found = products.find(
+              (p) => p.id === +id && p.appear === +appear
+            );
+            productReturns.set(`${found.id}-${found.appear}`, {
               productName: found.name,
               quantity: data[property],
             });
           } else if (property.includes("unit")) {
-            const id = +property.replace("unit", "");
-            const found = products.find((p) => p.id === id);
-            productReturns.set(found.id, {
-              ...productReturns.get(found.id),
+            const [id, appear] = property.replace("unit", "").split("-");
+            const found = products.find(
+              (p) => p.id === +id && p.appear === +appear
+            );
+            productReturns.set(`${found.id}-${found.appear}`, {
+              ...productReturns.get(`${found.id}-${found.appear}`),
               unitCode: `${found.id}_${data[property]}`,
             });
           }
         }
         const productCustomerReturns = [...productReturns.values()];
         reqData["productCustomerReturns"] = productCustomerReturns;
+        console.log(reqData);
         // create return
         const res = await api.post(`/customer-returns`, reqData);
         setFormState((prev) => ({
@@ -101,7 +106,7 @@ export default function CreateCustomerReturnForm({
       <div className="mb-3 flex flex-col justify-between">
         <div>
           <span>
-            #{sold.sale_manual_code ? sold.sale_manual_code : sold.sale_code}
+            #{sold.order_manual_code ? sold.order_manual_code : sold.order_code}
           </span>
         </div>
         <div>
@@ -117,7 +122,7 @@ export default function CreateCustomerReturnForm({
       <div className="mt-5 grid grid-cols-12 gap-3">
         {products.map((product) => (
           <div
-            key={product.id}
+            key={`${product.id}-${product.appear}`}
             className="rounded-box col-span-12 flex flex-col border-2 border-base-300 p-3 md:col-span-6"
           >
             <div className="mb-3 flex justify-between">
@@ -133,23 +138,37 @@ export default function CreateCustomerReturnForm({
               <div className="w-6/12">
                 <label className="custom-label mb-2 inline-block">Qty</label>
                 <NumberInput
-                  id={`quantity${product.id}`}
-                  name={`quantity${product.id}`}
+                  id={`quantity${product.id}-${product.appear}`}
                   placeholder="Qty"
-                  value={customerReturnForm.values[`quantity${product.id}`]}
+                  name={`quantity${product.id}-${product.appear}`}
+                  value={
+                    customerReturnForm.values[
+                      `quantity${product.id}-${product.appear}`
+                    ]
+                  }
                   onChange={customerReturnForm.handleChange}
-                  min="0"
-                  max={product.quantity}
-                  disabled={false}
+                  disabled={
+                    formState.page === 1 ||
+                    customerReturnForm.values[
+                      `quantity${product.id}-${product.appear}`
+                    ] === 0
+                  }
                 ></NumberInput>
               </div>
               <div className="w-6/12">
                 <label className="custom-label mb-2 inline-block">Unit</label>
                 <SelectInput
-                  name={`unit${product.id}`}
-                  value={customerReturnForm.values[`unit${product.id}`]}
+                  name={`unit${product.id}-${product.appear}`}
+                  value={
+                    customerReturnForm.values[
+                      `unit${product.id}-${product.appear}`
+                    ]
+                  }
                   setValue={(v) =>
-                    customerReturnForm.setFieldValue(`unit${product.id}`, v)
+                    customerReturnForm.setFieldValue(
+                      `unit${product.id}-${product.appear}`,
+                      v
+                    )
                   }
                   options={product.units.map((unit) => unit.code.split("_")[1])}
                 ></SelectInput>

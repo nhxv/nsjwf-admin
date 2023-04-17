@@ -346,9 +346,6 @@ export default function CustomerForm({
                                 customerForm.values[`quantity${product.id}`]
                               }
                               onChange={customerForm.handleChange}
-                              min="0"
-                              max="99999"
-                              disabled={false}
                             ></NumberInput>
                           </div>
                           <div className="w-6/12">

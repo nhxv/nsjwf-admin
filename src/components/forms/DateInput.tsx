@@ -1,7 +1,7 @@
 export default function DateInput({
   id,
-  name,
   placeholder,
+  name,
   value,
   onChange,
   min,
@@ -12,8 +12,8 @@ export default function DateInput({
       <input
         id={id}
         type="date"
-        name={name}
         placeholder={placeholder}
+        name={name}
         value={value}
         onChange={onChange}
         min={min}
