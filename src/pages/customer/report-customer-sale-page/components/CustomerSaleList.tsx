@@ -245,9 +245,9 @@ export default function CustomerSaleList() {
               </div>
               {role === Role.MASTER && (
                 <button
-                type="button"
-                className="btn-ghost btn-circle btn bg-base-200 text-neutral dark:bg-base-300 dark:text-neutral-content"
-                onClick={() => onRevert(report.order_code)}
+                  type="button"
+                  className="btn-ghost btn-circle btn bg-base-200 text-neutral dark:bg-base-300 dark:text-neutral-content"
+                  onClick={() => onRevert(report.order_code)}
                 >
                   <BiRevision className="h-6 w-6"></BiRevision>
                 </button>
@@ -316,7 +316,9 @@ export default function CustomerSaleList() {
             <button
               type="button"
               className="btn-accent btn mt-3 w-full"
-              onClick={() => onUpdatePayment(PaymentStatus.RECEIVABLE, report.order_code)}
+              onClick={() =>
+                onUpdatePayment(PaymentStatus.RECEIVABLE, report.order_code)
+              }
             >
               Receivable
             </button>
