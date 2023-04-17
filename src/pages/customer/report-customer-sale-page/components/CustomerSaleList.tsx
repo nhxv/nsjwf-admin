@@ -1,9 +1,12 @@
 import csvDownload from "json-to-csv-export";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { BiDownload, BiRevision } from "react-icons/bi";
 import { PaymentStatus } from "../../../../commons/enums/payment-status.enum";
 import { Role } from "../../../../commons/enums/role.enum";
-import { convertTime } from "../../../../commons/utils/time.util";
+import {
+  convertTime,
+  convertTimeToText,
+} from "../../../../commons/utils/time.util";
 import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
 import StatusTag from "../../../../components/StatusTag";
@@ -234,7 +237,7 @@ export default function CustomerSaleList() {
                 </p>
                 <p className="text-xl font-semibold">{report.customer_name}</p>
                 <p className="text-sm text-neutral">
-                  Completed at {convertTime(new Date(report.date))}
+                  Completed at {convertTimeToText(new Date(report.date))}
                 </p>
                 <div className="mt-5">
                   <StatusTag status={report.payment_status}></StatusTag>
