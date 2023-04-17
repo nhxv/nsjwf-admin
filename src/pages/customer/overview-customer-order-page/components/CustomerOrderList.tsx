@@ -116,7 +116,11 @@ export default function CustomerOrderList() {
   };
 
   if (fetchData.loading) {
-    return <Spinner></Spinner>;
+    return (
+      <div className="mx-auto mt-4 w-11/12 md:w-10/12 lg:w-6/12">
+        <Spinner></Spinner>  
+      </div>
+    );
   }
 
   if (fetchData.error) {

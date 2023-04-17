@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { BiRevision } from "react-icons/bi";
+import csvDownload from "json-to-csv-export";
+import { useEffect, useState, useMemo } from "react";
+import { BiDownload, BiRevision } from "react-icons/bi";
 import { PaymentStatus } from "../../../../commons/enums/payment-status.enum";
 import { Role } from "../../../../commons/enums/role.enum";
 import { convertTime } from "../../../../commons/utils/time.util";
@@ -9,36 +10,156 @@ import StatusTag from "../../../../components/StatusTag";
 import api from "../../../../stores/api";
 import { useAuthStore } from "../../../../stores/auth.store";
 
-export default function CustomerSaleList({ reports, reload }) {
-  const [formState, setFormState] = useState({
+export default function CustomerSaleList() {
+  const [fetchData, setFetchData] = useState({
+    reports: [],
+    display: [],
+    error: "",
+    empty: "",
+    loading: true,
+  });  
+  const [paymentState, setPaymentState] = useState({
     loading: false,
     error: "",
   });
   const role = useAuthStore((state) => state.role);
+  const [reload, setReload] = useState(false);
+  const total = useMemo(() => {
+    let cash = 0;
+    let check = 0;
+    let receivable = 0;
+    for (const report of fetchData.reports) {
+      if (report.payment_status === PaymentStatus.CASH) {
+        cash += parseFloat(report.sale);
+      } else if (report.payment_status === PaymentStatus.CHECK) {
+        check += parseFloat(report.sale);
+      } else if (report.payment_status === PaymentStatus.RECEIVABLE) {
+        receivable += parseFloat(report.sale);
+      }
+    }    
+    return {cash: cash, check: check, receivable: receivable}; 
+  }, [fetchData.reports]);
+
+  useEffect(() => {
+    getReportData();
+    // re-render after 1 min
+    const reRender = setInterval(() => {
+      getReportData();
+    }, 60000);
+
+    return () => {
+      clearInterval(reRender);
+    };
+  }, [reload]);
+
+  const getReportData = () => {
+    api
+      .get(`/customer-orders/sold/report`)
+      .then((res) => {
+        if (res.data.length === 0) {
+          setFetchData((prev) => ({
+            ...prev,
+            reports: [],
+            display: [],
+            empty: "Such hollow, much empty...",
+            error: "",
+            loading: false,
+          }));
+        } else {
+          setFetchData((prev) => ({
+            ...prev,
+            reports: res.data,
+            display: res.data.filter((report) => report.sale > 0),
+            error: "",
+            empty: "",
+            loading: false,
+          }));
+        }
+      })
+      .catch((e) => {
+        const error = JSON.parse(
+          JSON.stringify(e.response ? e.response.data.error : e)
+        );
+        setFetchData((prev) => ({
+          ...prev,
+          reports: [],
+          display: [],
+          error: error.message,
+          empty: "",
+          loading: false,
+        }));
+      });
+  };
+  
+  const onDownloadReport = () => {
+    const reportData = fetchData.reports.map((report) => ({
+      code: `#${report.manual_code ? report.manual_code : report.order_code}`,
+      customer: report.customer_name,
+      date: convertTime(new Date(report.date)),
+      sale: parseFloat(report.sale),
+      refund: parseFloat(report.refund),
+      payment_status: report.payment_status,
+      test: report.is_test ? "S" : "L",
+      cash: 0,
+      check: 0,
+      receivable: 0,
+    }));
+    reportData[0]["cash"] = total.cash;
+    reportData[0]["check"] = total.check;
+    reportData[0]["receivable"] = total.receivable;
+    const saleFile = {
+      data: reportData,
+      filename: `${convertTime(new Date()).split("-").join("")}_report`,
+      delimiter: ",",
+      headers: [
+        "Order",
+        "Customer",
+        "Date",
+        "Sale",
+        "Refund",
+        "Payment",
+        "Type",
+        "Cash",
+        "Check",
+        "Receivable",
+      ],
+    };
+    csvDownload(saleFile);
+  };
+
+  const onReload = () => {
+    setReload(!reload);
+    setFetchData((prev) => ({
+      ...prev,
+      error: "",
+      empty: "",
+      loading: true,
+    }));
+  };
 
   const onUpdatePayment = (status: string, code: string) => {
-    setFormState((prev) => ({ ...prev, loading: true, error: "" }));
+    setPaymentState((prev) => ({ ...prev, loading: true, error: "" }));
     const reqData = {
       status: status,
     };
     api
       .put(`/customer-payment/status/${code}`, reqData)
       .then((res) => {
-        setFormState((prev) => ({ ...prev, loading: false, error: "" }));
-        reload();
+        setPaymentState((prev) => ({ ...prev, loading: false, error: "" }));
+        onReload();
       })
       .catch((e) => {
         const error = JSON.parse(
           JSON.stringify(e.response ? e.response.data.error : e)
         );
-        setFormState((prev) => ({
+        setPaymentState((prev) => ({
           ...prev,
           error: error.message,
           loading: false,
         }));
         setTimeout(() => {
-          setFormState((prev) => ({ ...prev, error: "", loading: false }));
-          reload();
+          setPaymentState((prev) => ({ ...prev, error: "", loading: false }));
+          onReload();
         }, 2000);
       });
   };
@@ -47,28 +168,68 @@ export default function CustomerSaleList({ reports, reload }) {
     api
       .put(`/customer-orders/revert/${code}`)
       .then((res) => {
-        setFormState((prev) => ({ ...prev, loading: false, error: "" }));
-        reload();
+        setPaymentState((prev) => ({ ...prev, loading: false, error: "" }));
+        onReload();
       })
       .catch((e) => {
         const error = JSON.parse(
           JSON.stringify(e.response ? e.response.data.error : e)
         );
-        setFormState((prev) => ({
+        setPaymentState((prev) => ({
           ...prev,
           error: error.message,
           loading: false,
         }));
         setTimeout(() => {
-          setFormState((prev) => ({ ...prev, error: "", loading: false }));
-          reload();
+          setPaymentState((prev) => ({ ...prev, error: "", loading: false }));
+          onReload();
         }, 2000);
       });
   };
 
+  if (fetchData.loading) {
+    return (
+      <Spinner></Spinner>
+    );
+  }
+
+  if (fetchData.error) {
+    return (
+      <Alert message={fetchData.error} type="error"></Alert>
+    );
+  }
+
+  if (fetchData.empty) {
+    return (
+      <Alert message={fetchData.empty} type="empty"></Alert>
+    );
+  }
+
   return (
     <>
-      {reports.map((report) => {
+      <div className="mb-6 flex flex-col gap-3 justify-between items-center xl:flex-row">
+        <div className="flex gap-2">
+          <div className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content">
+            ${total.cash} in cash
+          </div>
+          <div className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content">
+            ${total.check} in check
+          </div>
+          <div className="rounded-btn flex items-center bg-warning p-2 text-sm font-semibold text-warning-content">
+            ${total.receivable} in A/R
+          </div>
+        </div>
+
+        <button
+          type="button"
+          className="btn-accent btn"
+          onClick={onDownloadReport}
+        >
+          <span className="mr-2">Download report</span>
+          <BiDownload className="h-6 w-6"></BiDownload>
+        </button>
+      </div>
+      {fetchData.reports.map((report) => {
         return (
           <div key={report.order_code} className="custom-card mb-8">
             {/* basic report info */}
@@ -111,7 +272,7 @@ export default function CustomerSaleList({ reports, reload }) {
             {report.productCustomerOrders.map((productOrder) => {
               return (
                 <div
-                  key={productOrder.product_name}
+                  key={productOrder.unit_code}
                   className="rounded-btn mb-2 flex items-center justify-center bg-base-200 py-3 dark:bg-base-300"
                 >
                   <div className="ml-3 w-6/12">
@@ -165,14 +326,14 @@ export default function CustomerSaleList({ reports, reload }) {
               </button>
             )}
             <div>
-              {formState.loading && (
+              {paymentState.loading && (
                 <div className="mt-5">
                   <Spinner></Spinner>
                 </div>
               )}
-              {formState.error && (
+              {paymentState.error && (
                 <div className="mt-5">
-                  <Alert message={formState.error} type="error"></Alert>
+                  <Alert message={paymentState.error} type="error"></Alert>
                 </div>
               )}
             </div>

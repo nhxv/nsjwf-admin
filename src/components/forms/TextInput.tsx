@@ -1,11 +1,12 @@
 // accept input type due to email & password
 export default function TextInput({
   id,
-  type,
+  type = "text",
   placeholder,
   name,
   value,
   onChange,
+  disabled = false,
 }) {
   const onSelectAll = (e) => {
     setTimeout(() => e.target.select(), 0);
@@ -21,7 +22,8 @@ export default function TextInput({
         value={value}
         onChange={onChange}
         onFocus={(e) => onSelectAll(e)}
-        className="input w-full border-2 border-base-300 placeholder:text-base-300 focus:border-primary focus:outline-none dark:bg-base-200 dark:placeholder:text-neutral"
+        disabled={disabled}
+        className="input w-full border-2 border-base-300 placeholder:text-base-300 focus:border-primary focus:outline-none dark:bg-base-200 dark:placeholder:text-neutral dark:disabled:bg-base-300"
       />
     </>
   );

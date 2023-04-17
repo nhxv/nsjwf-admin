@@ -523,8 +523,8 @@ export default function CustomerOrderForm({
                             </label>
                             <NumberInput
                               id={`quantity${product.id}-${product.appear}`}
-                              name={`quantity${product.id}-${product.appear}`}
                               placeholder="Qty"
+                              name={`quantity${product.id}-${product.appear}`}
                               value={
                                 customerOrderForm.values[
                                   `quantity${product.id}-${product.appear}`
@@ -536,9 +536,6 @@ export default function CustomerOrderForm({
                                   `quantity${product.id}-${product.appear}`
                                 )
                               }
-                              min="0"
-                              max="99999"
-                              disabled={false}
                             ></NumberInput>
                           </div>
                           <div className="col-span-6 xl:col-span-2">
@@ -547,7 +544,6 @@ export default function CustomerOrderForm({
                             </label>
                             <TextInput
                               id={`price${product.id}-${product.appear}`}
-                              type="text"
                               placeholder="Price"
                               name={`price${product.id}-${product.appear}`}
                               value={

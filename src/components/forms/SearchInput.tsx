@@ -3,8 +3,8 @@ import { useRef } from "react";
 
 export default function SearchInput({
   id,
-  name,
   placeholder,
+  name,
   value,
   onChange,
   onClear,
