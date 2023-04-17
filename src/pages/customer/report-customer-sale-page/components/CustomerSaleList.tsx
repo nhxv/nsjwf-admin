@@ -17,7 +17,7 @@ export default function CustomerSaleList() {
     error: "",
     empty: "",
     loading: true,
-  });  
+  });
   const [paymentState, setPaymentState] = useState({
     loading: false,
     error: "",
@@ -36,8 +36,8 @@ export default function CustomerSaleList() {
       } else if (report.payment_status === PaymentStatus.RECEIVABLE) {
         receivable += parseFloat(report.sale);
       }
-    }    
-    return {cash: cash, check: check, receivable: receivable}; 
+    }
+    return { cash: cash, check: check, receivable: receivable };
   }, [fetchData.reports]);
 
   useEffect(() => {
@@ -90,7 +90,7 @@ export default function CustomerSaleList() {
         }));
       });
   };
-  
+
   const onDownloadReport = () => {
     const reportData = fetchData.reports.map((report) => ({
       code: `#${report.manual_code ? report.manual_code : report.order_code}`,
@@ -188,26 +188,20 @@ export default function CustomerSaleList() {
   };
 
   if (fetchData.loading) {
-    return (
-      <Spinner></Spinner>
-    );
+    return <Spinner></Spinner>;
   }
 
   if (fetchData.error) {
-    return (
-      <Alert message={fetchData.error} type="error"></Alert>
-    );
+    return <Alert message={fetchData.error} type="error"></Alert>;
   }
 
   if (fetchData.empty) {
-    return (
-      <Alert message={fetchData.empty} type="empty"></Alert>
-    );
+    return <Alert message={fetchData.empty} type="empty"></Alert>;
   }
 
   return (
     <>
-      <div className="mb-6 flex flex-col gap-3 justify-between items-center xl:flex-row">
+      <div className="mb-6 flex flex-col items-center justify-between gap-3 xl:flex-row">
         <div className="flex gap-2">
           <div className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content">
             ${total.cash} in cash

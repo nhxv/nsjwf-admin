@@ -42,14 +42,18 @@ export default function CreateCustomerReturnForm({
         for (const property of properties) {
           if (property.includes("quantity")) {
             const [id, appear] = property.replace("quantity", "").split("-");
-            const found = products.find((p) => p.id === +id && p.appear === +appear);
+            const found = products.find(
+              (p) => p.id === +id && p.appear === +appear
+            );
             productReturns.set(`${found.id}-${found.appear}`, {
               productName: found.name,
               quantity: data[property],
             });
           } else if (property.includes("unit")) {
             const [id, appear] = property.replace("unit", "").split("-");
-            const found = products.find((p) => p.id === +id && p.appear === +appear);
+            const found = products.find(
+              (p) => p.id === +id && p.appear === +appear
+            );
             productReturns.set(`${found.id}-${found.appear}`, {
               ...productReturns.get(`${found.id}-${found.appear}`),
               unitCode: `${found.id}_${data[property]}`,
@@ -137,18 +141,34 @@ export default function CreateCustomerReturnForm({
                   id={`quantity${product.id}-${product.appear}`}
                   placeholder="Qty"
                   name={`quantity${product.id}-${product.appear}`}
-                  value={customerReturnForm.values[`quantity${product.id}-${product.appear}`]}
+                  value={
+                    customerReturnForm.values[
+                      `quantity${product.id}-${product.appear}`
+                    ]
+                  }
                   onChange={customerReturnForm.handleChange}
-                  disabled={formState.page === 1 || customerReturnForm.values[`quantity${product.id}-${product.appear}`] === 0}
+                  disabled={
+                    formState.page === 1 ||
+                    customerReturnForm.values[
+                      `quantity${product.id}-${product.appear}`
+                    ] === 0
+                  }
                 ></NumberInput>
               </div>
               <div className="w-6/12">
                 <label className="custom-label mb-2 inline-block">Unit</label>
                 <SelectInput
                   name={`unit${product.id}-${product.appear}`}
-                  value={customerReturnForm.values[`unit${product.id}-${product.appear}`]}
+                  value={
+                    customerReturnForm.values[
+                      `unit${product.id}-${product.appear}`
+                    ]
+                  }
                   setValue={(v) =>
-                    customerReturnForm.setFieldValue(`unit${product.id}-${product.appear}`, v)
+                    customerReturnForm.setFieldValue(
+                      `unit${product.id}-${product.appear}`,
+                      v
+                    )
                   }
                   options={product.units.map((unit) => unit.code.split("_")[1])}
                 ></SelectInput>

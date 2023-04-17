@@ -46,25 +46,19 @@ export default function CustomerReturnList() {
         }));
       });
   }, []);
-  
+
   if (fetchData.loading) {
-    return (
-      <Spinner></Spinner>
-    );
+    return <Spinner></Spinner>;
   }
 
   if (fetchData.error) {
-    return (
-      <Alert message={fetchData.error} type="error"></Alert>
-    );
+    return <Alert message={fetchData.error} type="error"></Alert>;
   }
 
   if (fetchData.empty) {
-    return (
-      <Alert message={fetchData.empty} type="empty"></Alert>
-    );
+    return <Alert message={fetchData.empty} type="empty"></Alert>;
   }
-  
+
   return (
     <>
       {fetchData.returns.map((customerReturn) => {

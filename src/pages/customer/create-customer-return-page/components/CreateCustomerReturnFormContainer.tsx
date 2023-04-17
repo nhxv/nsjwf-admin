@@ -19,7 +19,9 @@ export default function CreateCustomerReturnFormContainer({}) {
   const [initialFields, setInitialFields] = useState({});
 
   useEffect(() => {
-    const returnRemainPromise = api.get(`/customer-return-remains/${params.code}`);
+    const returnRemainPromise = api.get(
+      `/customer-return-remains/${params.code}`
+    );
     const productPromise = api.get(`/products/active`);
     Promise.all([returnRemainPromise, productPromise])
       .then((res) => {
@@ -28,15 +30,15 @@ export default function CreateCustomerReturnFormContainer({}) {
         const productFieldData = {};
         const allProductReturns = [];
         for (const product of allProductsRes) {
-          const similarProductReturns = returnRemainRes.productCustomerReturnRemains.filter(
-            (pr) => pr.product_name === product.name
-          );
+          const similarProductReturns =
+            returnRemainRes.productCustomerReturnRemains.filter(
+              (pr) => pr.product_name === product.name
+            );
           if (similarProductReturns.length > 0) {
             for (let i = 0; i < similarProductReturns.length; i++) {
               let appear = i + 1;
-              productFieldData[`quantity${product.id}-${appear}`] = parseFraction(
-                similarProductReturns[i].quantity
-              );
+              productFieldData[`quantity${product.id}-${appear}`] =
+                parseFraction(similarProductReturns[i].quantity);
               productFieldData[`unit${product.id}-${appear}`] =
                 similarProductReturns[i].unit_code.split("_")[1];
               allProductReturns.push({
