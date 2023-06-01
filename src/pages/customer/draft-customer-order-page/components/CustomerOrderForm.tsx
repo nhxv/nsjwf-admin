@@ -269,7 +269,8 @@ export default function CustomerOrderForm({
     const selectedProduct = { ...product, appear: appear };
     setSelectedProducts([selectedProduct, ...selectedProducts]);
     customerOrderForm.setFieldValue(`quantity${product.id}-${appear}`, 0);
-    customerOrderForm.setFieldValue(`price${product.id}-${appear}`, 0);
+    // Can't set to 0 to prevent user forgetting a field.
+    customerOrderForm.setFieldValue(`price${product.id}-${appear}`, "");
   };
 
   const onRemoveProduct = (id, appear) => {
@@ -584,12 +585,20 @@ export default function CustomerOrderForm({
                           <div className="col-span-6 xl:col-span-2">
                             <div className="custom-label mb-2">Amount</div>
                             <div className="rounded-box flex h-12 items-center bg-base-300 px-3">
-                              {customerOrderForm.values[
-                                `quantity${product.id}-${product.appear}`
-                              ] *
+                              { // Display amount to be more explicit for user.
                                 customerOrderForm.values[
                                   `price${product.id}-${product.appear}`
-                                ]}
+                                ] === "" ? "" :
+                                customerOrderForm.values[
+                                  `price${product.id}-${product.appear}`
+                                ] === "0" ? "N/C" :
+                                customerOrderForm.values[
+                                  `quantity${product.id}-${product.appear}`
+                                ] *
+                                customerOrderForm.values[
+                                  `price${product.id}-${product.appear}`
+                                ]
+                              }
                             </div>
                           </div>
                         </div>
