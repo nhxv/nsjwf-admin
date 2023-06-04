@@ -96,35 +96,30 @@ export default function CustomerSaleList() {
 
   const onDownloadReport = () => {
     const reportData = fetchData.reports.map((report) => ({
-      code: `#${report.manual_code ? report.manual_code : report.order_code}`,
+      // For these 2 dates, most of the time, they'll be the same since the app only allows
+      // user to view orders that are completed today. However, to respect data, we'll
+      // use report.date instead of Date.now().
+      // In the case of receivable, we also put the date the same (as of my knowledge).
+      order_date: convertTime(new Date(report.date)),
+      payment_date: convertTime(new Date(report.date)),
       customer: report.customer_name,
-      date: convertTime(new Date(report.date)),
+      code: `${report.manual_code ? report.manual_code : report.order_code}`,
       sale: parseFloat(report.sale),
-      refund: parseFloat(report.refund),
-      payment_status: report.payment_status,
       test: report.is_test ? "S" : "L",
-      cash: 0,
-      check: 0,
-      receivable: 0,
+      payment_status: report.payment_status === "RECEIVABLE" ? "AR" : report.payment_status,
     }));
-    reportData[0]["cash"] = total.cash;
-    reportData[0]["check"] = total.check;
-    reportData[0]["receivable"] = total.receivable;
     const saleFile = {
       data: reportData,
       filename: `${convertTime(new Date()).split("-").join("")}_report`,
       delimiter: ",",
       headers: [
-        "Order",
+        "Order Date",
+        "Payment Date",
         "Customer",
-        "Date",
+        "Order No.",
         "Sale",
-        "Refund",
-        "Payment",
         "Type",
-        "Cash",
-        "Check",
-        "Receivable",
+        "Payment Method",
       ],
     };
     csvDownload(saleFile);
