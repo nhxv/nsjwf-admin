@@ -169,7 +169,7 @@ export default function CustomerOrderList() {
         {search.orders.map((order) => (
           <div
             key={order.code}
-            className={`rounded-box col-span-12 border-2 p-3 shadow-md sm:col-span-6 md:col-span-4 lg:col-span-3 xl:col-span-2
+            className={`rounded-box col-span-12 border-2 p-3 shadow-md sm:col-span-6 md:col-span-4 lg:col-span-3 xl:col-span-2 hover:cursor-pointer
             ${
               order.status === OrderStatus.PICKING
                 ? "border-yellow-700 bg-yellow-100 text-yellow-700 dark:border-yellow-700 dark:bg-yellow-900 dark:bg-opacity-10"
@@ -190,7 +190,7 @@ export default function CustomerOrderList() {
                 ? "border-sky-700 bg-sky-100 text-sky-700 dark:border-sky-700 dark:bg-sky-900 dark:bg-opacity-10"
                 : ""
             }`}
-          >
+          onClick={() => onToDetails(order.code)}>
             <div>#{order.manual_code ? order.manual_code : order.code}</div>
             <div className="font-semibold">{order.customer_name}</div>
             <div className="text-sm">
