@@ -96,61 +96,60 @@ export default function EmployeeTaskList({ employeeTasks, reload }) {
       <div className="grid grid-cols-1 items-start gap-4 px-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
         <DragDropContext onDragEnd={onDragEnd}>
           {employees.map((employee) => (
-            <Droppable key={employee.nickname} droppableId={employee.nickname}>
-              {(provided, snapshot) => (
-                <div
-                  ref={provided.innerRef}
-                  {...provided.droppableProps}
-                  className={`rounded-box w-full self-start border-2 bg-base-100 p-2 shadow-md dark:bg-base-200 ${
-                    snapshot.isDraggingOver
-                      ? "border-primary"
-                      : "border-base-100"
-                  }`}
-                >
-                  <p className="m-2 font-medium">{employee.nickname}</p>
-                  {employee.customerOrders.map((order, index) => {
-                    return (
-                      <Draggable
-                        key={order.code}
-                        draggableId={order.code}
-                        index={index}
-                        isDragDisabled={order.is_doing}
-                      >
-                        {(provided, snapshot) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            className={`rounded-box my-3 mx-2 p-3
-                        ${
-                          order.is_doing
-                            ? "bg-red-900 text-white"
-                            : "bg-base-200 dark:bg-base-300"
-                        }
-                        ${
-                          snapshot.isDragging
-                            ? "bg-primary text-primary-content"
-                            : ""
-                        }`}
-                          >
-                            <div className="flex flex-col">
-                              <p>
-                                #
-                                {order.manual_code
-                                  ? order.manual_code
-                                  : order.code}
-                              </p>
-                              <p>{order.customer_name}</p>
+            <div className={`rounded-box w-full self-start border-2 bg-base-100 p-2 shadow-md dark:bg-base-200 border-base-100`}>
+              <p className="m-2 font-medium">{employee.nickname}</p>
+              <Droppable key={employee.nickname} droppableId={employee.nickname}>
+                {(provided) => (
+                  <div
+                    ref={provided.innerRef}
+                    {...provided.droppableProps}
+                    // For some reasons, flex-col will fix snapping issue when there are margins so :shrug:
+                    className={`flex flex-col rounded-box w-full self-start bg-base-100 p-2 dark:bg-base-200`}
+                  >
+                    {employee.customerOrders.map((order, index) => {
+                      return (
+                        <Draggable
+                          key={order.code}
+                          draggableId={order.code}
+                          index={index}
+                          isDragDisabled={order.is_doing}
+                        >
+                          {(provided, snapshot) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              className={`rounded-box my-2 p-3
+                          ${
+                            order.is_doing
+                              ? "bg-red-900 text-white"
+                              : "bg-base-200 dark:bg-base-300"
+                          }
+                          ${
+                            snapshot.isDragging
+                              ? "bg-primary dark:bg-primary text-primary-content"
+                              : ""
+                          }`}
+                            >
+                              <div className="flex flex-col">
+                                <p>
+                                  #
+                                  {order.manual_code
+                                    ? order.manual_code
+                                    : order.code}
+                                </p>
+                                <p>{order.customer_name}</p>
+                              </div>
                             </div>
-                          </div>
-                        )}
-                      </Draggable>
-                    );
-                  })}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
+                          )}
+                        </Draggable>
+                      );
+                    })}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            </div>
           ))}
         </DragDropContext>
       </div>
