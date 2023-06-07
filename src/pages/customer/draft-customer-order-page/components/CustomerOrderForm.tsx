@@ -591,13 +591,14 @@ export default function CustomerOrderForm({
                                 ] === "" ? "" :
                                 customerOrderForm.values[
                                   `price${product.id}-${product.appear}`
-                                ] === "0" ? "N/C" :
-                                customerOrderForm.values[
-                                  `quantity${product.id}-${product.appear}`
-                                ] *
-                                customerOrderForm.values[
-                                  `price${product.id}-${product.appear}`
-                                ]
+                                ] === "0" ? "N/C" : parseFloat((
+                                  customerOrderForm.values[
+                                    `quantity${product.id}-${product.appear}`
+                                  ] * 
+                                  customerOrderForm.values[
+                                    `price${product.id}-${product.appear}`
+                                  ]).toString() // Silent linter.
+                                  ).toFixed(2)
                               }
                             </div>
                           </div>
