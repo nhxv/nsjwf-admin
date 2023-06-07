@@ -92,8 +92,9 @@ export default function CustomerOrderPrint({ order }) {
           tabIndex={0}
           className="btn-ghost btn-circle btn bg-base-200 text-neutral dark:bg-base-300 dark:text-neutral-content"
         >
-          <BiPrinter className="h-6 w-6"></BiPrinter>
+          <BiPrinter className="h-6 w-6" onClick={handleOrderPrint}></BiPrinter>
         </label>
+        {/*
         <ul
           tabIndex={0}
           className="dropdown-content menu rounded-box w-36 border-2 border-base-300 bg-base-100 p-2 shadow-md dark:bg-base-200"
@@ -115,6 +116,7 @@ export default function CustomerOrderPrint({ order }) {
             </a>
           </li>
         </ul>
+        */}
       </div>
     </>
   );
