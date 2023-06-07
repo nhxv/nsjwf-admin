@@ -1,4 +1,5 @@
 import { useFormik } from "formik";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { BiEditAlt, BiPlus } from "react-icons/bi";
 import { Location } from "../../../../commons/enums/location.enum";
@@ -11,6 +12,7 @@ import api from "../../../../stores/api";
 import UnitForm from "./UnitForm";
 
 export default function ProductForm({ editedId, units, initialData, onClear }) {
+  const navigate = useNavigate();
   const [formState, setFormState] = useState({
     success: "",
     error: "",
@@ -48,7 +50,7 @@ export default function ProductForm({ editedId, units, initialData, onClear }) {
               error: "",
               loading: false,
             }));
-            onClear();
+            navigate("/configure/view-product");
           }, 2000);
         } else {
           const res = await api.put(`/products/${editedId}`, data);
@@ -65,7 +67,7 @@ export default function ProductForm({ editedId, units, initialData, onClear }) {
               error: "",
               loading: false,
             }));
-            onClear();
+            navigate("/configure/view-product");
           }, 2000);
         }
       } catch (e) {

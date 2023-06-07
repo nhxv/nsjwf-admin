@@ -1,4 +1,5 @@
 import { useFormik } from "formik";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { BiLeftArrowAlt, BiRightArrowAlt, BiX } from "react-icons/bi";
 import Alert from "../../../../components/Alert";
@@ -17,6 +18,7 @@ export default function VendorForm({
   initialData,
   onClear,
 }) {
+  const navigate = useNavigate();
   const [formState, setFormState] = useState({
     success: "",
     error: "",
@@ -87,7 +89,7 @@ export default function VendorForm({
             }));
             setTimeout(() => {
               setFormState((prev) => ({ ...prev, success: "" }));
-              onClear();
+              navigate("/configure/view-vendor");
             }, 2000);
           }
         } else {
@@ -101,7 +103,7 @@ export default function VendorForm({
             }));
             setTimeout(() => {
               setFormState((prev) => ({ ...prev, success: "" }));
-              onClear();
+              navigate("/configure/view-vendor");
             }, 2000);
           }
         }
