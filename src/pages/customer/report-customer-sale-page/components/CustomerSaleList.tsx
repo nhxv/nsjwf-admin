@@ -104,7 +104,7 @@ export default function CustomerSaleList() {
       payment_date: convertTime(new Date(report.date)),
       customer: report.customer_name,
       code: `${report.manual_code ? report.manual_code : report.order_code}`,
-      sale: parseFloat(report.sale),
+      sale: parseFloat(report.sale) - report.refund,
       test: report.is_test ? "S" : "L",
       payment_status: report.payment_status === "RECEIVABLE" ? "AR" : report.payment_status,
     }));

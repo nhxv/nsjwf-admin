@@ -135,6 +135,7 @@ export default function CustomerOrderFormContainer() {
               manualCode: orderRes.data.manual_code
                 ? orderRes.data.manual_code
                 : "",
+              note: orderRes.data.note,
               expectedAt: convertTime(new Date(orderRes.data.expected_at)),
               ...productFieldData,
             }));
@@ -212,6 +213,7 @@ export default function CustomerOrderFormContainer() {
               status: OrderStatus.PICKING,
               isTest: false,
               expectedAt: convertTime(today),
+              note: "",
               ...productFieldData,
             }));
             setFetchData((prev) => ({

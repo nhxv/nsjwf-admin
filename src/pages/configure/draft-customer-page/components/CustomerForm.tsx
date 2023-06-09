@@ -1,4 +1,5 @@
 import { useFormik } from "formik";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { BiLeftArrowAlt, BiRightArrowAlt, BiX } from "react-icons/bi";
 import Alert from "../../../../components/Alert";
@@ -17,6 +18,7 @@ export default function CustomerForm({
   allProducts,
   onClear,
 }) {
+  const navigate = useNavigate();
   const [formState, setFormState] = useState({
     success: "",
     error: "",
@@ -91,7 +93,7 @@ export default function CustomerForm({
                 error: "",
                 loading: false,
               }));
-              onClear();
+              navigate("/configure/view-customer");
             }, 2000);
           }
         } else {
@@ -110,7 +112,7 @@ export default function CustomerForm({
                 error: "",
                 loading: false,
               }));
-              onClear();
+              navigate("/configure/view-customer");
             }, 2000);
           }
         }

@@ -63,6 +63,7 @@ export default function CustomerOrderForm({
         reqData["isTest"] = data["isTest"];
         reqData["manualCode"] = data["manualCode"];
         reqData["expectedAt"] = data["expectedAt"];
+        reqData["note"] = data["note"] ? data["note"] : ""; // Just to make sure it's str
         const properties = Object.keys(data).sort();
         for (const property of properties) {
           if (property.includes("price")) {
@@ -417,7 +418,7 @@ export default function CustomerOrderForm({
                   <span className="ml-2 text-xl font-medium">${total}</span>
                 </div>
 
-                <div className="mb-5 flex items-center">
+                <div className="flex items-center">
                   <Checkbox
                     id="test"
                     name="test"
@@ -430,6 +431,16 @@ export default function CustomerOrderForm({
                     }
                     checked={customerOrderForm.values["isTest"]}
                   ></Checkbox>
+                </div>
+                
+                <div className="my-5">
+                  <TextInput
+                    id="note"
+                    name="note"
+                    placeholder="Remarks"
+                    value={customerOrderForm.values.note}
+                    onChange={customerOrderForm.handleChange}
+                  />
                 </div>
 
                 <div className="grid grid-cols-12 gap-3">
@@ -591,13 +602,14 @@ export default function CustomerOrderForm({
                                 ] === "" ? "" :
                                 customerOrderForm.values[
                                   `price${product.id}-${product.appear}`
-                                ] === "0" ? "N/C" :
-                                customerOrderForm.values[
-                                  `quantity${product.id}-${product.appear}`
-                                ] *
-                                customerOrderForm.values[
-                                  `price${product.id}-${product.appear}`
-                                ]
+                                ] === "0" ? "N/C" : parseFloat((
+                                  customerOrderForm.values[
+                                    `quantity${product.id}-${product.appear}`
+                                  ] * 
+                                  customerOrderForm.values[
+                                    `price${product.id}-${product.appear}`
+                                  ]).toString() // Silent linter.
+                                  ).toFixed(2)
                               }
                             </div>
                           </div>
