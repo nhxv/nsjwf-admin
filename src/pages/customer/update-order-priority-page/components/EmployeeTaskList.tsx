@@ -96,15 +96,20 @@ export default function EmployeeTaskList({ employeeTasks, reload }) {
       <div className="grid grid-cols-1 items-start gap-4 px-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
         <DragDropContext onDragEnd={onDragEnd}>
           {employees.map((employee) => (
-            <div className={`rounded-box w-full self-start border-2 bg-base-100 p-2 shadow-md dark:bg-base-200 border-base-100`}>
+            <div
+              className={`rounded-box w-full self-start border-2 border-base-100 bg-base-100 p-2 shadow-md dark:bg-base-200`}
+            >
               <p className="m-2 font-medium">{employee.nickname}</p>
-              <Droppable key={employee.nickname} droppableId={employee.nickname}>
+              <Droppable
+                key={employee.nickname}
+                droppableId={employee.nickname}
+              >
                 {(provided) => (
                   <div
                     ref={provided.innerRef}
                     {...provided.droppableProps}
                     // For some reasons, flex-col will fix snapping issue when there are margins so :shrug:
-                    className={`flex flex-col rounded-box w-full self-start bg-base-100 p-2 dark:bg-base-200`}
+                    className={`rounded-box flex w-full flex-col self-start bg-base-100 p-2 dark:bg-base-200`}
                   >
                     {employee.customerOrders.map((order, index) => {
                       return (
@@ -127,7 +132,7 @@ export default function EmployeeTaskList({ employeeTasks, reload }) {
                           }
                           ${
                             snapshot.isDragging
-                              ? "bg-primary dark:bg-primary text-primary-content"
+                              ? "bg-primary text-primary-content dark:bg-primary"
                               : ""
                           }`}
                             >
