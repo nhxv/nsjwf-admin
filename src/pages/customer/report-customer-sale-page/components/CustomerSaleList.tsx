@@ -106,7 +106,8 @@ export default function CustomerSaleList() {
       code: `${report.manual_code ? report.manual_code : report.order_code}`,
       sale: parseFloat(report.sale) - report.refund,
       test: report.is_test ? "S" : "L",
-      payment_status: report.payment_status === "RECEIVABLE" ? "AR" : report.payment_status,
+      payment_status:
+        report.payment_status === "RECEIVABLE" ? "AR" : report.payment_status,
     }));
     const saleFile = {
       data: reportData,

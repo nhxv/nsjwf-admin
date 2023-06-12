@@ -1,9 +1,41 @@
 import { convertTimeToText } from "../../../../commons/utils/time.util";
 
+const MAX_LINES_PER_PAGE: number = 18;
+
 export default function PackingSlipToPrint({ printRef, order }) {
+  const columnNumber =
+    order.productCustomerOrders.length <= MAX_LINES_PER_PAGE ? 1 : 2;
   return (
-    <div ref={printRef} className="break-after-page px-6 py-4">
+    <div ref={printRef}>
+      {SplitProductsIntoPages(order, columnNumber).map((packingSlipPage, i) => {
+        return (
+          <div className="break-after-page px-4 py-4" key={i}>
+            {packingSlipPage}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+// Technically can handle more columns but format already breaks on 3 columns.
+function SplitProductsIntoPages(order, columnCount: number = 2) {
+  let columnStyling = `grid grid-cols-${columnCount} gap-x-4`;
+  if (columnCount > 1) {
+    // Add a line to separate column.
+    // Just gonna hard-code 50%, can't be bothered converting decimal into percent string.
+    columnStyling += ` from-black to-black bg-gradient-to-b bg-[length:1px_100%] bg-[50%_0] bg-no-repeat`;
+  }
+
+  let pages = [];
+  for (
+    let i = 0;
+    i < order.productCustomerOrders.length;
+    i += MAX_LINES_PER_PAGE * columnCount
+  ) {
+    pages.push(
       <div className="flex flex-col">
+        {/* Headers */}
         <div className="mb-4">
           <div className="flex items-center justify-between">
             <div>
@@ -37,29 +69,47 @@ export default function PackingSlipToPrint({ printRef, order }) {
             </div>
           </div>
         </div>
-        <div className="mb-4 ml-24">
+
+        {/* Title */}
+        <div className="mb-4 ">
           <div className="block text-xl">Packing Slip</div>
           <div className="block text-2xl font-bold">{order.customer_name}</div>
+          <div className="block">{order.note}</div>
         </div>
-        <div className="ml-24 flex w-9/12 border-b-4 border-black pb-1">
-          <div className="w-[64px] text-sm font-semibold">Qty</div>
-          <div className="ml-8 text-sm font-semibold">Item Description</div>
-        </div>
-        {order.productCustomerOrders.map((productOrder) => (
-          <div
-            key={productOrder.unit_code}
-            className="ml-24 flex w-9/12 border-b border-black py-2"
-          >
-            <div className="w-[64px] font-semibold">
-              {productOrder.quantity}{" "}
-              {productOrder.unit_code.split("_")[1].toLowerCase() === "box"
-                ? ``
-                : `(${productOrder.unit_code.split("_")[1].toLowerCase()})`}
+
+        {/* Column Headers. We need to separate so the line in between columns doesn't intersect with the header. */}
+        <div className="flex basis-0 gap-x-3">
+          {/*https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from#using_arrow_functions_and_array.from
+            All of this just to render this header columnCount times. Incredible.*/}
+          {Array.from({ length: columnCount }, (_, i) => i).map((_) => (
+            <div className="flex w-full border-b-4 border-black pb-1">
+              <div className="w-[64px] text-sm font-semibold">Qty</div>
+              <div className="ml-8 text-sm font-semibold">Item Description</div>
             </div>
-            <div className="ml-8">{productOrder.product_name}</div>
-          </div>
-        ))}
+          ))}
+        </div>
+
+        {/* Products List */}
+        <div className={columnStyling}>
+          {order.productCustomerOrders
+            .slice(i, i + MAX_LINES_PER_PAGE * columnCount)
+            .map((productOrder) => (
+              <div
+                key={productOrder.unit_code}
+                className="flex w-full border-b border-black py-2"
+              >
+                <div className="w-[64px] font-semibold">
+                  {productOrder.quantity}{" "}
+                  {productOrder.unit_code.split("_")[1].toLowerCase() === "box"
+                    ? ``
+                    : `(${productOrder.unit_code.split("_")[1].toLowerCase()})`}
+                </div>
+                <div className="ml-8">{productOrder.product_name}</div>
+              </div>
+            ))}
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
+  return pages;
 }

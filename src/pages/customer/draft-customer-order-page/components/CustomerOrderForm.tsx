@@ -432,7 +432,7 @@ export default function CustomerOrderForm({
                     checked={customerOrderForm.values["isTest"]}
                   ></Checkbox>
                 </div>
-                
+
                 <div className="my-5">
                   <TextInput
                     id="note"
@@ -596,20 +596,26 @@ export default function CustomerOrderForm({
                           <div className="col-span-6 xl:col-span-2">
                             <div className="custom-label mb-2">Amount</div>
                             <div className="rounded-box flex h-12 items-center bg-base-300 px-3">
-                              { // Display amount to be more explicit for user.
+                              {
+                                // Display amount to be more explicit for user.
                                 customerOrderForm.values[
                                   `price${product.id}-${product.appear}`
-                                ] === "" ? "" :
-                                customerOrderForm.values[
-                                  `price${product.id}-${product.appear}`
-                                ] === "0" ? "N/C" : parseFloat((
-                                  customerOrderForm.values[
-                                    `quantity${product.id}-${product.appear}`
-                                  ] * 
-                                  customerOrderForm.values[
-                                    `price${product.id}-${product.appear}`
-                                  ]).toString() // Silent linter.
-                                  ).toFixed(2)
+                                ] === ""
+                                  ? ""
+                                  : customerOrderForm.values[
+                                      `price${product.id}-${product.appear}`
+                                    ] === "0"
+                                  ? "N/C"
+                                  : parseFloat(
+                                      (
+                                        customerOrderForm.values[
+                                          `quantity${product.id}-${product.appear}`
+                                        ] *
+                                        customerOrderForm.values[
+                                          `price${product.id}-${product.appear}`
+                                        ]
+                                      ).toString() // Silent linter.
+                                    ).toFixed(2)
                               }
                             </div>
                           </div>

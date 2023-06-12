@@ -71,9 +71,10 @@ export default function CustomerOrderDetail() {
               by {fetchData.order.assign_to}
             </span>
           </div>
-          <div className="mb-2">
+          <div className="mb-6">
             <StatusTag status={fetchData.order.status}></StatusTag>
           </div>
+          <div>{fetchData.order.note}</div>
         </div>
         <CustomerOrderPrint order={fetchData.order} />
       </div>
