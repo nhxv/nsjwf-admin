@@ -21,7 +21,7 @@ export default function PackingSlipToPrint({ printRef, order }) {
 function SplitProductsIntoPages(order, columnCount: number = 2) {
   columnCount = Math.max(1, Math.min(2, columnCount));
   // https://tailwindcss.com/docs/content-configuration#dynamic-class-names
-  let columnStyling = `grid ${columnCount === 1 ? '' : 'grid-cols-2'} gap-x-4`;
+  let columnStyling = `grid ${columnCount === 1 ? "" : "grid-cols-2"} gap-x-4`;
   if (columnCount === 2) {
     // Add a line to separate column.
     columnStyling += ` from-black to-black bg-gradient-to-b bg-[length:1px_100%] bg-[50%_0] bg-no-repeat`;
