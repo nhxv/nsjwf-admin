@@ -500,7 +500,7 @@ export default function CustomerOrderForm({
                     }
                     onSelect={onAddProduct}
                     onClear={onClearQuery}
-                    optionsHeight="max-h-36"
+                    nonOverlapMargin="mb-80"
                   ></SearchSuggest>
                 </div>
 

@@ -10,6 +10,7 @@ export default function SearchSuggest({
   onSelect,
   onClear,
   optionsHeight = "max-h-72",
+  nonOverlapMargin = "",
 }) {
   const [open, setOpen] = useState(items.length > 0);
   const searchRef = useRef(null);
@@ -35,7 +36,7 @@ export default function SearchSuggest({
   };
 
   return (
-    <div className="w-full">
+    <div className={open ? `w-full ${nonOverlapMargin}` : "w-full"}>
       <Combobox onChange={(item) => onSelectItem(item)}>
         <div className="relative">
           <div className="rounded-btn relative w-full cursor-default overflow-hidden text-left">
