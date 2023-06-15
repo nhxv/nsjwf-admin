@@ -6,6 +6,7 @@ import Alert from "../../../../components/Alert";
 import SearchInput from "../../../../components/forms/SearchInput";
 import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
+import { handleTokenExpire } from "../../../../commons/utils/token.util";
 
 export default function CustomerOrderList() {
   const [fetchData, setFetchData] = useState({
@@ -82,6 +83,10 @@ export default function CustomerOrderList() {
           empty: "",
           loading: false,
         }));
+
+        if (error.status === 401) {
+          handleTokenExpire(navigate, setFetchData);
+        }
       });
   };
 

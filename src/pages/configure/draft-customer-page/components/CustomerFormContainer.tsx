@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useParams, useNavigate } from "react-router";
 import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
 import CustomerForm from "./CustomerForm";
+import { handleTokenExpire } from "../../../../commons/utils/token.util";
 
 export default function CustomerFormContainer() {
   const params = useParams();
+  const navigate = useNavigate();
   const [reload, setReload] = useState(false);
   const [fetchData, setFetchData] = useState({
     allProducts: [],
@@ -73,6 +75,10 @@ export default function CustomerFormContainer() {
             error: error.message,
             loading: false,
           }));
+
+          if (error.status === 401) {
+            handleTokenExpire(navigate, setFetchData);
+          }
         });
     } else {
       // create customer
@@ -115,6 +121,10 @@ export default function CustomerFormContainer() {
             empty: "",
             loading: false,
           }));
+
+          if (error.status === 401) {
+            handleTokenExpire(navigate, setFetchData);
+          }
         });
     }
   }, [reload, params]);

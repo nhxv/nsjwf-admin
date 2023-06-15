@@ -13,6 +13,7 @@ import SelectSearch from "../../../../components/forms/SelectSearch";
 import TextInput from "../../../../components/forms/TextInput";
 import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
+import { handleTokenExpire } from "../../../../commons/utils/token.util";
 
 export default function CustomerOrderForm({
   edit,
@@ -135,6 +136,10 @@ export default function CustomerOrderForm({
           success: "",
           loading: false,
         }));
+
+        if (error.status === 401) {
+          handleTokenExpire(navigate, setFormState);
+        }
       }
     },
   });

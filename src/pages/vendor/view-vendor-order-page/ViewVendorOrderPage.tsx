@@ -5,8 +5,11 @@ import Spinner from "../../../components/Spinner";
 import api from "../../../stores/api";
 import VendorOrderList from "./components/VendorOrderList";
 import Stepper from "../../../components/Stepper";
+import { handleTokenExpire } from "../../../commons/utils/token.util";
+import { useNavigate } from "react-router-dom";
 
 export default function ViewVendorOrderPage() {
+  const navigate = useNavigate();
   const [fetchData, setFetchData] = useState({
     orders: [],
     error: "",
@@ -48,6 +51,10 @@ export default function ViewVendorOrderPage() {
           empty: "",
           loading: false,
         }));
+
+        if (error.status === 401) {
+          handleTokenExpire(navigate, setFetchData);
+        }
       });
   }, [status]);
 

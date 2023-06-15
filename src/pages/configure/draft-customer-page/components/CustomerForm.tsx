@@ -10,6 +10,7 @@ import SearchSuggest from "../../../../components/forms/SearchSuggest";
 import TextInput from "../../../../components/forms/TextInput";
 import SelectInput from "../../../../components/forms/SelectInput";
 import api from "../../../../stores/api";
+import { handleTokenExpire } from "../../../../commons/utils/token.util";
 
 export default function CustomerForm({
   editedId,
@@ -125,6 +126,10 @@ export default function CustomerForm({
           error: error.message,
           loading: false,
         }));
+
+        if (error.status === 401) {
+          handleTokenExpire(navigate, setFormState);
+        }
       }
     },
   });

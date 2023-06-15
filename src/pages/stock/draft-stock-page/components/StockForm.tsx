@@ -8,8 +8,11 @@ import NumberInput from "../../../../components/forms/NumberInput";
 import SearchSuggest from "../../../../components/forms/SearchSuggest";
 import SelectInput from "../../../../components/forms/SelectInput";
 import api from "../../../../stores/api";
+import { useNavigate } from "react-router-dom";
+import { handleTokenExpire } from "../../../../commons/utils/token.util";
 
 export default function StockForm({ initialData, products, onClear }) {
+  const navigate = useNavigate();
   const [formState, setFormState] = useState({
     success: "",
     error: "",
@@ -80,6 +83,10 @@ export default function StockForm({ initialData, products, onClear }) {
           success: "",
           loading: false,
         }));
+
+        if (error.status === 401) {
+          handleTokenExpire(navigate, setFormState);
+        }
       }
     },
   });

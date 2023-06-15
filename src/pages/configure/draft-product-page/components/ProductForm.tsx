@@ -10,6 +10,7 @@ import TextInput from "../../../../components/forms/TextInput";
 import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
 import UnitForm from "./UnitForm";
+import { handleTokenExpire } from "../../../../commons/utils/token.util";
 
 export default function ProductForm({ editedId, units, initialData, onClear }) {
   const navigate = useNavigate();
@@ -80,6 +81,10 @@ export default function ProductForm({ editedId, units, initialData, onClear }) {
           error: error.message,
           loading: false,
         }));
+
+        if (error.status === 401) {
+          handleTokenExpire(navigate, setFormState);
+        }
       }
     },
   });

@@ -12,6 +12,8 @@ import SelectInput from "../../../../components/forms/SelectInput";
 import SelectSearch from "../../../../components/forms/SelectSearch";
 import TextInput from "../../../../components/forms/TextInput";
 import api from "../../../../stores/api";
+import { handleTokenExpire } from "../../../../commons/utils/token.util";
+import { useNavigate } from "react-router-dom";
 
 export default function VendorOrderForm({
   edit,
@@ -25,6 +27,7 @@ export default function VendorOrderForm({
   loadTemplate,
   onClear,
 }) {
+  const navigate = useNavigate();
   const [formState, setFormState] = useState({
     success: "",
     error: "",
@@ -128,6 +131,10 @@ export default function VendorOrderForm({
           success: "",
           loading: false,
         }));
+
+        if (error.status === 401) {
+          handleTokenExpire(navigate, setFormState);
+        }
       }
     },
   });

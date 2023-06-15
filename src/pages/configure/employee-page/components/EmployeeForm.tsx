@@ -7,8 +7,11 @@ import api from "../../../../stores/api";
 import { useState } from "react";
 import Spinner from "../../../../components/Spinner";
 import Alert from "../../../../components/Alert";
+import { useNavigate } from "react-router-dom";
+import { handleTokenExpire } from "../../../../commons/utils/token.util";
 
 export default function EmployeeForm({ isOpen, onClose, employee, onReload }) {
+  const navigate = useNavigate();
   const [formState, setFormState] = useState({
     error: "",
     loading: false,
@@ -42,6 +45,10 @@ export default function EmployeeForm({ isOpen, onClose, employee, onReload }) {
           error: error.message,
           loading: false,
         }));
+
+        if (error.status === 401) {
+          handleTokenExpire(navigate, setFormState);
+        }
       }
     },
   });

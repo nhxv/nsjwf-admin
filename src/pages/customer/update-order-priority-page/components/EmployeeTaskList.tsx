@@ -2,8 +2,11 @@ import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import { useState } from "react";
 import Alert from "../../../../components/Alert";
 import api from "../../../../stores/api";
+import { handleTokenExpire } from "../../../../commons/utils/token.util";
+import { useNavigate } from "react-router-dom";
 
 export default function EmployeeTaskList({ employeeTasks, reload }) {
+  const navigate = useNavigate();
   const [employees, setEmployees] = useState(employeeTasks);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -53,9 +56,14 @@ export default function EmployeeTaskList({ employeeTasks, reload }) {
         JSON.stringify(e.response ? e.response.data.error : e)
       );
       setErrorMessage(error.message);
-      setTimeout(() => {
-        reload();
-      }, 2000);
+
+      if (error.status === 401) {
+        handleTokenExpire(navigate, setErrorMessage, (_, msg) => msg);
+      } else {
+        setTimeout(() => {
+          reload();
+        }, 2000);
+      }
     }
   };
 

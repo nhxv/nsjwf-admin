@@ -9,6 +9,7 @@ import Spinner from "../../../../components/Spinner";
 import StatusTag from "../../../../components/StatusTag";
 import api from "../../../../stores/api";
 import { useAuthStore } from "../../../../stores/auth.store";
+import { handleTokenExpire } from "../../../../commons/utils/token.util";
 
 export default function CustomerSaleList({ search, reload, clear }) {
   const [formState, setFormState] = useState({
@@ -47,10 +48,15 @@ export default function CustomerSaleList({ search, reload, clear }) {
           error: error.message,
           loading: false,
         }));
-        setTimeout(() => {
-          setFormState((prev) => ({ ...prev, error: "", loading: false }));
-          reload();
-        }, 2000);
+
+        if (error.status === 401) {
+          handleTokenExpire(navigate, setFormState);
+        } else {
+          setTimeout(() => {
+            setFormState((prev) => ({ ...prev, error: "", loading: false }));
+            reload();
+          }, 2000);
+        }
       });
   };
 
@@ -70,10 +76,15 @@ export default function CustomerSaleList({ search, reload, clear }) {
           error: error.message,
           loading: false,
         }));
-        setTimeout(() => {
-          setFormState((prev) => ({ ...prev, error: "", loading: false }));
-          reload();
-        }, 2000);
+
+        if (error.status === 401) {
+          handleTokenExpire(navigate, setFormState);
+        } else {
+          setTimeout(() => {
+            setFormState((prev) => ({ ...prev, error: "", loading: false }));
+            reload();
+          }, 2000);
+        }
       });
   };
 

@@ -12,8 +12,11 @@ import Spinner from "../../../../components/Spinner";
 import StatusTag from "../../../../components/StatusTag";
 import api from "../../../../stores/api";
 import { useAuthStore } from "../../../../stores/auth.store";
+import { useNavigate } from "react-router-dom";
+import { handleTokenExpire } from "../../../../commons/utils/token.util";
 
 export default function CustomerSaleList() {
+  const navigate = useNavigate();
   const [fetchData, setFetchData] = useState({
     reports: [],
     display: [],
@@ -91,6 +94,10 @@ export default function CustomerSaleList() {
           empty: "",
           loading: false,
         }));
+
+        if (error.status === 401) {
+          handleTokenExpire(navigate, setFetchData);
+        }
       });
   };
 
@@ -156,10 +163,15 @@ export default function CustomerSaleList() {
           error: error.message,
           loading: false,
         }));
-        setTimeout(() => {
-          setPaymentState((prev) => ({ ...prev, error: "", loading: false }));
-          onReload();
-        }, 2000);
+
+        if (error.status === 401) {
+          handleTokenExpire(navigate, setFetchData);
+        } else {
+          setTimeout(() => {
+            setPaymentState((prev) => ({ ...prev, error: "", loading: false }));
+            onReload();
+          }, 2000);
+        }
       });
   };
 
@@ -179,10 +191,15 @@ export default function CustomerSaleList() {
           error: error.message,
           loading: false,
         }));
-        setTimeout(() => {
-          setPaymentState((prev) => ({ ...prev, error: "", loading: false }));
-          onReload();
-        }, 2000);
+
+        if (error.status === 401) {
+          handleTokenExpire(navigate, setFetchData);
+        } else {
+          setTimeout(() => {
+            setPaymentState((prev) => ({ ...prev, error: "", loading: false }));
+            onReload();
+          }, 2000);
+        }
       });
   };
 

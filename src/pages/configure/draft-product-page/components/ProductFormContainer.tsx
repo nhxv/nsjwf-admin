@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Location } from "../../../../commons/enums/location.enum";
 import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
 import ProductForm from "./ProductForm";
+import { handleTokenExpire } from "../../../../commons/utils/token.util";
 
 export default function ProductFormContainer() {
   const params = useParams();
+  const navigate = useNavigate();
   const [reload, setReload] = useState(false);
   const [fetchData, setFetchData] = useState({
     units: [],
@@ -48,6 +50,10 @@ export default function ProductFormContainer() {
             error: error.message,
             loading: false,
           }));
+
+          if (error.status === 401) {
+            handleTokenExpire(navigate, setFetchData);
+          }
         });
     } else {
       setFetchData((prev) => ({
