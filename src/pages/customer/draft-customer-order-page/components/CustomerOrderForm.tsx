@@ -398,21 +398,6 @@ export default function CustomerOrderForm({
           {formState.page === 1 && (
             <div className="flex flex-col items-start gap-6 xl:flex-row-reverse">
               <div className="custom-card w-full xl:w-5/12">
-                <SearchSuggest
-                  query={search.query}
-                  items={search.products}
-                  onChange={(e) => onChangeSearch(e)}
-                  onFocus={() =>
-                    setSearch((prev) => ({
-                      ...prev,
-                      products: allProducts,
-                      query: "",
-                    }))
-                  }
-                  onSelect={onAddProduct}
-                  onClear={onClearQuery}
-                ></SearchSuggest>
-
                 <div className="mt-3 mb-4 flex items-center">
                   <span className="">Total price:</span>
                   <span className="ml-2 text-xl font-medium">${total}</span>
@@ -491,6 +476,24 @@ export default function CustomerOrderForm({
               </div>
 
               <div className="mb-5 w-full xl:w-7/12">
+                <div className="mb-6">
+                  <SearchSuggest
+                    query={search.query}
+                    items={search.products}
+                    onChange={(e) => onChangeSearch(e)}
+                    onFocus={() =>
+                      setSearch((prev) => ({
+                        ...prev,
+                        products: allProducts,
+                        query: "",
+                      }))
+                    }
+                    onSelect={onAddProduct}
+                    onClear={onClearQuery}
+                    optionsHeight="max-h-36"
+                  ></SearchSuggest>
+                </div>
+
                 {selectedProducts && selectedProducts.length > 0 ? (
                   <div className="flex flex-col gap-4">
                     {selectedProducts.map((product) => (
@@ -498,17 +501,6 @@ export default function CustomerOrderForm({
                         key={`${product.id}-${product.appear}`}
                         className="custom-card relative w-full p-3"
                       >
-                        <button
-                          type="button"
-                          className="btn-accent btn-sm btn-circle btn absolute -top-4 -right-4 shadow-md"
-                          onClick={() =>
-                            onRemoveProduct(product.id, product.appear)
-                          }
-                        >
-                          <span>
-                            <BiX className="h-6 w-6"></BiX>
-                          </span>
-                        </button>
                         <div className="mb-2 grid grid-cols-12 items-center gap-2">
                           <div className="col-span-12 xl:col-span-4">
                             <span className="text-lg font-semibold">
@@ -620,6 +612,17 @@ export default function CustomerOrderForm({
                             </div>
                           </div>
                         </div>
+                        <button
+                          type="button"
+                          className="btn-accent btn-sm btn-circle btn absolute -top-4 -right-4 shadow-md"
+                          onClick={() =>
+                            onRemoveProduct(product.id, product.appear)
+                          }
+                        >
+                          <span>
+                            <BiX className="h-6 w-6"></BiX>
+                          </span>
+                        </button>
                       </div>
                     ))}
                   </div>
