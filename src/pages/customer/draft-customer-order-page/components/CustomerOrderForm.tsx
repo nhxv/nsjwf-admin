@@ -413,7 +413,17 @@ export default function CustomerOrderForm({
                   </span>
                 </div>
 
-                <div className="flex items-center">
+                <div className="my-5">
+                  <TextInput
+                    id="note"
+                    name="note"
+                    placeholder="Remarks"
+                    value={customerOrderForm.values.note}
+                    onChange={customerOrderForm.handleChange}
+                  />
+                </div>
+
+                <div className="my-5 flex items-center">
                   <Checkbox
                     id="test"
                     name="test"
@@ -426,16 +436,6 @@ export default function CustomerOrderForm({
                     }
                     checked={customerOrderForm.values["isTest"]}
                   ></Checkbox>
-                </div>
-
-                <div className="my-5">
-                  <TextInput
-                    id="note"
-                    name="note"
-                    placeholder="Remarks"
-                    value={customerOrderForm.values.note}
-                    onChange={customerOrderForm.handleChange}
-                  />
                 </div>
 
                 <div className="grid grid-cols-12 gap-3">
