@@ -76,7 +76,7 @@ export default function CustomerOrderDetail() {
               by {fetchData.order.assign_to}
             </span>
           </div>
-          <div className={fetchData.order.note ? "mb-6" : "mb-4"}>
+          <div className={fetchData.order.note ? "mb-6" : "mb-2"}>
             <StatusTag status={fetchData.order.status}></StatusTag>
           </div>
           <div>{fetchData.order.note}</div>

@@ -251,7 +251,6 @@ export default function CustomerOrderForm({
   const onAddProduct = (product) => {
     setSearch((prev) => ({ ...prev, products: [], query: "" }));
     const found = selectedProducts.filter((p) => p.name === product.name);
-    let appear;
     if (found.length === product.units.length) {
       // cannot add more of this product, but we'll bump them up the list for searching purpose
       setSelectedProducts([
@@ -260,15 +259,18 @@ export default function CustomerOrderForm({
       ]);
       return;
     }
+    let appear;
     if (found.length === 0) {
       // first time this product appears
       appear = 1;
     } else if (found.length < product.units.length) {
       // this product appears more than 1 & less than the maximum time it's allowed to appear
-      const currentAppear = new Map();
+      const currentAppear = new Set();
+      // e.g. cucumber appear 1, 3, 4 (2nd appear is deleted)
       for (const product of found) {
-        currentAppear.set(product.appear, true);
+        currentAppear.add(product.appear);
       }
+      // find the appear that doesn't exist (e.g. 2)
       for (let i = 1; i <= product.units.length; i++) {
         if (!currentAppear.has(i)) {
           appear = i;
@@ -407,7 +409,7 @@ export default function CustomerOrderForm({
           {formState.page === 1 && (
             <div className="flex flex-col items-start gap-6 xl:flex-row-reverse">
               <div className="custom-card w-full xl:sticky xl:top-[124px] xl:w-5/12">
-                <div className="mt-3 mb-4 flex items-center">
+                <div className="mb-4 flex items-center">
                   Total:
                   <span className="mx-1 text-xl font-medium">${total}</span>
                   <span>
