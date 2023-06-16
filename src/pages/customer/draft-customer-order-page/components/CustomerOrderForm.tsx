@@ -154,7 +154,7 @@ export default function CustomerOrderForm({
   };
 
   const onNextPage = async () => {
-    if (!edit) {
+    if (!edit && selectedProducts.length === 0) {
       setFormState((prev) => ({
         ...prev,
         error: "",
