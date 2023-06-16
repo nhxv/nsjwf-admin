@@ -253,7 +253,11 @@ export default function CustomerOrderForm({
     const found = selectedProducts.filter((p) => p.name === product.name);
     let appear;
     if (found.length === product.units.length) {
-      // cannot add more of this product
+      // cannot add more of this product, but we'll bump them up the list for searching purpose
+      setSelectedProducts([
+        ...found,
+        ...selectedProducts.filter((p) => p.name !== product.name),
+      ]);
       return;
     }
     if (found.length === 0) {
