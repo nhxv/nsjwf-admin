@@ -406,7 +406,7 @@ export default function CustomerOrderForm({
         <>
           {formState.page === 1 && (
             <div className="flex flex-col items-start gap-6 xl:flex-row-reverse">
-              <div className="custom-card w-full xl:w-5/12">
+              <div className="custom-card w-full xl:sticky xl:top-[124px] xl:w-5/12">
                 <div className="mt-3 mb-4 flex items-center">
                   Total:
                   <span className="mx-1 text-xl font-medium">${total}</span>
