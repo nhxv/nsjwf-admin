@@ -159,7 +159,10 @@ export default function CustomerOrderList() {
         <div className="flex items-center gap-2">
           <h1 className="text-xl font-bold">Overview</h1>
           <div className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content">
-            <span>{search.orders.length} order(s)</span>
+            <span>
+              {search.orders.length}{" "}
+              {search.orders.length > 1 ? "orders" : "order"}
+            </span>
           </div>
           <div className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content">
             <span>${total} in total</span>
