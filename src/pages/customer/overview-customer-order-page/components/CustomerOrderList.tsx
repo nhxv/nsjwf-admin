@@ -96,12 +96,21 @@ export default function CustomerOrderList() {
 
   const onChangeSearch = (e) => {
     if (e.target.value) {
-      const searched = fetchData.orders.filter((order) =>
-        order.customer_name
-          .toLowerCase()
-          .replace(/\s+/g, "")
-          .includes(e.target.value.toLowerCase().replace(/\s+/g, ""))
-      );
+      // Search based on customer name and product name.
+      const searched = fetchData.orders.filter((order) => {
+        return (
+          order.customer_name
+            .toLowerCase()
+            .replace(/\s+/g, "")
+            .includes(e.target.value.toLowerCase().replace(/\s+/g, "")) ||
+          order.productCustomerOrders.filter((pOrder) => {
+            return pOrder.product_name
+              .toLowerCase()
+              .replace(/\s+/g, "")
+              .includes(e.target.value.toLowerCase().replace(/\s+/g, ""));
+          }).length !== 0
+        );
+      });
       setSearch((prev) => ({
         ...prev,
         orders: searched,
