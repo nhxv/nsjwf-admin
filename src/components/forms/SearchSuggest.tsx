@@ -45,7 +45,7 @@ export default function SearchSuggest({
             </div>
             <Combobox.Input
               ref={searchRef}
-              className="input w-full border-2 border-base-300 bg-transparent pl-10 focus:border-primary focus:outline-none dark:bg-transparent dark:placeholder:text-neutral"
+              className="input w-full border-2 border-base-300 bg-base-100 pl-10 focus:border-primary focus:outline-none dark:bg-base-200 dark:placeholder:text-neutral"
               displayValue={() => ""}
               onChange={(e) => onChangeSearch(e)}
               onFocus={onFocusSearch}
