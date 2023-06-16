@@ -5,8 +5,11 @@ import Spinner from "../../../components/Spinner";
 import TabGroup from "../../../components/TabGroup";
 import api from "../../../stores/api";
 import EmployeeTaskList from "./components/EmployeeTaskList";
+import { useNavigate } from "react-router-dom";
+import { handleTokenExpire } from "../../../commons/utils/token.util";
 
 export default function UpdateOrderPriorityPage() {
+  const navigate = useNavigate();
   const [status, setStatus] = useState(OrderStatus.PICKING);
   const [fetchData, setFetchData] = useState({
     tasks: [],
@@ -67,6 +70,10 @@ export default function UpdateOrderPriorityPage() {
           empty: "",
           loading: false,
         }));
+
+        if (error.status === 401) {
+          handleTokenExpire(navigate, setFetchData);
+        }
       });
   };
 

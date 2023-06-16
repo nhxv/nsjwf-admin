@@ -13,6 +13,7 @@ import SelectSearch from "../../../../components/forms/SelectSearch";
 import TextInput from "../../../../components/forms/TextInput";
 import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
+import { handleTokenExpire } from "../../../../commons/utils/token.util";
 
 export default function CustomerOrderForm({
   edit,
@@ -135,6 +136,10 @@ export default function CustomerOrderForm({
           success: "",
           loading: false,
         }));
+
+        if (error.status === 401) {
+          handleTokenExpire(navigate, setFormState);
+        }
       }
     },
   });
@@ -149,7 +154,7 @@ export default function CustomerOrderForm({
   };
 
   const onNextPage = async () => {
-    if (!edit) {
+    if (!edit && selectedProducts.length === 0) {
       setFormState((prev) => ({
         ...prev,
         error: "",
@@ -246,20 +251,26 @@ export default function CustomerOrderForm({
   const onAddProduct = (product) => {
     setSearch((prev) => ({ ...prev, products: [], query: "" }));
     const found = selectedProducts.filter((p) => p.name === product.name);
-    let appear;
     if (found.length === product.units.length) {
-      // cannot add more of this product
+      // cannot add more of this product, but we'll bump them up the list for searching purpose
+      setSelectedProducts([
+        ...found,
+        ...selectedProducts.filter((p) => p.name !== product.name),
+      ]);
       return;
     }
+    let appear;
     if (found.length === 0) {
       // first time this product appears
       appear = 1;
     } else if (found.length < product.units.length) {
       // this product appears more than 1 & less than the maximum time it's allowed to appear
-      const currentAppear = new Map();
+      const currentAppear = new Set();
+      // e.g. cucumber appear 1, 3, 4 (2nd appear is deleted)
       for (const product of found) {
-        currentAppear.set(product.appear, true);
+        currentAppear.add(product.appear);
       }
+      // find the appear that doesn't exist (e.g. 2)
       for (let i = 1; i <= product.units.length; i++) {
         if (!currentAppear.has(i)) {
           appear = i;
@@ -397,28 +408,28 @@ export default function CustomerOrderForm({
         <>
           {formState.page === 1 && (
             <div className="flex flex-col items-start gap-6 xl:flex-row-reverse">
-              <div className="custom-card w-full xl:w-5/12">
-                <SearchSuggest
-                  query={search.query}
-                  items={search.products}
-                  onChange={(e) => onChangeSearch(e)}
-                  onFocus={() =>
-                    setSearch((prev) => ({
-                      ...prev,
-                      products: allProducts,
-                      query: "",
-                    }))
-                  }
-                  onSelect={onAddProduct}
-                  onClear={onClearQuery}
-                ></SearchSuggest>
-
-                <div className="mt-3 mb-4 flex items-center">
-                  <span className="">Total price:</span>
-                  <span className="ml-2 text-xl font-medium">${total}</span>
+              <div className="custom-card w-full xl:sticky xl:top-[124px] xl:w-5/12">
+                <div className="mb-4 flex items-center">
+                  Total:
+                  <span className="mx-1 text-xl font-medium">${total}</span>
+                  <span>
+                    {`(${selectedProducts.length} ${
+                      selectedProducts.length > 1 ? "items" : "item"
+                    })`}
+                  </span>
                 </div>
 
-                <div className="flex items-center">
+                <div className="my-5">
+                  <TextInput
+                    id="note"
+                    name="note"
+                    placeholder="Remarks"
+                    value={customerOrderForm.values.note}
+                    onChange={customerOrderForm.handleChange}
+                  />
+                </div>
+
+                <div className="my-5 flex items-center">
                   <Checkbox
                     id="test"
                     name="test"
@@ -431,16 +442,6 @@ export default function CustomerOrderForm({
                     }
                     checked={customerOrderForm.values["isTest"]}
                   ></Checkbox>
-                </div>
-
-                <div className="my-5">
-                  <TextInput
-                    id="note"
-                    name="note"
-                    placeholder="Remarks"
-                    value={customerOrderForm.values.note}
-                    onChange={customerOrderForm.handleChange}
-                  />
                 </div>
 
                 <div className="grid grid-cols-12 gap-3">
@@ -491,6 +492,24 @@ export default function CustomerOrderForm({
               </div>
 
               <div className="mb-5 w-full xl:w-7/12">
+                <div className="mb-6">
+                  <SearchSuggest
+                    query={search.query}
+                    items={search.products}
+                    onChange={(e) => onChangeSearch(e)}
+                    onFocus={() =>
+                      setSearch((prev) => ({
+                        ...prev,
+                        products: allProducts,
+                        query: "",
+                      }))
+                    }
+                    onSelect={onAddProduct}
+                    onClear={onClearQuery}
+                    nonOverlapMargin="mb-80"
+                  ></SearchSuggest>
+                </div>
+
                 {selectedProducts && selectedProducts.length > 0 ? (
                   <div className="flex flex-col gap-4">
                     {selectedProducts.map((product) => (
@@ -498,17 +517,6 @@ export default function CustomerOrderForm({
                         key={`${product.id}-${product.appear}`}
                         className="custom-card relative w-full p-3"
                       >
-                        <button
-                          type="button"
-                          className="btn-accent btn-sm btn-circle btn absolute -top-4 -right-4 shadow-md"
-                          onClick={() =>
-                            onRemoveProduct(product.id, product.appear)
-                          }
-                        >
-                          <span>
-                            <BiX className="h-6 w-6"></BiX>
-                          </span>
-                        </button>
                         <div className="mb-2 grid grid-cols-12 items-center gap-2">
                           <div className="col-span-12 xl:col-span-4">
                             <span className="text-lg font-semibold">
@@ -620,6 +628,17 @@ export default function CustomerOrderForm({
                             </div>
                           </div>
                         </div>
+                        <button
+                          type="button"
+                          className="btn-accent btn-sm btn-circle btn absolute -top-4 -right-4 shadow-md"
+                          onClick={() =>
+                            onRemoveProduct(product.id, product.appear)
+                          }
+                        >
+                          <span>
+                            <BiX className="h-6 w-6"></BiX>
+                          </span>
+                        </button>
                       </div>
                     ))}
                   </div>

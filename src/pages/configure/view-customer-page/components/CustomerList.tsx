@@ -5,6 +5,7 @@ import { BiEdit, BiPlus } from "react-icons/bi";
 import SearchInput from "../../../../components/forms/SearchInput";
 import Spinner from "../../../../components/Spinner";
 import Alert from "../../../../components/Alert";
+import { handleTokenExpire } from "../../../../commons/utils/token.util";
 
 export default function CustomerList() {
   const [fetchData, setFetchData] = useState({
@@ -51,6 +52,10 @@ export default function CustomerList() {
           empty: "",
           loading: false,
         }));
+
+        if (error.status === 401) {
+          handleTokenExpire(navigate, setFetchData);
+        }
       });
   }, []);
 

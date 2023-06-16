@@ -8,6 +8,7 @@ import SearchInput from "../../../../components/forms/SearchInput";
 import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
 import { useAuthStore } from "../../../../stores/auth.store";
+import { handleTokenExpire } from "../../../../commons/utils/token.util";
 
 export default function StockList() {
   const [fetchData, setFetchData] = useState({
@@ -57,6 +58,10 @@ export default function StockList() {
           empty: "",
           loading: false,
         }));
+
+        if (error.status === 401) {
+          handleTokenExpire(navigate, setFetchData);
+        }
       });
   }, []);
 

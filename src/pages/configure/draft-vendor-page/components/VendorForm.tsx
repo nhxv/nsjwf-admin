@@ -10,6 +10,7 @@ import SelectInput from "../../../../components/forms/SelectInput";
 import TextInput from "../../../../components/forms/TextInput";
 import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
+import { handleTokenExpire } from "../../../../commons/utils/token.util";
 
 export default function VendorForm({
   editedId,
@@ -116,6 +117,10 @@ export default function VendorForm({
           error: error.message,
           loading: false,
         }));
+
+        if (error.status === 401) {
+          handleTokenExpire(navigate, setFormState);
+        }
       }
     },
   });

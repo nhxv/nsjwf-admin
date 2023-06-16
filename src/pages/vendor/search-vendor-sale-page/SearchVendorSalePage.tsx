@@ -7,6 +7,7 @@ import DateInput from "../../../components/forms/DateInput";
 import SearchInput from "../../../components/forms/SearchInput";
 import Spinner from "../../../components/Spinner";
 import api from "../../../stores/api";
+import { handleTokenExpire } from "../../../commons/utils/token.util";
 
 export default function SearchVendorSalePage() {
   const [search, setSearch] = useState({
@@ -69,7 +70,12 @@ export default function SearchVendorSalePage() {
           loading: false,
           found: [],
         }));
-        searchForm.resetForm();
+
+        if (error.status === 401) {
+          handleTokenExpire(navigate, setSearch);
+        } else {
+          searchForm.resetForm();
+        }
       }
     },
   });

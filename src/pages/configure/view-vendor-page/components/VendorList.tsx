@@ -5,6 +5,7 @@ import SearchInput from "../../../../components/forms/SearchInput";
 import Spinner from "../../../../components/Spinner";
 import Alert from "../../../../components/Alert";
 import api from "../../../../stores/api";
+import { handleTokenExpire } from "../../../../commons/utils/token.util";
 
 export default function VendorList() {
   const [fetchData, setFetchData] = useState({
@@ -51,6 +52,10 @@ export default function VendorList() {
           empty: "",
           loading: false,
         }));
+
+        if (error.status === 401) {
+          handleTokenExpire(navigate, setFetchData);
+        }
       });
   }, []);
 

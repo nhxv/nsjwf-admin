@@ -4,8 +4,11 @@ import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
 import { BiEdit } from "react-icons/bi";
 import EmployeeForm from "./EmployeeForm";
+import { useNavigate } from "react-router-dom";
+import { handleTokenExpire } from "../../../../commons/utils/token.util";
 
 export default function EmployeeList() {
+  const navigate = useNavigate();
   const [fetchData, setFetchData] = useState({
     employees: [],
     error: "",
@@ -41,6 +44,10 @@ export default function EmployeeList() {
           error: error.message,
           loading: false,
         }));
+
+        if (error.status === 401) {
+          handleTokenExpire(navigate, setFetchData);
+        }
       });
   }, [reload]);
 

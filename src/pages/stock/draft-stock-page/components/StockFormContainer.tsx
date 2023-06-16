@@ -4,8 +4,11 @@ import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
 import ProductStockForm from "./StockForm";
+import { handleTokenExpire } from "../../../../commons/utils/token.util";
+import { useNavigate } from "react-router-dom";
 
 export default function StockFormContainer() {
+  const navigate = useNavigate();
   const [reload, setReload] = useState(false);
   const [fetchData, setFetchData] = useState({
     products: [],
@@ -58,6 +61,10 @@ export default function StockFormContainer() {
           error: error.message,
           loading: false,
         }));
+
+        if (error.status === 401) {
+          handleTokenExpire(navigate, setFetchData);
+        }
       });
   }, [reload]);
 

@@ -9,6 +9,8 @@ export default function SearchSuggest({
   onFocus,
   onSelect,
   onClear,
+  optionsHeight = "max-h-72",
+  nonOverlapMargin = "",
 }) {
   const [open, setOpen] = useState(items.length > 0);
   const searchRef = useRef(null);
@@ -34,7 +36,7 @@ export default function SearchSuggest({
   };
 
   return (
-    <div className="w-full">
+    <div className={open ? `w-full ${nonOverlapMargin}` : "w-full"}>
       <Combobox onChange={(item) => onSelectItem(item)}>
         <div className="relative">
           <div className="rounded-btn relative w-full cursor-default overflow-hidden text-left">
@@ -47,6 +49,7 @@ export default function SearchSuggest({
               displayValue={() => ""}
               onChange={(e) => onChangeSearch(e)}
               onFocus={onFocusSearch}
+              autoComplete="off"
             />
             {document.activeElement === searchRef.current && (
               <div
@@ -60,7 +63,7 @@ export default function SearchSuggest({
           {open && (
             <Combobox.Options
               static
-              className="rounded-btn absolute z-10 mt-1 max-h-72 w-full overflow-auto border-2 border-base-300 bg-base-100 py-2 shadow-md focus:outline-none dark:bg-base-200"
+              className={`rounded-btn absolute z-10 mt-1 ${optionsHeight} w-full overflow-auto border-2 border-base-300 bg-base-100 py-2 shadow-md focus:outline-none dark:bg-base-200`}
             >
               {items.length === 0 ? (
                 <div className="relative cursor-default select-none py-3 px-4">

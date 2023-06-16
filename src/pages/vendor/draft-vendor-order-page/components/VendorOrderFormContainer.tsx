@@ -1,14 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { OrderStatus } from "../../../../commons/enums/order-status.enum";
 import { convertTime } from "../../../../commons/utils/time.util";
 import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
 import VendorOrderForm from "./VendorOrderForm";
+import { handleTokenExpire } from "../../../../commons/utils/token.util";
 
 export default function VendorOrderFormContainer() {
   const params = useParams();
+  const navigate = useNavigate();
   const [reload, setReload] = useState(false);
   const [fetchData, setFetchData] = useState({
     editedProducts: [],
@@ -115,6 +117,10 @@ export default function VendorOrderFormContainer() {
             empty: "",
             loading: false,
           }));
+
+          if (error.status === 401) {
+            handleTokenExpire(navigate, setFetchData);
+          }
         });
     } else {
       // 2. create mode
@@ -175,6 +181,10 @@ export default function VendorOrderFormContainer() {
             empty: "",
             loading: false,
           }));
+
+          if (error.status === 401) {
+            handleTokenExpire(navigate, setFetchData);
+          }
         });
     }
   }, [reload, params]);
@@ -226,6 +236,10 @@ export default function VendorOrderFormContainer() {
           empty: "",
           loading: false,
         }));
+
+        if (error.status === 401) {
+          handleTokenExpire(navigate, setFetchData);
+        }
       }
     }
   };

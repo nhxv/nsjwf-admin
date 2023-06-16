@@ -7,8 +7,11 @@ import TextInput from "../../../../components/forms/TextInput";
 import Modal from "../../../../components/Modal";
 import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
+import { useNavigate } from "react-router-dom";
+import { handleTokenExpire } from "../../../../commons/utils/token.util";
 
 export default function DraftUnitForm({ productId, unit, isOpen, onClose }) {
+  const navigate = useNavigate();
   const [formState, setFormState] = useState({
     error: "",
     loading: false,
@@ -47,6 +50,10 @@ export default function DraftUnitForm({ productId, unit, isOpen, onClose }) {
           error: error.message,
           loading: false,
         }));
+
+        if (error.status === 401) {
+          handleTokenExpire(navigate, setFormState);
+        }
       }
     },
   });

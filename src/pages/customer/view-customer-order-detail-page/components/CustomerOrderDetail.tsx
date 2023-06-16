@@ -5,6 +5,7 @@ import Spinner from "../../../../components/Spinner";
 import StatusTag from "../../../../components/StatusTag";
 import api from "../../../../stores/api";
 import CustomerOrderPrint from "./CustomerOrderPrint";
+import { handleTokenExpire } from "../../../../commons/utils/token.util";
 
 export default function CustomerOrderDetail() {
   const [fetchData, setFetchData] = useState({
@@ -37,6 +38,10 @@ export default function CustomerOrderDetail() {
             loading: false,
             error: error.message,
           }));
+
+          if (error.status === 401) {
+            handleTokenExpire(navigate, setFetchData);
+          }
         });
     }
   }, []);
@@ -71,7 +76,7 @@ export default function CustomerOrderDetail() {
               by {fetchData.order.assign_to}
             </span>
           </div>
-          <div className="mb-6">
+          <div className={fetchData.order.note ? "mb-6" : "mb-2"}>
             <StatusTag status={fetchData.order.status}></StatusTag>
           </div>
           <div>{fetchData.order.note}</div>

@@ -8,6 +8,8 @@ import SelectInput from "../../../../components/forms/SelectInput";
 import TextInput from "../../../../components/forms/TextInput";
 import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
+import { handleTokenExpire } from "../../../../commons/utils/token.util";
+import { useNavigate } from "react-router-dom";
 
 export default function CreateCustomerReturnForm({
   initialData,
@@ -15,6 +17,7 @@ export default function CreateCustomerReturnForm({
   sold,
   onClear,
 }) {
+  const navigate = useNavigate();
   const [formState, setFormState] = useState({
     success: "",
     error: "",
@@ -85,6 +88,10 @@ export default function CreateCustomerReturnForm({
           success: "",
           loading: false,
         }));
+
+        if (error.status === 401) {
+          handleTokenExpire(navigate, setFormState);
+        }
       }
     },
   });

@@ -3,8 +3,11 @@ import Alert from "../../../components/Alert";
 import Spinner from "../../../components/Spinner";
 import api from "../../../stores/api";
 import VendorReturnList from "./components/VendorReturnList";
+import { handleTokenExpire } from "../../../commons/utils/token.util";
+import { useNavigate } from "react-router-dom";
 
 export default function ViewVendorReturnPage() {
+  const navigate = useNavigate();
   const [fetchData, setFetchData] = useState({
     returns: [],
     error: "",
@@ -45,6 +48,10 @@ export default function ViewVendorReturnPage() {
           error: error.message,
           loading: false,
         }));
+
+        if (error.status === 401) {
+          handleTokenExpire(navigate, setFetchData);
+        }
       });
   }, []);
 

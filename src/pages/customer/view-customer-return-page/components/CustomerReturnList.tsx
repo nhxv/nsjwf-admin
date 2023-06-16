@@ -2,8 +2,11 @@ import { useEffect, useState } from "react";
 import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
+import { handleTokenExpire } from "../../../../commons/utils/token.util";
+import { useNavigate } from "react-router-dom";
 
 export default function CustomerReturnList() {
+  const navigate = useNavigate();
   const [fetchData, setFetchData] = useState({
     returns: [],
     error: "",
@@ -44,6 +47,10 @@ export default function CustomerReturnList() {
           empty: "",
           loading: false,
         }));
+
+        if (error.status === 401) {
+          handleTokenExpire(navigate, setFetchData);
+        }
       });
   }, []);
 

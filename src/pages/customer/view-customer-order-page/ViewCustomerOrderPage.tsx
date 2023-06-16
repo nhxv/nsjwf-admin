@@ -9,6 +9,7 @@ import Stepper from "../../../components/Stepper";
 import api from "../../../stores/api";
 import CustomerOrderList from "./components/CustomerOrderList";
 import PackingSlipToPrint from "./components/PackingSlipToPrint";
+import { handleTokenExpire } from "../../../commons/utils/token.util";
 
 export default function ViewCustomerOrderPage() {
   const [fetchData, setFetchData] = useState({
@@ -75,6 +76,10 @@ export default function ViewCustomerOrderPage() {
           error: error.message,
           loading: false,
         }));
+
+        if (error.status === 401) {
+          handleTokenExpire(navigate, setFetchData);
+        }
       });
   };
 

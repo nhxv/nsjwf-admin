@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
 import CreateVendorReturnForm from "./CreateVendorReturnForm";
 import { parseFraction } from "../../../../commons/utils/fraction.util";
+import { handleTokenExpire } from "../../../../commons/utils/token.util";
 
 export default function CreateVendorReturnFormContainer({}) {
   const params = useParams();
+  const navigate = useNavigate();
   const [reload, setReload] = useState(false);
   const [fetchData, setFetchData] = useState({
     sold: null,
@@ -75,6 +77,10 @@ export default function CreateVendorReturnFormContainer({}) {
           empty: "",
           loading: false,
         }));
+
+        if (error.status === 401) {
+          handleTokenExpire(navigate, setFetchData);
+        }
       });
   }, [reload, params]);
 

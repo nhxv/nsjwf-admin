@@ -1,14 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { OrderStatus } from "../../../../commons/enums/order-status.enum";
 import { convertTime } from "../../../../commons/utils/time.util";
 import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
 import CustomerOrderForm from "./CustomerOrderForm";
+import { handleTokenExpire } from "../../../../commons/utils/token.util";
 0;
 export default function CustomerOrderFormContainer() {
   const params = useParams();
+  const navigate = useNavigate();
   const [reload, setReload] = useState(false);
   const [fetchData, setFetchData] = useState({
     editedProducts: [],
@@ -167,6 +169,10 @@ export default function CustomerOrderFormContainer() {
             empty: "",
             loading: false,
           }));
+
+          if (error.status === 401) {
+            handleTokenExpire(navigate, setFetchData);
+          }
         });
     } else {
       // create mode
@@ -238,6 +244,9 @@ export default function CustomerOrderFormContainer() {
             empty: "",
             loading: false,
           }));
+          if (error.status === 401) {
+            handleTokenExpire(navigate, setFetchData);
+          }
         });
     }
   }, [reload, params]);
@@ -300,6 +309,10 @@ export default function CustomerOrderFormContainer() {
           empty: "",
           loading: false,
         }));
+
+        if (error.status === 401) {
+          handleTokenExpire(navigate, setFetchData);
+        }
       }
     }
   };

@@ -6,8 +6,10 @@ import DateInput from "../../../../components/forms/DateInput";
 import SearchInput from "../../../../components/forms/SearchInput";
 import api from "../../../../stores/api";
 import CustomerSaleList from "./CustomerSaleList";
+import { handleTokenExpire } from "../../../../commons/utils/token.util";
 
 export default function SearchCustomerSaleForm() {
+  const navigate = useNavigate();
   const [search, setSearch] = useState({
     greet: "Your search result will appear here.",
     error: "",
@@ -66,7 +68,12 @@ export default function SearchCustomerSaleForm() {
           empty: "",
           loading: false,
         }));
-        searchForm.resetForm();
+
+        if (error.status === 401) {
+          handleTokenExpire(navigate, setSearch);
+        } else {
+          searchForm.resetForm();
+        }
       }
     },
   });
