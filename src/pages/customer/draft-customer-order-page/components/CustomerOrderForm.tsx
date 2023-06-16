@@ -251,8 +251,7 @@ export default function CustomerOrderForm({
   const onAddProduct = (product) => {
     setSearch((prev) => ({ ...prev, products: [], query: "" }));
     const found = selectedProducts.filter((p) => p.name === product.name);
-    let appear;
-    if (found.length === product.units.length) {
+    if (found.length >= product.units.length) {
       // cannot add more of this product, but we'll bump them up the list for searching purpose
       setSelectedProducts([
         ...found,
@@ -260,11 +259,16 @@ export default function CustomerOrderForm({
       ]);
       return;
     }
+
+    let appear;
     if (found.length === 0) {
       // first time this product appears
       appear = 1;
-    } else if (found.length < product.units.length) {
+    } else {
       // this product appears more than 1 & less than the maximum time it's allowed to appear
+
+      // have to do this cuz if there are 3 units (so we'll have appear 1 -> 3) then we remove the 2nd one out of order
+      // we can't do found.length + 1 as appear.
       const currentAppear = new Map();
       for (const product of found) {
         currentAppear.set(product.appear, true);
@@ -277,7 +281,11 @@ export default function CustomerOrderForm({
       }
     }
     const selectedProduct = { ...product, appear: appear };
-    setSelectedProducts([selectedProduct, ...selectedProducts]);
+    setSelectedProducts([
+      selectedProduct,
+      ...found,
+      ...selectedProducts.filter((p) => p.name !== product.name),
+    ]);
     customerOrderForm.setFieldValue(`quantity${product.id}-${appear}`, 0);
     // Can't set to 0 to prevent user forgetting a field.
     customerOrderForm.setFieldValue(`price${product.id}-${appear}`, "");
@@ -300,6 +308,7 @@ export default function CustomerOrderForm({
     setSearch((prev) => ({ ...prev, products: [], query: "" }));
   };
 
+  console.log(selectedProducts);
   return (
     <form onSubmit={customerOrderForm.handleSubmit}>
       {formState.page === 0 ? (
