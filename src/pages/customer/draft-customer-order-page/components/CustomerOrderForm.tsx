@@ -269,10 +269,11 @@ export default function CustomerOrderForm({
 
       // have to do this cuz if there are 3 units (so we'll have appear 1 -> 3) then we remove the 2nd one out of order
       // we can't do found.length + 1 as appear.
-      const currentAppear = new Map();
+      const currentAppear = new Set();
       for (const product of found) {
-        currentAppear.set(product.appear, true);
+        currentAppear.add(product.appear);
       }
+      // find the appear that doesn't exist (e.g. 2)
       for (let i = 1; i <= product.units.length; i++) {
         if (!currentAppear.has(i)) {
           appear = i;
@@ -416,7 +417,7 @@ export default function CustomerOrderForm({
           {formState.page === 1 && (
             <div className="flex flex-col items-start gap-6 xl:flex-row-reverse">
               <div className="custom-card w-full xl:sticky xl:top-[124px] xl:w-5/12">
-                <div className="mt-3 mb-4 flex items-center">
+                <div className="mb-4 flex items-center">
                   Total:
                   <span className="mx-1 text-xl font-medium">${total}</span>
                   <span>
