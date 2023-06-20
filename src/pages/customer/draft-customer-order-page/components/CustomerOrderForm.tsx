@@ -309,7 +309,6 @@ export default function CustomerOrderForm({
     setSearch((prev) => ({ ...prev, products: [], query: "" }));
   };
 
-  console.log(selectedProducts);
   return (
     <form onSubmit={customerOrderForm.handleSubmit}>
       {formState.page === 0 ? (
