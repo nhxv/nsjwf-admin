@@ -119,7 +119,7 @@ export default function SearchVendorSalePage() {
                   }
                 ></DateInput>
               </div>
-              <div className="">
+              <div>
                 <SearchInput
                   id="search"
                   name="keyword"
@@ -162,7 +162,7 @@ export default function SearchVendorSalePage() {
                                 {sale.vendorName}
                               </span>
                             </div>
-                            <div className="">
+                            <div>
                               <span className="text-sm text-neutral">
                                 Completed at{" "}
                                 {convertTime(new Date(sale.updatedAt))}

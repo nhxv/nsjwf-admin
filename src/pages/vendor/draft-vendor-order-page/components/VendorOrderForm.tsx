@@ -431,7 +431,7 @@ export default function VendorOrderForm({
 
               <div className="mt-3 mb-5 flex items-center">
                 <div>
-                  <span className="">Total price:</span>
+                  <span>Total price:</span>
                 </div>
                 <span className="ml-2 text-xl font-medium">${total}</span>
               </div>

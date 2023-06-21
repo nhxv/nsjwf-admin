@@ -34,7 +34,7 @@ export default function SelectSearch({
         name={name}
         value={selected}
         onChange={(v) => onChangeValue(v)}
-        nullable={nullable}
+        nullable
       >
         <div className="relative">
           <div className="rounded-btn relative w-full cursor-default overflow-hidden bg-base-100 text-left">

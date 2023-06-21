@@ -118,12 +118,12 @@ export default function SearchCustomerSaleForm({ customers, products }) {
     <>
       <form
         onSubmit={searchForm.handleSubmit}
-        className="custom-card mb-8 w-11/12 md:w-8/12 lg:w-6/12 xl:w-5/12"
+        className="custom-card mb-8 w-11/12 md:w-8/12 lg:w-6/12"
       >
         <div className="mb-6 flex flex-col gap-4 xl:grid xl:grid-cols-2">
-          <div className="">
+          <div>
             <label className="custom-label mb-2 inline-block">
-              Code/Manual Code:
+              Code
             </label>
             <TextInput
               id="by-code"
@@ -135,9 +135,9 @@ export default function SearchCustomerSaleForm({ customers, products }) {
               }
             />
           </div>
-          <div className="">
+          <div>
             <label className="custom-label mb-2 inline-block">
-              Completed on:
+              Completed on
             </label>
             <DateInput
               id="date"
@@ -149,9 +149,8 @@ export default function SearchCustomerSaleForm({ customers, products }) {
               onChange={searchForm.handleChange}
             ></DateInput>
           </div>
-          <div className="">
-            <label className="custom-label mb-2 inline-block">Customer:</label>
-
+          <div>
+            <label className="custom-label mb-2 inline-block">Customer</label>
             <SelectSearch
               name="customer-select"
               value={searchForm.values.customer}
@@ -166,7 +165,7 @@ export default function SearchCustomerSaleForm({ customers, products }) {
 
           <div>
             <label className="custom-label mb-2 inline-block">
-              Contains product:
+              Product
             </label>
             <SelectSearch
               name="product-select"
