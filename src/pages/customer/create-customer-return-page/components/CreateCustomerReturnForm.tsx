@@ -65,7 +65,6 @@ export default function CreateCustomerReturnForm({
         }
         const productCustomerReturns = [...productReturns.values()];
         reqData["productCustomerReturns"] = productCustomerReturns;
-        console.log(reqData);
         // create return
         const res = await api.post(`/customer-returns`, reqData);
         setFormState((prev) => ({
