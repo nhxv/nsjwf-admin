@@ -122,9 +122,7 @@ export default function SearchCustomerSaleForm({ customers, products }) {
       >
         <div className="mb-6 flex flex-col gap-4 xl:grid xl:grid-cols-2">
           <div>
-            <label className="custom-label mb-2 inline-block">
-              Code
-            </label>
+            <label className="custom-label mb-2 inline-block">Code</label>
             <TextInput
               id="by-code"
               placeholder="Code"
@@ -164,9 +162,7 @@ export default function SearchCustomerSaleForm({ customers, products }) {
           </div>
 
           <div>
-            <label className="custom-label mb-2 inline-block">
-              Product
-            </label>
+            <label className="custom-label mb-2 inline-block">Product</label>
             <SelectSearch
               name="product-select"
               value={searchForm.values.product}
