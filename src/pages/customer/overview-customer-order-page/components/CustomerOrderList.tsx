@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { OrderStatus } from "../../../../commons/enums/order-status.enum";
 import { convertTimeToText } from "../../../../commons/utils/time.util";
@@ -8,6 +8,9 @@ import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
 import { handleTokenExpire } from "../../../../commons/utils/token.util";
 import SelectInput from "../../../../components/forms/SelectInput";
+import { useReactToPrint } from "react-to-print";
+import { BiPrinter } from "react-icons/bi";
+import ComponentToPrint from "./ComponentToPrint";
 
 export default function CustomerOrderList() {
   // TODO: Consider change search to useReducer probably cuz search.orders depends on status.
@@ -17,6 +20,7 @@ export default function CustomerOrderList() {
     empty: "",
     loading: true,
   });
+  const printRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const [search, setSearch] = useState({
     orders: [],
@@ -53,6 +57,10 @@ export default function CustomerOrderList() {
       status === "ALL" ? true : order.status === status
     );
   };
+
+  const handlePrint = useReactToPrint({
+    content: () => printRef.current,
+  });
 
   const getCustomerOrders = () => {
     setFetchData((prev) => ({
@@ -174,6 +182,11 @@ export default function CustomerOrderList() {
 
   return (
     <>
+      <div className="hidden">
+        {/* Not sure why it has to be a component here for it to print. */}
+        <ComponentToPrint printRef={printRef} orders={search.orders} />
+      </div>
+
       <div className="m-4 flex flex-col items-center justify-between gap-3 xl:flex-row">
         <div className="flex items-center gap-2">
           <h1 className="text-xl font-bold">Overview</h1>
@@ -187,8 +200,8 @@ export default function CustomerOrderList() {
             <span>${total} in total</span>
           </div>
         </div>
-        <div className="flex w-full flex-col-reverse gap-2 md:flex-row xl:w-4/12 xl:flex-row">
-          <div className="md:w-4/12 xl:w-5/12">
+        <div className="flex w-full flex-col gap-2 md:flex-row xl:w-5/12 xl:flex-row">
+          <div className="order-2 md:order-1 md:w-4/12 xl:order-1 xl:w-5/12">
             <SelectInput
               name="status-filter"
               value={search.status}
@@ -207,7 +220,7 @@ export default function CustomerOrderList() {
             />
           </div>
 
-          <div className="w-auto md:w-full">
+          <div className="order-1 w-auto md:order-2 md:w-full xl:order-2">
             <SearchInput
               id="order-search"
               name="order-search"
@@ -218,6 +231,11 @@ export default function CustomerOrderList() {
               onFocus={null}
             ></SearchInput>
           </div>
+
+          {/* TODO: Somehow make this inline with the status filter when on small screen. Currently it's on a separate line. */}
+          <label className="btn-ghost btn-square btn order-2 bg-base-200 text-neutral dark:bg-base-300 dark:text-neutral-content md:order-3 xl:order-3">
+            <BiPrinter className="h-6 w-6" onClick={handlePrint}></BiPrinter>
+          </label>
         </div>
       </div>
       <div className="mx-4 grid grid-cols-12 gap-2">
