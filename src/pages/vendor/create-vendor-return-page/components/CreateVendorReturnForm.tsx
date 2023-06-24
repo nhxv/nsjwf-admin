@@ -113,7 +113,7 @@ export default function CreateVendorReturnForm({
           <div>
             <span className="text-xl font-semibold">{sold.vendor_name}</span>
           </div>
-          <div className="">
+          <div>
             <span className="text-sm text-neutral">
               Created at {convertTime(new Date(sold.sold_at))}
             </span>

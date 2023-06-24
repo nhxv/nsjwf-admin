@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { OrderStatus } from "../../../../commons/enums/order-status.enum";
 import { convertTimeToText } from "../../../../commons/utils/time.util";
@@ -7,18 +7,25 @@ import SearchInput from "../../../../components/forms/SearchInput";
 import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
 import { handleTokenExpire } from "../../../../commons/utils/token.util";
+import SelectInput from "../../../../components/forms/SelectInput";
+import { useReactToPrint } from "react-to-print";
+import { BiPrinter } from "react-icons/bi";
+import ComponentToPrint from "./ComponentToPrint";
 
 export default function CustomerOrderList() {
+  // TODO: Consider change search to useReducer probably cuz search.orders depends on status.
   const [fetchData, setFetchData] = useState({
     orders: [],
     error: "",
     empty: "",
     loading: true,
   });
+  const printRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const [search, setSearch] = useState({
     orders: [],
     query: "",
+    status: "ALL",
   });
   const total = useMemo(() => {
     return search.orders.reduce(
@@ -44,6 +51,17 @@ export default function CustomerOrderList() {
     };
   }, []);
 
+  // Cursed. Have to attach this pretty much on every search.orders
+  const filterByStatus = (orders, status) => {
+    return orders.filter((order) =>
+      status === "ALL" ? true : order.status === status
+    );
+  };
+
+  const handlePrint = useReactToPrint({
+    content: () => printRef.current,
+  });
+
   const getCustomerOrders = () => {
     setFetchData((prev) => ({
       ...prev,
@@ -62,7 +80,10 @@ export default function CustomerOrderList() {
             loading: false,
           }));
         } else {
-          setSearch((prev) => ({ ...prev, orders: res.data, query: "" }));
+          setSearch((prev) => ({
+            ...prev,
+            orders: filterByStatus(res.data, prev.status),
+          }));
           setFetchData((prev) => ({
             ...prev,
             orders: res.data,
@@ -94,13 +115,24 @@ export default function CustomerOrderList() {
     navigate(`/customer/view-customer-order-detail/${code}`);
   };
 
-  const onChangeSearch = (e) => {
+  const onChangeQuery = (e) => {
     if (e.target.value) {
-      const searched = fetchData.orders.filter((order) =>
-        order.customer_name
-          .toLowerCase()
-          .replace(/\s+/g, "")
-          .includes(e.target.value.toLowerCase().replace(/\s+/g, ""))
+      // Search based on customer name and product name.
+      const searched = filterByStatus(fetchData.orders, search.status).filter(
+        (order) => {
+          return (
+            order.customer_name
+              .toLowerCase()
+              .replace(/\s+/g, "")
+              .includes(e.target.value.toLowerCase().replace(/\s+/g, "")) ||
+            order.productCustomerOrders.filter((pOrder) => {
+              return pOrder.product_name
+                .toLowerCase()
+                .replace(/\s+/g, "")
+                .includes(e.target.value.toLowerCase().replace(/\s+/g, ""));
+            }).length !== 0
+          );
+        }
       );
       setSearch((prev) => ({
         ...prev,
@@ -110,14 +142,18 @@ export default function CustomerOrderList() {
     } else {
       setSearch((prev) => ({
         ...prev,
-        orders: fetchData.orders,
+        orders: filterByStatus(fetchData.orders, prev.status),
         query: e.target.value,
       }));
     }
   };
 
   const onClearQuery = () => {
-    setSearch((prev) => ({ ...prev, orders: fetchData.orders, query: "" }));
+    setSearch((prev) => ({
+      ...prev,
+      orders: filterByStatus(fetchData.orders, prev.status),
+      query: "",
+    }));
   };
 
   if (fetchData.loading) {
@@ -146,28 +182,59 @@ export default function CustomerOrderList() {
 
   return (
     <>
+      <div className="hidden">
+        {/* Not sure why it has to be a component here for it to print. */}
+        <ComponentToPrint printRef={printRef} orders={search.orders} />
+      </div>
+
       <div className="m-4 flex flex-col items-center justify-between gap-3 xl:flex-row">
         <div className="flex items-center gap-2">
-          <h1 className="text-xl font-bold">Overview</h1>
           <div className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content">
-            <span>{search.orders.length} order(s)</span>
+            <span>
+              {search.orders.length}{" "}
+              {search.orders.length > 1 ? "orders" : "order"}
+            </span>
           </div>
           <div className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content">
             <span>${total} in total</span>
           </div>
         </div>
-        <div>
-          <div>
+        <div className="flex w-full flex-col gap-2 md:flex-row xl:w-5/12 xl:flex-row">
+          <div className="order-2 md:order-1 md:w-4/12 xl:order-1 xl:w-5/12">
+            <SelectInput
+              name="status-filter"
+              value={search.status}
+              setValue={(v) => {
+                setSearch((prev) => ({
+                  ...prev,
+                  status: v,
+                  orders: filterByStatus(fetchData.orders, v),
+                }));
+              }}
+              options={["ALL"].concat(
+                Object.values(OrderStatus).filter(
+                  (s) => s != OrderStatus.CANCELED && s != OrderStatus.COMPLETED
+                )
+              )}
+            />
+          </div>
+
+          <div className="order-1 w-auto md:order-2 md:w-full xl:order-2">
             <SearchInput
               id="order-search"
               name="order-search"
               placeholder="Search orders"
               value={search.query}
-              onChange={(e) => onChangeSearch(e)}
+              onChange={(e) => onChangeQuery(e)}
               onClear={onClearQuery}
               onFocus={null}
             ></SearchInput>
           </div>
+
+          {/* TODO: Somehow make this inline with the status filter when on small screen. Currently it's on a separate line. */}
+          <label className="btn-ghost btn-square btn order-2 bg-base-200 text-neutral dark:bg-base-300 dark:text-neutral-content md:order-3 xl:order-3">
+            <BiPrinter className="h-6 w-6" onClick={handlePrint}></BiPrinter>
+          </label>
         </div>
       </div>
       <div className="mx-4 grid grid-cols-12 gap-2">

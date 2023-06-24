@@ -11,7 +11,6 @@ export default function ReportCustomerSalePage() {
 
   return (
     <section className="min-h-screen">
-      <h1 className="my-4 text-center text-xl font-bold">Daily sale</h1>
       <div className="flex flex-col items-center">
         <div className="fixed bottom-24 right-6 z-20 md:right-8">
           <button className="btn-accent btn-circle btn" onClick={onSearch}>

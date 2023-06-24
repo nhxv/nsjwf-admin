@@ -2,7 +2,13 @@ import { useState } from "react";
 import { Combobox } from "@headlessui/react";
 import { BiChevronDown } from "react-icons/bi";
 
-export default function SelectSearch({ name, value, setValue, options }) {
+export default function SelectSearch({
+  name,
+  value,
+  setValue,
+  options,
+  nullable = false,
+}) {
   const [selected, setSelected] = useState(value);
   const [query, setQuery] = useState("");
 
@@ -24,7 +30,12 @@ export default function SelectSearch({ name, value, setValue, options }) {
 
   return (
     <div className="w-full">
-      <Combobox name={name} value={selected} onChange={(v) => onChangeValue(v)}>
+      <Combobox
+        name={name}
+        value={selected}
+        onChange={(v) => onChangeValue(v)}
+        nullable
+      >
         <div className="relative">
           <div className="rounded-btn relative w-full cursor-default overflow-hidden bg-base-100 text-left">
             <Combobox.Input

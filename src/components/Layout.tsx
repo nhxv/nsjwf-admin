@@ -22,7 +22,7 @@ import {
   BiFingerprint,
   BiReset,
 } from "react-icons/bi";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, matchPath, useLocation, useNavigate } from "react-router-dom";
 import { Role } from "../commons/enums/role.enum";
 import { useAuthStore } from "../stores/auth.store";
 import BottomNav from "./BottomNav";
@@ -31,6 +31,61 @@ export default function Layout({ children }) {
   const signOut = useAuthStore((state) => state.signOut);
   const navigate = useNavigate();
   const role = useAuthStore((state) => state.role);
+
+  const location = useLocation();
+  // title content
+  const titleBar = {
+    "/profile": "Profile",
+
+    "/customer/draft-customer-order": "Draft Order",
+    "/customer/update-order-priority": "Update Priority",
+    "/customer/create-customer-return/:code": "Create Customer Return",
+    "/customer/search-customer-sale": "Search Sale",
+    "/customer/view-customer-return": "View Return",
+    "/customer/view-sale": "View Sale",
+    "/customer/view-customer-order": "View Order",
+    "/customer/view-customer-order-detail/:code": "View Order",
+    "/customer/overview-customer-order": "Overview",
+
+    "/vendor/draft-vendor-order": "Draft Order",
+    "/vendor/create-vendor-return/:code": "Create Vendor Return",
+    "/vendor/search-vendor-sale": "Search Sale",
+    "/vendor/view-vendor-return": "View Return",
+    "/vendor/view-vendor-order": "View Order",
+
+    "/stock/change-stock": "Update Stock",
+    "/stock/view-stock": "View Stock",
+
+    "/task/view-task": "View Task",
+    "/task/report-task": "Report Task",
+
+    "/configure/draft-product": "Create Product",
+    "/configure/draft-product/:id": "Update Product",
+    "/configure/view-product": "View Products",
+    "/configure/draft-customer": "Create Customer",
+    "/configure/draft-customer/:id": "Update Customer",
+    "/configure/view-customer": "View Customers",
+    "/configure/draft-vendor": "Create Vendor",
+    "/configure/draft-vendor/:id": "Update Vendor",
+    "/configure/view-vendor": "View Vendors",
+    "/configure/employee": "View Employees",
+
+    "/test/reset": "Reset Database",
+  };
+
+  const getTitle = (pathname: string) => {
+    if (titleBar[pathname]) {
+      return titleBar[pathname];
+    }
+
+    for (const key of Object.keys(titleBar)) {
+      if (matchPath(key, pathname)) {
+        return titleBar[key];
+      }
+    }
+
+    return "NSJWF";
+  };
 
   // sidebar content
   const categories = [
@@ -221,7 +276,9 @@ export default function Layout({ children }) {
               </label>
             </div>
             <div className="navbar-center">
-              <div className="mx-2 flex-1 px-2 text-xl font-bold">NSJWF</div>
+              <div className="mx-2 flex-1 px-2 text-xl font-bold">
+                {getTitle(location.pathname)}
+              </div>
             </div>
             <div className="navbar-end">
               <div className="dropdown-end dropdown">
@@ -264,7 +321,7 @@ export default function Layout({ children }) {
 
           {/* Main content */}
           <main>
-            <div className="container mb-5">{children}</div>
+            <div className="container my-5">{children}</div>
             <BottomNav />
           </main>
         </div>

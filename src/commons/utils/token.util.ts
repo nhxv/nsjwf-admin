@@ -12,5 +12,5 @@ export const handleTokenExpire = (
   const message = "Invalid session, redirecting to sign in page...";
 
   stateSetter((prev) => errorMsgSetBehavior(prev, message));
-  setTimeout(navigate, 4000, "/sign-in");
+  setTimeout(navigate, 2000, "/sign-in");
 };

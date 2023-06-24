@@ -99,7 +99,6 @@ export default function SearchVendorSalePage() {
   return (
     <>
       <section className="min-h-screen">
-        <h1 className="my-4 text-center text-xl font-bold">Search sale</h1>
         <div className="mb-8 flex flex-col items-center">
           <form
             onSubmit={searchForm.handleSubmit}
@@ -119,7 +118,7 @@ export default function SearchVendorSalePage() {
                   }
                 ></DateInput>
               </div>
-              <div className="">
+              <div>
                 <SearchInput
                   id="search"
                   name="keyword"
@@ -162,7 +161,7 @@ export default function SearchVendorSalePage() {
                                 {sale.vendorName}
                               </span>
                             </div>
-                            <div className="">
+                            <div>
                               <span className="text-sm text-neutral">
                                 Completed at{" "}
                                 {convertTime(new Date(sale.updatedAt))}
