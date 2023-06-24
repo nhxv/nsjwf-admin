@@ -189,7 +189,6 @@ export default function CustomerOrderList() {
 
       <div className="m-4 flex flex-col items-center justify-between gap-3 xl:flex-row">
         <div className="flex items-center gap-2">
-          <h1 className="text-xl font-bold">Overview</h1>
           <div className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content">
             <span>
               {search.orders.length}{" "}

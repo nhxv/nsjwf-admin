@@ -99,7 +99,6 @@ export default function SearchVendorSalePage() {
   return (
     <>
       <section className="min-h-screen">
-        <h1 className="my-4 text-center text-xl font-bold">Search sale</h1>
         <div className="mb-8 flex flex-col items-center">
           <form
             onSubmit={searchForm.handleSubmit}

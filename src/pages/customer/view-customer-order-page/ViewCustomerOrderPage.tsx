@@ -119,7 +119,6 @@ export default function ViewCustomerOrderPage() {
 
   return (
     <section className="min-h-screen">
-      <h1 className="my-4 text-center text-xl font-bold">Customer order</h1>
       <div className="fixed bottom-24 right-6 z-20 md:right-8">
         <button className="btn-accent btn-circle btn" onClick={onSwitchView}>
           <span>
