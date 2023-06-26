@@ -230,7 +230,7 @@ export default function CustomerOrderList() {
               onFocus={null}
             ></SearchInput>
 
-            <label className="btn-ghost btn-square btn order-2 bg-base-200 text-neutral dark:bg-base-300 dark:text-neutral-content md:order-3 xl:order-3">
+            <label className="btn-accent btn-square btn">
               <BiPrinter className="h-6 w-6" onClick={handlePrint}></BiPrinter>
             </label>
           </div>
