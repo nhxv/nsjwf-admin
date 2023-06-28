@@ -3,7 +3,7 @@ import { BiRevision, BiTrash } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import { PaymentStatus } from "../../../../commons/enums/payment-status.enum";
 import { Role } from "../../../../commons/enums/role.enum";
-import { convertTime } from "../../../../commons/utils/time.util";
+import { convertTimeToText } from "../../../../commons/utils/time.util";
 import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
 import StatusTag from "../../../../components/StatusTag";
@@ -91,38 +91,39 @@ export default function CustomerSaleList({ search, reload, clear }) {
   if (search.found.length > 0) {
     return (
       <>
-        {search.found.map((sale) => {
+        {search.found.map((report) => {
           return (
             <div
-              key={sale.code}
+              key={report.code}
               className="custom-card mb-4 w-11/12 md:w-8/12 lg:w-6/12 xl:w-5/12"
             >
-              {/* basic sale info */}
+              {/* basic report info */}
               <div className="flex flex-row justify-between">
                 <div>
-                  <p>#{sale.manualCode ? sale.manualCode : sale.code}</p>
-                  <p className="text-xl font-semibold">{sale.customerName}</p>
-                  <div>
-                    <span className="text-sm text-neutral">
-                      Completed at {convertTime(new Date(sale.updatedAt))}
-                    </span>
-                  </div>
+                  <p>
+                    #{report.manualCode ? report.manualCode : report.orderCode}
+                  </p>
+                  <p className="text-xl font-semibold">{report.customerName}</p>
+                  <p className="text-sm text-neutral">
+                    Completed at {convertTimeToText(new Date(report.updatedAt))}
+                  </p>
                   <div className="mt-5">
-                    <StatusTag status={sale.paymentStatus}></StatusTag>
+                    <StatusTag status={report.paymentStatus}></StatusTag>
                   </div>
                 </div>
-                <button
-                  type="button"
-                  className="btn-ghost btn-circle btn bg-base-200 text-neutral dark:bg-base-300 dark:text-neutral-content"
-                  onClick={() =>
-                    onUpdatePayment(PaymentStatus.RECEIVABLE, sale.code)
-                  }
-                >
-                  <BiRevision className="h-6 w-6"></BiRevision>
-                </button>
+                {role === Role.MASTER && (
+                  <button
+                    // Without this flex, the icon will not be in center.
+                    className="btn-ghost tooltip btn-circle btn flex bg-base-200 text-neutral dark:bg-base-300 dark:text-neutral-content"
+                    onClick={() => onRevert(report.orderCode)}
+                    data-tip="Revert this order"
+                  >
+                    <BiRevision className="h-6 w-6 bg-transparent text-error-content"></BiRevision>
+                  </button>
+                )}
               </div>
               <div className="divider"></div>
-              {/* products in sale */}
+              {/* products in report */}
               <div className="mb-2 flex items-center">
                 <div className="w-6/12">
                   <span className="font-medium">Product</span>
@@ -134,7 +135,7 @@ export default function CustomerSaleList({ search, reload, clear }) {
                   <span className="font-medium">Price</span>
                 </div>
               </div>
-              {sale.productCustomerOrders.map((productOrder) => {
+              {report.productCustomerOrders.map((productOrder) => {
                 return (
                   <div
                     key={productOrder.unitCode}
@@ -158,36 +159,44 @@ export default function CustomerSaleList({ search, reload, clear }) {
                 );
               })}
               <div className="divider"></div>
-              <div className="grid grid-cols-12 gap-3">
+              <div className="mt-2 flex items-center">
+                <span className="mr-2">Total:</span>
+                <span className="mr-2 text-xl font-medium">${report.sale}</span>
+                <span className="text-red-600">-${report.refund}</span>
+              </div>
+              <div className="mt-5 grid grid-cols-12 gap-3">
                 <button
+                  type="button"
                   className="btn-outline-primary btn col-span-6 w-full"
                   onClick={() =>
-                    onUpdatePayment(PaymentStatus.CHECK, sale.code)
+                    onUpdatePayment(PaymentStatus.CHECK, report.orderCode)
                   }
                 >
                   Check
                 </button>
                 <button
                   className="btn-primary btn col-span-6 w-full"
-                  onClick={() => onUpdatePayment(PaymentStatus.CASH, sale.code)}
+                  onClick={() =>
+                    onUpdatePayment(PaymentStatus.CASH, report.orderCode)
+                  }
                 >
                   Cash
                 </button>
               </div>
-              {!sale.fullReturn && (
+              <button
+                className="btn-accent btn mt-3 w-full"
+                onClick={() =>
+                  onUpdatePayment(PaymentStatus.RECEIVABLE, report.orderCode)
+                }
+              >
+                Receivable
+              </button>
+              {!report.fullReturn && (
                 <button
                   className="btn-accent btn mt-3 w-full"
-                  onClick={() => onCreateReturn(sale.code)}
+                  onClick={() => onCreateReturn(report.orderCode)}
                 >
                   Create return
-                </button>
-              )}
-              {role === Role.MASTER && (
-                <button
-                  className="btn-error btn mt-3 w-full"
-                  onClick={() => onRevert(sale.code)}
-                >
-                  Revert
                 </button>
               )}
               <div>

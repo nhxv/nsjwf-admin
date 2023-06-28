@@ -35,11 +35,11 @@ export default function CustomerSaleList() {
     let check = 0;
     let receivable = 0;
     for (const report of fetchData.reports) {
-      if (report.payment_status === PaymentStatus.CASH) {
+      if (report.paymentStatus === PaymentStatus.CASH) {
         cash += parseFloat(report.sale);
-      } else if (report.payment_status === PaymentStatus.CHECK) {
+      } else if (report.paymentStatus === PaymentStatus.CHECK) {
         check += parseFloat(report.sale);
-      } else if (report.payment_status === PaymentStatus.RECEIVABLE) {
+      } else if (report.paymentStatus === PaymentStatus.RECEIVABLE) {
         receivable += parseFloat(report.sale);
       }
     }
@@ -60,7 +60,7 @@ export default function CustomerSaleList() {
 
   const getReportData = () => {
     api
-      .get(`/customer-orders/sold/report`)
+      .get(`/customer-orders/sold/search?date=${convertTime(new Date())}`)
       .then((res) => {
         if (res.data.length === 0) {
           setFetchData((prev) => ({
@@ -107,14 +107,14 @@ export default function CustomerSaleList() {
       // user to view orders that are completed today. However, to respect data, we'll
       // use report.date instead of Date.now().
       // In the case of receivable, we also put the date the same (as of my knowledge).
-      order_date: convertTime(new Date(report.date)),
-      payment_date: convertTime(new Date(report.date)),
-      customer: report.customer_name,
-      code: `${report.manual_code ? report.manual_code : report.order_code}`,
+      order_date: convertTime(new Date(report.updatedAt)),
+      payment_date: convertTime(new Date(report.updatedAt)),
+      customer: report.customerName,
+      code: `${report.manualCode ? report.manualCode : report.orderCode}`,
       sale: parseFloat(report.sale) - report.refund,
-      test: report.is_test ? "S" : "L",
+      test: report.isTest ? "S" : "L",
       payment_status:
-        report.payment_status === "RECEIVABLE" ? "AR" : report.payment_status,
+        report.paymentStatus === "RECEIVABLE" ? "AR" : report.paymentStatus,
     }));
     const saleFile = {
       data: reportData,
@@ -230,39 +230,36 @@ export default function CustomerSaleList() {
           </div>
         </div>
 
-        <button
-          type="button"
-          className="btn-accent btn"
-          onClick={onDownloadReport}
-        >
+        <button className="btn-accent btn" onClick={onDownloadReport}>
           <span className="mr-2">Download report</span>
           <BiDownload className="h-6 w-6"></BiDownload>
         </button>
       </div>
       {fetchData.reports.map((report) => {
         return (
-          <div key={report.order_code} className="custom-card mb-8">
+          <div key={report.orderCode} className="custom-card mb-8">
             {/* basic report info */}
             <div className="flex flex-row justify-between">
               <div>
                 <p>
-                  #{report.manual_code ? report.manual_code : report.order_code}
+                  #{report.manualCode ? report.manualCode : report.orderCode}
                 </p>
-                <p className="text-xl font-semibold">{report.customer_name}</p>
+                <p className="text-xl font-semibold">{report.customerName}</p>
                 <p className="text-sm text-neutral">
-                  Completed at {convertTimeToText(new Date(report.date))}
+                  Completed at {convertTimeToText(new Date(report.updatedAt))}
                 </p>
                 <div className="mt-5">
-                  <StatusTag status={report.payment_status}></StatusTag>
+                  <StatusTag status={report.paymentStatus}></StatusTag>
                 </div>
               </div>
               {role === Role.MASTER && (
                 <button
-                  type="button"
-                  className="btn-ghost btn-circle btn bg-base-200 text-neutral dark:bg-base-300 dark:text-neutral-content"
-                  onClick={() => onRevert(report.order_code)}
+                  // Without this flex, the icon will not be in center.
+                  className="btn-ghost tooltip btn-circle btn flex bg-base-200 text-neutral dark:bg-base-300 dark:text-neutral-content"
+                  onClick={() => onRevert(report.orderCode)}
+                  data-tip="Revert this order"
                 >
-                  <BiRevision className="h-6 w-6"></BiRevision>
+                  <BiRevision className="h-6 w-6 bg-transparent text-error-content"></BiRevision>
                 </button>
               )}
             </div>
@@ -282,20 +279,22 @@ export default function CustomerSaleList() {
             {report.productCustomerOrders.map((productOrder) => {
               return (
                 <div
-                  key={productOrder.unit_code}
+                  key={productOrder.unitCode}
                   className="rounded-btn mb-2 flex items-center justify-center bg-base-200 py-3 dark:bg-base-300"
                 >
                   <div className="ml-3 w-6/12">
-                    <span>{productOrder.product_name}</span>
+                    <span>{productOrder.productName}</span>
                   </div>
                   <div className="w-3/12 text-center">
                     <span>
-                      {productOrder.quantity} (
-                      {productOrder.unit_code.split("_")[1].toLowerCase()})
+                      {productOrder.quantity}{" "}
+                      {productOrder.unitCode === "box"
+                        ? ``
+                        : `(${productOrder.unitCode})`}
                     </span>
                   </div>
                   <div className="w-3/12 text-center">
-                    <span>${productOrder.unit_price}</span>
+                    <span>${productOrder.unitPrice}</span>
                   </div>
                 </div>
               );
@@ -308,10 +307,9 @@ export default function CustomerSaleList() {
             </div>
             <div className="mt-5 grid grid-cols-12 gap-3">
               <button
-                type="button"
                 className="btn-outline-primary btn col-span-6 w-full"
                 onClick={() =>
-                  onUpdatePayment(PaymentStatus.CHECK, report.order_code)
+                  onUpdatePayment(PaymentStatus.CHECK, report.orderCode)
                 }
               >
                 Check
@@ -320,7 +318,7 @@ export default function CustomerSaleList() {
                 type="button"
                 className="btn-primary btn col-span-6 w-full"
                 onClick={() =>
-                  onUpdatePayment(PaymentStatus.CASH, report.order_code)
+                  onUpdatePayment(PaymentStatus.CASH, report.orderCode)
                 }
               >
                 Cash
@@ -330,7 +328,7 @@ export default function CustomerSaleList() {
               type="button"
               className="btn-accent btn mt-3 w-full"
               onClick={() =>
-                onUpdatePayment(PaymentStatus.RECEIVABLE, report.order_code)
+                onUpdatePayment(PaymentStatus.RECEIVABLE, report.orderCode)
               }
             >
               Receivable
