@@ -36,11 +36,11 @@ export default function CustomerSaleList() {
     let receivable = 0;
     for (const report of fetchData.reports) {
       if (report.paymentStatus === PaymentStatus.CASH) {
-        cash += parseFloat(report.sale);
+        cash += parseFloat(report.sale) - parseFloat(report.refund);
       } else if (report.paymentStatus === PaymentStatus.CHECK) {
-        check += parseFloat(report.sale);
+        check += parseFloat(report.sale) - parseFloat(report.refund);
       } else if (report.paymentStatus === PaymentStatus.RECEIVABLE) {
-        receivable += parseFloat(report.sale);
+        receivable += parseFloat(report.sale) - parseFloat(report.refund);
       }
     }
     return { cash: cash, check: check, receivable: receivable };
