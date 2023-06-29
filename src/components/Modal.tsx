@@ -1,7 +1,12 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 
-export default function Modal({ isOpen, onClose, children }) {
+export default function Modal({
+  isOpen,
+  onClose,
+  children,
+  hideOverflow = true,
+}) {
   return (
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={onClose}>
@@ -28,7 +33,12 @@ export default function Modal({ isOpen, onClose, children }) {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full max-w-md transform overflow-hidden transition-all">
+              <Dialog.Panel
+                className={`
+                  transform 
+                  ${hideOverflow && "overflow-hidden"} 
+                  transition-all`}
+              >
                 {children}
               </Dialog.Panel>
             </Transition.Child>
