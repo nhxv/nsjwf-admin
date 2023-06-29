@@ -28,7 +28,7 @@ export default function SearchCustomerSaleForm({ customers, products }) {
       manualCode: "",
       customer: "",
       product: "",
-      date: convertTime(new Date()),
+      date: "",
     },
     onSubmit: async (data) => {
       setSearch((prev) => ({
