@@ -1,6 +1,6 @@
 import csvDownload from "json-to-csv-export";
-import { useEffect, useMemo, useState } from "react";
-import { BiDownload, BiRevision } from "react-icons/bi";
+import { useMemo } from "react";
+import { BiDownload, BiRotateLeft } from "react-icons/bi";
 import { PaymentStatus } from "../../../../commons/enums/payment-status.enum";
 import { Role } from "../../../../commons/enums/role.enum";
 import {
@@ -14,27 +14,16 @@ import api from "../../../../stores/api";
 import { useAuthStore } from "../../../../stores/auth.store";
 import { useNavigate } from "react-router-dom";
 import { handleTokenExpire } from "../../../../commons/utils/token.util";
+import { ACTION_TYPE } from "../../../../commons/hooks/report-sale.hook";
 
-export default function CustomerSaleList() {
+export default function CustomerSaleList({ stateReducer, dispatch }) {
   const navigate = useNavigate();
-  const [fetchData, setFetchData] = useState({
-    reports: [],
-    display: [],
-    error: "",
-    empty: "",
-    loading: true,
-  });
-  const [paymentState, setPaymentState] = useState({
-    loading: false,
-    error: "",
-  });
   const role = useAuthStore((state) => state.role);
-  const [reload, setReload] = useState(false);
   const total = useMemo(() => {
     let cash = 0;
     let check = 0;
     let receivable = 0;
-    for (const report of fetchData.reports) {
+    for (const report of stateReducer.reports) {
       if (report.paymentStatus === PaymentStatus.CASH) {
         cash += parseFloat(report.sale) - parseFloat(report.refund);
       } else if (report.paymentStatus === PaymentStatus.CHECK) {
@@ -44,65 +33,10 @@ export default function CustomerSaleList() {
       }
     }
     return { cash: cash, check: check, receivable: receivable };
-  }, [fetchData.reports]);
-
-  useEffect(() => {
-    getReportData();
-    // re-render after 1 min
-    const reRender = setInterval(() => {
-      getReportData();
-    }, 60000);
-
-    return () => {
-      clearInterval(reRender);
-    };
-  }, [reload]);
-
-  const getReportData = () => {
-    api
-      .get(`/customer-orders/sold/search?date=${convertTime(new Date())}`)
-      .then((res) => {
-        if (res.data.length === 0) {
-          setFetchData((prev) => ({
-            ...prev,
-            reports: [],
-            display: [],
-            empty: "Such hollow, much empty...",
-            error: "",
-            loading: false,
-          }));
-        } else {
-          setFetchData((prev) => ({
-            ...prev,
-            reports: res.data,
-            display: res.data.filter((report) => report.sale > 0),
-            error: "",
-            empty: "",
-            loading: false,
-          }));
-        }
-      })
-      .catch((e) => {
-        const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e)
-        );
-        setFetchData((prev) => ({
-          ...prev,
-          reports: [],
-          display: [],
-          error: error.message,
-          empty: "",
-          loading: false,
-        }));
-
-        if (error.status === 401) {
-          handleTokenExpire(navigate, setFetchData);
-        }
-      });
-  };
+  }, [stateReducer.reports]);
 
   const onDownloadReport = () => {
-    const reportData = fetchData.reports.map((report) => ({
+    const reportData = stateReducer.reports.map((report) => ({
       // For these 2 dates, most of the time, they'll be the same since the app only allows
       // user to view orders that are completed today. However, to respect data, we'll
       // use report.date instead of Date.now().
@@ -133,43 +67,40 @@ export default function CustomerSaleList() {
     csvDownload(saleFile);
   };
 
-  const onReload = () => {
-    setReload(!reload);
-    setFetchData((prev) => ({
-      ...prev,
-      error: "",
-      empty: "",
-      loading: true,
-    }));
-  };
-
   const onUpdatePayment = (status: string, code: string) => {
-    setPaymentState((prev) => ({ ...prev, loading: true, error: "" }));
+    dispatch({
+      type: ACTION_TYPE.LOADING,
+    });
+
     const reqData = {
       status: status,
     };
     api
       .put(`/customer-payment/status/${code}`, reqData)
-      .then((res) => {
-        setPaymentState((prev) => ({ ...prev, loading: false, error: "" }));
-        onReload();
+      .then((_) => {
+        dispatch({
+          type: ACTION_TYPE.TRIGGER_RELOAD,
+        });
       })
       .catch((e) => {
         const error = JSON.parse(
           JSON.stringify(e.response ? e.response.data.error : e)
         );
-        setPaymentState((prev) => ({
-          ...prev,
-          error: error.message,
-          loading: false,
-        }));
 
         if (error.status === 401) {
-          handleTokenExpire(navigate, setFetchData);
+          handleTokenExpire(navigate, dispatch, (_, msg) => ({
+            type: ACTION_TYPE.ERROR,
+            error: msg,
+          }));
         } else {
+          dispatch({
+            type: ACTION_TYPE.ERROR,
+            error: error.message,
+          });
           setTimeout(() => {
-            setPaymentState((prev) => ({ ...prev, error: "", loading: false }));
-            onReload();
+            dispatch({
+              type: ACTION_TYPE.TRIGGER_RELOAD,
+            });
           }, 2000);
         }
       });
@@ -179,40 +110,52 @@ export default function CustomerSaleList() {
     api
       .put(`/customer-orders/revert/${code}`)
       .then((res) => {
-        setPaymentState((prev) => ({ ...prev, loading: false, error: "" }));
-        onReload();
+        dispatch({
+          type: ACTION_TYPE.REVERT_ORDER,
+          code: code,
+        });
       })
       .catch((e) => {
         const error = JSON.parse(
           JSON.stringify(e.response ? e.response.data.error : e)
         );
-        setPaymentState((prev) => ({
-          ...prev,
-          error: error.message,
-          loading: false,
-        }));
 
         if (error.status === 401) {
-          handleTokenExpire(navigate, setFetchData);
+          handleTokenExpire(navigate, dispatch, (_, msg) => ({
+            type: ACTION_TYPE.ERROR,
+            error: msg,
+          }));
         } else {
+          dispatch({
+            type: ACTION_TYPE.ERROR,
+            error: error.message,
+          });
+
           setTimeout(() => {
-            setPaymentState((prev) => ({ ...prev, error: "", loading: false }));
-            onReload();
+            dispatch({
+              type: ACTION_TYPE.TRIGGER_RELOAD,
+            });
           }, 2000);
         }
       });
   };
 
-  if (fetchData.loading) {
+  const onReturn = (code: string) => {
+    navigate(`/customer/create-customer-return/${code}`);
+  };
+
+  if (stateReducer.loading) {
     return <Spinner></Spinner>;
   }
 
-  if (fetchData.error) {
-    return <Alert message={fetchData.error} type="error"></Alert>;
+  // If it errors and it's not empty then we display it on the sale card, not clear the entire screen.
+  // We need to do an explicit check on reports because setting .error will set .empty to falsy (not empty).
+  if (stateReducer.error && stateReducer.reports.length === 0) {
+    return <Alert message={stateReducer.error} type="error"></Alert>;
   }
 
-  if (fetchData.empty) {
-    return <Alert message={fetchData.empty} type="empty"></Alert>;
+  if (stateReducer.empty) {
+    return <Alert message={stateReducer.empty} type="empty"></Alert>;
   }
 
   return (
@@ -235,7 +178,7 @@ export default function CustomerSaleList() {
           <BiDownload className="h-6 w-6"></BiDownload>
         </button>
       </div>
-      {fetchData.reports.map((report) => {
+      {stateReducer.reports.map((report) => {
         return (
           <div key={report.orderCode} className="custom-card mb-8">
             {/* basic report info */}
@@ -252,15 +195,33 @@ export default function CustomerSaleList() {
                   <StatusTag status={report.paymentStatus}></StatusTag>
                 </div>
               </div>
-              {role === Role.MASTER && (
-                <button
-                  // Without this flex, the icon will not be in center.
-                  className="btn-ghost tooltip btn-circle btn flex bg-base-200 text-neutral dark:bg-base-300 dark:text-neutral-content"
-                  onClick={() => onRevert(report.orderCode)}
-                  data-tip="Revert this order"
-                >
-                  <BiRevision className="h-6 w-6 bg-transparent text-error-content"></BiRevision>
-                </button>
+              {(role === Role.ADMIN || role === Role.MASTER) && (
+                <div className="dropdown-end dropdown">
+                  <label tabIndex={0} className="btn-accent btn-circle btn">
+                    <BiRotateLeft className="h-6 w-6 text-error-content"></BiRotateLeft>
+                  </label>
+                  <ul
+                    tabIndex={0}
+                    className="dropdown-content menu rounded-box w-40 border-2 border-base-300 bg-base-100 p-2 shadow-md dark:bg-base-200"
+                  >
+                    <li>
+                      <a
+                        onClick={() => onReturn(report.orderCode)}
+                        className="flex justify-center text-base-content hover:bg-base-200 focus:bg-base-200 dark:hover:bg-base-300 dark:focus:bg-base-300"
+                      >
+                        <span>Create Return</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        onClick={() => onRevert(report.orderCode)}
+                        className="flex justify-center text-base-content hover:bg-base-200 focus:bg-base-200 dark:hover:bg-base-300 dark:focus:bg-base-300"
+                      >
+                        <span>Revert Order</span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
               )}
             </div>
             <div className="divider"></div>
@@ -279,7 +240,7 @@ export default function CustomerSaleList() {
             {report.productCustomerOrders.map((productOrder) => {
               return (
                 <div
-                  key={productOrder.unitCode}
+                  key={`${productOrder.productName}_${productOrder.unitCode}`}
                   className="rounded-btn mb-2 flex items-center justify-center bg-base-200 py-3 dark:bg-base-300"
                 >
                   <div className="ml-3 w-6/12">
@@ -333,15 +294,16 @@ export default function CustomerSaleList() {
             >
               Receivable
             </button>
+
             <div>
-              {paymentState.loading && (
+              {stateReducer.loading && (
                 <div className="mt-5">
                   <Spinner></Spinner>
                 </div>
               )}
-              {paymentState.error && (
+              {stateReducer.error && (
                 <div className="mt-5">
-                  <Alert message={paymentState.error} type="error"></Alert>
+                  <Alert message={stateReducer.error} type="error"></Alert>
                 </div>
               )}
             </div>
