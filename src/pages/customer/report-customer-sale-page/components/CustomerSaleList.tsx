@@ -149,7 +149,8 @@ export default function CustomerSaleList({ stateReducer, dispatch }) {
   }
 
   // If it errors and it's not empty then we display it on the sale card, not clear the entire screen.
-  if (stateReducer.error && stateReducer.empty) {
+  // We need to do an explicit check on reports because setting .error will set .empty to falsy (not empty).
+  if (stateReducer.error && stateReducer.reports.length === 0) {
     return <Alert message={stateReducer.error} type="error"></Alert>;
   }
 
