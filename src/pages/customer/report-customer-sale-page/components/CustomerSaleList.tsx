@@ -204,7 +204,7 @@ export default function CustomerSaleList({ stateReducer, dispatch }) {
                     tabIndex={0}
                     className="dropdown-content menu rounded-box w-40 border-2 border-base-300 bg-base-100 p-2 shadow-md dark:bg-base-200"
                   >
-                    <li className="">
+                    <li>
                       <a
                         onClick={() => onReturn(report.orderCode)}
                         className="flex justify-center text-base-content hover:bg-base-200 focus:bg-base-200 dark:hover:bg-base-300 dark:focus:bg-base-300"

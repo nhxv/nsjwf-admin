@@ -91,7 +91,7 @@ export default function SearchSaleModal({
             </span>
           </button>
         </div>
-        <form onSubmit={searchForm.handleSubmit} className="mb-8">
+        <form onSubmit={searchForm.handleSubmit}>
           <div className="mb-6 flex flex-col gap-4 xl:grid xl:grid-cols-2">
             <div>
               <label className="custom-label mb-2 inline-block">Code</label>
