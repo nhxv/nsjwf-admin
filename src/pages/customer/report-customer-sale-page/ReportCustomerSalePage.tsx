@@ -46,20 +46,34 @@ export default function ReportCustomerSalePage() {
         const customerRes = res[1];
         const reportRes = res[2];
         if (
-          productRes?.data?.length === 0 ||
-          customerRes?.data?.length === 0 ||
-          reportRes?.data?.length === 0
+          productRes?.data?.length !== 0 &&
+          customerRes?.data?.length !== 0 &&
+          reportRes?.data?.length !== 0
         ) {
-          dispatch({
-            type: ACTION_TYPE.EMPTY,
-          });
-        } else {
           dispatch({
             type: ACTION_TYPE.SUCCESS,
             customers: customerRes.data,
             products: productRes.data,
             reports: reportRes.data,
             reports_url: stateReducer.reports_url,
+          });
+        } else if (
+          productRes?.data?.length !== 0 &&
+          customerRes?.data?.length !== 0
+        ) {
+          dispatch({
+            type: ACTION_TYPE.SUCCESS,
+            customers: customerRes.data,
+            products: productRes.data,
+          });
+          dispatch({
+            type: ACTION_TYPE.EMPTY,
+          });
+        } else {
+          // Honestly if this happens we should just disable the search form but uhh later.
+          dispatch({
+            type: ACTION_TYPE.ERROR,
+            error: "Error while fetching customers/products data.",
           });
         }
       })
@@ -89,7 +103,6 @@ export default function ReportCustomerSalePage() {
   const onCloseModal = () => {
     setModal((prev) => ({ ...prev, isOpen: false }));
   };
-
   return (
     <section className="min-h-screen">
       <SearchSaleModal
