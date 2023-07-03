@@ -8,7 +8,7 @@ export const ACTION_TYPE = {
   ERROR: "error",
   EMPTY: "empty",
   REVERT_ORDER: "revert_order",
-  TRIGGER_RELOAD: "start_reload",
+  TRIGGER_RELOAD: "trigger_reload",
 };
 
 const INITIAL_STATE = {
