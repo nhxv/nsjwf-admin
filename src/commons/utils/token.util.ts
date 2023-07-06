@@ -1,16 +1,22 @@
+/**
+ * Define the default behavior of the App when the token expires.
+ * @param navigate The Navigate hook, responsible for redirecting.
+ * @param stateSetter The state setter function.
+ * @param paramCallback A function that accept a string/error message and return something. This something will be passed into `dispatch`.
+ *    By default, this paramCallback will return an updater function used for `useState` hook because this is the most common scenario.
+ *    Basically it returns this function: `(prev) => ({ ...prev, error: msg })`.
+ */
 export const handleTokenExpire = (
   navigate,
   stateSetter,
-  errorMsgSetBehavior = (prev, msg) => ({ ...prev, error: msg })
+  // Have to typehint the return type so TS stops screaming.
+  paramCallback: (msg: string) => any = function (msg: string) {
+    return (prev) => ({ ...prev, error: msg });
+  }
 ) => {
-  /// Define the default behavior of the App when the token expires.
-  /// navigate: Navigate hook.
-  /// stateSetter: The state setter. This will set the state you have to an "error" state.
-  /// errorMsgSetBehavior: Define how the function should set the state to an "error" state. By default,
-  /// the function assume state is an Object with an 'error' key, which will then pass the error message into that key.
-  /// However, if you have a custom state or a different key, you can define how to set that by passing a callback returning how you'd set it.
   const message = "Invalid session, redirecting to sign in page...";
 
-  stateSetter((prev) => errorMsgSetBehavior(prev, message));
+  const param = paramCallback(message);
+  stateSetter(param);
   setTimeout(navigate, 2000, "/sign-in");
 };

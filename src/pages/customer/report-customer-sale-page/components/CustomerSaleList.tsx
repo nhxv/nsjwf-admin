@@ -92,7 +92,7 @@ export default function CustomerSaleList({ stateReducer, dispatch }) {
         );
 
         if (error.status === 401) {
-          handleTokenExpire(navigate, dispatch, (_, msg) => ({
+          handleTokenExpire(navigate, dispatch, (msg) => ({
             type: ACTION_TYPE.ERROR,
             error: msg,
           }));
@@ -125,7 +125,7 @@ export default function CustomerSaleList({ stateReducer, dispatch }) {
         );
 
         if (error.status === 401) {
-          handleTokenExpire(navigate, dispatch, (_, msg) => ({
+          handleTokenExpire(navigate, dispatch, (msg) => ({
             type: ACTION_TYPE.ERROR,
             error: msg,
           }));

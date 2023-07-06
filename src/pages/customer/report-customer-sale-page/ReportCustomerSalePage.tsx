@@ -83,7 +83,7 @@ export default function ReportCustomerSalePage() {
         );
 
         if (error.status === 401) {
-          handleTokenExpire(navigate, dispatch, (_, msg) => ({
+          handleTokenExpire(navigate, dispatch, (msg) => ({
             type: ACTION_TYPE.ERROR,
             error: msg,
           }));
