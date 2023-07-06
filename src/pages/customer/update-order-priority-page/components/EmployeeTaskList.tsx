@@ -58,7 +58,7 @@ export default function EmployeeTaskList({ employeeTasks, reload }) {
       setErrorMessage(error.message);
 
       if (error.status === 401) {
-        handleTokenExpire(navigate, setErrorMessage, (_, msg) => msg);
+        handleTokenExpire(navigate, setErrorMessage, (msg) => msg);
       } else {
         setTimeout(() => {
           reload();
