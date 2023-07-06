@@ -36,7 +36,11 @@ export default function CustomerSaleList({ stateReducer, dispatch }) {
   }, [stateReducer.reports]);
 
   const onDownloadReport = () => {
-    const reportData = stateReducer.reports.map((report) => ({
+    // Download from oldest to latest.
+    const reports = stateReducer.oldest_first
+      ? stateReducer.reports
+      : stateReducer.reports.toReversed();
+    const reportData = reports.map((report) => ({
       // For these 2 dates, most of the time, they'll be the same since the app only allows
       // user to view orders that are completed today. However, to respect data, we'll
       // use report.date instead of Date.now().
@@ -88,7 +92,7 @@ export default function CustomerSaleList({ stateReducer, dispatch }) {
         );
 
         if (error.status === 401) {
-          handleTokenExpire(navigate, dispatch, (_, msg) => ({
+          handleTokenExpire(navigate, dispatch, (msg) => ({
             type: ACTION_TYPE.ERROR,
             error: msg,
           }));
@@ -121,7 +125,7 @@ export default function CustomerSaleList({ stateReducer, dispatch }) {
         );
 
         if (error.status === 401) {
-          handleTokenExpire(navigate, dispatch, (_, msg) => ({
+          handleTokenExpire(navigate, dispatch, (msg) => ({
             type: ACTION_TYPE.ERROR,
             error: msg,
           }));
