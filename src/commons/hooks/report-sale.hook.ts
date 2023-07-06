@@ -9,6 +9,7 @@ export const ACTION_TYPE = {
   EMPTY: "empty",
   REVERT_ORDER: "revert_order",
   TRIGGER_RELOAD: "trigger_reload",
+  TOGGLE_SORT: "toggle_sort",
 };
 
 const INITIAL_STATE = {
@@ -19,6 +20,7 @@ const INITIAL_STATE = {
   error: "",
   empty: "",
   loading: true,
+  oldest_first: false,
   // This is only to send a signal for useEffect() to run/refetch data, the actual value doesn't matter.
   reload: false,
 };
@@ -79,6 +81,13 @@ const reducer = (state, action) => {
       return {
         ...state,
         reload: !state.reload,
+      };
+    }
+    case ACTION_TYPE.TOGGLE_SORT: {
+      return {
+        ...state,
+        oldest_first: !state.oldest_first,
+        reports: state.reports.toReversed(),
       };
     }
   }

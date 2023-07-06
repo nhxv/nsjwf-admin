@@ -1,4 +1,4 @@
-import { BiSearch } from "react-icons/bi";
+import { BiSearch, BiSortDown, BiSortUp } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import CustomerSaleList from "./components/CustomerSaleList";
 import { useEffect, useState } from "react";
@@ -103,6 +103,13 @@ export default function ReportCustomerSalePage() {
   const onCloseModal = () => {
     setModal((prev) => ({ ...prev, isOpen: false }));
   };
+
+  const onToggleSort = () => {
+    dispatch({
+      type: ACTION_TYPE.TOGGLE_SORT,
+    });
+  };
+
   return (
     <section className="min-h-screen">
       <SearchSaleModal
@@ -112,11 +119,16 @@ export default function ReportCustomerSalePage() {
         dispatch={dispatch}
       />
       <div className="flex flex-col items-center">
-        <div className="fixed bottom-24 right-6 z-20 md:right-8">
+        <div className="fixed bottom-24 right-6 z-20 flex gap-2 md:right-8">
+          <button className="btn-accent btn-circle btn" onClick={onToggleSort}>
+            {stateReducer.oldest_first ? (
+              <BiSortUp className="h-6 w-6"></BiSortUp>
+            ) : (
+              <BiSortDown className="h-6 w-6"></BiSortDown>
+            )}
+          </button>
           <button className="btn-accent btn-circle btn" onClick={onSearch}>
-            <span>
-              <BiSearch className="h-6 w-6"></BiSearch>
-            </span>
+            <BiSearch className="h-6 w-6"></BiSearch>
           </button>
         </div>
         <div className="w-11/12 md:w-8/12 lg:w-6/12 xl:w-5/12">
