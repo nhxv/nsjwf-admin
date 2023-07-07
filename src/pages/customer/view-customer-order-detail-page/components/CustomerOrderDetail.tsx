@@ -55,7 +55,10 @@ export default function CustomerOrderDetail() {
   }
 
   return (
-    <div className="custom-card">
+    <div
+      className="custom-card"
+      onClick={() => onUpdateOrder(fetchData.order.code)}
+    >
       {/* basic order info */}
       <div className="flex justify-between">
         <div>
