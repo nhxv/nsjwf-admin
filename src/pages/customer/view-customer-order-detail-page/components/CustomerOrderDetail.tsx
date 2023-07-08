@@ -99,27 +99,31 @@ export default function CustomerOrderDetail() {
           <span className="font-medium">Price</span>
         </div>
       </div>
-      {fetchData.order.productCustomerOrders.map((productOrder) => {
-        return (
-          <div
-            key={productOrder.unit_code}
-            className="rounded-btn mb-2 flex items-center justify-center bg-base-200 py-3 dark:bg-base-300"
-          >
-            <div className="ml-3 w-6/12">
-              <span>{productOrder.product_name}</span>
+      <div className="max-h-48 overflow-auto lg:max-h-72 xl:max-h-72">
+        {fetchData.order.productCustomerOrders.map((productOrder) => {
+          return (
+            <div
+              key={productOrder.unit_code}
+              className="rounded-btn mb-2 flex items-center justify-center bg-base-200 py-3 dark:bg-base-300"
+            >
+              <div className="ml-3 w-6/12">
+                <span>{productOrder.product_name}</span>
+              </div>
+              <div className="w-3/12 text-center">
+                <span>
+                  {productOrder.quantity}{" "}
+                  {productOrder.unit_code.split("_")[1].toLowerCase() === "box"
+                    ? ``
+                    : `(${productOrder.unit_code.split("_")[1].toLowerCase()})`}
+                </span>
+              </div>
+              <div className="w-3/12 text-center">
+                {productOrder.unit_price}
+              </div>
             </div>
-            <div className="w-3/12 text-center">
-              <span>
-                {productOrder.quantity}{" "}
-                {productOrder.unit_code.split("_")[1].toLowerCase() === "box"
-                  ? ``
-                  : `(${productOrder.unit_code.split("_")[1].toLowerCase()})`}
-              </span>
-            </div>
-            <div className="w-3/12 text-center">{productOrder.unit_price}</div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
       <div className="divider"></div>
       <div className="mt-2 flex items-center">
         <span className="mr-2">Total:</span>
