@@ -9,13 +9,20 @@ import {
   useSaleReducer,
   ACTION_TYPE,
 } from "../../../commons/hooks/report-sale.hook";
+import SaleDetailModal from "./components/SaleDetailModal";
 
 export default function ReportCustomerSalePage() {
   const navigate = useNavigate();
-  const [modal, setModal] = useState({
+  const [searchModal, setSearchModal] = useState({
+    isOpen: false,
+  });
+  const [_modal, _setModal] = useState({
     isOpen: false,
   });
   const [stateReducer, dispatch] = useSaleReducer();
+  const [focus, setFocus] = useState({
+    report: null,
+  });
 
   useEffect(() => {
     fetchData();
@@ -97,11 +104,11 @@ export default function ReportCustomerSalePage() {
   };
 
   const onSearch = () => {
-    setModal((prev) => ({ ...prev, isOpen: true }));
+    setSearchModal((prev) => ({ ...prev, isOpen: true }));
   };
 
   const onCloseModal = () => {
-    setModal((prev) => ({ ...prev, isOpen: false }));
+    setSearchModal((prev) => ({ ...prev, isOpen: false }));
   };
 
   const onToggleSort = () => {
@@ -110,15 +117,29 @@ export default function ReportCustomerSalePage() {
     });
   };
 
+  const onSelectSale = (sale) => {
+    setFocus({ report: sale });
+    _setModal({ isOpen: true });
+  };
+
   return (
     <section className="min-h-screen">
+      <SaleDetailModal
+        report={focus.report}
+        isOpen={_modal.isOpen}
+        onClose={() => {
+          setSearchModal({ isOpen: false });
+          setFocus({ report: null });
+        }}
+        dispatch={dispatch}
+      />
       <SearchSaleModal
-        isOpen={modal.isOpen}
+        isOpen={searchModal.isOpen}
         onClose={onCloseModal}
         stateReducer={stateReducer}
         dispatch={dispatch}
       />
-      <div className="flex flex-col items-center">
+      <div className="">
         <div className="fixed bottom-24 right-6 z-20 flex gap-2 md:right-8">
           <button className="btn-accent btn-circle btn" onClick={onToggleSort}>
             {stateReducer.oldest_first ? (
@@ -131,8 +152,13 @@ export default function ReportCustomerSalePage() {
             <BiSearch className="h-6 w-6"></BiSearch>
           </button>
         </div>
-        <div className="w-11/12 md:w-8/12 lg:w-6/12 xl:w-5/12">
-          <CustomerSaleList stateReducer={stateReducer} dispatch={dispatch} />
+        {/* <div className="w-11/12 md:w-8/12 lg:w-6/12 xl:w-5/12"> */}
+        <div className="mx-4">
+          <CustomerSaleList
+            stateReducer={stateReducer}
+            dispatch={dispatch}
+            onSelectSale={onSelectSale}
+          />
         </div>
       </div>
     </section>
