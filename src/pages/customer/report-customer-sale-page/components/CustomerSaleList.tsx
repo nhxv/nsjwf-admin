@@ -241,29 +241,31 @@ export default function CustomerSaleList({ stateReducer, dispatch }) {
                 <span className="font-medium">Price</span>
               </div>
             </div>
-            {report.productCustomerOrders.map((productOrder) => {
-              return (
-                <div
-                  key={`${productOrder.productName}_${productOrder.unitCode}`}
-                  className="rounded-btn mb-2 flex items-center justify-center bg-base-200 py-3 dark:bg-base-300"
-                >
-                  <div className="ml-3 w-6/12">
-                    <span>{productOrder.productName}</span>
+            <div className="max-h-48 overflow-auto lg:max-h-72 xl:max-h-72">
+              {report.productCustomerOrders.map((productOrder) => {
+                return (
+                  <div
+                    key={`${productOrder.productName}_${productOrder.unitCode}`}
+                    className="rounded-btn mb-2 flex items-center justify-center bg-base-200 py-3 dark:bg-base-300"
+                  >
+                    <div className="ml-3 w-6/12">
+                      <span>{productOrder.productName}</span>
+                    </div>
+                    <div className="w-3/12 text-center">
+                      <span>
+                        {productOrder.quantity}{" "}
+                        {productOrder.unitCode === "box"
+                          ? ``
+                          : `(${productOrder.unitCode})`}
+                      </span>
+                    </div>
+                    <div className="w-3/12 text-center">
+                      <span>${productOrder.unitPrice}</span>
+                    </div>
                   </div>
-                  <div className="w-3/12 text-center">
-                    <span>
-                      {productOrder.quantity}{" "}
-                      {productOrder.unitCode === "box"
-                        ? ``
-                        : `(${productOrder.unitCode})`}
-                    </span>
-                  </div>
-                  <div className="w-3/12 text-center">
-                    <span>${productOrder.unitPrice}</span>
-                  </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
             <div className="divider"></div>
             <div className="mt-2 flex items-center">
               <span className="mr-2">Total:</span>

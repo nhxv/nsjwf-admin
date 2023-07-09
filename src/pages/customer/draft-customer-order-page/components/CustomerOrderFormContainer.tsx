@@ -32,7 +32,8 @@ export default function CustomerOrderFormContainer() {
   }, [fetchData.prices]);
 
   useEffect(() => {
-    const productPromise = api.get(`/products/active`);
+    // Need all products here for discontinued products inside orders.
+    const productPromise = api.get(`/products/all`);
     const customerPromise = api.get(`/customers/active`);
     const employeePromise = api.get(`/accounts/employees/active`);
     if (params.code) {
@@ -114,16 +115,18 @@ export default function CustomerOrderFormContainer() {
                   });
                 }
               } else {
-                for (let i = 1; i <= product.units.length; i++) {
-                  productFieldData[`quantity${product.id}-${i}`] = 0;
-                  productFieldData[`unit${product.id}-${i}`] = "BOX";
-                  productFieldData[`price${product.id}-${i}`] = 0;
-                  updatedPrices.push({
-                    id: product.id,
-                    appear: i,
-                    quantity: productFieldData[`quantity${product.id}-${i}`],
-                    price: productFieldData[`price${product.id}-${i}`],
-                  });
+                if (!product.discontinued) {
+                  for (let i = 1; i <= product.units.length; i++) {
+                    productFieldData[`quantity${product.id}-${i}`] = 0;
+                    productFieldData[`unit${product.id}-${i}`] = "BOX";
+                    productFieldData[`price${product.id}-${i}`] = 0;
+                    updatedPrices.push({
+                      id: product.id,
+                      appear: i,
+                      quantity: productFieldData[`quantity${product.id}-${i}`],
+                      price: productFieldData[`price${product.id}-${i}`],
+                    });
+                  }
                 }
               }
             }
