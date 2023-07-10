@@ -92,7 +92,13 @@ export default function CustomerOrderPrint({ order }) {
           tabIndex={0}
           className="btn-ghost btn-circle btn bg-base-200 text-neutral dark:bg-base-300 dark:text-neutral-content"
         >
-          <BiPrinter className="h-6 w-6" onClick={handleOrderPrint}></BiPrinter>
+          <BiPrinter
+            className="h-6 w-6"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleOrderPrint();
+            }}
+          ></BiPrinter>
         </label>
         {/*
         <ul
