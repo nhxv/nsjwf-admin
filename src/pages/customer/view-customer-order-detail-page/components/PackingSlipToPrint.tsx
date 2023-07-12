@@ -5,17 +5,19 @@ const MAX_LINES_PER_PAGE: number = 18;
 export default function PackingSlipToPrint({ printRef, order }) {
   const columnNumber =
     order.productCustomerOrders.length <= MAX_LINES_PER_PAGE ? 1 : 2;
-  return (
-    <div ref={printRef}>
-      {SplitProductsIntoPages(order, columnNumber).map((packingSlipPage, i) => {
-        return (
-          <div className="break-after-page px-4 py-4" key={i}>
-            {packingSlipPage}
-          </div>
-        );
-      })}
-    </div>
-  );
+  const renderPages = [];
+  for (const [key, packingSlipPage] of SplitProductsIntoPages(
+    order,
+    columnNumber
+  ).entries()) {
+    renderPages.push(
+      <div className="break-after-page px-4 py-4" key={key}>
+        {packingSlipPage}
+      </div>
+    );
+  }
+
+  return <div ref={printRef}>{renderPages}</div>;
 }
 
 function SplitProductsIntoPages(order, columnCount: number = 2) {
@@ -27,13 +29,14 @@ function SplitProductsIntoPages(order, columnCount: number = 2) {
     columnStyling += ` from-black to-black bg-gradient-to-b bg-[length:1px_100%] bg-[50%_0] bg-no-repeat`;
   }
 
-  let pages = [];
+  let pages = new Map();
   for (
     let i = 0;
     i < order.productCustomerOrders.length;
     i += MAX_LINES_PER_PAGE * columnCount
   ) {
-    pages.push(
+    pages.set(
+      `${order.productCustomerOrders[i].product_name}-${order.productCustomerOrders[i].unit_code}`,
       <div className="flex flex-col">
         {/* Headers */}
         <div className="mb-4">
@@ -81,8 +84,11 @@ function SplitProductsIntoPages(order, columnCount: number = 2) {
         <div className="flex basis-0 gap-x-3">
           {/*https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from#using_arrow_functions_and_array.from
             All of this just to render this header columnCount times. Incredible.*/}
-          {Array.from({ length: columnCount }, (_, i) => i).map((_) => (
-            <div className="flex w-full border-b-4 border-black pb-1">
+          {Array.from({ length: columnCount }, (_, i) => i).map((ind) => (
+            <div
+              className="flex w-full border-b-4 border-black pb-1"
+              key={`${ind}`}
+            >
               <div className="w-[64px] text-sm font-semibold">Qty</div>
               <div className="ml-8 text-sm font-semibold">Item Description</div>
             </div>
@@ -95,7 +101,7 @@ function SplitProductsIntoPages(order, columnCount: number = 2) {
             .slice(i, i + MAX_LINES_PER_PAGE * columnCount)
             .map((productOrder) => (
               <div
-                key={productOrder.unit_code}
+                key={`${order.code}-${productOrder.product_name}-${productOrder.unit_code}`}
                 className="flex w-full border-b border-black py-2"
               >
                 <div className="w-[64px] font-semibold">
