@@ -248,7 +248,7 @@ export default function CustomerOrderList() {
             }
             ${
               order.status === OrderStatus.CHECKING
-                ? "border-neutral bg-base-100 dark:border-neutral dark:bg-base-200"
+                ? "border-rose-700 bg-rose-100 text-rose-700 dark:border-neutral dark:bg-base-200"
                 : ""
             }
             ${
@@ -277,7 +277,7 @@ export default function CustomerOrderList() {
             }
             ${
               order.status === OrderStatus.CHECKING
-                ? "border-neutral bg-transparent text-neutral hover:border-neutral hover:bg-neutral hover:text-white"
+                ? "border-rose-700 bg-transparent text-rose-700 hover:border-neutral hover:bg-neutral hover:text-white"
                 : ""
             }
             ${

@@ -159,10 +159,10 @@ export default function CustomerSaleList({
             className={`rounded-box col-span-12 border-2 p-3 shadow-md hover:cursor-pointer sm:col-span-6 md:col-span-4 lg:col-span-3 xl:col-span-2
             ${
               report.paymentStatus === PaymentStatus.CASH
-                ? "border-primary bg-green-100 text-primary dark:border-primary dark:bg-green-700 dark:bg-opacity-10"
+                ? "border-green-700 bg-green-100 text-primary dark:border-primary dark:bg-transparent hover:dark:bg-green-900 hover:dark:bg-opacity-10"
                 : report.paymentStatus === PaymentStatus.CHECK
-                ? "dark:primary border-neutral bg-base-100 dark:bg-transparent"
-                : "border-yellow-700 bg-yellow-100 text-yellow-700 dark:border-yellow-700 dark:bg-yellow-900 dark:bg-opacity-10"
+                ? "border-fuchsia-700 bg-fuchsia-100 text-fuchsia-700 dark:bg-transparent hover:dark:bg-fuchsia-900 hover:dark:bg-opacity-10"
+                : "border-yellow-700 bg-yellow-100 text-yellow-700 dark:border-yellow-700 dark:bg-transparent hover:dark:bg-yellow-900 hover:dark:bg-opacity-10"
             }`}
             onClick={() => {
               onSelectSale(report);
@@ -179,7 +179,7 @@ export default function CustomerSaleList({
             <div className="mt-3 grid grid-cols-12 gap-3">
               {report.paymentStatus !== PaymentStatus.CHECK && (
                 <button
-                  className="btn-outline-primary btn-sm btn col-span-6 w-full bg-white dark:bg-transparent"
+                  className="btn-sm btn col-span-6 w-full border-fuchsia-700 bg-fuchsia-100 text-fuchsia-700 hover:border-fuchsia-700 hover:bg-fuchsia-200 dark:bg-transparent hover:dark:bg-fuchsia-900 hover:dark:bg-opacity-10"
                   onClick={(e) => {
                     e.stopPropagation();
                     onUpdatePayment(PaymentStatus.CHECK, report.orderCode);
@@ -191,7 +191,7 @@ export default function CustomerSaleList({
               {report.paymentStatus !== PaymentStatus.CASH && (
                 <button
                   type="button"
-                  className="btn-primary btn-sm btn col-span-6 w-full"
+                  className="btn-sm btn col-span-6 w-full border-primary bg-green-100 text-primary hover:border-primary hover:bg-green-200 dark:bg-transparent hover:dark:bg-green-900 hover:dark:bg-opacity-10"
                   onClick={(e) => {
                     e.stopPropagation();
                     onUpdatePayment(PaymentStatus.CASH, report.orderCode);
@@ -203,7 +203,7 @@ export default function CustomerSaleList({
               {report.paymentStatus !== PaymentStatus.RECEIVABLE && (
                 <button
                   type="button"
-                  className="btn-accent btn-sm btn col-span-6 w-full"
+                  className="btn-sm btn col-span-6 w-full border-yellow-700 bg-yellow-100 text-yellow-700 hover:border-yellow-700 hover:bg-yellow-200 dark:bg-transparent hover:dark:bg-yellow-900 hover:dark:bg-opacity-10"
                   onClick={(e) => {
                     e.stopPropagation();
                     onUpdatePayment(PaymentStatus.RECEIVABLE, report.orderCode);
