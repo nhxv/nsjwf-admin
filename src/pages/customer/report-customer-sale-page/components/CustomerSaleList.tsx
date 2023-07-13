@@ -125,11 +125,19 @@ export default function CustomerSaleList({
   // If it errors and it's not empty then we display it on the sale card, not clear the entire screen.
   // We need to do an explicit check on reports because setting .error will set .empty to falsy (not empty).
   if (stateReducer.error && stateReducer.reports.length === 0) {
-    return <Alert message={stateReducer.error} type="error"></Alert>;
+    return (
+      <div className="mx-auto mt-4 w-11/12 md:w-10/12 lg:w-6/12">
+        <Alert message={stateReducer.error} type="error"></Alert>
+      </div>
+    );
   }
 
   if (stateReducer.empty) {
-    return <Alert message={stateReducer.empty} type="empty"></Alert>;
+    return (
+      <div className="mx-auto mt-4 w-11/12 md:w-10/12 lg:w-6/12">
+        <Alert message={stateReducer.empty} type="empty"></Alert>
+      </div>
+    );
   }
 
   return (
@@ -137,10 +145,10 @@ export default function CustomerSaleList({
       <div className="mb-6 flex flex-col items-center justify-between gap-3 xl:flex-row">
         <div className="flex gap-2">
           <div className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content">
-            ${total.cash} in cash
+            ${total.check} in check
           </div>
           <div className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content">
-            ${total.check} in check
+            ${total.cash} in cash
           </div>
           <div className="rounded-btn flex items-center bg-warning p-2 text-sm font-semibold text-warning-content">
             ${total.receivable} in A/R
@@ -159,9 +167,9 @@ export default function CustomerSaleList({
             className={`rounded-box col-span-12 border-2 p-3 shadow-md hover:cursor-pointer sm:col-span-6 md:col-span-4 lg:col-span-3 xl:col-span-2
             ${
               report.paymentStatus === PaymentStatus.CASH
-                ? "border-neutral bg-base-100 dark:border-neutral dark:bg-base-200"
+                ? "border-primary bg-green-100 text-primary dark:border-primary dark:bg-green-700 dark:bg-opacity-10"
                 : report.paymentStatus === PaymentStatus.CHECK
-                ? "border-sky-700 bg-sky-100 text-sky-700 dark:border-sky-700 dark:bg-sky-900 dark:bg-opacity-10"
+                ? "dark:primary border-neutral bg-base-100 dark:bg-transparent"
                 : "border-yellow-700 bg-yellow-100 text-yellow-700 dark:border-yellow-700 dark:bg-yellow-900 dark:bg-opacity-10"
             }`}
             onClick={() => {
@@ -176,37 +184,43 @@ export default function CustomerSaleList({
             <div className="text-sm">
               {convertTimeToText(new Date(report.updatedAt))}
             </div>
-            <div>${report.sale - report.refund}</div>
+            <div className="">${report.sale - report.refund}</div>
             <div className="mt-3 grid grid-cols-12 gap-3">
-              <button
-                className="btn-outline-primary btn col-span-4 w-full"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onUpdatePayment(PaymentStatus.CHECK, report.orderCode);
-                }}
-              >
-                &#10003;
-              </button>
-              <button
-                type="button"
-                className="btn-primary btn col-span-4 w-full"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onUpdatePayment(PaymentStatus.CASH, report.orderCode);
-                }}
-              >
-                $
-              </button>
-              <button
-                type="button"
-                className="btn-accent btn col-span-4 w-full"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onUpdatePayment(PaymentStatus.RECEIVABLE, report.orderCode);
-                }}
-              >
-                AR
-              </button>
+              {report.paymentStatus !== PaymentStatus.CHECK && (
+                <button
+                  className="btn-outline-primary btn-sm btn col-span-6 w-full bg-white dark:bg-transparent"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onUpdatePayment(PaymentStatus.CHECK, report.orderCode);
+                  }}
+                >
+                  Check
+                </button>
+              )}
+              {report.paymentStatus !== PaymentStatus.CASH && (
+                <button
+                  type="button"
+                  className="btn-primary btn-sm btn col-span-6 w-full"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onUpdatePayment(PaymentStatus.CASH, report.orderCode);
+                  }}
+                >
+                  Cash
+                </button>
+              )}
+              {report.paymentStatus !== PaymentStatus.RECEIVABLE && (
+                <button
+                  type="button"
+                  className="btn-accent btn-sm btn col-span-6 w-full"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onUpdatePayment(PaymentStatus.RECEIVABLE, report.orderCode);
+                  }}
+                >
+                  AR
+                </button>
+              )}
             </div>
           </div>
         ))}
