@@ -136,10 +136,10 @@ export default function CustomerSaleList({
     <>
       <div className="mb-6 flex flex-col items-center justify-between gap-3 xl:flex-row">
         <div className="flex gap-2">
-          <div className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content">
+          <div className="rounded-btn flex items-center bg-fuchsia-100 p-2 text-sm font-semibold text-fuchsia-700 dark:bg-info">
             ${total.check} in check
           </div>
-          <div className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content">
+          <div className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-primary">
             ${total.cash} in cash
           </div>
           <div className="rounded-btn flex items-center bg-warning p-2 text-sm font-semibold text-warning-content">
@@ -159,7 +159,7 @@ export default function CustomerSaleList({
             className={`rounded-box col-span-12 border-2 p-3 shadow-md hover:cursor-pointer sm:col-span-6 md:col-span-4 lg:col-span-3 xl:col-span-2
             ${
               report.paymentStatus === PaymentStatus.CASH
-                ? "border-green-700 bg-green-100 text-primary dark:border-primary dark:bg-transparent hover:dark:bg-green-900 hover:dark:bg-opacity-10"
+                ? "border-primary bg-green-100 text-primary dark:border-primary dark:bg-transparent hover:dark:bg-green-900 hover:dark:bg-opacity-10"
                 : report.paymentStatus === PaymentStatus.CHECK
                 ? "border-fuchsia-700 bg-fuchsia-100 text-fuchsia-700 dark:bg-transparent hover:dark:bg-fuchsia-900 hover:dark:bg-opacity-10"
                 : "border-yellow-700 bg-yellow-100 text-yellow-700 dark:border-yellow-700 dark:bg-transparent hover:dark:bg-yellow-900 hover:dark:bg-opacity-10"
