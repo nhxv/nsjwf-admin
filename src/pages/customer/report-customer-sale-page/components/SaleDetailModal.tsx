@@ -1,4 +1,4 @@
-import { BiRotateLeft } from "react-icons/bi";
+import { BiRotateLeft, BiX } from "react-icons/bi";
 import { Role } from "../../../../commons/enums/role.enum";
 import { convertTimeToText } from "../../../../commons/utils/time.util";
 import Modal from "../../../../components/Modal";
@@ -142,7 +142,7 @@ export default function SaleDetailModal({ isOpen, onClose, report, dispatch }) {
             <span className="font-medium">Price</span>
           </div>
         </div>
-        <div className="max-h-48 overflow-auto xl:max-h-72">
+        <div className="max-h-48 overflow-y-auto overflow-x-hidden xl:max-h-72">
           {report.productCustomerOrders.map((productOrder) => {
             return (
               <div
