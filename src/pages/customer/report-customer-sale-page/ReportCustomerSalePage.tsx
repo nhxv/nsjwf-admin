@@ -27,14 +27,14 @@ export default function ReportCustomerSalePage() {
   useEffect(() => {
     fetchData();
 
-    const reRender = setInterval(() => {
-      dispatch({
-        type: ACTION_TYPE.TRIGGER_RELOAD,
-      });
-    }, 60000);
-    return () => {
-      clearInterval(reRender);
-    };
+    // const reRender = setInterval(() => {
+    //   dispatch({
+    //     type: ACTION_TYPE.TRIGGER_RELOAD,
+    //   });
+    // }, 60000);
+    // return () => {
+    //   clearInterval(reRender);
+    // };
   }, [stateReducer.reload]);
 
   const fetchData = () => {
