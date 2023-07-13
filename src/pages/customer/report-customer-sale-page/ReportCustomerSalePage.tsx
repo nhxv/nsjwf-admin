@@ -16,7 +16,7 @@ export default function ReportCustomerSalePage() {
   const [searchModal, setSearchModal] = useState({
     isOpen: false,
   });
-  const [_modal, _setModal] = useState({
+  const [detailModal, setDetailModal] = useState({
     isOpen: false,
   });
   const [stateReducer, dispatch] = useSaleReducer();
@@ -119,14 +119,14 @@ export default function ReportCustomerSalePage() {
 
   const onSelectSale = (sale) => {
     setFocus({ report: sale });
-    _setModal({ isOpen: true });
+    setDetailModal({ isOpen: true });
   };
 
   return (
     <section className="min-h-screen">
       <SaleDetailModal
         report={focus.report}
-        isOpen={_modal.isOpen}
+        isOpen={detailModal.isOpen}
         onClose={() => {
           setSearchModal({ isOpen: false });
           setFocus({ report: null });

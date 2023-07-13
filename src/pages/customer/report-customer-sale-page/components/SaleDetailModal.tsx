@@ -1,4 +1,4 @@
-import { BiRotateLeft, BiX } from "react-icons/bi";
+import { BiRotateLeft } from "react-icons/bi";
 import { Role } from "../../../../commons/enums/role.enum";
 import { convertTimeToText } from "../../../../commons/utils/time.util";
 import Modal from "../../../../components/Modal";

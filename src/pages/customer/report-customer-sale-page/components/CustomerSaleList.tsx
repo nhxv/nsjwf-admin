@@ -1,21 +1,17 @@
 import csvDownload from "json-to-csv-export";
-import { useMemo, useState } from "react";
-import { BiDownload, BiRotateLeft } from "react-icons/bi";
+import { useMemo } from "react";
+import { BiDownload } from "react-icons/bi";
 import { PaymentStatus } from "../../../../commons/enums/payment-status.enum";
-import { Role } from "../../../../commons/enums/role.enum";
 import {
   convertTime,
   convertTimeToText,
 } from "../../../../commons/utils/time.util";
 import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
-import StatusTag from "../../../../components/StatusTag";
 import api from "../../../../stores/api";
-import { useAuthStore } from "../../../../stores/auth.store";
 import { useNavigate } from "react-router-dom";
 import { handleTokenExpire } from "../../../../commons/utils/token.util";
 import { ACTION_TYPE } from "../../../../commons/hooks/report-sale.hook";
-import SaleDetailModal from "./SaleDetailModal";
 
 export default function CustomerSaleList({
   stateReducer,
@@ -23,7 +19,6 @@ export default function CustomerSaleList({
   onSelectSale,
 }) {
   const navigate = useNavigate();
-  const role = useAuthStore((state) => state.role);
   const total = useMemo(() => {
     let cash = 0;
     let check = 0;
@@ -39,9 +34,6 @@ export default function CustomerSaleList({
     }
     return { cash: cash, check: check, receivable: receivable };
   }, [stateReducer.reports]);
-  const [_modal, setModal] = useState({
-    isOpen: false,
-  });
 
   const onDownloadReport = () => {
     // Download from oldest to latest.
@@ -173,7 +165,6 @@ export default function CustomerSaleList({
                 : "border-yellow-700 bg-yellow-100 text-yellow-700 dark:border-yellow-700 dark:bg-yellow-900 dark:bg-opacity-10"
             }`}
             onClick={() => {
-              setModal({ isOpen: true });
               onSelectSale(report);
             }}
           >
