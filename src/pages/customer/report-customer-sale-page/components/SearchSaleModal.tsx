@@ -138,15 +138,17 @@ export default function SearchSaleModal({
 
             <div>
               <label className="custom-label mb-2 inline-block">Product</label>
-              <SelectSearch
+              <TextInput
+                id="product-select"
                 name="product-select"
-                value={searchForm.values.product}
-                setValue={(product) => {
-                  // This can be null, and we don't want that.
-                  searchForm.setFieldValue("product", product ? product : "");
+                placeholder="Keywords"
+                onChange={(e) => {
+                  searchForm.setFieldValue(
+                    "product",
+                    e.target.value ? e.target.value : ""
+                  );
                 }}
-                options={stateReducer.products.map((v) => v.name)}
-                nullable={true}
+                value={searchForm.values.product}
               />
             </div>
           </div>
