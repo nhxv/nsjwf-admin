@@ -116,7 +116,7 @@ export default function CustomerSaleList({
 
   // If it errors and it's not empty then we display it on the sale card, not clear the entire screen.
   // We need to do an explicit check on reports because setting .error will set .empty to falsy (not empty).
-  if (stateReducer.error && stateReducer.reports.length === 0) {
+  if (stateReducer.error) {
     return (
       <div className="mx-auto mt-4 w-11/12 md:w-10/12 lg:w-6/12">
         <Alert message={stateReducer.error} type="error"></Alert>
@@ -136,7 +136,7 @@ export default function CustomerSaleList({
     <>
       <div className="mb-6 flex flex-col items-center justify-between gap-3 xl:flex-row">
         <div className="flex gap-2">
-          <div className="rounded-btn flex items-center bg-fuchsia-100 p-2 text-sm font-semibold text-fuchsia-700 dark:bg-info">
+          <div className="rounded-btn flex items-center bg-sky-100 p-2 text-sm font-semibold text-sky-700 dark:bg-info">
             ${total.check} in check
           </div>
           <div className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-primary">
@@ -159,9 +159,9 @@ export default function CustomerSaleList({
             className={`rounded-box col-span-12 border-2 p-3 shadow-md hover:cursor-pointer sm:col-span-6 md:col-span-4 lg:col-span-3 xl:col-span-2
             ${
               report.paymentStatus === PaymentStatus.CASH
-                ? "border-primary bg-green-100 text-primary dark:border-primary dark:bg-transparent hover:dark:bg-green-900 hover:dark:bg-opacity-10"
+                ? "border-primary bg-green-100 text-primary dark:border-primary dark:bg-transparent hover:dark:bg-emerald-900 hover:dark:bg-opacity-10"
                 : report.paymentStatus === PaymentStatus.CHECK
-                ? "border-fuchsia-700 bg-fuchsia-100 text-fuchsia-700 dark:bg-transparent hover:dark:bg-fuchsia-900 hover:dark:bg-opacity-10"
+                ? "border-sky-700 bg-sky-100 text-sky-700 dark:bg-transparent hover:dark:bg-sky-900 hover:dark:bg-opacity-10"
                 : "border-yellow-700 bg-yellow-100 text-yellow-700 dark:border-yellow-700 dark:bg-transparent hover:dark:bg-yellow-900 hover:dark:bg-opacity-10"
             }`}
             onClick={() => {
@@ -176,10 +176,10 @@ export default function CustomerSaleList({
               {convertTimeToText(new Date(report.updatedAt))}
             </div>
             <div className="">${report.sale - report.refund}</div>
-            <div className="mt-3 grid grid-cols-12 gap-3">
+            <div className="mt-3 grid grid-cols-12 gap-2">
               {report.paymentStatus !== PaymentStatus.CHECK && (
                 <button
-                  className="btn-sm btn col-span-6 w-full border-fuchsia-700 bg-fuchsia-100 text-fuchsia-700 hover:border-fuchsia-700 hover:bg-fuchsia-200 dark:bg-transparent hover:dark:bg-fuchsia-900 hover:dark:bg-opacity-10"
+                  className="btn-sm btn col-span-6 w-full border-sky-700 bg-sky-100 text-sky-700 hover:border-sky-700 hover:bg-sky-700 hover:text-white dark:bg-transparent"
                   onClick={(e) => {
                     e.stopPropagation();
                     onUpdatePayment(PaymentStatus.CHECK, report.orderCode);
@@ -191,7 +191,7 @@ export default function CustomerSaleList({
               {report.paymentStatus !== PaymentStatus.CASH && (
                 <button
                   type="button"
-                  className="btn-sm btn col-span-6 w-full border-primary bg-green-100 text-primary hover:border-primary hover:bg-green-200 dark:bg-transparent hover:dark:bg-green-900 hover:dark:bg-opacity-10"
+                  className="btn-sm btn col-span-6 w-full border-emerald-700 bg-green-100 text-emerald-700 hover:border-emerald-700 hover:bg-emerald-700 hover:text-white dark:bg-transparent"
                   onClick={(e) => {
                     e.stopPropagation();
                     onUpdatePayment(PaymentStatus.CASH, report.orderCode);
@@ -203,7 +203,7 @@ export default function CustomerSaleList({
               {report.paymentStatus !== PaymentStatus.RECEIVABLE && (
                 <button
                   type="button"
-                  className="btn-sm btn col-span-6 w-full border-yellow-700 bg-yellow-100 text-yellow-700 hover:border-yellow-700 hover:bg-yellow-200 dark:bg-transparent hover:dark:bg-yellow-900 hover:dark:bg-opacity-10"
+                  className="btn-sm btn col-span-6 w-full border-yellow-700 bg-yellow-100 text-yellow-700 hover:border-yellow-700 hover:bg-yellow-700 hover:text-white dark:bg-transparent"
                   onClick={(e) => {
                     e.stopPropagation();
                     onUpdatePayment(PaymentStatus.RECEIVABLE, report.orderCode);

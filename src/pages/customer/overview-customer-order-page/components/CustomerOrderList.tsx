@@ -258,7 +258,7 @@ export default function CustomerOrderList() {
             }
             ${
               order.status === OrderStatus.DELIVERED
-                ? "border-primary bg-primary text-primary dark:border-primary dark:bg-green-900 dark:bg-opacity-10"
+                ? "border-primary bg-emerald-100 text-primary dark:border-primary dark:bg-emerald-900 dark:bg-opacity-10"
                 : ""
             }`}
             onClick={() => onToDetails(order.code)}
