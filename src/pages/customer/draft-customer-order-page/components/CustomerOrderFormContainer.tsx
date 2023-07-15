@@ -81,8 +81,11 @@ export default function CustomerOrderFormContainer() {
                     similarProductOrders[i].quantity;
                   productFieldData[`unit${product.id}-${appear}`] =
                     similarProductOrders[i].unit_code.split("_")[1];
+                  // Need to put this here so it doesn't give a warning about uncontrolled component or sth.
                   productFieldData[`price${product.id}-${appear}`] =
-                    similarProductOrders[i].unit_price;
+                    similarProductOrders[i].unit_price
+                      ? similarProductOrders[i].unit_price
+                      : "";
                   editedProducts.push({
                     id: product.id,
                     appear: appear,
