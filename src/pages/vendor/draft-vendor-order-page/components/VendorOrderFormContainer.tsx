@@ -31,7 +31,9 @@ export default function VendorOrderFormContainer() {
   }, [fetchData.prices]);
 
   useEffect(() => {
-    const productPromise = api.get(`/products/active`);
+    // Unlike CO, doesn't make sense to have a vendor order
+    // then we discontinue that product, so this is good for now.
+    const productPromise = api.get(`/products/all`);
     const vendorPromise = api.get(`/vendors/active`);
     if (params.code) {
       // 1. edit mode
@@ -55,36 +57,70 @@ export default function VendorOrderFormContainer() {
           } else {
             // setup initial field values
             const updatedPrices = [];
-            const editedProductsRes = [];
+            const editedProducts = [];
             const allProductsRes = productRes.data;
             const productFieldData = {};
             const productOrders = orderRes.data.productVendorOrders;
             for (const product of allProductsRes) {
-              const productOrder = productOrders.find(
+              const similarProductOrders = productOrders.filter(
                 (po) => po.product_name === product.name
               );
-              if (productOrder) {
-                productFieldData[`quantity${product.id}`] =
-                  productOrder.quantity;
-                productFieldData[`unit${product.id}`] =
-                  productOrder.unit_code.split("_")[1];
-                productFieldData[`price${product.id}`] =
-                  productOrder.unit_price;
-                editedProductsRes.push({
-                  id: product.id,
-                  name: product.name,
-                  units: product.units,
-                });
+              if (similarProductOrders.length > 0) {
+                for (let i = 0; i < similarProductOrders.length; i++) {
+                  // similar products in existing order
+                  let appear = i + 1;
+                  productFieldData[`quantity${product.id}-${appear}`] =
+                    similarProductOrders[i].quantity;
+                  productFieldData[`unit${product.id}-${appear}`] =
+                    similarProductOrders[i].unit_code.split("_")[1];
+                  productFieldData[`price${product.id}-${appear}`] =
+                    similarProductOrders[i].unit_price;
+                  editedProducts.push({
+                    id: product.id,
+                    appear: appear,
+                    name: product.name,
+                    units: product.units,
+                    sell_price: product.sell_price,
+                  });
+                  updatedPrices.push({
+                    id: product.id,
+                    appear: appear,
+                    quantity:
+                      productFieldData[`quantity${product.id}-${appear}`],
+                    price: productFieldData[`price${product.id}-${appear}`],
+                  });
+                }
+
+                for (
+                  let i = similarProductOrders.length + 1;
+                  i <= product.units.length;
+                  i++
+                ) {
+                  productFieldData[`quantity${product.id}-${i}`] = 0;
+                  productFieldData[`unit${product.id}-${i}`] = "BOX";
+                  productFieldData[`price${product.id}-${i}`] = 0;
+                  updatedPrices.push({
+                    id: product.id,
+                    appear: i,
+                    quantity: productFieldData[`quantity${product.id}-${i}`],
+                    price: productFieldData[`price${product.id}-${i}`],
+                  });
+                }
               } else {
-                productFieldData[`quantity${product.id}`] = 0;
-                productFieldData[`unit${product.id}`] = "BOX";
-                productFieldData[`price${product.id}`] = 0;
+                if (!product.discontinued) {
+                  for (let i = 1; i <= product.units.length; i++) {
+                    productFieldData[`quantity${product.id}-${i}`] = 0;
+                    productFieldData[`unit${product.id}-${i}`] = "BOX";
+                    productFieldData[`price${product.id}-${i}`] = 0;
+                    updatedPrices.push({
+                      id: product.id,
+                      appear: i,
+                      quantity: productFieldData[`quantity${product.id}-${i}`],
+                      price: productFieldData[`price${product.id}-${i}`],
+                    });
+                  }
+                }
               }
-              updatedPrices.push({
-                id: product.id,
-                quantity: productFieldData[`quantity${product.id}`],
-                price: productFieldData[`price${product.id}`],
-              });
             }
             setInitialFields((prev) => ({
               ...prev,
@@ -97,7 +133,7 @@ export default function VendorOrderFormContainer() {
             }));
             setFetchData((prev) => ({
               ...prev,
-              editedProducts: editedProductsRes,
+              editedProducts: editedProducts,
               allProducts: allProductsRes,
               vendors: vendorRes.data,
               prices: updatedPrices,
@@ -137,17 +173,20 @@ export default function VendorOrderFormContainer() {
             }));
           } else {
             // setup initial field values
-            let updatedPrices = [];
+            const updatedPrices = [];
             const productFieldData = {};
             for (const product of productRes.data) {
-              productFieldData[`quantity${product.id}`] = 0;
-              productFieldData[`unit${product.id}`] = "BOX";
-              productFieldData[`price${product.id}`] = 0;
-              updatedPrices.push({
-                id: product.id,
-                quantity: productFieldData[`quantity${product.id}`],
-                price: productFieldData[`price${product.id}`],
-              });
+              for (let i = 1; i <= product.units.length; i++) {
+                productFieldData[`quantity${product.id}-${i}`] = 0;
+                productFieldData[`unit${product.id}-${i}`] = "BOX";
+                productFieldData[`price${product.id}-${i}`] = 0;
+                updatedPrices.push({
+                  id: product.id,
+                  appear: i,
+                  quantity: productFieldData[`quantity${product.id}-${i}`],
+                  price: productFieldData[`price${product.id}-${i}`],
+                });
+              }
             }
             const today = new Date();
             // const nextDay = new Date(today);
@@ -202,16 +241,22 @@ export default function VendorOrderFormContainer() {
   const updatePrice = (value: number, inputId: string) => {
     let updatedPrices = [...fetchData.prices];
     if (inputId.includes("quantity")) {
-      const id = +inputId.replace("quantity", "");
-      const index = updatedPrices.findIndex((p) => p.id === id);
+      const [id, appear] = inputId.replace("quantity", "").split("-");
+      const index = updatedPrices.findIndex(
+        (p) => p.id === +id && p.appear === +appear
+      );
       updatedPrices[index].quantity = value;
     } else if (inputId.includes("price")) {
-      const id = +inputId.replace("price", "");
-      const index = updatedPrices.findIndex((p) => p.id === id);
+      const [id, appear] = inputId.replace("price", "").split("-");
+      const index = updatedPrices.findIndex(
+        (p) => p.id === +id && p.appear === +appear
+      );
       updatedPrices[index].price = value;
     } else if (inputId.includes("remove")) {
-      const id = +inputId.replace("remove", "");
-      const index = updatedPrices.findIndex((p) => p.id === id);
+      const [id, appear] = inputId.replace("remove", "").split("-");
+      const index = updatedPrices.findIndex(
+        (p) => p.id === +id && p.appear === +appear
+      );
       updatedPrices[index].quantity = 0;
       updatedPrices[index].price = 0;
     }
@@ -255,7 +300,7 @@ export default function VendorOrderFormContainer() {
     return <Alert message={fetchData.empty} type="empty"></Alert>;
 
   return (
-    <div className="custom-card mb-12">
+    <div className="mb-12">
       <VendorOrderForm
         edit={!!params.code}
         initialData={initialFields}

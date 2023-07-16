@@ -75,7 +75,8 @@ export default function CustomerOrderForm({
             if (selected) {
               productOrders.set(`${selected.id}-${selected.appear}`, {
                 productName: selected.name,
-                unitPrice: data[property],
+                // Allow price to be empty.
+                unitPrice: data[property] ? data[property] : "",
               });
             }
           } else if (property.includes("quantity")) {

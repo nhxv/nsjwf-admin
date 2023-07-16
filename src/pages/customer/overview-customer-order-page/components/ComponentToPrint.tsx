@@ -4,7 +4,7 @@ export default function ComponentToPrint({ printRef, orders }) {
   return (
     <div ref={printRef}>
       {orders.map((order) => (
-        <PackingSlipToPrint printRef={null} order={order} />
+        <PackingSlipToPrint key={order.code} printRef={null} order={order} />
       ))}
     </div>
   );
