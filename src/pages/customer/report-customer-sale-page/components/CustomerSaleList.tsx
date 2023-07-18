@@ -114,8 +114,6 @@ export default function CustomerSaleList({
     return <Spinner></Spinner>;
   }
 
-  // If it errors and it's not empty then we display it on the sale card, not clear the entire screen.
-  // We need to do an explicit check on reports because setting .error will set .empty to falsy (not empty).
   if (stateReducer.error) {
     return (
       <div className="mx-auto mt-4 w-11/12 md:w-10/12 lg:w-6/12">
