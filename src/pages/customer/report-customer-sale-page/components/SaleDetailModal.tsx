@@ -10,61 +10,50 @@ import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
 import { Menu } from "@headlessui/react";
-import { ACTION_TYPE } from "../../../../commons/hooks/report-sale.hook";
 import { handleTokenExpire } from "../../../../commons/utils/token.util";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-export default function SaleDetailModal({ isOpen, onClose, report, dispatch }) {
+export default function SaleDetailModal({ isOpen, onClose, report }) {
   const role = useAuthStore((state) => state.role);
   const navigate = useNavigate();
-  const [state, setState] = useState({
-    // By default, nothing to load.
-    loading: false,
-    error: "",
+  const [error, setError] = useState("");
+
+  const queryClient = useQueryClient();
+  const saleRevertMut = useMutation({
+    mutationFn: (code: string) => {
+      return api.put(`/customer-orders/revert/${code}`);
+    },
+    onSuccess: () => {
+      // Here we don't have a clean way to access the queryURL
+      // to identify the query, so we have to use this roundabout way like this.
+      // NOTE: If we have the queryURL, we can skip the invalidation
+      // and instead update the cache via queryClient.setQueryData(), which save 1 api call.
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const keys = query.queryKey as Array<string>;
+          return keys[0] === "reports" && keys[1]?.startsWith("reports=");
+        },
+      });
+      onClose();
+    },
+    onError: (err: any) => {
+      let _error = JSON.parse(
+        JSON.stringify(err.response ? err.response.data.error : err)
+      );
+      if (_error.status === 401) {
+        handleTokenExpire(navigate, setError, (msg) => msg);
+      } else {
+        setError(_error.message);
+        setTimeout(() => {
+          setError("");
+        }, 2000);
+      }
+      saleRevertMut.reset();
+    },
   });
 
   const onRevert = (code: string) => {
-    setState((prev) => ({
-      ...prev,
-      loading: true,
-    }));
-
-    api
-      .put(`/customer-orders/revert/${code}`)
-      .then((res) => {
-        dispatch({
-          type: ACTION_TYPE.REVERT_ORDER,
-          code: code,
-        });
-        setState((prev) => ({
-          ...prev,
-          loading: false,
-        }));
-        onClose();
-      })
-      .catch((e) => {
-        const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e)
-        );
-
-        if (error.status === 401) {
-          handleTokenExpire(navigate, dispatch, (msg) => ({
-            type: ACTION_TYPE.ERROR,
-            error: msg,
-          }));
-        } else {
-          setState((prev) => ({
-            ...prev,
-            error: error.message,
-            loading: false,
-          }));
-          setTimeout(() => {
-            setState((prev) => ({
-              ...prev,
-              error: "",
-            }));
-          }, 2000);
-        }
-      });
+    saleRevertMut.mutate(code);
   };
 
   const onReturn = (code: string) => {
@@ -173,14 +162,14 @@ export default function SaleDetailModal({ isOpen, onClose, report, dispatch }) {
         </div>
 
         <div>
-          {state.loading && (
+          {saleRevertMut.status === "loading" && (
             <div className="mt-5">
               <Spinner></Spinner>
             </div>
           )}
-          {state.error && (
+          {error && (
             <div className="mt-5">
-              <Alert message={state.error} type="error"></Alert>
+              <Alert message={error} type="error"></Alert>
             </div>
           )}
         </div>

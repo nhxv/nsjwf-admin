@@ -1,3 +1,5 @@
+// DEPRECATED.
+
 import { useReducer } from "react";
 import { convertTime } from "../utils/time.util";
 
