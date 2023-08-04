@@ -23,7 +23,7 @@ export default function StockList() {
     queryKey: ["stocks"],
     queryFn: async () => {
       const result = await api.get("/stock/active");
-
+      setSearch((prev) => ({ ...prev, products: result.data }));
       return result.data;
     },
   });
@@ -48,7 +48,7 @@ export default function StockList() {
     } else {
       setSearch((prev) => ({
         ...prev,
-        products: stockQuery.data.products,
+        products: stockQuery.data,
         query: e.target.value,
       }));
     }
@@ -57,7 +57,7 @@ export default function StockList() {
   const onClearQuery = () => {
     setSearch((prev) => ({
       ...prev,
-      products: stockQuery.data.products,
+      products: stockQuery.data,
       query: "",
     }));
   };
