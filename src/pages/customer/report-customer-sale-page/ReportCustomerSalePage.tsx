@@ -46,6 +46,7 @@ export default function ReportCustomerSalePage() {
 
   const onToggleSort = () => {
     setLatestFirst(!latestFirst);
+    // NOTE: Probably not the best way to do this, but creating another state just to sort this list seems redundant.
     queryClient.setQueryData(
       ["reports", `reports=${queryURL}`],
       reportQuery.data.toReversed()

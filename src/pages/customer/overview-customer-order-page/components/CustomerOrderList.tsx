@@ -14,7 +14,6 @@ import ComponentToPrint from "./ComponentToPrint";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 export default function CustomerOrderList() {
-  // TODO: Consider change search to useReducer probably cuz search.orders depends on status.
   const printRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const [search, setSearch] = useState({
@@ -34,31 +33,19 @@ export default function CustomerOrderList() {
     );
   }, [search.orders]);
 
-  const queryClient = useQueryClient();
   const query = useQuery<any[], any>({
     queryKey: ["customer-orders", "daily"],
     queryFn: async () => {
       const res = await api.get("/customer-orders/daily");
+      // NOTE: This is probably not the best way to handle transformation.
       setSearch((prev) => ({
         ...prev,
         orders: filterByStatus(res.data, prev.status),
       }));
       return res.data;
     },
+    refetchInterval: 60000,
   });
-
-  useEffect(() => {
-    // re-render after 1 min
-    const reRender = setInterval(() => {
-      queryClient.invalidateQueries({
-        queryKey: ["customer-orders", "daily"],
-      });
-    }, 60000);
-
-    return () => {
-      clearInterval(reRender);
-    };
-  }, []);
 
   // Cursed. Have to attach this pretty much on every search.orders
   const filterByStatus = (orders, status) => {

@@ -1,74 +1,60 @@
-import { useEffect, useState } from "react";
 import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
 import { handleTokenExpire } from "../../../../commons/utils/token.util";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 
 export default function CustomerReturnList() {
   const navigate = useNavigate();
-  const [fetchData, setFetchData] = useState({
-    returns: [],
-    error: "",
-    empty: "",
-    loading: true,
+
+  const returnQuery = useQuery<any, any>({
+    queryKey: ["returns"],
+    queryFn: async () => {
+      const result = await api.get("/customer-returns");
+      return result.data;
+    },
   });
 
-  useEffect(() => {
-    api
-      .get(`/customer-returns`)
-      .then((res) => {
-        if (res.data.length === 0) {
-          setFetchData((prev) => ({
-            ...prev,
-            returns: [],
-            empty: "Such hollow, much empty...",
-            error: "",
-            loading: false,
-          }));
-        } else {
-          setFetchData((prev) => ({
-            ...prev,
-            returns: res.data,
-            error: "",
-            empty: "",
-            loading: false,
-          }));
-        }
-      })
-      .catch((e) => {
-        const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e)
-        );
-        setFetchData((prev) => ({
-          ...prev,
-          returns: [],
-          error: error.message,
-          empty: "",
-          loading: false,
-        }));
-
-        if (error.status === 401) {
-          handleTokenExpire(navigate, setFetchData);
-        }
-      });
-  }, []);
-
-  if (fetchData.loading) {
+  if (
+    returnQuery.status === "loading" ||
+    returnQuery.fetchStatus === "fetching"
+  ) {
     return <Spinner></Spinner>;
   }
 
-  if (fetchData.error) {
-    return <Alert message={fetchData.error} type="error"></Alert>;
+  if (
+    returnQuery.fetchStatus === "paused" ||
+    (returnQuery.status === "error" && returnQuery.fetchStatus === "idle")
+  ) {
+    let error = JSON.parse(
+      JSON.stringify(
+        returnQuery.error.response
+          ? returnQuery.error.response.data.error
+          : returnQuery.error
+      )
+    );
+    if (error.status === 401) {
+      // This is just cursed.
+      handleTokenExpire(
+        navigate,
+        (err) => {
+          error = err;
+        },
+        (msg) => ({ ...error, message: msg })
+      );
+    }
+
+    return <Alert type="error" message={error.message}></Alert>;
   }
 
-  if (fetchData.empty) {
-    return <Alert message={fetchData.empty} type="empty"></Alert>;
+  if (returnQuery.data?.length === 0) {
+    return <Alert message="Such hollow, much empty..." type="empty"></Alert>;
   }
 
   return (
     <>
-      {fetchData.returns.map((customerReturn) => {
+      {returnQuery.data.map((customerReturn) => {
         return (
           <div key={customerReturn.orderCode} className="custom-card mb-8">
             {/* basic order info */}
