@@ -37,22 +37,13 @@ export default function CustomerOrderForm({
 
   const navigate = useNavigate();
 
-  const [selectedProducts, setSelectedProducts] = useState([]);
+  const [selectedProducts, setSelectedProducts] = useState(
+    editedProducts ? editedProducts : []
+  );
   const [search, setSearch] = useState({
     products: [],
     query: "",
   });
-
-  if (editedProducts && selectedProducts.length === 0) {
-    setSelectedProducts(editedProducts);
-  }
-  // When we redirect to the same page, the editedProducts might change
-  // while the selectedProducts remain unchanged (cuz React is too "smart")
-  // so we need this check.
-  // And unfortunately we can't even call the clear method during rendering, so we're stuck on page 1.
-  else if (!editedProducts && selectedProducts.length !== 0) {
-    setSelectedProducts([]);
-  }
 
   const customerOrderForm = useFormik({
     enableReinitialize: true,

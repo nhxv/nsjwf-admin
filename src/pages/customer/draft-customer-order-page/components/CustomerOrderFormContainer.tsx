@@ -230,7 +230,6 @@ export default function CustomerOrderFormContainer() {
             }));
             setFetchData((prev) => ({
               ...prev,
-              editedProducts: [],
               allProducts: productRes.data,
               customers: customerRes.data,
               employees: employeeRes.data,
