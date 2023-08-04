@@ -9,7 +9,7 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       // uncomment this when debugging.
-      refetchOnWindowFocus: false,
+      // refetchOnWindowFocus: false,
 
       retry: 1,
     },
