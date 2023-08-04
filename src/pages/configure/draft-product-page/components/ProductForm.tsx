@@ -181,7 +181,7 @@ export default function ProductForm({ editedId, units, initialData, onClear }) {
         <button
           type="submit"
           className="btn-primary btn mt-1 w-full"
-          disabled={formState.loading}
+          disabled={formState.loading || productForm.isSubmitting}
         >
           <span>{editedId ? "Edit" : "Create"} product</span>
         </button>

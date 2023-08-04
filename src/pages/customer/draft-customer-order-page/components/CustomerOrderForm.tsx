@@ -397,6 +397,7 @@ export default function CustomerOrderForm({
               type="button"
               className="btn-primary btn col-span-12 mt-3"
               onClick={onNextPage}
+              disabled={formState.loading || customerOrderForm.isSubmitting}
             >
               <span>Set product</span>
               <span>
@@ -466,7 +467,9 @@ export default function CustomerOrderForm({
                   <button
                     type="submit"
                     className="btn-primary btn col-span-6"
-                    disabled={formState.loading}
+                    disabled={
+                      formState.loading || customerOrderForm.isSubmitting
+                    }
                   >
                     <span>{edit ? "Update" : "Create"}</span>
                   </button>

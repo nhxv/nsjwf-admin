@@ -377,6 +377,7 @@ export default function VendorOrderForm({
               type="button"
               className="btn-primary btn col-span-12 mt-3"
               onClick={onNextPage}
+              disabled={formState.loading || vendorOrderForm.isSubmitting}
             >
               <span>Set product</span>
               <span>
@@ -436,7 +437,7 @@ export default function VendorOrderForm({
                   <button
                     type="submit"
                     className="btn-primary btn col-span-6"
-                    disabled={formState.loading}
+                    disabled={formState.loading || vendorOrderForm.isSubmitting}
                   >
                     <span>{edit ? "Update" : "Create"}</span>
                   </button>

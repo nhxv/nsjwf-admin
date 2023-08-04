@@ -284,6 +284,7 @@ export default function CustomerForm({
             type="button"
             className="btn-primary btn mt-3 w-full"
             onClick={onNextPage}
+            disabled={formState.loading || customerForm.isSubmitting}
           >
             <span>Product template</span>
             <span>
@@ -397,7 +398,7 @@ export default function CustomerForm({
                 <button
                   type="submit"
                   className="btn-primary btn col-span-6"
-                  disabled={formState.loading}
+                  disabled={formState.loading || customerForm.isSubmitting}
                 >
                   <span>{editedId ? "Update" : "Create"}</span>
                 </button>

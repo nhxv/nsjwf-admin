@@ -229,7 +229,13 @@ export default function CreateCustomerReturnForm({
                     </span>
                     <span>Go back</span>
                   </button>
-                  <button type="submit" className="btn-primary btn w-[49%]">
+                  <button
+                    type="submit"
+                    className="btn-primary btn w-[49%]"
+                    disabled={
+                      formState.loading || customerReturnForm.isSubmitting
+                    }
+                  >
                     <span>Create</span>
                     <span>
                       <BiRightArrowAlt className="ml-1 h-7 w-7"></BiRightArrowAlt>
