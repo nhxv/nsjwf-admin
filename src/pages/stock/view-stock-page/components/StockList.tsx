@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { BiEdit } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import { Role } from "../../../../commons/enums/role.enum";
@@ -9,14 +9,9 @@ import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
 import { useAuthStore } from "../../../../stores/auth.store";
 import { handleTokenExpire } from "../../../../commons/utils/token.util";
+import { useQuery } from "@tanstack/react-query";
 
 export default function StockList() {
-  const [fetchData, setFetchData] = useState({
-    products: [],
-    error: "",
-    empty: "",
-    loading: true,
-  });
   const navigate = useNavigate();
   const role = useAuthStore((state) => state.role);
   const [search, setSearch] = useState({
@@ -24,46 +19,14 @@ export default function StockList() {
     query: "",
   });
 
-  useEffect(() => {
-    api
-      .get(`/stock/active`)
-      .then((res) => {
-        if (res.data?.length === 0) {
-          setFetchData((prev) => ({
-            ...prev,
-            products: [],
-            error: "",
-            empty: "Such hollow, much empty...",
-            loading: false,
-          }));
-        } else {
-          setSearch((prev) => ({ ...prev, products: res.data, query: "" }));
-          setFetchData((prev) => ({
-            ...prev,
-            products: res.data,
-            error: "",
-            empty: "",
-            loading: false,
-          }));
-        }
-      })
-      .catch((e) => {
-        const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e)
-        );
-        setFetchData((prev) => ({
-          ...prev,
-          products: [],
-          error: error.message,
-          empty: "",
-          loading: false,
-        }));
+  const stockQuery = useQuery<any, any>({
+    queryKey: ["stocks"],
+    queryFn: async () => {
+      const result = await api.get("/stock/active");
 
-        if (error.status === 401) {
-          handleTokenExpire(navigate, setFetchData);
-        }
-      });
-  }, []);
+      return result.data;
+    },
+  });
 
   const onChangeStock = () => {
     navigate(`/stock/change-stock`);
@@ -71,7 +34,7 @@ export default function StockList() {
 
   const onChangeSearch = (e) => {
     if (e.target.value) {
-      const searched = fetchData.products.filter((product) =>
+      const searched = stockQuery.data.filter((product) =>
         product.name
           .toLowerCase()
           .replace(/\s+/g, "")
@@ -85,32 +48,51 @@ export default function StockList() {
     } else {
       setSearch((prev) => ({
         ...prev,
-        products: fetchData.products,
+        products: stockQuery.data.products,
         query: e.target.value,
       }));
     }
   };
 
   const onClearQuery = () => {
-    setSearch((prev) => ({ ...prev, products: fetchData.products, query: "" }));
+    setSearch((prev) => ({
+      ...prev,
+      products: stockQuery.data.products,
+      query: "",
+    }));
   };
 
-  if (fetchData.loading) {
+  if (
+    stockQuery.status === "loading" ||
+    stockQuery.fetchStatus === "fetching"
+  ) {
     return <Spinner></Spinner>;
   }
 
-  if (fetchData.error) {
-    return (
-      <div className="mx-auto w-11/12 md:w-10/12 lg:w-6/12">
-        <Alert type="error" message={fetchData.error}></Alert>
-      </div>
+  if (
+    stockQuery.fetchStatus === "paused" ||
+    (stockQuery.status === "error" && stockQuery.fetchStatus === "idle")
+  ) {
+    let error = JSON.parse(
+      JSON.stringify(
+        stockQuery.error.response
+          ? stockQuery.error.response.data.error
+          : stockQuery.error
+      )
     );
-  }
-
-  if (fetchData.empty) {
+    if (error.status === 401) {
+      // This is just cursed.
+      handleTokenExpire(
+        navigate,
+        (err) => {
+          error = err;
+        },
+        (msg) => ({ ...error, message: msg })
+      );
+    }
     return (
       <div className="mx-auto w-11/12 md:w-10/12 lg:w-6/12">
-        <Alert type="empty" message={fetchData.empty}></Alert>
+        <Alert type="error" message={error.message}></Alert>
       </div>
     );
   }

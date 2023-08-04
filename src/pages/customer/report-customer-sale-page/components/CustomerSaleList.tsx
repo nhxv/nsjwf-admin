@@ -11,19 +11,30 @@ import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
 import { useNavigate } from "react-router-dom";
 import { handleTokenExpire } from "../../../../commons/utils/token.util";
-import { ACTION_TYPE } from "../../../../commons/hooks/report-sale.hook";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
+interface CustomerSaleListProps {
+  reportQuery;
+  onSelectSale: (sale: any) => void;
+}
+
+// Mutation doesn't accept more than 1 param so here we are.
+interface PaymentMethodMutationParam {
+  code: string;
+  status: string;
+}
 
 export default function CustomerSaleList({
-  stateReducer,
-  dispatch,
+  reportQuery,
   onSelectSale,
-}) {
+}: CustomerSaleListProps) {
   const navigate = useNavigate();
   const total = useMemo(() => {
     let cash = 0;
     let check = 0;
     let receivable = 0;
-    for (const report of stateReducer.reports) {
+    const reports = reportQuery.data ? reportQuery.data : [];
+    for (const report of reports) {
       if (report.paymentStatus === PaymentStatus.CASH) {
         cash += parseFloat(report.sale) - parseFloat(report.refund);
       } else if (report.paymentStatus === PaymentStatus.CHECK) {
@@ -33,13 +44,27 @@ export default function CustomerSaleList({
       }
     }
     return { cash: cash, check: check, receivable: receivable };
-  }, [stateReducer.reports]);
+  }, [reportQuery.data]);
+
+  const queryClient = useQueryClient();
+  const paymentMethodMut = useMutation<any, any, any>({
+    mutationFn: (param: PaymentMethodMutationParam) => {
+      return api.put(`/customer-payment/status/${param.code}`, {
+        status: param.status,
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const keys = query.queryKey as Array<string>;
+          return keys[0] === "reports" && keys[1]?.startsWith("reports=");
+        },
+      });
+    },
+  });
 
   const onDownloadReport = () => {
-    // Download from oldest to latest.
-    const reports = stateReducer.oldest_first
-      ? stateReducer.reports
-      : stateReducer.reports.toReversed();
+    const reports = reportQuery.data ? reportQuery.data : [];
     const reportData = reports.map((report) => ({
       // For these 2 dates, most of the time, they'll be the same since the app only allows
       // user to view orders that are completed today. However, to respect data, we'll
@@ -72,60 +97,88 @@ export default function CustomerSaleList({
   };
 
   const onUpdatePayment = (status: string, code: string) => {
-    dispatch({
-      type: ACTION_TYPE.LOADING,
-    });
-
-    const reqData = {
+    paymentMethodMut.mutate({
+      code: code,
       status: status,
-    };
-    api
-      .put(`/customer-payment/status/${code}`, reqData)
-      .then((_) => {
-        dispatch({
-          type: ACTION_TYPE.TRIGGER_RELOAD,
-        });
-      })
-      .catch((e) => {
-        const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e)
-        );
-
-        if (error.status === 401) {
-          handleTokenExpire(navigate, dispatch, (msg) => ({
-            type: ACTION_TYPE.ERROR,
-            error: msg,
-          }));
-        } else {
-          dispatch({
-            type: ACTION_TYPE.ERROR,
-            error: error.message,
-          });
-          setTimeout(() => {
-            dispatch({
-              type: ACTION_TYPE.TRIGGER_RELOAD,
-            });
-          }, 2000);
-        }
-      });
+    });
   };
 
-  if (stateReducer.loading) {
+  if (
+    reportQuery.status === "loading" ||
+    reportQuery.fetchStatus === "fetching"
+  ) {
     return <Spinner></Spinner>;
   }
 
-  if (stateReducer.error) {
+  if (
+    reportQuery.fetchStatus === "paused" ||
+    (reportQuery.status === "error" && reportQuery.fetchStatus === "idle")
+  ) {
+    let error = JSON.parse(
+      JSON.stringify(
+        reportQuery.error.response
+          ? reportQuery.error.response.data.error
+          : reportQuery.error
+      )
+    );
+    if (error.status === 401) {
+      // This is just cursed.
+      handleTokenExpire(
+        navigate,
+        (err) => {
+          error = err;
+        },
+        (msg) => ({ ...error, message: msg })
+      );
+    }
+
     return (
       <div className="mx-auto mt-4 w-11/12 md:w-10/12 lg:w-6/12">
-        <Alert message={stateReducer.error} type="error"></Alert>
+        <Alert message={error.message} type="error"></Alert>
       </div>
     );
   }
 
-  if (stateReducer.empty) {
+  if (paymentMethodMut.status === "error") {
+    let error = JSON.parse(
+      JSON.stringify(
+        paymentMethodMut.error.response
+          ? paymentMethodMut.error.response.data.error
+          : paymentMethodMut.error
+      )
+    );
+    if (error.status === 401) {
+      // This is just cursed.
+      handleTokenExpire(
+        navigate,
+        (err) => {
+          error = err;
+        },
+        (msg) => ({ ...error, message: msg })
+      );
+    } else {
+      setTimeout(() => {
+        paymentMethodMut.reset();
+        queryClient.invalidateQueries({
+          predicate: (query) => {
+            const keys = query.queryKey as Array<string>;
+            return keys[0] === "reports" && keys[1]?.startsWith("reports=");
+          },
+        });
+      }, 2000);
+    }
+
     return (
       <div className="mx-auto mt-4 w-11/12 md:w-10/12 lg:w-6/12">
-        <Alert message={stateReducer.empty} type="empty"></Alert>
+        <Alert message={error.message} type="error"></Alert>
+      </div>
+    );
+  }
+
+  if (reportQuery.data.length === 0) {
+    return (
+      <div className="mx-auto mt-4 w-11/12 md:w-10/12 lg:w-6/12">
+        <Alert message="Such empty, much hollow..." type="empty"></Alert>
       </div>
     );
   }
@@ -151,7 +204,7 @@ export default function CustomerSaleList({
         </button>
       </div>
       <div className="grid grid-cols-12 gap-2">
-        {stateReducer.reports.map((report) => (
+        {reportQuery.data.map((report) => (
           <div
             key={report.orderCode}
             className={`rounded-box col-span-12 border-2 p-3 shadow-md hover:cursor-pointer sm:col-span-6 md:col-span-4 lg:col-span-3 xl:col-span-2
