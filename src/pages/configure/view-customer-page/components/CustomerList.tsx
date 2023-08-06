@@ -6,62 +6,30 @@ import SearchInput from "../../../../components/forms/SearchInput";
 import Spinner from "../../../../components/Spinner";
 import Alert from "../../../../components/Alert";
 import { handleTokenExpire } from "../../../../commons/utils/token.util";
+import { useQuery } from "@tanstack/react-query";
 
 export default function CustomerList() {
-  const [fetchData, setFetchData] = useState({
-    customers: [],
-    error: "",
-    empty: "",
-    loading: true,
-  });
   const [search, setSearch] = useState({
     customers: [],
     query: "",
   });
   const navigate = useNavigate();
 
-  useEffect(() => {
-    api
-      .get(`/customers/all`)
-      .then((res) => {
-        if (res.data?.length === 0) {
-          setFetchData((prev) => ({
-            ...prev,
-            error: "",
-            empty: "Such hollow, much empty...",
-            loading: false,
-          }));
-        } else {
-          setSearch((prev) => ({ ...prev, customers: res.data, query: "" }));
-          setFetchData((prev) => ({
-            ...prev,
-            customers: res.data,
-            error: "",
-            empty: "",
-            loading: false,
-          }));
-        }
-      })
-      .catch((e) => {
-        const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e)
-        );
-        setFetchData((prev) => ({
-          ...prev,
-          error: error.message,
-          empty: "",
-          loading: false,
-        }));
-
-        if (error.status === 401) {
-          handleTokenExpire(navigate, setFetchData);
-        }
-      });
-  }, []);
+  // Need to force type here to silence the linter.
+  const query = useQuery<any[], any>({
+    queryKey: ["customers", "all"],
+    queryFn: async () => {
+      const res = await api.get("customers/all");
+      if (res.data?.length !== 0) {
+        setSearch((prev) => ({ ...prev, customers: res.data, query: "" }));
+      }
+      return res.data;
+    },
+  });
 
   const onChangeSearch = (e) => {
     if (e.target.value) {
-      const searched = fetchData.customers.filter((customer) =>
+      const searched = query.data.filter((customer) =>
         customer.name
           .toLowerCase()
           .replace(/\s+/g, "")
@@ -75,7 +43,7 @@ export default function CustomerList() {
     } else {
       setSearch((prev) => ({
         ...prev,
-        customers: fetchData.customers,
+        customers: query.data,
         query: e.target.value,
       }));
     }
@@ -84,7 +52,7 @@ export default function CustomerList() {
   const onClearQuery = () => {
     setSearch((prev) => ({
       ...prev,
-      customers: fetchData.customers,
+      customers: query.data,
       query: "",
     }));
   };
@@ -97,11 +65,33 @@ export default function CustomerList() {
     navigate(`/configure/draft-customer/${id}`);
   };
 
-  if (fetchData.loading) {
+  if (query.fetchStatus === "fetching" || query.status === "loading") {
     return <Spinner></Spinner>;
   }
 
-  if (fetchData.error) {
+  // When there's an error, React Query will update the query to have error in there.
+  // However, when we refetch it, this old obj with the error will be returned first, then the new query object
+  // will be returned later, so we need this extra idle check here.
+  if (
+    query.fetchStatus === "paused" ||
+    (query.status === "error" && query.fetchStatus === "idle")
+  ) {
+    let error = JSON.parse(
+      JSON.stringify(
+        query.error.response ? query.error.response.data.error : query.error
+      )
+    );
+    if (error.status === 401) {
+      // This is just cursed.
+      handleTokenExpire(
+        navigate,
+        (err) => {
+          error = err;
+        },
+        (msg) => ({ ...error, message: msg })
+      );
+    }
+
     return (
       <>
         <div className="fixed bottom-24 right-6 z-20 md:right-8">
@@ -112,13 +102,14 @@ export default function CustomerList() {
           </button>
         </div>
         <div className="mx-auto w-11/12 sm:w-8/12 xl:w-6/12">
-          <Alert type="error" message={fetchData.error}></Alert>
+          <Alert type="error" message={error.message}></Alert>
         </div>
       </>
     );
   }
 
-  if (fetchData.empty) {
+  // TODO: Hanlde empty better.
+  if (search.customers.length === 0) {
     return (
       <>
         <div className="fixed bottom-24 right-6 z-20 md:right-8">
@@ -129,7 +120,7 @@ export default function CustomerList() {
           </button>
         </div>
         <div className="mx-auto w-11/12 sm:w-8/12 xl:w-6/12">
-          <Alert type="empty" message={fetchData.empty}></Alert>
+          <Alert type="empty" message="Such empty, much hollow..."></Alert>
         </div>
       </>
     );

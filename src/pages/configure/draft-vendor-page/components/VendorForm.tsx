@@ -271,6 +271,7 @@ export default function VendorForm({
             type="button"
             className="btn-primary btn mt-3 w-full"
             onClick={onNextPage}
+            disabled={formState.loading || vendorForm.isSubmitting}
           >
             <span>Product template</span>
             <span>
@@ -379,7 +380,7 @@ export default function VendorForm({
                 <button
                   type="submit"
                   className="btn-primary btn col-span-6"
-                  disabled={formState.loading}
+                  disabled={formState.loading || vendorForm.isSubmitting}
                 >
                   <span>{editedId ? "Update" : "Create"}</span>
                 </button>

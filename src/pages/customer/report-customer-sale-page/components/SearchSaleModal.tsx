@@ -1,22 +1,23 @@
 import { BiX } from "react-icons/bi";
 import Modal from "../../../../components/Modal";
 import { useFormik } from "formik";
-import { useNavigate } from "react-router-dom";
-import { handleTokenExpire } from "../../../../commons/utils/token.util";
 import DateInput from "../../../../components/forms/DateInput";
 import SelectSearch from "../../../../components/forms/SelectSearch";
 import TextInput from "../../../../components/forms/TextInput";
-import api from "../../../../stores/api";
-import { ACTION_TYPE } from "../../../../commons/hooks/report-sale.hook";
+
+interface SearchSaleModalProps {
+  isOpen: boolean;
+  customers: Array<any>;
+  onSearchSubmit: (urlParams: string) => void;
+  onClose: () => any;
+}
 
 export default function SearchSaleModal({
   isOpen,
+  customers,
+  onSearchSubmit,
   onClose,
-  stateReducer,
-  dispatch,
-}) {
-  const navigate = useNavigate();
-
+}: SearchSaleModalProps) {
   const searchForm = useFormik({
     initialValues: {
       manualCode: "",
@@ -24,11 +25,7 @@ export default function SearchSaleModal({
       product: "",
       date: "",
     },
-    onSubmit: async (form_data) => {
-      dispatch({
-        type: ACTION_TYPE.LOADING,
-      });
-
+    onSubmit: (form_data) => {
       let url = "";
       if (form_data.manualCode) {
         url += `code=${encodeURIComponent(form_data.manualCode)}&`;
@@ -42,37 +39,7 @@ export default function SearchSaleModal({
       if (Object.keys(form_data.product).length !== 0) {
         url += `product=${encodeURIComponent(form_data.product)}&`;
       }
-      try {
-        const res = await api.get(`/customer-orders/sold/search?${url}`);
-        if (res.data.length < 1) {
-          dispatch({
-            type: ACTION_TYPE.EMPTY,
-          });
-        } else {
-          dispatch({
-            type: ACTION_TYPE.SUCCESS,
-            reports: res.data,
-            reports_url: `/customer-orders/sold/search?${url}`,
-          });
-        }
-      } catch (e) {
-        const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e)
-        );
-        dispatch({
-          type: ACTION_TYPE.ERROR,
-          error: error.message,
-        });
-
-        if (error.status === 401) {
-          handleTokenExpire(navigate, dispatch, (msg) => ({
-            type: ACTION_TYPE.ERROR,
-            error: msg,
-          }));
-        } else {
-          searchForm.resetForm();
-        }
-      }
+      onSearchSubmit(url);
       onClose();
     },
   });
@@ -131,7 +98,7 @@ export default function SearchSaleModal({
                     customer ? customer : ""
                   );
                 }}
-                options={stateReducer.customers.map((v) => v.name)}
+                options={customers.map((v) => v.name)}
                 nullable={true}
               />
             </div>
@@ -156,7 +123,7 @@ export default function SearchSaleModal({
             <button
               type="submit"
               className="btn-accent btn w-full"
-              disabled={stateReducer.loading}
+              //disabled={stateReducer.loading}
             >
               Search
             </button>

@@ -11,15 +11,9 @@ import SelectInput from "../../../../components/forms/SelectInput";
 import { useReactToPrint } from "react-to-print";
 import { BiPrinter } from "react-icons/bi";
 import ComponentToPrint from "./ComponentToPrint";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 export default function CustomerOrderList() {
-  // TODO: Consider change search to useReducer probably cuz search.orders depends on status.
-  const [fetchData, setFetchData] = useState({
-    orders: [],
-    error: "",
-    empty: "",
-    loading: true,
-  });
   const printRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const [search, setSearch] = useState({
@@ -39,17 +33,19 @@ export default function CustomerOrderList() {
     );
   }, [search.orders]);
 
-  useEffect(() => {
-    getCustomerOrders();
-    // re-render after 1 min
-    const reRender = setInterval(() => {
-      getCustomerOrders();
-    }, 60000);
-
-    return () => {
-      clearInterval(reRender);
-    };
-  }, []);
+  const query = useQuery<any[], any>({
+    queryKey: ["customer-orders", "daily"],
+    queryFn: async () => {
+      const res = await api.get("/customer-orders/daily");
+      // NOTE: This is probably not the best way to handle transformation.
+      setSearch((prev) => ({
+        ...prev,
+        orders: filterByStatus(res.data, prev.status),
+      }));
+      return res.data;
+    },
+    refetchInterval: 60000,
+  });
 
   // Cursed. Have to attach this pretty much on every search.orders
   const filterByStatus = (orders, status) => {
@@ -62,55 +58,6 @@ export default function CustomerOrderList() {
     content: () => printRef.current,
   });
 
-  const getCustomerOrders = () => {
-    setFetchData((prev) => ({
-      ...prev,
-      error: "",
-      empty: "",
-      loading: true,
-    }));
-
-    api
-      .get(`/customer-orders/daily`)
-      .then((res) => {
-        if (res.data.length === 0) {
-          setFetchData((prev) => ({
-            ...prev,
-            empty: "Such hollow, much empty...",
-            loading: false,
-          }));
-        } else {
-          setSearch((prev) => ({
-            ...prev,
-            orders: filterByStatus(res.data, prev.status),
-          }));
-          setFetchData((prev) => ({
-            ...prev,
-            orders: res.data,
-            error: "",
-            empty: "",
-            loading: false,
-          }));
-        }
-      })
-      .catch((e) => {
-        const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e)
-        );
-        setFetchData((prev) => ({
-          ...prev,
-          orders: [],
-          error: error.message,
-          empty: "",
-          loading: false,
-        }));
-
-        if (error.status === 401) {
-          handleTokenExpire(navigate, setFetchData);
-        }
-      });
-  };
-
   const onToDetails = (code: string) => {
     navigate(`/customer/view-customer-order-detail/${code}`);
   };
@@ -118,7 +65,7 @@ export default function CustomerOrderList() {
   const onChangeQuery = (e) => {
     if (e.target.value) {
       // Search based on customer name and product name.
-      const searched = filterByStatus(fetchData.orders, search.status).filter(
+      const searched = filterByStatus(query.data, search.status).filter(
         (order) => {
           return (
             order.customer_name
@@ -142,7 +89,7 @@ export default function CustomerOrderList() {
     } else {
       setSearch((prev) => ({
         ...prev,
-        orders: filterByStatus(fetchData.orders, prev.status),
+        orders: filterByStatus(query.data, prev.status),
         query: e.target.value,
       }));
     }
@@ -151,12 +98,12 @@ export default function CustomerOrderList() {
   const onClearQuery = () => {
     setSearch((prev) => ({
       ...prev,
-      orders: filterByStatus(fetchData.orders, prev.status),
+      orders: filterByStatus(query.data, prev.status),
       query: "",
     }));
   };
 
-  if (fetchData.loading) {
+  if (query.status === "loading" || query.fetchStatus === "fetching") {
     return (
       <div className="mx-auto mt-4 w-11/12 md:w-10/12 lg:w-6/12">
         <Spinner></Spinner>
@@ -164,18 +111,37 @@ export default function CustomerOrderList() {
     );
   }
 
-  if (fetchData.error) {
+  if (
+    query.fetchStatus === "paused" ||
+    (query.status === "error" && query.fetchStatus === "idle")
+  ) {
+    let error = JSON.parse(
+      JSON.stringify(
+        query.error.response ? query.error.response.data.error : query.error
+      )
+    );
+    if (error.status === 401) {
+      // This is just cursed.
+      handleTokenExpire(
+        navigate,
+        (err) => {
+          error = err;
+        },
+        (msg) => ({ ...error, message: msg })
+      );
+    }
+
     return (
       <div className="mx-auto mt-4 w-11/12 md:w-10/12 lg:w-6/12">
-        <Alert type="error" message={fetchData.error}></Alert>
+        <Alert type="error" message={error.message}></Alert>
       </div>
     );
   }
 
-  if (fetchData.empty) {
+  if (query.data?.length === 0) {
     return (
       <div className="mx-auto mt-4 w-11/12 md:w-10/12 lg:w-6/12">
-        <Alert type="empty" message={fetchData.empty}></Alert>
+        <Alert type="empty" message={"Such empty, much hollow..."}></Alert>
       </div>
     );
   }
@@ -208,7 +174,7 @@ export default function CustomerOrderList() {
                 setSearch((prev) => ({
                   ...prev,
                   status: v,
-                  orders: filterByStatus(fetchData.orders, v),
+                  orders: filterByStatus(query.data, v),
                 }));
               }}
               options={["ALL"].concat(

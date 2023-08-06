@@ -236,7 +236,11 @@ export default function StockForm({ initialData, products, onClear }) {
           )}
         </div>
 
-        <button type="submit" className="btn-primary btn my-3 w-full">
+        <button
+          type="submit"
+          className="btn-primary btn my-3 w-full"
+          disabled={formState.loading || stockForm.isSubmitting}
+        >
           Update Stock
         </button>
         <button

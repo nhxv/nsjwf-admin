@@ -262,7 +262,9 @@ export default function CreateVendorReturnForm({
                     <button
                       type="submit"
                       className="btn-primary btn w-[49%]"
-                      disabled={formState.loading}
+                      disabled={
+                        formState.loading || vendorReturnForm.isSubmitting
+                      }
                     >
                       <span>Create</span>
                       <span>
