@@ -157,8 +157,10 @@ export default function SaleDetailModal({ isOpen, onClose, report }) {
         <div className="divider"></div>
         <div className="mt-2 flex items-center">
           <span className="mr-2">Total:</span>
-          <span className="mr-2 text-xl font-medium">${report.sale}</span>
-          <span className="text-red-600">-${report.refund}</span>
+          <span className="mr-2 text-xl font-medium">
+            ${report.sale.toFixed(2)}
+          </span>
+          <span className="text-red-600">-${report.refund.toFixed(2)}</span>
         </div>
 
         <div>

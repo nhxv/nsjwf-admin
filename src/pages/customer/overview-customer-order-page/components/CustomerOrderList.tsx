@@ -22,15 +22,17 @@ export default function CustomerOrderList() {
     status: "ALL",
   });
   const total = useMemo(() => {
-    return search.orders.reduce(
-      (prev, curr) =>
-        prev +
-        curr.productCustomerOrders.reduce(
-          (prev, curr) => prev + curr.quantity * curr.unit_price,
-          0
-        ),
-      0
-    );
+    return search.orders
+      .reduce(
+        (prev, curr) =>
+          prev +
+          curr.productCustomerOrders.reduce(
+            (prev, curr) => prev + curr.quantity * curr.unit_price,
+            0
+          ),
+        0
+      )
+      .toFixed(2);
   }, [search.orders]);
 
   const query = useQuery<any[], any>({
