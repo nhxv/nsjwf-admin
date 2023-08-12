@@ -43,7 +43,11 @@ export default function CustomerSaleList({
         receivable += parseFloat(report.sale) - parseFloat(report.refund);
       }
     }
-    return { cash: cash, check: check, receivable: receivable };
+    return {
+      cash: cash.toFixed(2),
+      check: check.toFixed(2),
+      receivable: receivable.toFixed(2),
+    };
   }, [reportQuery.data]);
 
   const queryClient = useQueryClient();
@@ -226,7 +230,7 @@ export default function CustomerSaleList({
             <div className="text-sm">
               {convertTimeToText(new Date(report.updatedAt))}
             </div>
-            <div className="">${report.sale - report.refund}</div>
+            <div className="">${(report.sale - report.refund).toFixed(2)}</div>
             <div className="mt-3 grid grid-cols-12 gap-2">
               {report.paymentStatus !== PaymentStatus.CHECK && (
                 <button
