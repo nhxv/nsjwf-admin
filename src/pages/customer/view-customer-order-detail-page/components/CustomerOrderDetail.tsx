@@ -7,6 +7,7 @@ import CustomerOrderPrint from "./CustomerOrderPrint";
 import { handleTokenExpire } from "../../../../commons/utils/token.util";
 import { useQuery } from "@tanstack/react-query";
 import Alert from "../../../../components/Alert";
+import { niceVisualDecimal } from "../../../../commons/utils/fraction.util";
 
 export default function CustomerOrderDetail() {
   const params = useParams();
@@ -117,7 +118,7 @@ export default function CustomerOrderDetail() {
                 </span>
               </div>
               <div className="w-3/12 text-center">
-                {productOrder.unit_price}
+                {niceVisualDecimal(productOrder.unit_price)}
               </div>
             </div>
           );
@@ -128,9 +129,12 @@ export default function CustomerOrderDetail() {
         <span className="mr-2">Total:</span>
         <span className="text-xl font-medium">
           $
-          {order.productCustomerOrders
-            .reduce((prev, curr) => prev + curr.quantity * curr.unit_price, 0)
-            .toFixed(2)}
+          {niceVisualDecimal(
+            order.productCustomerOrders.reduce(
+              (prev, curr) => prev + curr.quantity * curr.unit_price,
+              0
+            )
+          )}
         </span>
       </div>
       <button

@@ -12,6 +12,7 @@ import api from "../../../../stores/api";
 import { useNavigate } from "react-router-dom";
 import { handleTokenExpire } from "../../../../commons/utils/token.util";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { niceVisualDecimal } from "../../../../commons/utils/fraction.util";
 
 interface CustomerSaleListProps {
   reportQuery;
@@ -44,9 +45,9 @@ export default function CustomerSaleList({
       }
     }
     return {
-      cash: cash.toFixed(2),
-      check: check.toFixed(2),
-      receivable: receivable.toFixed(2),
+      cash: niceVisualDecimal(cash),
+      check: niceVisualDecimal(check),
+      receivable: niceVisualDecimal(receivable),
     };
   }, [reportQuery.data]);
 
@@ -230,7 +231,9 @@ export default function CustomerSaleList({
             <div className="text-sm">
               {convertTimeToText(new Date(report.updatedAt))}
             </div>
-            <div className="">${(report.sale - report.refund).toFixed(2)}</div>
+            <div className="">
+              ${niceVisualDecimal(report.sale - report.refund)}
+            </div>
             <div className="mt-3 grid grid-cols-12 gap-2">
               {report.paymentStatus !== PaymentStatus.CHECK && (
                 <button

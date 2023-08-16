@@ -12,6 +12,7 @@ import { useReactToPrint } from "react-to-print";
 import { BiPrinter } from "react-icons/bi";
 import ComponentToPrint from "./ComponentToPrint";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { niceVisualDecimal } from "../../../../commons/utils/fraction.util";
 
 export default function CustomerOrderList() {
   const printRef = useRef<HTMLDivElement>(null);
@@ -22,8 +23,8 @@ export default function CustomerOrderList() {
     status: "ALL",
   });
   const total = useMemo(() => {
-    return search.orders
-      .reduce(
+    return niceVisualDecimal(
+      search.orders.reduce(
         (prev, curr) =>
           prev +
           curr.productCustomerOrders.reduce(
@@ -32,7 +33,7 @@ export default function CustomerOrderList() {
           ),
         0
       )
-      .toFixed(2);
+    );
   }, [search.orders]);
 
   const query = useQuery<any[], any>({

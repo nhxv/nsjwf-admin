@@ -14,6 +14,7 @@ import TextInput from "../../../../components/forms/TextInput";
 import api from "../../../../stores/api";
 import { handleTokenExpire } from "../../../../commons/utils/token.util";
 import { useNavigate } from "react-router-dom";
+import { niceVisualDecimal } from "../../../../commons/utils/fraction.util";
 
 export default function VendorOrderForm({
   edit,
@@ -596,16 +597,18 @@ export default function VendorOrderForm({
                                       `price${product.id}-${product.appear}`
                                     ] === "0"
                                   ? "N/C"
-                                  : parseFloat(
-                                      (
-                                        vendorOrderForm.values[
-                                          `quantity${product.id}-${product.appear}`
-                                        ] *
-                                        vendorOrderForm.values[
-                                          `price${product.id}-${product.appear}`
-                                        ]
-                                      ).toString() // Silent linter.
-                                    ).toFixed(2)
+                                  : niceVisualDecimal(
+                                      parseFloat(
+                                        (
+                                          vendorOrderForm.values[
+                                            `quantity${product.id}-${product.appear}`
+                                          ] *
+                                          vendorOrderForm.values[
+                                            `price${product.id}-${product.appear}`
+                                          ]
+                                        ).toString() // Silent linter.
+                                      )
+                                    )
                               }
                             </div>
                           </div>

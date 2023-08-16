@@ -8,3 +8,7 @@ export const parseFraction = (s) => {
   const [numerator, denominator] = s.split("/");
   return Math.floor(parseInt(numerator) / parseInt(denominator));
 };
+
+export const niceVisualDecimal = (n: number | string) => {
+  return Number(n).toFixed(2);
+};

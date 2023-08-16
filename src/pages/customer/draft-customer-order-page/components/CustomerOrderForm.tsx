@@ -14,6 +14,7 @@ import TextInput from "../../../../components/forms/TextInput";
 import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
 import { handleTokenExpire } from "../../../../commons/utils/token.util";
+import { niceVisualDecimal } from "../../../../commons/utils/fraction.util";
 
 export default function CustomerOrderForm({
   edit,
@@ -625,16 +626,18 @@ export default function CustomerOrderForm({
                                       `price${product.id}-${product.appear}`
                                     ] === "0"
                                   ? "N/C"
-                                  : parseFloat(
-                                      (
-                                        customerOrderForm.values[
-                                          `quantity${product.id}-${product.appear}`
-                                        ] *
-                                        customerOrderForm.values[
-                                          `price${product.id}-${product.appear}`
-                                        ]
-                                      ).toString() // Silent linter.
-                                    ).toFixed(2)
+                                  : niceVisualDecimal(
+                                      parseFloat(
+                                        (
+                                          customerOrderForm.values[
+                                            `quantity${product.id}-${product.appear}`
+                                          ] *
+                                          customerOrderForm.values[
+                                            `price${product.id}-${product.appear}`
+                                          ]
+                                        ).toString() // Silent linter.
+                                      )
+                                    )
                               }
                             </div>
                           </div>
