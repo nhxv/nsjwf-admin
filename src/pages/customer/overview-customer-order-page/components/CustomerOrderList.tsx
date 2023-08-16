@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { OrderStatus } from "../../../../commons/enums/order-status.enum";
 import { convertTimeToText } from "../../../../commons/utils/time.util";
-import Alert from "../../../../components/Alert";
+import Alert, { AlertFromQueryError } from "../../../../components/Alert";
 import SearchInput from "../../../../components/forms/SearchInput";
 import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
@@ -118,25 +118,9 @@ export default function CustomerOrderList() {
     query.fetchStatus === "paused" ||
     (query.status === "error" && query.fetchStatus === "idle")
   ) {
-    let error = JSON.parse(
-      JSON.stringify(
-        query.error.response ? query.error.response.data.error : query.error
-      )
-    );
-    if (error.status === 401) {
-      // This is just cursed.
-      handleTokenExpire(
-        navigate,
-        (err) => {
-          error = err;
-        },
-        (msg) => ({ ...error, message: msg })
-      );
-    }
-
     return (
       <div className="mx-auto mt-4 w-11/12 md:w-10/12 lg:w-6/12">
-        <Alert type="error" message={error.message}></Alert>
+        <AlertFromQueryError queryError={query.error} />
       </div>
     );
   }

@@ -6,7 +6,7 @@ import api from "../../../../stores/api";
 import CustomerOrderPrint from "./CustomerOrderPrint";
 import { handleTokenExpire } from "../../../../commons/utils/token.util";
 import { useQuery } from "@tanstack/react-query";
-import Alert from "../../../../components/Alert";
+import Alert, { AlertFromQueryError } from "../../../../components/Alert";
 import { niceVisualDecimal } from "../../../../commons/utils/fraction.util";
 
 export default function CustomerOrderDetail() {
@@ -39,25 +39,7 @@ export default function CustomerOrderDetail() {
     orderQuery.fetchStatus === "paused" ||
     (orderQuery.status === "error" && orderQuery.fetchStatus === "idle")
   ) {
-    let error = JSON.parse(
-      JSON.stringify(
-        orderQuery.error.response
-          ? orderQuery.error.response.data.error
-          : orderQuery.error
-      )
-    );
-    if (error.status === 401) {
-      // This is just cursed.
-      handleTokenExpire(
-        navigate,
-        (err) => {
-          error = err;
-        },
-        (msg) => ({ ...error, message: msg })
-      );
-    }
-
-    return <Alert type="error" message={error.message}></Alert>;
+    return <AlertFromQueryError queryError={orderQuery.error} />;
   }
 
   const order = orderQuery.data;
