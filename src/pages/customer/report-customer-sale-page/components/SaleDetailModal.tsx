@@ -12,6 +12,7 @@ import api from "../../../../stores/api";
 import { Menu } from "@headlessui/react";
 import { handleTokenExpire } from "../../../../commons/utils/token.util";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { niceVisualDecimal } from "../../../../commons/utils/fraction.util";
 
 export default function SaleDetailModal({ isOpen, onClose, report }) {
   const role = useAuthStore((state) => state.role);
@@ -148,7 +149,7 @@ export default function SaleDetailModal({ isOpen, onClose, report }) {
                   </span>
                 </div>
                 <div className="w-3/12 text-center">
-                  <span>${productOrder.unitPrice}</span>
+                  <span>${niceVisualDecimal(productOrder.unitPrice)}</span>
                 </div>
               </div>
             );
@@ -158,9 +159,11 @@ export default function SaleDetailModal({ isOpen, onClose, report }) {
         <div className="mt-2 flex items-center">
           <span className="mr-2">Total:</span>
           <span className="mr-2 text-xl font-medium">
-            ${report.sale.toFixed(2)}
+            ${niceVisualDecimal(report.sale)}
           </span>
-          <span className="text-red-600">-${report.refund.toFixed(2)}</span>
+          <span className="text-red-600">
+            -${niceVisualDecimal(report.refund)}
+          </span>
         </div>
 
         <div>

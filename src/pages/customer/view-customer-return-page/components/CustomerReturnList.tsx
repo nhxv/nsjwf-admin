@@ -1,4 +1,4 @@
-import Alert from "../../../../components/Alert";
+import Alert, { AlertFromQueryError } from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
 import { handleTokenExpire } from "../../../../commons/utils/token.util";
@@ -27,25 +27,7 @@ export default function CustomerReturnList() {
     returnQuery.fetchStatus === "paused" ||
     (returnQuery.status === "error" && returnQuery.fetchStatus === "idle")
   ) {
-    let error = JSON.parse(
-      JSON.stringify(
-        returnQuery.error.response
-          ? returnQuery.error.response.data.error
-          : returnQuery.error
-      )
-    );
-    if (error.status === 401) {
-      // This is just cursed.
-      handleTokenExpire(
-        navigate,
-        (err) => {
-          error = err;
-        },
-        (msg) => ({ ...error, message: msg })
-      );
-    }
-
-    return <Alert type="error" message={error.message}></Alert>;
+    <AlertFromQueryError queryError={returnQuery.error} />;
   }
 
   if (returnQuery.data?.length === 0) {

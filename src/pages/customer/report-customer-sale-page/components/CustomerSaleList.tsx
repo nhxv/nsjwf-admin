@@ -6,12 +6,13 @@ import {
   convertTime,
   convertTimeToText,
 } from "../../../../commons/utils/time.util";
-import Alert from "../../../../components/Alert";
+import Alert, { AlertFromQueryError } from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
 import { useNavigate } from "react-router-dom";
 import { handleTokenExpire } from "../../../../commons/utils/token.util";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { niceVisualDecimal } from "../../../../commons/utils/fraction.util";
 
 interface CustomerSaleListProps {
   reportQuery;
@@ -44,9 +45,9 @@ export default function CustomerSaleList({
       }
     }
     return {
-      cash: cash.toFixed(2),
-      check: check.toFixed(2),
-      receivable: receivable.toFixed(2),
+      cash: niceVisualDecimal(cash),
+      check: niceVisualDecimal(check),
+      receivable: niceVisualDecimal(receivable),
     };
   }, [reportQuery.data]);
 
@@ -118,32 +119,15 @@ export default function CustomerSaleList({
     reportQuery.fetchStatus === "paused" ||
     (reportQuery.status === "error" && reportQuery.fetchStatus === "idle")
   ) {
-    let error = JSON.parse(
-      JSON.stringify(
-        reportQuery.error.response
-          ? reportQuery.error.response.data.error
-          : reportQuery.error
-      )
-    );
-    if (error.status === 401) {
-      // This is just cursed.
-      handleTokenExpire(
-        navigate,
-        (err) => {
-          error = err;
-        },
-        (msg) => ({ ...error, message: msg })
-      );
-    }
-
     return (
       <div className="mx-auto mt-4 w-11/12 md:w-10/12 lg:w-6/12">
-        <Alert message={error.message} type="error"></Alert>
+        <AlertFromQueryError queryError={reportQuery.error} />
       </div>
     );
   }
 
   if (paymentMethodMut.status === "error") {
+    // TODO: Convert this to AlertFromQueryError later.
     let error = JSON.parse(
       JSON.stringify(
         paymentMethodMut.error.response
@@ -230,7 +214,9 @@ export default function CustomerSaleList({
             <div className="text-sm">
               {convertTimeToText(new Date(report.updatedAt))}
             </div>
-            <div className="">${(report.sale - report.refund).toFixed(2)}</div>
+            <div className="">
+              ${niceVisualDecimal(report.sale - report.refund)}
+            </div>
             <div className="mt-3 grid grid-cols-12 gap-2">
               {report.paymentStatus !== PaymentStatus.CHECK && (
                 <button

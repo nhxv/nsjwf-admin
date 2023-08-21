@@ -4,7 +4,7 @@ import api from "../../../../stores/api";
 import { BiEdit, BiPlus } from "react-icons/bi";
 import SearchInput from "../../../../components/forms/SearchInput";
 import Spinner from "../../../../components/Spinner";
-import Alert from "../../../../components/Alert";
+import Alert, { AlertFromQueryError } from "../../../../components/Alert";
 import { handleTokenExpire } from "../../../../commons/utils/token.util";
 import { useQuery } from "@tanstack/react-query";
 
@@ -76,22 +76,6 @@ export default function CustomerList() {
     query.fetchStatus === "paused" ||
     (query.status === "error" && query.fetchStatus === "idle")
   ) {
-    let error = JSON.parse(
-      JSON.stringify(
-        query.error.response ? query.error.response.data.error : query.error
-      )
-    );
-    if (error.status === 401) {
-      // This is just cursed.
-      handleTokenExpire(
-        navigate,
-        (err) => {
-          error = err;
-        },
-        (msg) => ({ ...error, message: msg })
-      );
-    }
-
     return (
       <>
         <div className="fixed bottom-24 right-6 z-20 md:right-8">
@@ -102,7 +86,7 @@ export default function CustomerList() {
           </button>
         </div>
         <div className="mx-auto w-11/12 sm:w-8/12 xl:w-6/12">
-          <Alert type="error" message={error.message}></Alert>
+          <AlertFromQueryError queryError={query.error} />
         </div>
       </>
     );

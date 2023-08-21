@@ -7,6 +7,7 @@ import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
 import CustomerOrderForm from "./CustomerOrderForm";
 import { handleTokenExpire } from "../../../../commons/utils/token.util";
+import { niceVisualDecimal } from "../../../../commons/utils/fraction.util";
 0;
 export default function CustomerOrderFormContainer() {
   const params = useParams();
@@ -25,9 +26,12 @@ export default function CustomerOrderFormContainer() {
   const [initialFields, setInitialFields] = useState({});
   const total = useMemo(() => {
     if (fetchData.prices.length > 0) {
-      return +fetchData.prices
-        .reduce((prev, current) => prev + current.quantity * current.price, 0)
-        .toFixed(2);
+      return niceVisualDecimal(
+        +fetchData.prices.reduce(
+          (prev, current) => prev + current.quantity * current.price,
+          0
+        )
+      );
     } else return 0;
   }, [fetchData.prices]);
 

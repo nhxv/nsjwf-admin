@@ -2,7 +2,7 @@
  * Define the default behavior of the App when the token expires.
  * @param navigate The Navigate hook, responsible for redirecting.
  * @param stateSetter The state setter function.
- * @param paramCallback A function that accept a string/error message and return something. This something will be passed into `dispatch`.
+ * @param paramCallback A function that accept a string/error message and return something. This something will be passed into `stateSetter`.
  *    By default, this paramCallback will return an updater function used for `useState` hook because this is the most common scenario.
  *    Basically it returns this function: `(prev) => ({ ...prev, error: msg })`.
  */
@@ -18,5 +18,9 @@ export const handleTokenExpire = (
 
   const param = paramCallback(message);
   stateSetter(param);
-  setTimeout(navigate, 2000, "/sign-in");
+  setTimeout(() => {
+    navigate("/sign-in");
+    // Sneak a reload here to grab new deployment.
+    location.reload();
+  }, 2000);
 };

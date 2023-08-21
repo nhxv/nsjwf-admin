@@ -3,7 +3,7 @@ import { BiEdit } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import { Role } from "../../../../commons/enums/role.enum";
 import { parseFraction } from "../../../../commons/utils/fraction.util";
-import Alert from "../../../../components/Alert";
+import Alert, { AlertFromQueryError } from "../../../../components/Alert";
 import SearchInput from "../../../../components/forms/SearchInput";
 import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
@@ -73,26 +73,9 @@ export default function StockList() {
     stockQuery.fetchStatus === "paused" ||
     (stockQuery.status === "error" && stockQuery.fetchStatus === "idle")
   ) {
-    let error = JSON.parse(
-      JSON.stringify(
-        stockQuery.error.response
-          ? stockQuery.error.response.data.error
-          : stockQuery.error
-      )
-    );
-    if (error.status === 401) {
-      // This is just cursed.
-      handleTokenExpire(
-        navigate,
-        (err) => {
-          error = err;
-        },
-        (msg) => ({ ...error, message: msg })
-      );
-    }
     return (
       <div className="mx-auto w-11/12 md:w-10/12 lg:w-6/12">
-        <Alert type="error" message={error.message}></Alert>
+        <AlertFromQueryError queryError={stockQuery.error} />
       </div>
     );
   }

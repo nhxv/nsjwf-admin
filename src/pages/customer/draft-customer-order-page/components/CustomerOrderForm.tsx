@@ -14,6 +14,7 @@ import TextInput from "../../../../components/forms/TextInput";
 import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
 import { handleTokenExpire } from "../../../../commons/utils/token.util";
+import { niceVisualDecimal } from "../../../../commons/utils/fraction.util";
 
 export default function CustomerOrderForm({
   edit,
@@ -37,6 +38,9 @@ export default function CustomerOrderForm({
 
   const navigate = useNavigate();
 
+  const [availableProducts, _] = useState(
+    allProducts.filter((product) => !product.discontinued)
+  );
   const [selectedProducts, setSelectedProducts] = useState(
     editedProducts ? editedProducts : []
   );
@@ -168,6 +172,7 @@ export default function CustomerOrderForm({
       if (template) {
         const selected = [];
         const updatedPrices = [];
+        // NOTE: For now, we keep this at allProducts because updating discontinued product is a bit confusing right now.
         for (const product of allProducts) {
           const appear = 1;
           const found = template.find((p) => p.name === product.name);
@@ -233,7 +238,7 @@ export default function CustomerOrderForm({
 
   const onChangeSearch = (e) => {
     if (e.target.value) {
-      const searched = allProducts.filter((product) =>
+      const searched = availableProducts.filter((product) =>
         product.name
           .toLowerCase()
           .replace(/\s+/g, "")
@@ -245,7 +250,11 @@ export default function CustomerOrderForm({
         query: e.target.value,
       }));
     } else {
-      setSearch((prev) => ({ ...prev, products: [], query: e.target.value }));
+      setSearch((prev) => ({
+        ...prev,
+        products: availableProducts,
+        query: e.target.value,
+      }));
     }
   };
 
@@ -511,7 +520,7 @@ export default function CustomerOrderForm({
                     onFocus={() =>
                       setSearch((prev) => ({
                         ...prev,
-                        products: allProducts,
+                        products: availableProducts,
                         query: "",
                       }))
                     }
@@ -625,16 +634,18 @@ export default function CustomerOrderForm({
                                       `price${product.id}-${product.appear}`
                                     ] === "0"
                                   ? "N/C"
-                                  : parseFloat(
-                                      (
-                                        customerOrderForm.values[
-                                          `quantity${product.id}-${product.appear}`
-                                        ] *
-                                        customerOrderForm.values[
-                                          `price${product.id}-${product.appear}`
-                                        ]
-                                      ).toString() // Silent linter.
-                                    ).toFixed(2)
+                                  : niceVisualDecimal(
+                                      parseFloat(
+                                        (
+                                          customerOrderForm.values[
+                                            `quantity${product.id}-${product.appear}`
+                                          ] *
+                                          customerOrderForm.values[
+                                            `price${product.id}-${product.appear}`
+                                          ]
+                                        ).toString() // Silent linter.
+                                      )
+                                    )
                               }
                             </div>
                           </div>
