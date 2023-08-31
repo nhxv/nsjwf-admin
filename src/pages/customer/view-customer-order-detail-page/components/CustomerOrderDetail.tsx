@@ -80,14 +80,15 @@ export default function CustomerOrderDetail() {
             >
               {open ? (
                 <>
-                  {order.productCustomerOrders.length} Products
+                  Hide
                   <span className="scale-150">
                     <BiChevronUp></BiChevronUp>
                   </span>
                 </>
               ) : (
                 <>
-                  {order.productCustomerOrders.length} Products
+                  View {order.productCustomerOrders.length} Product
+                  {order.productCustomerOrders.length > 1 ? "s" : ""}
                   <span className="scale-150">
                     <BiChevronDown></BiChevronDown>
                   </span>
