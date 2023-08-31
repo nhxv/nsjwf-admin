@@ -326,20 +326,6 @@ export default function CustomerOrderForm({
           {/* 1st page */}
           <div className="col-span-12 mb-5 xl:col-span-6">
             <label className="custom-label mb-2 inline-block">
-              <span>Manual code</span>
-            </label>
-            <TextInput
-              id="manual-code"
-              type="text"
-              placeholder={`Manual code`}
-              name="manualCode"
-              value={customerOrderForm.values.manualCode}
-              onChange={customerOrderForm.handleChange}
-            ></TextInput>
-          </div>
-
-          <div className="col-span-12 mb-5 xl:col-span-6">
-            <label className="custom-label mb-2 inline-block">
               <span>Order from customer</span>
               <span className="text-red-500">*</span>
             </label>
@@ -351,6 +337,20 @@ export default function CustomerOrderForm({
               }
               options={customers.map((customer) => customer.name)}
             />
+          </div>
+
+          <div className="col-span-12 mb-5 xl:col-span-6">
+            <label className="custom-label mb-2 inline-block">
+              <span>Manual code</span>
+            </label>
+            <TextInput
+              id="manual-code"
+              type="text"
+              placeholder={`Manual code`}
+              name="manualCode"
+              value={customerOrderForm.values.manualCode}
+              onChange={customerOrderForm.handleChange}
+            ></TextInput>
           </div>
 
           <div className="col-span-12 mb-5 xl:col-span-6">
