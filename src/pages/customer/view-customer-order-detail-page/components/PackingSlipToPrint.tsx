@@ -36,7 +36,9 @@ function SplitProductsIntoPages(order, columnCount: number = 2) {
     i += MAX_LINES_PER_PAGE * columnCount
   ) {
     pages.set(
+      // Key
       `${order.productCustomerOrders[i].product_name}-${order.productCustomerOrders[i].unit_code}`,
+      // Value
       <div className="flex flex-col">
         {/* Headers */}
         <div className="mb-4">
@@ -97,22 +99,53 @@ function SplitProductsIntoPages(order, columnCount: number = 2) {
 
         {/* Products List */}
         <div className={columnStyling}>
-          {order.productCustomerOrders
-            .slice(i, i + MAX_LINES_PER_PAGE * columnCount)
-            .map((productOrder) => (
-              <div
-                key={`${order.code}-${productOrder.product_name}-${productOrder.unit_code}`}
-                className="flex w-full border-b border-black py-2"
-              >
-                <div className="w-[64px] font-semibold">
-                  {productOrder.quantity}{" "}
-                  {productOrder.unit_code.split("_")[1].toLowerCase() === "box"
-                    ? ``
-                    : `(${productOrder.unit_code.split("_")[1].toLowerCase()})`}
+          {/* Fill out the first column, then the 2nd column */}
+          <div>
+            {order.productCustomerOrders
+              .slice(i, i + MAX_LINES_PER_PAGE)
+              .map((productOrder) => (
+                <div
+                  key={`${order.code}-${productOrder.product_name}-${productOrder.unit_code}`}
+                  className="flex w-full border-b border-black py-2"
+                >
+                  <div className="w-[64px] font-semibold">
+                    {productOrder.quantity}{" "}
+                    {productOrder.unit_code.split("_")[1].toLowerCase() ===
+                    "box"
+                      ? ``
+                      : `(${productOrder.unit_code
+                          .split("_")[1]
+                          .toLowerCase()})`}
+                  </div>
+                  <div className="ml-8">{productOrder.product_name}</div>
                 </div>
-                <div className="ml-8">{productOrder.product_name}</div>
-              </div>
-            ))}
+              ))}
+          </div>
+          {/* 2nd column */}
+          <div>
+            {order.productCustomerOrders
+              .slice(
+                i + MAX_LINES_PER_PAGE,
+                i + MAX_LINES_PER_PAGE * columnCount
+              )
+              .map((productOrder) => (
+                <div
+                  key={`${order.code}-${productOrder.product_name}-${productOrder.unit_code}`}
+                  className="flex w-full border-b border-black py-2"
+                >
+                  <div className="w-[64px] font-semibold">
+                    {productOrder.quantity}{" "}
+                    {productOrder.unit_code.split("_")[1].toLowerCase() ===
+                    "box"
+                      ? ``
+                      : `(${productOrder.unit_code
+                          .split("_")[1]
+                          .toLowerCase()})`}
+                  </div>
+                  <div className="ml-8">{productOrder.product_name}</div>
+                </div>
+              ))}
+          </div>
         </div>
       </div>
     );
