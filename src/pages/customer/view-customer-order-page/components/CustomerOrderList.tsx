@@ -206,10 +206,20 @@ export default function CustomerOrderList() {
             </div>
             <button
               className={`btn-sm btn mt-3 w-full
-              ${order.status === OrderStatus.PICKING ? "btn-sticker-yellow" : ""}
+              ${
+                order.status === OrderStatus.PICKING ? "btn-sticker-yellow" : ""
+              }
               ${order.status === OrderStatus.CHECKING ? "btn-sticker-sky" : ""}
-              ${order.status === OrderStatus.SHIPPING ? "btn-sticker-purple" : ""}
-              ${order.status === OrderStatus.DELIVERED ? "btn-sticker-primary" : ""}`}
+              ${
+                order.status === OrderStatus.SHIPPING
+                  ? "btn-sticker-purple"
+                  : ""
+              }
+              ${
+                order.status === OrderStatus.DELIVERED
+                  ? "btn-sticker-primary"
+                  : ""
+              }`}
               onClick={() => onToDetails(order.code)}
             >
               Details
