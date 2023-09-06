@@ -36,6 +36,17 @@ export default function CustomerOrderFormContainer() {
   }, [fetchData.prices]);
 
   useEffect(() => {
+    setFetchData((prev) => ({
+      ...prev,
+      editedProducts: [],
+      allProducts: [],
+      customers: [],
+      employees: [],
+      prices: [],
+      error: "",
+      empty: "",
+      loading: true,
+    }));
     // Need all products here for discontinued products inside orders.
     const productPromise = api.get(`/products/all`);
     const customerPromise = api.get(`/customers/active`);
@@ -220,8 +231,6 @@ export default function CustomerOrderFormContainer() {
               }
             }
             const today = new Date();
-            // const nextDay = new Date(today);
-            // nextDay.setDate(today.getDate() + 1);
             setInitialFields((prev) => ({
               ...prev,
               customerName: ``,
