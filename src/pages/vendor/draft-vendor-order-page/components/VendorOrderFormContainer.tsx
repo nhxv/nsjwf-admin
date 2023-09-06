@@ -39,7 +39,7 @@ export default function VendorOrderFormContainer() {
       ...prev,
       editedProducts: [],
       allProducts: [],
-      customers: [],
+      vendors: [],
       employees: [],
       prices: [],
       error: "",
@@ -204,8 +204,6 @@ export default function VendorOrderFormContainer() {
               }
             }
             const today = new Date();
-            // const nextDay = new Date(today);
-            // nextDay.setDate(today.getDate() + 1);
             setInitialFields((prev) => ({
               ...prev,
               vendorName: ``,

@@ -311,27 +311,13 @@ export default function VendorOrderForm({
       {formState.page === 0 ? (
         <div className="custom-card mx-auto grid grid-cols-12 gap-x-2 xl:w-7/12">
           {/* 1st page */}
-          <div className="col-span-12 mb-5 xl:col-span-6">
-            <label className="custom-label mb-2 inline-block">
-              <span>Manual code</span>
-            </label>
-            <TextInput
-              id="manual-code"
-              type="text"
-              placeholder={`Manual code`}
-              name="manualCode"
-              value={vendorOrderForm.values.manualCode}
-              onChange={vendorOrderForm.handleChange}
-            ></TextInput>
-          </div>
-
-          <div className="col-span-12 mb-5 xl:col-span-6">
+          <div className="col-span-12 mb-5">
             <label className="custom-label mb-2 inline-block">
               <span>Order to vendor</span>
               <span className="text-red-500">*</span>
             </label>
             <SelectSearch
-              name="customer"
+              name="vendor"
               value={vendorOrderForm.values["vendorName"]}
               setValue={(v) => vendorOrderForm.setFieldValue("vendorName", v)}
               options={vendors.map((vendor) => vendor.name)}
@@ -502,20 +488,6 @@ export default function VendorOrderForm({
                             <span className="text-lg font-semibold">
                               {product.name}
                             </span>
-                            {/* {product.sell_price ? (
-                              <div className="custom-badge mt-1 bg-info text-info-content">
-                                <span className="hidden sm:inline">
-                                  Suggest:
-                                </span>
-                                <span>
-                                  {" > "}${product.sell_price}
-                                </span>
-                              </div>
-                            ) : (
-                              <div className="custom-badge mt-1 bg-accent text-accent-content">
-                                <span>Product</span>
-                              </div>
-                            )} */}
                             <div className="custom-badge mt-1 bg-accent text-accent-content">
                               <span>Product</span>
                             </div>

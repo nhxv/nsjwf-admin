@@ -233,7 +233,8 @@ export default function CustomerOrderFormContainer() {
             const today = new Date();
             setInitialFields((prev) => ({
               ...prev,
-              customerName: ``,
+              customerName: "",
+              manualCode: "",
               employeeName: employeeRes.data[0].nickname,
               status: OrderStatus.PICKING,
               isTest: false,
