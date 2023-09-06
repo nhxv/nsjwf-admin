@@ -38,6 +38,33 @@
   .custom-badge {
     @apply h-fit w-fit rounded-full py-1.5 px-2 text-xs font-medium;
   }
+  .sticker {
+    @apply rounded-box border-2 p-3 shadow-md hover:cursor-pointer;
+  }
+  .sticker-yellow {
+    @apply border-yellow-700 bg-yellow-100 text-yellow-700 dark:border-yellow-700 dark:bg-yellow-900 dark:bg-opacity-10;
+  }
+  .sticker-sky {
+    @apply border-sky-700 bg-sky-100 text-sky-700 dark:border-sky-700 dark:bg-sky-900 dark:bg-opacity-10;
+  }
+  .sticker-purple {
+    @apply border-purple-700 bg-purple-100 text-purple-700 dark:border-purple-700 dark:bg-purple-900 dark:bg-opacity-10;
+  }
+  .sticker-primary {
+    @apply border-primary bg-emerald-100 text-primary dark:border-primary dark:bg-emerald-900 dark:bg-opacity-10;
+  }
+  .btn-sticker-yellow {
+    @apply border-yellow-700 bg-transparent text-yellow-700 hover:border-yellow-700 hover:bg-yellow-700 hover:text-white;
+  }
+  .btn-sticker-sky {
+    @apply border-sky-700 bg-transparent text-sky-700 hover:border-sky-700 hover:bg-sky-700 hover:text-white;
+  }
+  .btn-sticker-purple {
+    @apply border-purple-700 bg-transparent text-purple-700 hover:border-purple-700 hover:bg-purple-700 hover:text-white;
+  }
+  .btn-sticker-primary {
+    @apply border-primary bg-transparent text-primary hover:border-primary hover:bg-primary hover:text-white;
+  }
 }
 
 input {

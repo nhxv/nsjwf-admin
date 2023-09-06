@@ -1,4 +1,4 @@
-import { convertTimeToText } from "../../../../commons/utils/time.util";
+import { convertTimeToText } from "../commons/utils/time.util";
 
 const MAX_LINES_PER_PAGE: number = 18;
 

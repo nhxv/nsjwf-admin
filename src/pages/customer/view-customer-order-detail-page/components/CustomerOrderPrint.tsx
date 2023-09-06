@@ -1,10 +1,9 @@
 import { useRef, useState } from "react";
 import { BiPrinter, BiX } from "react-icons/bi";
 import { useReactToPrint } from "react-to-print";
-import NumberInput from "../../../../components/forms/NumberInput";
 import Modal from "../../../../components/Modal";
-import PackingSlipToPrint from "./PackingSlipToPrint";
-import PalletLabelToPrint from "./PalletLabelToPrint";
+import PackingSlipToPrint from "../../../../components/PackingSlipToPrint";
+import NumberInput from "../../../../components/forms/NumberInput";
 
 export default function CustomerOrderPrint({ order }) {
   const [pallet, setPallet] = useState({ count: 1, list: [null] });
@@ -47,11 +46,6 @@ export default function CustomerOrderPrint({ order }) {
     <>
       <div className="hidden">
         <PackingSlipToPrint printRef={orderToPrintRef} order={order} />
-        <PalletLabelToPrint
-          printRef={palletLabelToPrintRef}
-          pallet={pallet}
-          order={order}
-        />
       </div>
 
       {/* Pallet modal */}

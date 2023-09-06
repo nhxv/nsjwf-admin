@@ -45,7 +45,6 @@ export default function Layout({ children }) {
     "/customer/view-sale": "View Sale",
     "/customer/view-customer-order": "View Order",
     "/customer/view-customer-order-detail/:code": "View Order",
-    "/customer/overview-customer-order": "Overview",
 
     "/vendor/draft-vendor-order": "Draft Order",
     "/vendor/create-vendor-return/:code": "Create Vendor Return",
@@ -106,7 +105,7 @@ export default function Layout({ children }) {
         },
         {
           itemName: "View Order",
-          href: "/customer/overview-customer-order",
+          href: "/customer/view-customer-order",
           visible: [Role.MASTER, Role.ADMIN],
           icon: <BiLogOutCircle className="h-6 w-6" />,
         },

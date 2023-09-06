@@ -1,12 +1,12 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 
-import MasterOutlet from "./components/outlets/MasterOutlet";
 import AdminOutlet from "./components/outlets/AdminOutlet";
+import MasterOutlet from "./components/outlets/MasterOutlet";
 import PrivateOutlet from "./components/outlets/PrivateOutlet";
 
-import SignInPage from "./pages/SignInPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import ProfilePage from "./pages/ProfilePage";
+import SignInPage from "./pages/SignInPage";
 
 import DraftCustomerOrderPage from "./pages/customer/draft-customer-order-page/DraftCustomerOrderPage";
 import ViewCustomerOrderPage from "./pages/customer/view-customer-order-page/ViewCustomerOrderPage";
@@ -16,28 +16,26 @@ import ViewVendorOrderPage from "./pages/vendor/view-vendor-order-page/ViewVendo
 
 import ViewStockPage from "./pages/stock/view-stock-page/ViewStockPage";
 
-import VehiclePage from "./pages/configure/vehicle-page/VehiclePage";
-import ResetPage from "./pages/test/ResetPage";
-import DraftStockPage from "./pages/stock/draft-stock-page/DraftStockPage";
+import DraftCustomerPage from "./pages/configure/draft-customer-page/DraftCustomerPage";
+import DraftProductPage from "./pages/configure/draft-product-page/DraftProductPage";
+import DraftVendorPage from "./pages/configure/draft-vendor-page/DraftVendorPage";
+import EmployeePage from "./pages/configure/employee-page/EmployeePage";
+import ViewCustomerPage from "./pages/configure/view-customer-page/ViewCustomerPage";
+import ViewProductPage from "./pages/configure/view-product-page/ViewProductPage";
+import ViewVendorPage from "./pages/configure/view-vendor-page/ViewVendorPage";
 import CreateCustomerReturnPage from "./pages/customer/create-customer-return-page/CreateCustomerReturnPage";
+import ReportCustomerSalePage from "./pages/customer/report-customer-sale-page/ReportCustomerSalePage";
 import SearchCustomerSalePage from "./pages/customer/search-customer-sale-page/SearchCustomerSalePage";
+import UpdateOrderPriorityPage from "./pages/customer/update-order-priority-page/UpdateOrderPriorityPage";
+import CustomerOrderDetailPage from "./pages/customer/view-customer-order-detail-page/CustomerOrderDetailPage";
 import ViewCustomerReturnPage from "./pages/customer/view-customer-return-page/ViewCustomerReturnPage";
+import DraftStockPage from "./pages/stock/draft-stock-page/DraftStockPage";
+import ReportTaskPage from "./pages/task/report-task-page/ReportTaskPage";
+import ViewTaskPage from "./pages/task/view-task-page/ViewTaskPage";
+import ResetPage from "./pages/test/ResetPage";
 import CreateVendorReturnPage from "./pages/vendor/create-vendor-return-page/CreateVendorReturnPage";
 import SearchVendorSalePage from "./pages/vendor/search-vendor-sale-page/SearchVendorSalePage";
 import ViewVendorReturnPage from "./pages/vendor/view-vendor-return-page/ViewVendorReturnPage";
-import ReportCustomerSalePage from "./pages/customer/report-customer-sale-page/ReportCustomerSalePage";
-import ViewTaskPage from "./pages/task/view-task-page/ViewTaskPage";
-import ReportTaskPage from "./pages/task/report-task-page/ReportTaskPage";
-import DraftVendorPage from "./pages/configure/draft-vendor-page/DraftVendorPage";
-import ViewVendorPage from "./pages/configure/view-vendor-page/ViewVendorPage";
-import DraftCustomerPage from "./pages/configure/draft-customer-page/DraftCustomerPage";
-import ViewCustomerPage from "./pages/configure/view-customer-page/ViewCustomerPage";
-import UpdateOrderPriorityPage from "./pages/customer/update-order-priority-page/UpdateOrderPriorityPage";
-import OverviewCustomerOrderPage from "./pages/customer/overview-customer-order-page/OverviewCustomerOrderPage";
-import EmployeePage from "./pages/configure/employee-page/EmployeePage";
-import DraftProductPage from "./pages/configure/draft-product-page/DraftProductPage";
-import ViewProductPage from "./pages/configure/view-product-page/ViewProductPage";
-import CustomerOrderDetailPage from "./pages/customer/view-customer-order-detail-page/CustomerOrderDetailPage";
 
 export default function App() {
   return (
@@ -85,10 +83,6 @@ export default function App() {
           <Route
             path="/customer/view-customer-order-detail/:code"
             element={<CustomerOrderDetailPage />}
-          ></Route>
-          <Route
-            path="/customer/overview-customer-order"
-            element={<OverviewCustomerOrderPage />}
           ></Route>
         </Route>
 
