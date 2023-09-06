@@ -35,6 +35,17 @@ export default function VendorOrderFormContainer() {
   }, [fetchData.prices]);
 
   useEffect(() => {
+    setFetchData((prev) => ({
+      ...prev,
+      editedProducts: [],
+      allProducts: [],
+      customers: [],
+      employees: [],
+      prices: [],
+      error: "",
+      empty: "",
+      loading: true,
+    }));
     // Unlike CO, doesn't make sense to have a vendor order
     // then we discontinue that product, so this is good for now.
     const productPromise = api.get(`/products/all`);
