@@ -111,13 +111,13 @@ export default function VendorOrderForm({
             reqData
           );
           if (res) {
-            navigate(`/vendor/view-vendor-order-detail/${reqData["code"]}`);
+            navigate(`/vendor/view-vendor-order`);
           }
         } else {
           // create order
           const res = await api.post(`/vendor-orders`, reqData);
           if (res) {
-            navigate(`/customer/view-vendor-order-detail/${res.data.code}`);
+            navigate(`/vendor/view-vendor-order`);
           }
         }
       } catch (e) {

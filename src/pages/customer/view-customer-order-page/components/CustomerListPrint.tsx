@@ -1,6 +1,6 @@
-import PackingSlipToPrint from "../../view-customer-order-detail-page/components/PackingSlipToPrint";
+import PackingSlipToPrint from "../../../../components/PackingSlipToPrint";
 
-export default function ComponentToPrint({ printRef, orders }) {
+export default function CustomerListPrint({ printRef, orders }) {
   return (
     <div ref={printRef}>
       {orders.map((order) => (
