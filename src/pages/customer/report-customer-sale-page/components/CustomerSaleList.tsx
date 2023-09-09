@@ -15,6 +15,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { niceVisualDecimal } from "../../../../commons/utils/fraction.util";
 
 interface CustomerSaleListProps {
+  reports: Array<any>;
   reportQuery;
   onSelectSale: (sale: any) => void;
 }
@@ -26,6 +27,7 @@ interface PaymentMethodMutationParam {
 }
 
 export default function CustomerSaleList({
+  reports,
   reportQuery,
   onSelectSale,
 }: CustomerSaleListProps) {
@@ -34,7 +36,6 @@ export default function CustomerSaleList({
     let cash = 0;
     let check = 0;
     let receivable = 0;
-    const reports = reportQuery.data ? reportQuery.data : [];
     for (const report of reports) {
       if (report.paymentStatus === PaymentStatus.CASH) {
         cash += parseFloat(report.sale) - parseFloat(report.refund);
@@ -49,7 +50,7 @@ export default function CustomerSaleList({
       check: niceVisualDecimal(check),
       receivable: niceVisualDecimal(receivable),
     };
-  }, [reportQuery.data]);
+  }, [reports]);
 
   const queryClient = useQueryClient();
   const paymentMethodMut = useMutation<any, any, any>({
@@ -69,7 +70,6 @@ export default function CustomerSaleList({
   });
 
   const onDownloadReport = () => {
-    const reports = reportQuery.data ? reportQuery.data : [];
     const reportData = reports.map((report) => ({
       // For these 2 dates, most of the time, they'll be the same since the app only allows
       // user to view orders that are completed today. However, to respect data, we'll
@@ -163,7 +163,7 @@ export default function CustomerSaleList({
     );
   }
 
-  if (reportQuery.data.length === 0) {
+  if (reports.length === 0) {
     return (
       <div className="mx-auto mt-4 w-11/12 md:w-10/12 lg:w-6/12">
         <Alert message="Such empty, much hollow..." type="empty"></Alert>
@@ -192,7 +192,7 @@ export default function CustomerSaleList({
         </button>
       </div>
       <div className="grid grid-cols-12 gap-2">
-        {reportQuery.data.map((report) => (
+        {reports.map((report) => (
           <div
             key={report.orderCode}
             className={`rounded-box col-span-12 border-2 p-3 shadow-md hover:cursor-pointer sm:col-span-6 md:col-span-4 lg:col-span-3 xl:col-span-2

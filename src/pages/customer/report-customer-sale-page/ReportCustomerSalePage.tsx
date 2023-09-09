@@ -20,12 +20,10 @@ export default function ReportCustomerSalePage() {
   const [focus, setFocus] = useState({ report: null });
   const [latestFirst, setLatestFirst] = useState(true);
 
-  const queryClient = useQueryClient();
   const customerQuery = useQuery({
     queryKey: ["reports", "customers"],
     queryFn: async () => {
       const result = await api.get(`/customers/all`);
-
       return result.data;
     },
   });
@@ -46,11 +44,6 @@ export default function ReportCustomerSalePage() {
 
   const onToggleSort = () => {
     setLatestFirst(!latestFirst);
-    // NOTE: Probably not the best way to do this, but creating another state just to sort this list seems redundant.
-    queryClient.setQueryData(
-      ["reports", `reports=${queryURL}`],
-      reportQuery.data.toReversed()
-    );
   };
 
   const onSelectSale = (sale) => {
@@ -61,6 +54,12 @@ export default function ReportCustomerSalePage() {
   const onSearchSubmit = (url: string) => {
     setQueryURL(`/customer-orders/sold/search?${url}`);
   };
+
+  const reports = reportQuery?.data
+    ? latestFirst
+      ? reportQuery.data
+      : reportQuery.data.toReversed()
+    : [];
 
   return (
     <section className="min-h-screen">
@@ -95,6 +94,7 @@ export default function ReportCustomerSalePage() {
         </div>
         <div className="mx-4">
           <CustomerSaleList
+            reports={reports}
             reportQuery={reportQuery}
             onSelectSale={onSelectSale}
           />
