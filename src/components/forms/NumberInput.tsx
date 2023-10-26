@@ -4,7 +4,7 @@ export default function NumberInput({
   name,
   value,
   onChange,
-  min = 0,
+  min = -99999,
   max = 99999,
   disabled = false,
 }) {
