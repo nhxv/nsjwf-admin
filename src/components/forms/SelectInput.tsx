@@ -24,7 +24,7 @@ export default function SelectInput({ name, value, setValue, options }) {
             {options.map((option) => (
               <Listbox.Option
                 key={option}
-                className="rounded-btn relative mx-2 cursor-default select-none py-3 px-4 ui-active:bg-info ui-active:text-info-content"
+                className="rounded-btn relative mx-2 cursor-default select-none px-4 py-3 ui-active:bg-info ui-active:text-info-content"
                 value={option}
               >
                 <span className="block truncate ui-selected:font-semibold ui-selected:text-info-content">

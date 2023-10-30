@@ -85,7 +85,7 @@ export default function SaleDetailModal({ isOpen, onClose, report }) {
           {(role === Role.ADMIN || role === Role.MASTER) && (
             // Need to be div for the btn and dropdown to align correctly.
             <Menu as="div">
-              <label className="btn-accent btn-circle btn">
+              <label className="btn btn-circle btn-accent">
                 <Menu.Button>
                   <BiRotateLeft className="h-6 w-6 text-error-content"></BiRotateLeft>
                 </Menu.Button>

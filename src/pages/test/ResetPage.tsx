@@ -58,7 +58,7 @@ export default function ResetPage() {
       )}
       <div className="mb-8 flex flex-col items-center justify-center">
         <h2 className="font-medium underline underline-offset-4">Configure</h2>
-        <button className="btn-secondary btn mt-4" onClick={onResetConfigure}>
+        <button className="btn btn-secondary mt-4" onClick={onResetConfigure}>
           <span>Reset configured data</span>
           <BiReset className="ml-1 h-6 w-6"></BiReset>
         </button>
@@ -66,7 +66,7 @@ export default function ResetPage() {
 
       <div className="mb-8 flex flex-col items-center justify-center">
         <h2 className="font-medium underline underline-offset-4">Operation</h2>
-        <button className="btn-secondary btn mt-4" onClick={onResetOperation}>
+        <button className="btn btn-secondary mt-4" onClick={onResetOperation}>
           <span>Reset operational data</span>
           <BiReset className="ml-1 h-6 w-6"></BiReset>
         </button>

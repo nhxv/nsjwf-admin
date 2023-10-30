@@ -404,7 +404,7 @@ export default function CustomerOrderForm({
           {customerOrderForm.values[`customerName`] && (
             <button
               type="button"
-              className="btn-primary btn col-span-12 mt-3"
+              className="btn btn-primary col-span-12 mt-3"
               onClick={onNextPage}
               disabled={formState.loading || customerOrderForm.isSubmitting}
             >
@@ -416,7 +416,7 @@ export default function CustomerOrderForm({
           )}
           <button
             type="button"
-            className="btn-accent btn col-span-12 mt-3"
+            className="btn btn-accent col-span-12 mt-3"
             onClick={onClearForm}
           >
             <span>Clear change(s)</span>
@@ -475,7 +475,7 @@ export default function CustomerOrderForm({
                   </button>
                   <button
                     type="submit"
-                    className="btn-primary btn col-span-6"
+                    className="btn btn-primary col-span-6"
                     disabled={
                       formState.loading || customerOrderForm.isSubmitting
                     }
@@ -485,7 +485,7 @@ export default function CustomerOrderForm({
 
                   <button
                     type="button"
-                    className="btn-accent btn col-span-12"
+                    className="btn btn-accent col-span-12"
                     onClick={onClearForm}
                   >
                     <span>Clear change(s)</span>
@@ -652,7 +652,7 @@ export default function CustomerOrderForm({
                         </div>
                         <button
                           type="button"
-                          className="btn-accent btn-sm btn-circle btn absolute -top-4 -right-4 shadow-md"
+                          className="btn btn-circle btn-accent btn-sm absolute -right-4 -top-4 shadow-md"
                           onClick={() =>
                             onRemoveProduct(product.id, product.appear)
                           }

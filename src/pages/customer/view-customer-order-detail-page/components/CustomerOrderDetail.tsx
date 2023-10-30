@@ -157,7 +157,7 @@ export default function CustomerOrderDetail() {
         </span>
       </div>
       <button
-        className="btn-primary btn mt-5 w-full"
+        className="btn btn-primary mt-5 w-full"
         onClick={() => onUpdateOrder(order.code)}
       >
         Update order

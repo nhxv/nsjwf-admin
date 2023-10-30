@@ -50,7 +50,7 @@ export default function SearchSaleModal({
         <div className="flex justify-end">
           <button
             type="button"
-            className="btn-accent btn-sm btn-circle btn"
+            className="btn btn-circle btn-accent btn-sm"
             onClick={onClose}
           >
             <span>
@@ -122,7 +122,7 @@ export default function SearchSaleModal({
           <div>
             <button
               type="submit"
-              className="btn-accent btn w-full"
+              className="btn btn-accent w-full"
               //disabled={stateReducer.loading}
             >
               Search

@@ -74,7 +74,7 @@ export default function VendorOrderList({ orders }) {
               <>
                 <div className="divider"></div>
                 <button
-                  className="btn-primary btn w-full"
+                  className="btn btn-primary w-full"
                   onClick={() => onUpdateOrder(order.code)}
                 >
                   Update order

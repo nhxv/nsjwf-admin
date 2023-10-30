@@ -87,7 +87,7 @@ export default function SignInPage() {
         </div>
         <button
           type="submit"
-          className="btn-primary btn mt-3 w-full"
+          className="btn btn-primary mt-3 w-full"
           disabled={!!formState.loading}
         >
           Sign in

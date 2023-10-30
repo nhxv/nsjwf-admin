@@ -176,7 +176,7 @@ export default function Task({ order, reload, status }) {
           {order.isDoing ? (
             <>
               <button
-                className="btn-primary btn w-full"
+                className="btn btn-primary w-full"
                 onClick={() => onFinishTask(order.code)}
                 disabled={formState.loading}
               >
@@ -192,7 +192,7 @@ export default function Task({ order, reload, status }) {
             </>
           ) : (
             <button
-              className="btn-primary btn w-full"
+              className="btn btn-primary w-full"
               onClick={() => onStartTask(order.code)}
               disabled={formState.loading}
             >

@@ -182,7 +182,7 @@ export default function CustomerOrderList() {
               onFocus={null}
             ></SearchInput>
 
-            <label className="btn-accent btn-square btn">
+            <label className="btn btn-square btn-accent">
               <BiPrinter className="h-6 w-6" onClick={handlePrint}></BiPrinter>
             </label>
           </div>
@@ -205,7 +205,7 @@ export default function CustomerOrderList() {
               {convertTimeToText(new Date(order.expected_at))}
             </div>
             <button
-              className={`btn-sm btn mt-3 w-full
+              className={`btn btn-sm mt-3 w-full
               ${
                 order.status === OrderStatus.PICKING ? "btn-sticker-yellow" : ""
               }

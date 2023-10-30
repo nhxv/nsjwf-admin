@@ -189,7 +189,7 @@ export default function StockForm({ initialData, products, onClear }) {
                     </div>
                     <button
                       type="button"
-                      className="btn-accent btn-sm btn-circle btn"
+                      className="btn btn-circle btn-accent btn-sm"
                       onClick={() => onRemoveProduct(product.id)}
                     >
                       <span>
@@ -230,7 +230,7 @@ export default function StockForm({ initialData, products, onClear }) {
               ))}
             </div>
           ) : (
-            <div className="mt-5 mb-2 flex justify-center">
+            <div className="mb-2 mt-5 flex justify-center">
               <span>Empty.</span>
             </div>
           )}
@@ -238,14 +238,14 @@ export default function StockForm({ initialData, products, onClear }) {
 
         <button
           type="submit"
-          className="btn-primary btn my-3 w-full"
+          className="btn btn-primary my-3 w-full"
           disabled={formState.loading || stockForm.isSubmitting}
         >
           Update Stock
         </button>
         <button
           type="button"
-          className="btn-accent btn w-full"
+          className="btn btn-accent w-full"
           onClick={onClearForm}
         >
           Clear change(s)

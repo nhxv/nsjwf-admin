@@ -114,7 +114,7 @@ export default function CustomerSaleList({ search, reload, clear }) {
                 {role === Role.MASTER && (
                   <button
                     // Without this flex, the icon will not be in center.
-                    className="btn-ghost tooltip btn-circle btn flex bg-base-200 text-neutral dark:bg-base-300 dark:text-neutral-content"
+                    className="btn btn-circle tooltip btn-ghost flex bg-base-200 text-neutral dark:bg-base-300 dark:text-neutral-content"
                     onClick={() => onRevert(report.orderCode)}
                     data-tip="Revert this order"
                   >
@@ -175,7 +175,7 @@ export default function CustomerSaleList({ search, reload, clear }) {
                   Check
                 </button>
                 <button
-                  className="btn-primary btn col-span-6 w-full"
+                  className="btn btn-primary col-span-6 w-full"
                   onClick={() =>
                     onUpdatePayment(PaymentStatus.CASH, report.orderCode)
                   }
@@ -184,7 +184,7 @@ export default function CustomerSaleList({ search, reload, clear }) {
                 </button>
               </div>
               <button
-                className="btn-accent btn mt-3 w-full"
+                className="btn btn-accent mt-3 w-full"
                 onClick={() =>
                   onUpdatePayment(PaymentStatus.RECEIVABLE, report.orderCode)
                 }
@@ -193,7 +193,7 @@ export default function CustomerSaleList({ search, reload, clear }) {
               </button>
               {!report.fullReturn && (
                 <button
-                  className="btn-accent btn mt-3 w-full"
+                  className="btn btn-accent mt-3 w-full"
                   onClick={() => onCreateReturn(report.orderCode)}
                 >
                   Create return
@@ -214,8 +214,8 @@ export default function CustomerSaleList({ search, reload, clear }) {
             </div>
           );
         })}
-        <div className="mt-4 mb-8">
-          <button className="btn-accent btn" onClick={onClearAll}>
+        <div className="mb-8 mt-4">
+          <button className="btn btn-accent" onClick={onClearAll}>
             <span className="mr-2">Clear search result(s)</span>
             <BiTrash className="h-6 w-6"></BiTrash>
           </button>

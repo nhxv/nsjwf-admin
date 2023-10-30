@@ -81,14 +81,14 @@ export default function ReportCustomerSalePage() {
       />
       <div className="">
         <div className="fixed bottom-24 right-6 z-20 flex gap-2 md:right-8">
-          <button className="btn-accent btn-circle btn" onClick={onToggleSort}>
+          <button className="btn btn-circle btn-accent" onClick={onToggleSort}>
             {latestFirst ? (
               <BiSortDown className="h-6 w-6"></BiSortDown>
             ) : (
               <BiSortUp className="h-6 w-6"></BiSortUp>
             )}
           </button>
-          <button className="btn-accent btn-circle btn" onClick={onSearch}>
+          <button className="btn btn-circle btn-accent" onClick={onSearch}>
             <BiSearch className="h-6 w-6"></BiSearch>
           </button>
         </div>

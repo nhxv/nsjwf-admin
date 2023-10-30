@@ -36,7 +36,7 @@
     @apply rounded-box bg-base-100 p-6 shadow-md dark:bg-base-200;
   }
   .custom-badge {
-    @apply h-fit w-fit rounded-full py-1.5 px-2 text-xs font-medium;
+    @apply h-fit w-fit rounded-full px-2 py-1.5 text-xs font-medium;
   }
   .sticker {
     @apply rounded-box border-2 p-3 shadow-md hover:cursor-pointer;

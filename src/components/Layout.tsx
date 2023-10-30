@@ -269,7 +269,7 @@ export default function Layout({ children }) {
             <div className="navbar-start">
               <label
                 htmlFor="mobile-drawer"
-                className="btn-ghost btn-square btn hover:bg-base-300"
+                className="btn btn-square btn-ghost hover:bg-base-300"
               >
                 <BiMenuAltLeft className="inline-block h-8 w-8"></BiMenuAltLeft>
               </label>
@@ -280,10 +280,10 @@ export default function Layout({ children }) {
               </div>
             </div>
             <div className="navbar-end">
-              <div className="dropdown-end dropdown">
+              <div className="dropdown dropdown-end">
                 <label
                   tabIndex={0}
-                  className="btn-ghost btn-square btn hover:bg-base-300"
+                  className="btn btn-square btn-ghost hover:bg-base-300"
                 >
                   <BiDotsHorizontalRounded className="inline-block h-8 w-8"></BiDotsHorizontalRounded>
                 </label>

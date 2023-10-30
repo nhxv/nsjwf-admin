@@ -16,7 +16,7 @@ export default function BottomNav() {
 
   if (role === Role.OPERATOR) {
     return (
-      <div className="btm-nav sticky h-20 border border-l-0 border-r-0 border-b-0 border-t-base-300 py-2 dark:bg-base-200">
+      <div className="btm-nav sticky h-20 border border-b-0 border-l-0 border-r-0 border-t-base-300 py-2 dark:bg-base-200">
         <div className="hidden md:flex"></div>
         <NavLink
           to="/task/view-task"
@@ -60,7 +60,7 @@ export default function BottomNav() {
 
   if (role === Role.MASTER || role === Role.ADMIN) {
     return (
-      <div className="btm-nav sticky h-20 border border-l-0 border-r-0 border-b-0 border-t-base-300 py-2 dark:bg-base-200">
+      <div className="btm-nav sticky h-20 border border-b-0 border-l-0 border-r-0 border-t-base-300 py-2 dark:bg-base-200">
         <NavLink
           to="/customer/draft-customer-order"
           className={(navData) =>
