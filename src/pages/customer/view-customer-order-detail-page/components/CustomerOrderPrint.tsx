@@ -53,7 +53,7 @@ export default function CustomerOrderPrint({ order }) {
         <div className="custom-card text-left">
           <div className="flex justify-end">
             <button
-              className="btn-accent btn-sm btn-circle btn"
+              className="btn btn-circle btn-accent btn-sm"
               onClick={onCloseModal}
             >
               <BiX className="h-6 w-6"></BiX>
@@ -74,17 +74,17 @@ export default function CustomerOrderPrint({ order }) {
               onChange={onChange}
             ></NumberInput>
           </div>
-          <button className="btn-primary btn w-full" onClick={onPalletPrint}>
+          <button className="btn btn-primary w-full" onClick={onPalletPrint}>
             Print label
           </button>
         </div>
       </Modal>
 
       {/* Print menu */}
-      <div className="dropdown-end dropdown z-0">
+      <div className="dropdown dropdown-end z-0">
         <label
           tabIndex={0}
-          className="btn-ghost btn-circle btn bg-base-200 text-neutral dark:bg-base-300 dark:text-neutral-content"
+          className="btn btn-circle btn-ghost bg-base-200 text-neutral dark:bg-base-300 dark:text-neutral-content"
           onClick={(e) => {
             e.stopPropagation();
             handleOrderPrint();

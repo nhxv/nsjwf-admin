@@ -64,7 +64,7 @@ export default function EmployeeForm({ isOpen, onClose, employee, onReload }) {
         <div className="flex justify-end">
           <button
             type="button"
-            className="btn-accent btn-sm btn-circle btn"
+            className="btn btn-circle btn-accent btn-sm"
             onClick={onCloseForm}
           >
             <BiX className="h-6 w-6"></BiX>
@@ -138,7 +138,7 @@ export default function EmployeeForm({ isOpen, onClose, employee, onReload }) {
           </div>
           <button
             type="submit"
-            className="btn-primary btn mt-1 w-full"
+            className="btn btn-primary mt-1 w-full"
             disabled={formState.loading}
           >
             Update

@@ -7,7 +7,7 @@ export default function Checkbox({ id, name, onChange, checked, label }) {
         type="checkbox"
         onChange={onChange}
         checked={checked}
-        className="checkbox-primary checkbox rounded-btn border-2 border-base-300"
+        className="checkbox checkbox-primary rounded-btn border-2 border-base-300"
       />
       <label htmlFor={id} className="ml-2">
         {label}

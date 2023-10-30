@@ -237,7 +237,7 @@ export default function CreateVendorReturnForm({
             {formState.page === 0 ? (
               <button
                 type="button"
-                className="btn-primary btn mt-3 w-full"
+                className="btn btn-primary mt-3 w-full"
                 onClick={onNextPage}
               >
                 <span>Confirm price</span>
@@ -261,7 +261,7 @@ export default function CreateVendorReturnForm({
                     </button>
                     <button
                       type="submit"
-                      className="btn-primary btn w-[49%]"
+                      className="btn btn-primary w-[49%]"
                       disabled={
                         formState.loading || vendorReturnForm.isSubmitting
                       }
@@ -279,7 +279,7 @@ export default function CreateVendorReturnForm({
           <div>
             <button
               type="button"
-              className="btn-accent btn w-full"
+              className="btn btn-accent w-full"
               onClick={onClearForm}
             >
               <span>Clear change(s)</span>

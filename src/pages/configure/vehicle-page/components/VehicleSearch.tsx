@@ -89,7 +89,7 @@ export default function VehicleSearch() {
               onFocus={null}
               onClear={() => searchForm.setFieldValue("keyword", "")}
             />
-            <button type="submit" className="btn-accent btn-circle btn ml-2">
+            <button type="submit" className="btn btn-circle btn-accent ml-2">
               <BiSearch className="h-6 w-6"></BiSearch>
             </button>
           </div>
@@ -138,7 +138,7 @@ export default function VehicleSearch() {
                         </div>
 
                         <button
-                          className="btn-info btn mt-4 w-full text-primary md:mt-0 md:w-fit"
+                          className="btn btn-info mt-4 w-full text-primary md:mt-0 md:w-fit"
                           onClick={() => onEdit(vehicle)}
                         >
                           <BiEdit className="h-6 w-6"></BiEdit>
@@ -147,7 +147,7 @@ export default function VehicleSearch() {
                     </div>
                   ))}
                   <div className="mt-4">
-                    <button className="btn-accent btn" onClick={onClearAll}>
+                    <button className="btn btn-accent" onClick={onClearAll}>
                       <span className="mr-2">Clear search result(s)</span>
                       <BiTrash className="h-6 w-6"></BiTrash>
                     </button>

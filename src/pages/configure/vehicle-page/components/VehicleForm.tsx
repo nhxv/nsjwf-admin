@@ -196,7 +196,7 @@ export default function VehicleForm() {
 
         <button
           type="submit"
-          className="btn-primary btn mt-1 w-full"
+          className="btn btn-primary mt-1 w-full"
           disabled={formState.loading}
         >
           <span>{formType} vehicle</span>
@@ -204,7 +204,7 @@ export default function VehicleForm() {
 
         <button
           type="button"
-          className="btn-accent btn mt-3 w-full"
+          className="btn btn-accent mt-3 w-full"
           onClick={onClear}
         >
           <span>Clear change(s)</span>

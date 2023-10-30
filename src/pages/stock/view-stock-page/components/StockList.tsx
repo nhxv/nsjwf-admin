@@ -86,7 +86,7 @@ export default function StockList() {
         <div className="fixed bottom-24 right-6 z-20 md:right-8">
           <button
             type="button"
-            className="btn-primary btn-circle btn"
+            className="btn btn-circle btn-primary"
             onClick={onChangeStock}
           >
             <span>

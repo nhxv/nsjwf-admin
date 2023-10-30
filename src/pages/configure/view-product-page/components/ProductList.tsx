@@ -104,7 +104,7 @@ export default function ProductList() {
     return (
       <>
         <div className="fixed bottom-24 right-6 z-20 md:right-8">
-          <button className="btn-primary btn-circle btn" onClick={onAdd}>
+          <button className="btn btn-circle btn-primary" onClick={onAdd}>
             <span>
               <BiPlus className="h-8 w-8"></BiPlus>
             </span>
@@ -121,7 +121,7 @@ export default function ProductList() {
     return (
       <>
         <div className="fixed bottom-24 right-6 z-20 md:right-8">
-          <button className="btn-primary btn-circle btn" onClick={onAdd}>
+          <button className="btn btn-circle btn-primary" onClick={onAdd}>
             <span>
               <BiPlus className="h-8 w-8"></BiPlus>
             </span>
@@ -137,7 +137,7 @@ export default function ProductList() {
   return (
     <>
       <div className="fixed bottom-24 right-6 z-20 md:right-8">
-        <button className="btn-primary btn-circle btn" onClick={onAdd}>
+        <button className="btn btn-circle btn-primary" onClick={onAdd}>
           <span>
             <BiPlus className="h-8 w-8"></BiPlus>
           </span>
@@ -161,7 +161,7 @@ export default function ProductList() {
             className="custom-card col-span-12 flex items-center md:col-span-6 lg:col-span-3"
           >
             <button
-              className="btn-accent btn-circle btn mr-4"
+              className="btn btn-circle btn-accent mr-4"
               onClick={() => onEdit(product.id)}
             >
               <span>

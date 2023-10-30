@@ -93,7 +93,7 @@ export default function EmployeeList() {
             className="custom-card col-span-12 flex items-center sm:col-span-6 xl:col-span-4"
           >
             <button
-              className="btn-accent btn-circle btn mr-4"
+              className="btn btn-circle btn-accent mr-4"
               onClick={() => onOpenForm(employee)}
             >
               <span>

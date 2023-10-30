@@ -186,7 +186,7 @@ export default function CustomerSaleList({
           </div>
         </div>
 
-        <button className="btn-accent btn" onClick={onDownloadReport}>
+        <button className="btn btn-accent" onClick={onDownloadReport}>
           <span className="mr-2">Download report</span>
           <BiDownload className="h-6 w-6"></BiDownload>
         </button>
@@ -220,7 +220,7 @@ export default function CustomerSaleList({
             <div className="mt-3 grid grid-cols-12 gap-2">
               {report.paymentStatus !== PaymentStatus.CHECK && (
                 <button
-                  className="btn-sm btn col-span-6 w-full border-sky-700 bg-sky-100 text-sky-700 hover:border-sky-700 hover:bg-sky-700 hover:text-white dark:bg-transparent"
+                  className="btn btn-sm col-span-6 w-full border-sky-700 bg-sky-100 text-sky-700 hover:border-sky-700 hover:bg-sky-700 hover:text-white dark:bg-transparent"
                   onClick={(e) => {
                     e.stopPropagation();
                     onUpdatePayment(PaymentStatus.CHECK, report.orderCode);
@@ -232,7 +232,7 @@ export default function CustomerSaleList({
               {report.paymentStatus !== PaymentStatus.CASH && (
                 <button
                   type="button"
-                  className="btn-sm btn col-span-6 w-full border-emerald-700 bg-green-100 text-emerald-700 hover:border-emerald-700 hover:bg-emerald-700 hover:text-white dark:bg-transparent"
+                  className="btn btn-sm col-span-6 w-full border-emerald-700 bg-green-100 text-emerald-700 hover:border-emerald-700 hover:bg-emerald-700 hover:text-white dark:bg-transparent"
                   onClick={(e) => {
                     e.stopPropagation();
                     onUpdatePayment(PaymentStatus.CASH, report.orderCode);
@@ -244,7 +244,7 @@ export default function CustomerSaleList({
               {report.paymentStatus !== PaymentStatus.RECEIVABLE && (
                 <button
                   type="button"
-                  className="btn-sm btn col-span-6 w-full border-yellow-700 bg-yellow-100 text-yellow-700 hover:border-yellow-700 hover:bg-yellow-700 hover:text-white dark:bg-transparent"
+                  className="btn btn-sm col-span-6 w-full border-yellow-700 bg-yellow-100 text-yellow-700 hover:border-yellow-700 hover:bg-yellow-700 hover:text-white dark:bg-transparent"
                   onClick={(e) => {
                     e.stopPropagation();
                     onUpdatePayment(PaymentStatus.RECEIVABLE, report.orderCode);

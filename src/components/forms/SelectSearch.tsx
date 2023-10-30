@@ -49,14 +49,14 @@ export default function SelectSearch({
           </div>
           <Combobox.Options className="rounded-btn absolute z-10 mt-1 max-h-72 w-full overflow-auto border-2 border-base-300 bg-base-100 py-2 shadow-md focus:outline-none dark:bg-base-200">
             {filteredOption.length === 0 && query !== "" ? (
-              <div className="relative cursor-default select-none py-3 px-4">
+              <div className="relative cursor-default select-none px-4 py-3">
                 Nothing found.
               </div>
             ) : (
               filteredOption.map((option) => (
                 <Combobox.Option
                   key={option}
-                  className="rounded-btn relative mx-2 cursor-default select-none py-3 px-4 text-base-content 
+                  className="rounded-btn relative mx-2 cursor-default select-none px-4 py-3 text-base-content 
                   ui-active:bg-info ui-active:text-info-content"
                   value={option}
                 >

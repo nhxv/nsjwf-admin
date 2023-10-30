@@ -131,7 +131,7 @@ export default function SearchVendorSalePage() {
               </div>
             </div>
             <div>
-              <button type="submit" className="btn-accent btn w-full">
+              <button type="submit" className="btn btn-accent w-full">
                 Search
               </button>
             </div>
@@ -219,7 +219,7 @@ export default function SearchVendorSalePage() {
                         </div>
                         {!sale.fullReturn && (
                           <button
-                            className="btn-primary btn mt-3 w-full"
+                            className="btn btn-primary mt-3 w-full"
                             onClick={() => onCreateReturn(sale.code)}
                           >
                             Create return
@@ -228,8 +228,8 @@ export default function SearchVendorSalePage() {
                       </div>
                     );
                   })}
-                  <div className="mt-4 mb-8">
-                    <button className="btn-accent btn" onClick={onClearAll}>
+                  <div className="mb-8 mt-4">
+                    <button className="btn btn-accent" onClick={onClearAll}>
                       <span className="mr-2">Clear search result(s)</span>
                       <BiTrash className="h-6 w-6"></BiTrash>
                     </button>

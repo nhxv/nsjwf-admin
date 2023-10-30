@@ -269,7 +269,7 @@ export default function VendorForm({
           </div>
           <button
             type="button"
-            className="btn-primary btn mt-3 w-full"
+            className="btn btn-primary mt-3 w-full"
             onClick={onNextPage}
             disabled={formState.loading || vendorForm.isSubmitting}
           >
@@ -320,7 +320,7 @@ export default function VendorForm({
                           </div>
                           <button
                             type="button"
-                            className="btn-accent btn-sm btn-circle btn"
+                            className="btn btn-circle btn-accent btn-sm"
                             onClick={() => onRemoveProduct(product.id)}
                           >
                             <span>
@@ -361,7 +361,7 @@ export default function VendorForm({
                     ))}
                   </div>
                 ) : (
-                  <div className="mt-5 mb-2 flex justify-center">
+                  <div className="mb-2 mt-5 flex justify-center">
                     <span>Empty template.</span>
                   </div>
                 )}
@@ -379,7 +379,7 @@ export default function VendorForm({
                 </button>
                 <button
                   type="submit"
-                  className="btn-primary btn col-span-6"
+                  className="btn btn-primary col-span-6"
                   disabled={formState.loading || vendorForm.isSubmitting}
                 >
                   <span>{editedId ? "Update" : "Create"}</span>
@@ -391,7 +391,7 @@ export default function VendorForm({
       )}
       <button
         type="button"
-        className="btn-accent btn mt-3 w-full"
+        className="btn btn-accent mt-3 w-full"
         onClick={onClear}
       >
         <span>Clear change(s)</span>

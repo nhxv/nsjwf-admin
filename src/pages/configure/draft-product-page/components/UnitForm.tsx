@@ -69,7 +69,7 @@ export default function DraftUnitForm({ productId, unit, isOpen, onClose }) {
         <div className="flex justify-end">
           <button
             type="button"
-            className="btn-accent btn-sm btn-circle btn"
+            className="btn btn-circle btn-accent btn-sm"
             onClick={onCloseForm}
           >
             <span>
@@ -127,7 +127,7 @@ export default function DraftUnitForm({ productId, unit, isOpen, onClose }) {
 
           <button
             type="submit"
-            className="btn-primary btn mt-3 w-full"
+            className="btn btn-primary mt-3 w-full"
             disabled={formState.loading}
           >
             <span>{unit ? "Edit" : "Add"} unit</span>
