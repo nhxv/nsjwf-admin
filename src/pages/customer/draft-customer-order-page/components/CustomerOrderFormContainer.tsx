@@ -8,7 +8,7 @@ import api from "../../../../stores/api";
 import CustomerOrderForm from "./CustomerOrderForm";
 import { handleTokenExpire } from "../../../../commons/utils/token.util";
 import { niceVisualDecimal } from "../../../../commons/utils/fraction.util";
-0;
+
 export default function CustomerOrderFormContainer() {
   const params = useParams();
   const navigate = useNavigate();
