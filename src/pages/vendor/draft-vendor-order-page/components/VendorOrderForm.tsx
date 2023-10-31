@@ -167,7 +167,7 @@ export default function VendorOrderForm({
               id: product.id,
               appear: appear,
               name: product.name,
-              sell_price: product.sell_price,
+              recent_cost: product.recent_cost,
               units: product.units,
             });
             vendorOrderForm.setFieldValue(

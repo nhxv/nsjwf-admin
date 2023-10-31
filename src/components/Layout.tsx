@@ -124,12 +124,12 @@ export default function Layout({ children }) {
         //   href: "/customer/search-customer-sale",
         //   visible: [Role.MASTER, Role.ADMIN],
         // },
-        {
-          itemName: "View Return",
-          href: "/customer/view-customer-return",
-          visible: [Role.MASTER, Role.ADMIN],
-          icon: <BiSkipPreviousCircle className="h-6 w-6" />,
-        },
+        // {
+        //   itemName: "View Return",
+        //   href: "/customer/view-customer-return",
+        //   visible: [Role.MASTER, Role.ADMIN],
+        //   icon: <BiSkipPreviousCircle className="h-6 w-6" />,
+        // },
         {
           itemName: "View Sale",
           href: "/customer/view-sale",
