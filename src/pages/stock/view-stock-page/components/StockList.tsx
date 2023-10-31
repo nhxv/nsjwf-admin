@@ -1,15 +1,14 @@
-import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useState, useMemo } from "react";
 import { BiEdit } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import { Role } from "../../../../commons/enums/role.enum";
-import { parseFraction } from "../../../../commons/utils/fraction.util";
-import Alert, { AlertFromQueryError } from "../../../../components/Alert";
-import SearchInput from "../../../../components/forms/SearchInput";
+import { niceVisualDecimal, parseFraction } from "../../../../commons/utils/fraction.util";
+import { AlertFromQueryError } from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
+import SearchInput from "../../../../components/forms/SearchInput";
 import api from "../../../../stores/api";
 import { useAuthStore } from "../../../../stores/auth.store";
-import { handleTokenExpire } from "../../../../commons/utils/token.util";
-import { useQuery } from "@tanstack/react-query";
 
 export default function StockList() {
   const navigate = useNavigate();
@@ -18,11 +17,16 @@ export default function StockList() {
     products: [],
     query: "",
   });
+  const total = useMemo(() => {
+    return niceVisualDecimal(
+      search.products.reduce((prev, curr) => prev + (curr.recent_cost === null ? 0 : curr.recent_cost * curr.stock.quantity), 0)
+    );
+  }, [search.products]);
 
   const stockQuery = useQuery<any, any>({
     queryKey: ["stocks"],
     queryFn: async () => {
-      const result = await api.get("/stock/active");
+      const result = await api.get("/stock");
       setSearch((prev) => ({ ...prev, products: result.data }));
       return result.data;
     },
@@ -95,17 +99,34 @@ export default function StockList() {
           </button>
         </div>
       )}
-      <div className="mx-auto mb-5 w-11/12 md:w-10/12 lg:w-6/12">
-        <SearchInput
-          id="products-search"
-          name="products-search"
-          placeholder="Search products"
-          value={search.query}
-          onChange={(e) => onChangeSearch(e)}
-          onClear={onClearQuery}
-          onFocus={null}
-        ></SearchInput>
+      <div className="m-4 flex flex-col items-center justify-between gap-3 xl:flex-row">
+        <div className="flex items-center gap-2">
+          <div className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content">
+            <span>
+              {search.products.length}{" "}
+              {search.products.length > 1 ? "products" : "product"}
+            </span>
+          </div>
+          <div className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content">
+            <span>${total} in total</span>
+          </div>          
+        </div>
+
+        <div className="flex w-full flex-col-reverse gap-2 md:flex-row xl:w-5/12 xl:flex-row">
+          <div className="flex w-full flex-row gap-2">
+            <SearchInput
+            id="products-search"
+            name="products-search"
+            placeholder="Search products"
+            value={search.query}
+            onChange={(e) => onChangeSearch(e)}
+            onClear={onClearQuery}
+            onFocus={null}
+            ></SearchInput>
+          </div>
+        </div>
       </div>
+      
       <div className="grid grid-cols-12 gap-2 px-4">
         {search.products.map((p) => (
           <div

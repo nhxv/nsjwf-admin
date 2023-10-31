@@ -182,7 +182,7 @@ export default function CustomerOrderForm({
               id: product.id,
               appear: appear,
               name: product.name,
-              sell_price: product.sell_price,
+              recent_cost: product.recent_cost,
               units: product.units,
             });
             customerOrderForm.setFieldValue(
@@ -542,13 +542,13 @@ export default function CustomerOrderForm({
                             <span className="text-lg font-semibold">
                               {product.name}
                             </span>
-                            {product.sell_price ? (
+                            {product.recent_cost ? (
                               <div className="custom-badge mt-1 bg-info text-info-content">
                                 <span className="hidden sm:inline">
                                   Suggest:
                                 </span>
                                 <span>
-                                  {" > "}${product.sell_price}
+                                  {" > "}${product.recent_cost}
                                 </span>
                               </div>
                             ) : (

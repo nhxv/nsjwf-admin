@@ -106,7 +106,7 @@ export default function CustomerOrderFormContainer() {
                     appear: appear,
                     name: product.name,
                     units: product.units,
-                    sell_price: product.sell_price,
+                    recent_cost: product.recent_cost,
                   });
                   updatedPrices.push({
                     id: product.id,
