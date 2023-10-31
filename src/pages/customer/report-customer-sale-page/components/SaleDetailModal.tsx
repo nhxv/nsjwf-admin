@@ -95,7 +95,7 @@ export default function SaleDetailModal({ isOpen, onClose, report }) {
                 // Magik
                 className="menu rounded-box absolute right-6 w-40 origin-top-right border-2 border-base-300 bg-base-100 p-2 shadow-md dark:bg-base-200"
               >
-                <Menu.Item>
+                {/* <Menu.Item>
                   <button
                     className={
                       "flex justify-center rounded-md p-3 text-base-content ui-active:bg-base-200 ui-active:dark:bg-base-300"
@@ -104,7 +104,7 @@ export default function SaleDetailModal({ isOpen, onClose, report }) {
                   >
                     Create Return
                   </button>
-                </Menu.Item>
+                </Menu.Item> */}
                 <Menu.Item>
                   <button
                     className={
