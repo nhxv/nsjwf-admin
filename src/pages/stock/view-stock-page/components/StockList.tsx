@@ -3,7 +3,10 @@ import { useState, useMemo } from "react";
 import { BiEdit } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import { Role } from "../../../../commons/enums/role.enum";
-import { niceVisualDecimal, parseFraction } from "../../../../commons/utils/fraction.util";
+import {
+  niceVisualDecimal,
+  parseFraction,
+} from "../../../../commons/utils/fraction.util";
 import { AlertFromQueryError } from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
 import SearchInput from "../../../../components/forms/SearchInput";
@@ -19,7 +22,14 @@ export default function StockList() {
   });
   const total = useMemo(() => {
     return niceVisualDecimal(
-      search.products.reduce((prev, curr) => prev + (curr.recent_cost === null ? 0 : curr.recent_cost * curr.stock.quantity), 0)
+      search.products.reduce(
+        (prev, curr) =>
+          prev +
+          (curr.recent_cost === null
+            ? 0
+            : curr.recent_cost * curr.stock.quantity),
+        0
+      )
     );
   }, [search.products]);
 
@@ -109,24 +119,24 @@ export default function StockList() {
           </div>
           <div className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content">
             <span>${total} in total</span>
-          </div>          
+          </div>
         </div>
 
         <div className="flex w-full flex-col-reverse gap-2 md:flex-row xl:w-5/12 xl:flex-row">
           <div className="flex w-full flex-row gap-2">
             <SearchInput
-            id="products-search"
-            name="products-search"
-            placeholder="Search products"
-            value={search.query}
-            onChange={(e) => onChangeSearch(e)}
-            onClear={onClearQuery}
-            onFocus={null}
+              id="products-search"
+              name="products-search"
+              placeholder="Search products"
+              value={search.query}
+              onChange={(e) => onChangeSearch(e)}
+              onClear={onClearQuery}
+              onFocus={null}
             ></SearchInput>
           </div>
         </div>
       </div>
-      
+
       <div className="grid grid-cols-12 gap-2 px-4">
         {search.products.map((p) => (
           <div
