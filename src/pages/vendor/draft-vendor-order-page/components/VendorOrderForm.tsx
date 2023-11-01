@@ -195,11 +195,6 @@ export default function VendorOrderForm({
               });
             }
           } else {
-            // updatedPrices.push({
-            //   id: product.id,
-            //   quantity: 0,
-            //   price: 0,
-            // });
             for (let i = 1; i <= product.units.length; i++) {
               updatedPrices.push({
                 id: product.id,

@@ -9,25 +9,24 @@ import { AlertFromQueryError } from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
 import StatusTag from "../../../../components/StatusTag";
 import api from "../../../../stores/api";
-import CustomerOrderPrint from "./CustomerOrderPrint";
 
-export default function CustomerOrderDetail() {
+export default function VendorOrderDetail() {
   const params = useParams();
   const navigate = useNavigate();
 
   const orderQuery = useQuery<any, any>({
-    queryKey: ["customer-orders", `${params.code}`],
+    queryKey: ["vendor-orders", `${params.code}`],
     queryFn: async ({ queryKey }) => {
       const [_, code] = queryKey;
 
       // NOTE: Might need a check to see if code is truthy here.
-      const result = await api.get(`/customer-orders/${code}`);
+      const result = await api.get(`/vendor-orders/${code}`);
       return result.data;
     },
   });
 
   const onUpdateOrder = (code: string) => {
-    navigate(`/customer/draft-customer-order/${code}`);
+    navigate(`/vendor/draft-vendor-order/${code}`);
   };
 
   if (
@@ -51,24 +50,17 @@ export default function CustomerOrderDetail() {
       {/* basic order info */}
       <div className="flex justify-between">
         <div>
-          <span className="block">
-            #{order.manual_code ? order.manual_code : order.code}
-          </span>
+          <span className="block">#{order.code}</span>
           <span className="block text-xl font-semibold">
-            {order.customer_name}
+            {order.vendor_name}
           </span>
           <span className="block text-sm text-neutral">
             {convertTimeToText(new Date(order.expected_at))}
           </span>
-          <div className="mb-6">
-            <span className="text-sm text-neutral">by {order.assign_to}</span>
-          </div>
-          <div className={order.note ? "mb-6" : ""}>
+          <div className="mt-6">
             <StatusTag status={order.status}></StatusTag>
           </div>
-          <div>{order.note}</div>
         </div>
-        <CustomerOrderPrint order={order} />
       </div>
       <Disclosure>
         {({ open }) => (
@@ -86,8 +78,8 @@ export default function CustomerOrderDetail() {
                 </>
               ) : (
                 <>
-                  View {order.productCustomerOrders.length} Product
-                  {order.productCustomerOrders.length > 1 ? "s" : ""}
+                  View {order.productVendorOrders.length} Product
+                  {order.productVendorOrders.length > 1 ? "s" : ""}
                   <span className="scale-150">
                     <BiChevronDown></BiChevronDown>
                   </span>
@@ -109,7 +101,7 @@ export default function CustomerOrderDetail() {
                 </div>
 
                 {/* products in order */}
-                {order.productCustomerOrders.map((productOrder) => {
+                {order.productVendorOrders.map((productOrder) => {
                   return (
                     <div
                       key={productOrder.unit_code}
@@ -148,7 +140,7 @@ export default function CustomerOrderDetail() {
         <span className="text-xl font-medium">
           $
           {niceVisualDecimal(
-            order.productCustomerOrders.reduce(
+            order.productVendorOrders.reduce(
               (prev, curr) => prev + curr.quantity * curr.unit_price,
               0
             )

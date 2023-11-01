@@ -12,6 +12,7 @@ import DraftCustomerOrderPage from "./pages/customer/draft-customer-order-page/D
 import ViewCustomerOrderPage from "./pages/customer/view-customer-order-page/ViewCustomerOrderPage";
 
 import DraftVendorOrderPage from "./pages/vendor/draft-vendor-order-page/DraftVendorOrderPage";
+import VendorOrderDetailPage from "./pages/vendor/view-vendor-order-detail-page/VendorOrderDetailPage";
 import ViewVendorOrderPage from "./pages/vendor/view-vendor-order-page/ViewVendorOrderPage";
 
 import ViewStockPage from "./pages/stock/view-stock-page/ViewStockPage";
@@ -110,8 +111,11 @@ export default function App() {
             path="/vendor/view-vendor-order"
             element={<ViewVendorOrderPage />}
           ></Route>
+          <Route
+            path="/vendor/view-vendor-order-detail/:code"
+            element={<VendorOrderDetailPage />}
+          ></Route>
         </Route>
-
         {/* Stock routes */}
         <Route element={<AdminOutlet />}>
           <Route

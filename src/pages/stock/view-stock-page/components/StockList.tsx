@@ -25,9 +25,7 @@ export default function StockList() {
       search.products.reduce(
         (prev, curr) =>
           prev +
-          (curr.recent_cost === null
-            ? 0
-            : curr.recent_cost * curr.stock.quantity),
+          (!curr.recent_cost ? 0 : curr.recent_cost * curr.stock.quantity),
         0
       )
     );
