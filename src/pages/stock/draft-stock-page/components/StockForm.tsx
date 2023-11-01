@@ -1,15 +1,15 @@
 import { useFormik } from "formik";
 import { useState } from "react";
 import { BiX } from "react-icons/bi";
+import { useNavigate } from "react-router-dom";
 import { StockChangeReason } from "../../../../commons/enums/stock-change-reason.enum";
+import { handleTokenExpire } from "../../../../commons/utils/token.util";
 import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
 import NumberInput from "../../../../components/forms/NumberInput";
 import SearchSuggest from "../../../../components/forms/SearchSuggest";
 import SelectInput from "../../../../components/forms/SelectInput";
 import api from "../../../../stores/api";
-import { useNavigate } from "react-router-dom";
-import { handleTokenExpire } from "../../../../commons/utils/token.util";
 
 export default function StockForm({ initialData, products, onClear }) {
   const navigate = useNavigate();
