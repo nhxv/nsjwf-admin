@@ -50,9 +50,7 @@ export default function VendorOrderDetail() {
       {/* basic order info */}
       <div className="flex justify-between">
         <div>
-          <span className="block">
-            #{order.code}
-          </span>
+          <span className="block">#{order.code}</span>
           <span className="block text-xl font-semibold">
             {order.vendor_name}
           </span>

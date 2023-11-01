@@ -153,10 +153,10 @@ export default function VendorOrderList() {
               options={["ALL"].concat(
                 Object.values(OrderStatus).filter(
                   (s) =>
-                  s != OrderStatus.PICKING &&
-                  s != OrderStatus.CHECKING && 
-                  s != OrderStatus.DELIVERED &&
-                  s != OrderStatus.CANCELED
+                    s != OrderStatus.PICKING &&
+                    s != OrderStatus.CHECKING &&
+                    s != OrderStatus.DELIVERED &&
+                    s != OrderStatus.CANCELED
                 )
               )}
             />
