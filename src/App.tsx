@@ -91,7 +91,7 @@ export default function App() {
             element={<VendorOrderDetailPage />}
           ></Route>
         </Route>
-        
+
         {/* Stock routes */}
         <Route element={<AdminOutlet />}>
           <Route

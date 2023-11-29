@@ -18,7 +18,7 @@ import {
   BiSpreadsheet,
   BiSupport,
   BiTask,
-  BiUser
+  BiUser,
 } from "react-icons/bi";
 import { NavLink, matchPath, useLocation, useNavigate } from "react-router-dom";
 import { Role } from "../commons/enums/role.enum";

@@ -58,7 +58,7 @@ export default function SaleDetailModal({ isOpen, onClose, report }) {
                   <span>${niceVisualDecimal(productOrder.unitPrice)}</span>
                 </div>
               </div>
-            )
+            );
           })}
         </div>
         <div className="divider"></div>

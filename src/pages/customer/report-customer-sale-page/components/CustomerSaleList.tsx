@@ -214,9 +214,7 @@ export default function CustomerSaleList({
             <div className="text-sm">
               {convertTimeToText(new Date(report.updatedAt))}
             </div>
-            <div className="">
-              ${niceVisualDecimal(report.sale)}
-            </div>
+            <div className="">${niceVisualDecimal(report.sale)}</div>
             <div className="mt-3 grid grid-cols-12 gap-2">
               {report.paymentStatus !== PaymentStatus.CHECK && (
                 <button

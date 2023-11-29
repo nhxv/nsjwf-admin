@@ -93,10 +93,7 @@ export default function SearchSaleModal({
                 value={searchForm.values.vendor}
                 setValue={(vendor) => {
                   // This can be null, and we don't want that.
-                  searchForm.setFieldValue(
-                    "vendor",
-                    vendor ? vendor : ""
-                  );
+                  searchForm.setFieldValue("vendor", vendor ? vendor : "");
                 }}
                 options={vendors.map((v) => v.name)}
                 nullable={true}

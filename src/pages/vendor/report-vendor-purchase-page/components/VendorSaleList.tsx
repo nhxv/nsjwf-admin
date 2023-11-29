@@ -207,16 +207,12 @@ export default function VendorSaleList({
               onSelectSale(report);
             }}
           >
-            <div>
-              #{report.orderCode}
-            </div>
+            <div>#{report.orderCode}</div>
             <div className="font-semibold">{report.vendorName}</div>
             <div className="text-sm">
               {convertTimeToText(new Date(report.updatedAt))}
             </div>
-            <div className="">
-              ${niceVisualDecimal(report.sale)}
-            </div>
+            <div className="">${niceVisualDecimal(report.sale)}</div>
             <div className="mt-3 grid grid-cols-12 gap-2">
               {report.paymentStatus !== PaymentStatus.CHECK && (
                 <button
