@@ -3,11 +3,11 @@ import { useState } from "react";
 import { BiSearch, BiSortDown, BiSortUp } from "react-icons/bi";
 import { convertTime } from "../../../commons/utils/time.util";
 import api from "../../../stores/api";
-import CustomerSaleList from "./components/CustomerSaleList";
+import VendorSaleList from "./components/VendorSaleList";
 import SaleDetailModal from "./components/SaleDetailModal";
 import SearchSaleModal from "./components/SearchSaleModal";
 
-export default function ReportCustomerSalePage() {
+export default function ReportVendorSalePage() {
   const [searchModal, setSearchModal] = useState({
     isOpen: false,
   });
@@ -15,15 +15,15 @@ export default function ReportCustomerSalePage() {
     isOpen: false,
   });
   const [queryURL, setQueryURL] = useState(
-    `/customer-orders/sold/search?date=${convertTime(new Date())}`
+    `/vendor-orders/sold/search?date=${convertTime(new Date())}`
   );
   const [focus, setFocus] = useState({ report: null });
   const [latestFirst, setLatestFirst] = useState(true);
 
-  const customerQuery = useQuery({
-    queryKey: ["reports", "customers"],
+  const vendorQuery = useQuery({
+    queryKey: ["reports", "vendors"],
     queryFn: async () => {
-      const result = await api.get(`/customers/all`);
+      const result = await api.get(`/vendors/all`);
       return result.data;
     },
   });
@@ -52,7 +52,7 @@ export default function ReportCustomerSalePage() {
   };
 
   const onSearchSubmit = (url: string) => {
-    setQueryURL(`/customer-orders/sold/search?${url}`);
+    setQueryURL(`/vendor-orders/sold/search?${url}`);
   };
 
   const reports = reportQuery?.data
@@ -73,7 +73,7 @@ export default function ReportCustomerSalePage() {
       />
       <SearchSaleModal
         isOpen={searchModal.isOpen}
-        customers={customerQuery?.data ? customerQuery.data : []}
+        vendors={vendorQuery?.data ? vendorQuery.data : []}
         onClose={() => {
           setSearchModal((prev) => ({ ...prev, isOpen: false }));
         }}
@@ -93,7 +93,7 @@ export default function ReportCustomerSalePage() {
           </button>
         </div>
         <div className="mx-4">
-          <CustomerSaleList
+          <VendorSaleList
             reports={reports}
             reportQuery={reportQuery}
             onSelectSale={onSelectSale}

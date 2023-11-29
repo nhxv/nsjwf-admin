@@ -14,7 +14,7 @@ import { handleTokenExpire } from "../../../../commons/utils/token.util";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { niceVisualDecimal } from "../../../../commons/utils/fraction.util";
 
-interface CustomerSaleListProps {
+interface VendorSaleListProps {
   reports: Array<any>;
   reportQuery;
   onSelectSale: (sale: any) => void;
@@ -26,11 +26,11 @@ interface PaymentMethodMutationParam {
   status: string;
 }
 
-export default function CustomerSaleList({
+export default function VendorSaleList({
   reports,
   reportQuery,
   onSelectSale,
-}: CustomerSaleListProps) {
+}: VendorSaleListProps) {
   const navigate = useNavigate();
   const total = useMemo(() => {
     let cash = 0;
@@ -55,7 +55,7 @@ export default function CustomerSaleList({
   const queryClient = useQueryClient();
   const paymentMethodMut = useMutation<any, any, any>({
     mutationFn: (param: PaymentMethodMutationParam) => {
-      return api.put(`/customer-payment/status/${param.code}`, {
+      return api.put(`/vendor-payment/status/${param.code}`, {
         status: param.status,
       });
     },
@@ -77,8 +77,8 @@ export default function CustomerSaleList({
       // In the case of receivable, we also put the date the same (as of my knowledge).
       order_date: convertTime(new Date(report.updatedAt)),
       payment_date: convertTime(new Date(report.updatedAt)),
-      customer: report.customerName,
-      code: `${report.manualCode ? report.manualCode : report.orderCode}`,
+      vendor: report.vendorName,
+      code: `${report.orderCode}`,
       sale: parseFloat(report.sale),
       test: report.isTest ? "S" : "L",
       payment_status:
@@ -91,7 +91,7 @@ export default function CustomerSaleList({
       headers: [
         "Order Date",
         "Payment Date",
-        "Customer",
+        "Vendor",
         "Order No.",
         "Sale",
         "Type",
@@ -208,9 +208,9 @@ export default function CustomerSaleList({
             }}
           >
             <div>
-              #{report.manualCode ? report.manualCode : report.orderCode}
+              #{report.orderCode}
             </div>
-            <div className="font-semibold">{report.customerName}</div>
+            <div className="font-semibold">{report.vendorName}</div>
             <div className="text-sm">
               {convertTimeToText(new Date(report.updatedAt))}
             </div>

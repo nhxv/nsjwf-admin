@@ -155,7 +155,7 @@ export default function VendorOrderList() {
                   (s) =>
                     s != OrderStatus.PICKING &&
                     s != OrderStatus.CHECKING &&
-                    s != OrderStatus.DELIVERED &&
+                    s != OrderStatus.COMPLETED &&
                     s != OrderStatus.CANCELED
                 )
               )}
@@ -181,7 +181,7 @@ export default function VendorOrderList() {
             key={order.code}
             className={`sticker col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3 xl:col-span-2
             ${order.status === OrderStatus.SHIPPING ? "sticker-yellow" : ""}
-            ${order.status === OrderStatus.COMPLETED ? "sticker-primary" : ""}`}
+            ${order.status === OrderStatus.DELIVERED ? "sticker-primary" : ""}`}
             onClick={() => onToDetails(order.code)}
           >
             <div>#{order.code}</div>
@@ -197,7 +197,7 @@ export default function VendorOrderList() {
                   : ""
               }
               ${
-                order.status === OrderStatus.COMPLETED
+                order.status === OrderStatus.DELIVERED
                   ? "btn-sticker-primary"
                   : ""
               }`}

@@ -24,19 +24,14 @@ import EmployeePage from "./pages/configure/employee-page/EmployeePage";
 import ViewCustomerPage from "./pages/configure/view-customer-page/ViewCustomerPage";
 import ViewProductPage from "./pages/configure/view-product-page/ViewProductPage";
 import ViewVendorPage from "./pages/configure/view-vendor-page/ViewVendorPage";
-import CreateCustomerReturnPage from "./pages/customer/create-customer-return-page/CreateCustomerReturnPage";
 import ReportCustomerSalePage from "./pages/customer/report-customer-sale-page/ReportCustomerSalePage";
-import SearchCustomerSalePage from "./pages/customer/search-customer-sale-page/SearchCustomerSalePage";
 import UpdateOrderPriorityPage from "./pages/customer/update-order-priority-page/UpdateOrderPriorityPage";
 import CustomerOrderDetailPage from "./pages/customer/view-customer-order-detail-page/CustomerOrderDetailPage";
-import ViewCustomerReturnPage from "./pages/customer/view-customer-return-page/ViewCustomerReturnPage";
 import DraftStockPage from "./pages/stock/draft-stock-page/DraftStockPage";
 import ReportTaskPage from "./pages/task/report-task-page/ReportTaskPage";
 import ViewTaskPage from "./pages/task/view-task-page/ViewTaskPage";
 import ResetPage from "./pages/test/ResetPage";
-import CreateVendorReturnPage from "./pages/vendor/create-vendor-return-page/CreateVendorReturnPage";
-import SearchVendorSalePage from "./pages/vendor/search-vendor-sale-page/SearchVendorSalePage";
-import ViewVendorReturnPage from "./pages/vendor/view-vendor-return-page/ViewVendorReturnPage";
+import ReportVendorSalePage from "./pages/vendor/report-vendor-purchase-page/ReportVendorSalePage";
 
 export default function App() {
   return (
@@ -62,19 +57,7 @@ export default function App() {
             element={<UpdateOrderPriorityPage />}
           ></Route>
           <Route
-            path="/customer/create-customer-return/:code"
-            element={<CreateCustomerReturnPage />}
-          ></Route>
-          <Route
-            path="/customer/search-customer-sale"
-            element={<SearchCustomerSalePage />}
-          ></Route>
-          <Route
-            path="/customer/view-customer-return"
-            element={<ViewCustomerReturnPage />}
-          ></Route>
-          <Route
-            path="/customer/view-sale"
+            path="/customer/report-customer-sale"
             element={<ReportCustomerSalePage />}
           ></Route>
           <Route
@@ -96,16 +79,8 @@ export default function App() {
             <Route path=":code" element={<DraftVendorOrderPage />}></Route>
           </Route>
           <Route
-            path="/vendor/create-vendor-return/:code"
-            element={<CreateVendorReturnPage />}
-          ></Route>
-          <Route
-            path="/vendor/search-vendor-sale"
-            element={<SearchVendorSalePage />}
-          ></Route>
-          <Route
-            path="/vendor/view-vendor-return"
-            element={<ViewVendorReturnPage />}
+            path="/vendor/report-vendor-sale"
+            element={<ReportVendorSalePage />}
           ></Route>
           <Route
             path="/vendor/view-vendor-order"
@@ -116,6 +91,7 @@ export default function App() {
             element={<VendorOrderDetailPage />}
           ></Route>
         </Route>
+        
         {/* Stock routes */}
         <Route element={<AdminOutlet />}>
           <Route
