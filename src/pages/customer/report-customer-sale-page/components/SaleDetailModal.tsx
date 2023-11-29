@@ -57,10 +57,6 @@ export default function SaleDetailModal({ isOpen, onClose, report }) {
     saleRevertMut.mutate(code);
   };
 
-  const onReturn = (code: string) => {
-    navigate(`/customer/create-customer-return/${code}`);
-  };
-
   // Need this because when first loading the page, no reports are available.
   if (!report) return;
 
@@ -95,16 +91,6 @@ export default function SaleDetailModal({ isOpen, onClose, report }) {
                 // Magik
                 className="menu rounded-box absolute right-6 w-40 origin-top-right border-2 border-base-300 bg-base-100 p-2 shadow-md dark:bg-base-200"
               >
-                {/* <Menu.Item>
-                  <button
-                    className={
-                      "flex justify-center rounded-md p-3 text-base-content ui-active:bg-base-200 ui-active:dark:bg-base-300"
-                    }
-                    onClick={() => onReturn(report.orderCode)}
-                  >
-                    Create Return
-                  </button>
-                </Menu.Item> */}
                 <Menu.Item>
                   <button
                     className={
@@ -160,9 +146,6 @@ export default function SaleDetailModal({ isOpen, onClose, report }) {
           <span className="mr-2">Total:</span>
           <span className="mr-2 text-xl font-medium">
             ${niceVisualDecimal(report.sale)}
-          </span>
-          <span className="text-red-600">
-            -${niceVisualDecimal(report.refund)}
           </span>
         </div>
 
