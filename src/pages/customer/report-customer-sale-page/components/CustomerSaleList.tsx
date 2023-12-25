@@ -1,6 +1,6 @@
 import csvDownload from "json-to-csv-export";
 import { useMemo } from "react";
-import { BiDownload } from "react-icons/bi";
+import { BiDownload, BiExport } from "react-icons/bi";
 import { PaymentStatus } from "../../../../commons/enums/payment-status.enum";
 import {
   convertTime,
@@ -69,7 +69,7 @@ export default function CustomerSaleList({
     },
   });
 
-  const onDownloadReport = () => {
+  const onDownloadExcelReport = () => {
     const reportData = reports.map((report) => ({
       // For these 2 dates, most of the time, they'll be the same since the app only allows
       // user to view orders that are completed today. However, to respect data, we'll
@@ -98,6 +98,58 @@ export default function CustomerSaleList({
         "Payment Method",
       ],
     };
+    csvDownload(saleFile);
+  };
+
+  const onExportQBO = () => {
+    /**
+     * Structure:
+     * - Each line is a product. Since we input into QBO only the total, each line is an invoice.
+     * - Columns:
+     *    - InvoiceNo: invoice number.
+     *    - Customer: customer name.
+     *    - InvoiceDate: the date of the invoice. This is report.updatedAt
+     *    - DueDate: NOTE: Usually, this depends on the customer, but the general consensus is 3-4 weeks.
+     *    - ItemAmount: The invoice total.
+     *    - ItemName: To match with existing orders. Usually just "Produce".
+     * Not required:
+     *    - Memo: Comment on invoice. Empty column.
+     */
+
+    const exportData = reports.map((invoice) => {
+      // 3 lines of code to add 1 day to a date. Incredible.
+      const invoiceDate = new Date(invoice.updatedAt);
+      const dueDate = new Date(invoiceDate);
+      dueDate.setDate(dueDate.getDate() + 30); // Default to 1 month, although this varies between customers.
+
+      return {
+        invoice_no: `${
+          invoice.manualCode ? invoice.manualCode : invoice.orderCode
+        }`,
+        customer: invoice.customerName,
+        invoice_date: convertTime(invoiceDate, "$1/$2/$3"),
+        due_date: convertTime(dueDate, "$1/$2/$3"),
+        item_amount: parseFloat(invoice.sale).toFixed(2),
+        item_name: "Produce",
+        memo: "", // Maybe add the sale note to here? For now just placeholder.
+      };
+    });
+
+    const saleFile = {
+      data: exportData,
+      filename: `${convertTime(new Date()).split("-").join("")}_qbo`,
+      delimiter: ",",
+      headers: [
+        "InvoiceNo",
+        "Customer",
+        "InvoiceDate",
+        "DueDate",
+        "ItemAmount",
+        "Item (Product/Service)",
+        "Memo",
+      ],
+    };
+
     csvDownload(saleFile);
   };
 
@@ -186,10 +238,16 @@ export default function CustomerSaleList({
           </div>
         </div>
 
-        <button className="btn btn-accent" onClick={onDownloadReport}>
-          <span className="mr-2">Download report</span>
-          <BiDownload className="h-6 w-6"></BiDownload>
-        </button>
+        <div className="flex gap-2">
+          <button className="btn btn-accent" onClick={onExportQBO}>
+            <span className="mr-2">Export to Quickbooks</span>
+            <BiExport className="h-6 w-6"></BiExport>
+          </button>
+          <button className="btn btn-accent" onClick={onDownloadExcelReport}>
+            <span className="mr-2">Download report</span>
+            <BiDownload className="h-6 w-6"></BiDownload>
+          </button>
+        </div>
       </div>
       <div className="grid grid-cols-12 gap-2">
         {reports.map((report) => (
