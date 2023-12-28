@@ -23,15 +23,19 @@ export default function SearchSaleModal({
       manualCode: "",
       customer: "",
       product: "",
-      date: "",
+      start_date: "",
+      end_date: "",
     },
     onSubmit: (form_data) => {
       let url = "";
       if (form_data.manualCode) {
         url += `code=${encodeURIComponent(form_data.manualCode)}&`;
       }
-      if (form_data.date) {
-        url += `date=${form_data.date}&`;
+      if (form_data.start_date) {
+        url += `start_date=${form_data.start_date}&`;
+      }
+      if (form_data.end_date) {
+        url += `end_date=${form_data.end_date}&`;
       }
       if (Object.keys(form_data.customer).length !== 0) {
         url += `customer=${encodeURIComponent(form_data.customer)}&`;
@@ -59,8 +63,8 @@ export default function SearchSaleModal({
           </button>
         </div>
         <form onSubmit={searchForm.handleSubmit}>
-          <div className="mb-6 flex flex-col gap-4 xl:grid xl:grid-cols-2">
-            <div>
+          <div className="mb-4 flex flex-col gap-4 sm:flex-row">
+            <div className="grow-0 basis-1/4">
               <label className="custom-label mb-2 inline-block">Code</label>
               <TextInput
                 id="by-code"
@@ -72,21 +76,33 @@ export default function SearchSaleModal({
                 }
               />
             </div>
-            <div>
-              <label className="custom-label mb-2 inline-block">
-                Completed on
-              </label>
+            <div className="grow">
+              <label className="custom-label mb-2 inline-block">From</label>
               <DateInput
-                id="date"
+                id="start_date"
                 min="2022-01-01"
                 max="2100-12-31"
                 placeholder="Date"
-                name="date"
-                value={searchForm.values.date}
+                name="start_date"
+                value={searchForm.values.start_date}
                 onChange={searchForm.handleChange}
               ></DateInput>
             </div>
-            <div>
+            <div className="grow">
+              <label className="custom-label mb-2 inline-block">To</label>
+              <DateInput
+                id="end_date"
+                min="2022-01-01"
+                max="2100-12-31"
+                placeholder="Date"
+                name="end_date"
+                value={searchForm.values.end_date}
+                onChange={searchForm.handleChange}
+              ></DateInput>
+            </div>
+          </div>
+          <div className="mb-6 flex flex-col gap-4 sm:flex-row">
+            <div className="w-full">
               <label className="custom-label mb-2 inline-block">Customer</label>
               <SelectSearch
                 name="customer-select"
@@ -103,7 +119,7 @@ export default function SearchSaleModal({
               />
             </div>
 
-            <div>
+            <div className="w-full">
               <label className="custom-label mb-2 inline-block">Product</label>
               <TextInput
                 id="product-select"
