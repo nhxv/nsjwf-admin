@@ -63,8 +63,8 @@ export default function SearchSaleModal({
           </button>
         </div>
         <form onSubmit={searchForm.handleSubmit}>
-          <div className="flex flex-col gap-4 mb-4 sm:flex-row">
-            <div className="basis-1/4 grow-0">
+          <div className="mb-4 flex flex-col gap-4 sm:flex-row">
+            <div className="grow-0 basis-1/4">
               <label className="custom-label mb-2 inline-block">Code</label>
               <TextInput
                 id="by-code"
@@ -77,9 +77,7 @@ export default function SearchSaleModal({
               />
             </div>
             <div className="grow">
-              <label className="custom-label mb-2 inline-block">
-                From
-              </label>
+              <label className="custom-label mb-2 inline-block">From</label>
               <DateInput
                 id="start_date"
                 min="2022-01-01"
@@ -91,9 +89,7 @@ export default function SearchSaleModal({
               ></DateInput>
             </div>
             <div className="grow">
-              <label className="custom-label mb-2 inline-block">
-                To
-              </label>
+              <label className="custom-label mb-2 inline-block">To</label>
               <DateInput
                 id="end_date"
                 min="2022-01-01"
