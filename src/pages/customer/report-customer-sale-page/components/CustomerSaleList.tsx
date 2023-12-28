@@ -238,11 +238,13 @@ export default function CustomerSaleList({
           </div>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex flex-col gap-2 sm:flex-row">
           <button className="btn btn-accent" onClick={onExportQBO}>
-            <span className="mr-2">Export to Quickbooks</span>
+            <span className="mr-2">Export to QuickBooks</span>
             <BiExport className="h-6 w-6"></BiExport>
           </button>
+
+          {/* FIXME: Consider deleting this button after consulting the workflow, so maybe only export QBO is needed. */}
           <button className="btn btn-accent" onClick={onDownloadExcelReport}>
             <span className="mr-2">Download report</span>
             <BiDownload className="h-6 w-6"></BiDownload>
