@@ -15,7 +15,9 @@ export default function ReportCustomerSalePage() {
     isOpen: false,
   });
   const [queryURL, setQueryURL] = useState(
-    `/customer-orders/sold/search?date=${convertTime(new Date())}`
+    `/customer-orders/sold/search?start_date=${convertTime(
+      new Date()
+    )}&end_date=${convertTime(new Date())}`
   );
   const [focus, setFocus] = useState({ report: null });
   const [latestFirst, setLatestFirst] = useState(true);
