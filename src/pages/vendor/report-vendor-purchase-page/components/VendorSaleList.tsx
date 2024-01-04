@@ -174,16 +174,8 @@ export default function VendorSaleList({
   return (
     <>
       <div className="mb-6 flex flex-col items-center justify-between gap-3 xl:flex-row">
-        <div className="flex gap-2">
-          <div className="rounded-btn flex items-center bg-sky-100 p-2 text-sm font-semibold text-sky-700 dark:bg-info">
-            ${total.check} in check
-          </div>
-          <div className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-primary">
-            ${total.cash} in cash
-          </div>
-          <div className="rounded-btn flex items-center bg-warning p-2 text-sm font-semibold text-warning-content">
-            ${total.receivable} in A/R
-          </div>
+        <div className="rounded-btn flex items-center bg-warning p-2 text-sm font-semibold text-warning-content">
+          ${total.receivable} in total
         </div>
 
         <button className="btn btn-accent" onClick={onDownloadReport}>
@@ -195,60 +187,23 @@ export default function VendorSaleList({
         {reports.map((report) => (
           <div
             key={report.orderCode}
-            className={`rounded-box col-span-12 border-2 p-3 shadow-md hover:cursor-pointer sm:col-span-6 md:col-span-4 lg:col-span-3 xl:col-span-2
-            ${
-              report.paymentStatus === PaymentStatus.CASH
-                ? "border-primary bg-green-100 text-primary dark:border-primary dark:bg-transparent hover:dark:bg-emerald-900 hover:dark:bg-opacity-10"
-                : report.paymentStatus === PaymentStatus.CHECK
-                ? "border-sky-700 bg-sky-100 text-sky-700 dark:bg-transparent hover:dark:bg-sky-900 hover:dark:bg-opacity-10"
-                : "border-yellow-700 bg-yellow-100 text-yellow-700 dark:border-yellow-700 dark:bg-transparent hover:dark:bg-yellow-900 hover:dark:bg-opacity-10"
-            }`}
+            className={
+              "rounded-box col-span-12 flex flex-col justify-between border-2 border-yellow-700 bg-yellow-100 p-3 text-yellow-700 shadow-md hover:cursor-pointer dark:border-yellow-700 dark:bg-transparent hover:dark:bg-yellow-900 hover:dark:bg-opacity-10 sm:col-span-6 md:col-span-4 lg:col-span-3 xl:col-span-2"
+            }
             onClick={() => {
               onSelectSale(report);
             }}
           >
-            <div>#{report.orderCode}</div>
-            <div className="font-semibold">{report.vendorName}</div>
-            <div className="text-sm">
-              {convertTimeToText(new Date(report.updatedAt))}
+            {/* Make it look a bit better when the name is too long and wrap into newline. */}
+            <div>
+              <div>#{report.orderCode}</div>
+              <div className="font-semibold">{report.vendorName}</div>
             </div>
-            <div className="">${niceVisualDecimal(report.sale)}</div>
-            <div className="mt-3 grid grid-cols-12 gap-2">
-              {report.paymentStatus !== PaymentStatus.CHECK && (
-                <button
-                  className="btn btn-sm col-span-6 w-full border-sky-700 bg-sky-100 text-sky-700 hover:border-sky-700 hover:bg-sky-700 hover:text-white dark:bg-transparent"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onUpdatePayment(PaymentStatus.CHECK, report.orderCode);
-                  }}
-                >
-                  Check
-                </button>
-              )}
-              {report.paymentStatus !== PaymentStatus.CASH && (
-                <button
-                  type="button"
-                  className="btn btn-sm col-span-6 w-full border-emerald-700 bg-green-100 text-emerald-700 hover:border-emerald-700 hover:bg-emerald-700 hover:text-white dark:bg-transparent"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onUpdatePayment(PaymentStatus.CASH, report.orderCode);
-                  }}
-                >
-                  Cash
-                </button>
-              )}
-              {report.paymentStatus !== PaymentStatus.RECEIVABLE && (
-                <button
-                  type="button"
-                  className="btn btn-sm col-span-6 w-full border-yellow-700 bg-yellow-100 text-yellow-700 hover:border-yellow-700 hover:bg-yellow-700 hover:text-white dark:bg-transparent"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onUpdatePayment(PaymentStatus.RECEIVABLE, report.orderCode);
-                  }}
-                >
-                  AR
-                </button>
-              )}
+            <div>
+              <div className="text-sm">
+                {convertTimeToText(new Date(report.updatedAt))}
+              </div>
+              <div className="">${niceVisualDecimal(report.sale)}</div>
             </div>
           </div>
         ))}
