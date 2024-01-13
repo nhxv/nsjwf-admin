@@ -113,6 +113,7 @@ export default function CustomerSaleList({
      *    - ItemAmount: The invoice total.
      *    - ItemName: To match with existing orders. Usually just "Produce".
      * Not required:
+     *    - Terms: Basically set due date in a human way. Usually just "Net 30" to match the due date above.
      *    - Memo: Comment on invoice. Empty column.
      */
 
@@ -121,6 +122,15 @@ export default function CustomerSaleList({
       const invoiceDate = new Date(invoice.updatedAt);
       const dueDate = new Date(invoiceDate);
       dueDate.setDate(dueDate.getDate() + 30); // Default to 1 month, although this varies between customers.
+
+      // This goes to invoice memo for now to remind that certain invoices
+      // after importing will require creating payments.
+      const qbPaymentReminder =
+        invoice.paymentStatus === "CASH"
+          ? "Paid by Cash"
+          : invoice.paymentStatus === "CHECK"
+          ? "Paid by Check"
+          : "";
 
       return {
         invoice_no: `${
@@ -131,7 +141,8 @@ export default function CustomerSaleList({
         due_date: convertTime(dueDate, "$1/$2/$3"),
         item_amount: parseFloat(invoice.sale).toFixed(2),
         item_name: "Produce",
-        memo: "", // Maybe add the sale note to here? For now just placeholder.
+        terms: "Net 30", // Correspond to 30-day due date. Optional.
+        memo: qbPaymentReminder,
       };
     });
 
@@ -146,6 +157,7 @@ export default function CustomerSaleList({
         "DueDate",
         "ItemAmount",
         "Item (Product/Service)",
+        "Terms",
         "Memo",
       ],
     };
