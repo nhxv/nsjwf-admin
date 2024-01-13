@@ -26,6 +26,24 @@ interface PaymentMethodMutationParam {
   status: string;
 }
 
+// Some customers we can't directly change the name to match qb.
+// An example would be the C customer.
+// It's not the job of the app to do this conversion, but
+// I can't think of a better place to do this so...
+// Ofc can just do it manually but yea...not very viable.
+const CUSTOMERNAME_TO_QBNAME = {
+  "Cristo Rey School": "Interfresh Inc",
+  C: "1 Time Customer",
+  "Loaves and Fisher": "Redwood (Customer)",
+};
+
+function getQuickbooksCustomerName(name: string) {
+  if (Object.hasOwn(CUSTOMERNAME_TO_QBNAME, name)) {
+    return CUSTOMERNAME_TO_QBNAME[name];
+  }
+  return name;
+}
+
 export default function CustomerSaleList({
   reports,
   reportQuery,
@@ -136,7 +154,7 @@ export default function CustomerSaleList({
         invoice_no: `${
           invoice.manualCode ? invoice.manualCode : invoice.orderCode
         }`,
-        customer: invoice.customerName,
+        customer: getQuickbooksCustomerName(invoice.customerName),
         invoice_date: convertTime(invoiceDate, "$1/$2/$3"),
         due_date: convertTime(dueDate, "$1/$2/$3"),
         item_amount: parseFloat(invoice.sale).toFixed(2),
