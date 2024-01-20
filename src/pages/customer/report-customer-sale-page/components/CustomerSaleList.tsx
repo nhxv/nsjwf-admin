@@ -89,12 +89,8 @@ export default function CustomerSaleList({
 
   const onDownloadExcelReport = () => {
     const reportData = reports.map((report) => ({
-      // For these 2 dates, most of the time, they'll be the same since the app only allows
-      // user to view orders that are completed today. However, to respect data, we'll
-      // use report.date instead of Date.now().
-      // In the case of receivable, we also put the date the same (as of my knowledge).
-      order_date: convertTime(new Date(report.updatedAt)),
-      payment_date: convertTime(new Date(report.updatedAt)),
+      order_date: convertTime(new Date(report.invoiceDate)),
+      payment_date: convertTime(new Date(report.completedAt)),
       customer: report.customerName,
       code: `${report.manualCode ? report.manualCode : report.orderCode}`,
       sale: parseFloat(report.sale),
@@ -126,7 +122,7 @@ export default function CustomerSaleList({
      * - Columns:
      *    - InvoiceNo: invoice number.
      *    - Customer: customer name.
-     *    - InvoiceDate: the date of the invoice. This is report.updatedAt
+     *    - InvoiceDate: the date of the invoice. This is report.completedAt
      *    - DueDate: NOTE: Usually, this depends on the customer, but the general consensus is 3-4 weeks.
      *    - ItemAmount: The invoice total.
      *    - ItemName: To match with existing orders. Usually just "Produce".
@@ -137,7 +133,7 @@ export default function CustomerSaleList({
 
     const exportData = reports.map((invoice) => {
       // 3 lines of code to add 1 day to a date. Incredible.
-      const invoiceDate = new Date(invoice.updatedAt);
+      const invoiceDate = new Date(invoice.invoiceDate);
       const dueDate = new Date(invoiceDate);
       dueDate.setDate(dueDate.getDate() + 30); // Default to 1 month, although this varies between customers.
 
@@ -302,7 +298,7 @@ export default function CustomerSaleList({
             </div>
             <div className="font-semibold">{report.customerName}</div>
             <div className="text-sm">
-              {convertTimeToText(new Date(report.updatedAt))}
+              {convertTimeToText(new Date(report.completedAt))}
             </div>
             <div className="">${niceVisualDecimal(report.sale)}</div>
             <div className="mt-3 grid grid-cols-12 gap-2">
