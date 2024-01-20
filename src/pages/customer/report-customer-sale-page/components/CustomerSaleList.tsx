@@ -122,7 +122,7 @@ export default function CustomerSaleList({
      * - Columns:
      *    - InvoiceNo: invoice number.
      *    - Customer: customer name.
-     *    - InvoiceDate: the date of the invoice. This is report.completedAt
+     *    - InvoiceDate: the date of the invoice. This is report.invoiceDate
      *    - DueDate: NOTE: Usually, this depends on the customer, but the general consensus is 3-4 weeks.
      *    - ItemAmount: The invoice total.
      *    - ItemName: To match with existing orders. Usually just "Produce".
@@ -298,7 +298,7 @@ export default function CustomerSaleList({
             </div>
             <div className="font-semibold">{report.customerName}</div>
             <div className="text-sm">
-              {convertTimeToText(new Date(report.completedAt))}
+              {convertTimeToText(new Date(report.invoiceDate))}
             </div>
             <div className="">${niceVisualDecimal(report.sale)}</div>
             <div className="mt-3 grid grid-cols-12 gap-2">
