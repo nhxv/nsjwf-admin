@@ -97,7 +97,7 @@ export default function VendorOrderList() {
     }));
   };
 
-  if (query.status === "loading" || query.fetchStatus === "fetching") {
+  if (query.status === "loading") {
     return (
       <div className="mx-auto mt-4 w-11/12 md:w-10/12 lg:w-6/12">
         <Spinner></Spinner>

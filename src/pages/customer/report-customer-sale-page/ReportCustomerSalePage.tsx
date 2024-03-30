@@ -28,6 +28,7 @@ export default function ReportCustomerSalePage() {
       const result = await api.get(`/customers/all`);
       return result.data;
     },
+    refetchOnWindowFocus: false, // Query is expensive.
   });
 
   const reportQuery = useQuery({
