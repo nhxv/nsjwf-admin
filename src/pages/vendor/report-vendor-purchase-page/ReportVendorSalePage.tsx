@@ -65,14 +65,19 @@ export default function ReportVendorSalePage() {
 
   return (
     <section className="min-h-screen">
-      <SaleDetailModal
-        report={focus.report}
-        isOpen={detailModal.isOpen}
-        onClose={() => {
-          setSearchModal((prev) => ({ ...prev, isOpen: false }));
-          setFocus({ report: null });
-        }}
-      />
+      {/* isOpen DOESN'T WORK. God knows why. 
+      Using isOpen will somehow mess with the transformation inside the modal.
+      */}
+      {focus.report && (
+        <SaleDetailModal
+          report={focus.report}
+          isOpen={detailModal.isOpen}
+          onClose={() => {
+            setSearchModal((prev) => ({ ...prev, isOpen: false }));
+            setFocus({ report: null });
+          }}
+        />
+      )}
       <SearchSaleModal
         isOpen={searchModal.isOpen}
         vendors={vendorQuery?.data ? vendorQuery.data : []}

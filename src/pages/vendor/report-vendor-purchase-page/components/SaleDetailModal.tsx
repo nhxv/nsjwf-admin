@@ -1,9 +1,112 @@
+import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { niceVisualDecimal } from "../../../../commons/utils/fraction.util";
 import { convertTimeToText } from "../../../../commons/utils/time.util";
+import { handleTokenExpire } from "../../../../commons/utils/token.util";
 import Modal from "../../../../components/Modal";
 import StatusTag from "../../../../components/StatusTag";
+import api from "../../../../stores/api";
+import { useAuthStore } from "../../../../stores/auth.store";
+import { Menu } from "@headlessui/react";
+import { BiRotateLeft } from "react-icons/bi";
+import { Role } from "../../../../commons/enums/role.enum";
+import TextInput from "../../../../components/forms/TextInput";
+
+function productOrderID(productOrder) {
+  return `${productOrder.productName}_${productOrder.unitCode}`;
+}
 
 export default function SaleDetailModal({ isOpen, onClose, report }) {
+  const role = useAuthStore((state) => state.role);
+  const navigate = useNavigate();
+  const [error, setError] = useState("");
+
+  const transformReport = () => {
+    let priceChangeBuffer = {};
+    if (report) {
+      for (const po of report.productVendorOrders) {
+        priceChangeBuffer[productOrderID(po)] = {
+          ...po,
+          // Suppress null input value warning.
+          unitPrice: po.unitPrice || "",
+        };
+      }
+    }
+    return priceChangeBuffer;
+  };
+
+  const [changeBuffer, setChangeBuffer] = useState(transformReport());
+
+  const queryClient = useQueryClient();
+  const saleRevertMut = useMutation({
+    mutationFn: (code: string) => {
+      return api.put(`/vendor-orders/revert/${code}`);
+    },
+    onSuccess: () => {
+      // Here we don't have a clean way to access the queryURL
+      // to identify the query, so we have to use this roundabout way like this.
+      // NOTE: If we have the queryURL, we can skip the invalidation
+      // and instead update the cache via queryClient.setQueryData(), which save 1 api call.
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const keys = query.queryKey as Array<string>;
+          return keys[0] === "reports" && keys[1]?.startsWith("reports=");
+        },
+      });
+      onClose();
+    },
+    onError: (err: any) => {
+      let _error = JSON.parse(
+        JSON.stringify(err.response ? err.response.data.error : err)
+      );
+      if (_error.status === 401) {
+        handleTokenExpire(navigate, setError, (msg) => msg);
+      } else {
+        setError(_error.message);
+        setTimeout(() => {
+          setError("");
+        }, 2000);
+      }
+      saleRevertMut.reset();
+    },
+  });
+  const saleUpdateMut = useMutation({
+    mutationFn: (code: string) => {
+      return api.put(`/vendor-orders/update/${code}`);
+    },
+    onSuccess: () => {
+      // Here we don't have a clean way to access the queryURL
+      // to identify the query, so we have to use this roundabout way like this.
+      // NOTE: If we have the queryURL, we can skip the invalidation
+      // and instead update the cache via queryClient.setQueryData(), which save 1 api call.
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const keys = query.queryKey as Array<string>;
+          return keys[0] === "reports" && keys[1]?.startsWith("reports=");
+        },
+      });
+      onClose();
+    },
+    onError: (err: any) => {
+      let _error = JSON.parse(
+        JSON.stringify(err.response ? err.response.data.error : err)
+      );
+      if (_error.status === 401) {
+        handleTokenExpire(navigate, setError, (msg) => msg);
+      } else {
+        setError(_error.message);
+        setTimeout(() => {
+          setError("");
+        }, 2000);
+      }
+      saleRevertMut.reset();
+    },
+  });
+
+  const onRevert = (code: string) => {
+    saleRevertMut.mutate(code);
+  };
 
   const onModalClose = () => {
     // setChangeBuffer(transformReport());
@@ -87,7 +190,29 @@ export default function SaleDetailModal({ isOpen, onClose, report }) {
                   </span>
                 </div>
                 <div className="w-3/12 text-center">
-                  <span>${niceVisualDecimal(productOrder.unitPrice)}</span>
+                  {false && (role === Role.ADMIN || role === Role.MASTER) ? (
+                    <TextInput
+                      id={productOrderID(productOrder)}
+                      name={productOrderID(productOrder)}
+                      placeholder={null}
+                      value={
+                        changeBuffer[productOrderID(productOrder)].unitPrice
+                      }
+                      onChange={(e) => {
+                        const k = productOrderID(productOrder);
+                        setChangeBuffer((prev) => ({
+                          ...prev,
+                          // Computed Property Name
+                          [k]: {
+                            ...prev[k],
+                            unitPrice: e.target.value,
+                          },
+                        }));
+                      }}
+                    />
+                  ) : (
+                    <span>${niceVisualDecimal(productOrder.unitPrice)}</span>
+                  )}
                 </div>
               </div>
             );
