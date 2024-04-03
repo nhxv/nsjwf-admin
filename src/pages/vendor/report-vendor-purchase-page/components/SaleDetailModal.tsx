@@ -12,6 +12,8 @@ import { Menu } from "@headlessui/react";
 import { BiRotateLeft } from "react-icons/bi";
 import { Role } from "../../../../commons/enums/role.enum";
 import TextInput from "../../../../components/forms/TextInput";
+import Alert from "../../../../components/Alert";
+import Spinner from "../../../../components/Spinner";
 
 function productOrderID(productOrder) {
   return `${productOrder.productName}_${productOrder.unitCode}`;
@@ -211,7 +213,11 @@ export default function SaleDetailModal({ isOpen, onClose, report }) {
                       }}
                     />
                   ) : (
-                    <span>${niceVisualDecimal(productOrder.unitPrice)}</span>
+                    <span>
+                      {productOrder.unitPrice
+                        ? "$" + niceVisualDecimal(productOrder.unitPrice)
+                        : ""}
+                    </span>
                   )}
                 </div>
               </div>
@@ -224,6 +230,19 @@ export default function SaleDetailModal({ isOpen, onClose, report }) {
           <span className="mr-2 text-xl font-medium">
             ${niceVisualDecimal(report.sale)}
           </span>
+        </div>
+
+        <div>
+          {saleRevertMut.status === "loading" && (
+            <div className="mt-5">
+              <Spinner></Spinner>
+            </div>
+          )}
+          {error && (
+            <div className="mt-5">
+              <Alert message={error} type="error"></Alert>
+            </div>
+          )}
         </div>
       </div>
     </Modal>
