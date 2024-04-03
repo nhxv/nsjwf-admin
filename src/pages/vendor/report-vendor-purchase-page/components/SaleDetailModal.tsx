@@ -4,11 +4,16 @@ import Modal from "../../../../components/Modal";
 import StatusTag from "../../../../components/StatusTag";
 
 export default function SaleDetailModal({ isOpen, onClose, report }) {
+
+  const onModalClose = () => {
+    // setChangeBuffer(transformReport());
+    onClose();
+  };
+
   // Need this because when first loading the page, no reports are available.
   if (!report) return;
-
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onModalClose}>
       <div key={report.orderCode} className="custom-card text-left">
         {/* basic report info */}
         <div className="flex flex-row justify-between">
@@ -24,6 +29,33 @@ export default function SaleDetailModal({ isOpen, onClose, report }) {
           </div>
           {/* Padding div to stretch the modal horizontally */}
           <div className="w-72"></div>
+
+          {(role === Role.ADMIN || role === Role.MASTER) && (
+            // Need to be div for the btn and dropdown to align correctly.
+            <Menu as="div">
+              <label className="btn btn-circle btn-accent">
+                <Menu.Button>
+                  <BiRotateLeft className="h-6 w-6 text-error-content"></BiRotateLeft>
+                </Menu.Button>
+              </label>
+              <Menu.Items
+                as="div"
+                // Magik
+                className="menu rounded-box absolute right-6 w-40 origin-top-right border-2 border-base-300 bg-base-100 p-2 shadow-md dark:bg-base-200"
+              >
+                <Menu.Item>
+                  <button
+                    className={
+                      "flex justify-center rounded-md p-3 text-base-content ui-active:bg-base-200 ui-active:dark:bg-base-300"
+                    }
+                    onClick={() => onRevert(report.orderCode)}
+                  >
+                    Revert Order
+                  </button>
+                </Menu.Item>
+              </Menu.Items>
+            </Menu>
+          )}
         </div>
         <div className="divider"></div>
         {/* products in report */}
