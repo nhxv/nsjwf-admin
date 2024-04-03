@@ -70,7 +70,7 @@ export default function VendorOrderForm({
             if (selected) {
               productOrders.set(`${selected.id}-${selected.appear}`, {
                 productName: selected.name,
-                unitPrice: data[property],
+                unitPrice: data[property] ? data[property] : "",
               });
             }
           } else if (property.includes("quantity")) {
