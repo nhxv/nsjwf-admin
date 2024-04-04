@@ -104,7 +104,7 @@ export default function Layout({ children }) {
           icon: <BiLogOutCircle className="h-6 w-6" />,
         },
         {
-          itemName: "Report Sale",
+          itemName: "Customer Sale",
           href: "/customer/report-customer-sale",
           visible: [Role.MASTER, Role.ADMIN],
           icon: <BiDollar className="h-6 w-6" />,
@@ -128,7 +128,7 @@ export default function Layout({ children }) {
           icon: <BiLogInCircle className="h-6 w-6" />,
         },
         {
-          itemName: "Report Sale",
+          itemName: "Vendor Sale",
           href: "/vendor/report-vendor-sale",
           visible: [Role.MASTER, Role.ADMIN],
           icon: <BiDollarCircle className="h-6 w-6" />,
