@@ -349,7 +349,8 @@ export default function VendorOrderForm({
                   status !== OrderStatus.PICKING &&
                   status !== OrderStatus.CHECKING &&
                   status !== OrderStatus.CANCELED &&
-                  status !== OrderStatus.COMPLETED
+                  // status !== OrderStatus.COMPLETED
+                  status !== OrderStatus.DELIVERED
               )}
             ></SelectInput>
           </div>
