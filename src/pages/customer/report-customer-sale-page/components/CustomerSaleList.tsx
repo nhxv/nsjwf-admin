@@ -262,6 +262,11 @@ export default function CustomerSaleList({
           <div className="rounded-btn flex items-center bg-warning p-2 text-sm font-semibold text-warning-content">
             ${total.receivable} in A/R
           </div>
+          {reportQuery?.data.summary.boxCount > 0 && (
+            <div className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold">
+              {reportQuery.data.summary.boxCount} boxes
+            </div>
+          )}
         </div>
 
         <div className="flex flex-col gap-2 sm:flex-row">
