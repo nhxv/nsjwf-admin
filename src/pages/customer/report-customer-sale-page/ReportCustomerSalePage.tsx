@@ -58,10 +58,10 @@ export default function ReportCustomerSalePage() {
     setQueryURL(`/customer-orders/sold/search?${url}`);
   };
 
-  const reports = reportQuery?.data
+  const reports = reportQuery?.data?.sales
     ? latestFirst
-      ? reportQuery.data
-      : reportQuery.data.toReversed()
+      ? reportQuery.data.sales
+      : reportQuery.data.sales.toReversed()
     : [];
 
   return (
