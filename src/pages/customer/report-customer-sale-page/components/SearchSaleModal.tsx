@@ -4,6 +4,7 @@ import { useFormik } from "formik";
 import DateInput from "../../../../components/forms/DateInput";
 import SelectSearch from "../../../../components/forms/SelectSearch";
 import TextInput from "../../../../components/forms/TextInput";
+import { convertTime } from "../../../../commons/utils/time.util";
 
 interface SearchSaleModalProps {
   isOpen: boolean;
@@ -24,7 +25,7 @@ export default function SearchSaleModal({
       customer: "",
       product: "",
       start_date: "",
-      end_date: "",
+      end_date: convertTime(new Date()),
     },
     onSubmit: (form_data) => {
       let url = "";
