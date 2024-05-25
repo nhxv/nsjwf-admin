@@ -44,36 +44,10 @@ export default function CustomerRanking({
   if (!isOpen) return <></>;
 
   return (
-    <div className="custom-card min-w-fit text-left">
+    <div className="custom-card mx-auto">
       <form onSubmit={searchForm.handleSubmit}>
-        <div className="flex flex-col justify-between gap-2 sm:flex-row">
-          <div className="flex flex-col gap-2 sm:flex-row">
-            <div className="w-full">
-              <label className="custom-label mb-2 inline-block">From</label>
-              <DateInput
-                id="start_date"
-                min="2022-01-01"
-                max="2100-12-31"
-                placeholder="Date"
-                name="start_date"
-                value={searchForm.values.start_date}
-                onChange={searchForm.handleChange}
-              ></DateInput>
-            </div>
-            <div className="w-full">
-              <label className="custom-label mb-2 inline-block">To</label>
-              <DateInput
-                id="start_date"
-                min="2022-01-01"
-                max="2100-12-31"
-                placeholder="Date"
-                name="start_date"
-                value={searchForm.values.end_date}
-                onChange={searchForm.handleChange}
-              ></DateInput>
-            </div>
-          </div>
-          <div className="w-full">
+        <div className="flex flex-col xl:flex-row gap-3">
+          <div className="xl:basis-6/12">
             <label className="custom-label mb-2 inline-block">Product</label>
             <TextInput
               id="product-select"
@@ -87,25 +61,47 @@ export default function CustomerRanking({
               }}
               value={searchForm.values.product}
             />
+          </div>           
+          <div className="xl:basis-3/12">
+            <label className="custom-label mb-2 inline-block">From</label>
+            <DateInput
+              id="start_date"
+              min="2022-01-01"
+              max="2100-12-31"
+              placeholder="Date"
+              name="start_date"
+              value={searchForm.values.start_date}
+              onChange={searchForm.handleChange}
+            ></DateInput>
           </div>
+          <div className="xl:basis-3/12">
+            <label className="custom-label mb-2 inline-block">To</label>
+            <DateInput
+              id="start_date"
+              min="2022-01-01"
+              max="2100-12-31"
+              placeholder="Date"
+              name="start_date"
+              value={searchForm.values.end_date}
+              onChange={searchForm.handleChange}
+            ></DateInput>
+          </div>         
         </div>
 
-        <div className="mt-4 flex justify-center">
+        <div className="mt-4 flex flex-col gap-3">
           <button
-            className="btn btn-primary w-full min-w-fit lg:xl:w-1/2"
+            className="btn btn-primary basis-full"
             type="submit"
           >
             Submit
-          </button>
-        </div>
-        <div className="mt-2 flex justify-center">
+          </button>        
           <button
-            className="btn btn-accent w-full min-w-fit lg:xl:w-1/2"
-            type="submit"
+            className="btn btn-accent basis-full"
+            type="button"
             onClick={onToPreviousPage}
           >
             Back
-          </button>
+          </button>         
         </div>
       </form>
     </div>

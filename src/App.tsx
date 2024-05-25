@@ -31,8 +31,8 @@ import DraftStockPage from "./pages/stock/draft-stock-page/DraftStockPage";
 import ReportTaskPage from "./pages/task/report-task-page/ReportTaskPage";
 import ViewTaskPage from "./pages/task/view-task-page/ViewTaskPage";
 import ResetPage from "./pages/test/ResetPage";
-import ReportVendorSalePage from "./pages/vendor/report-vendor-purchase-page/ReportVendorSalePage";
-import AnalyticPage from "./pages/analytic/AnalyticPage";
+import ReportVendorSalePage from "./pages/vendor/report-vendor-sale-page/ReportVendorSalePage";
+import AnalyticPage from "./pages/analysis/AnalysisPage";
 
 export default function App() {
   return (
@@ -58,7 +58,7 @@ export default function App() {
             element={<UpdateOrderPriorityPage />}
           ></Route>
           <Route
-            path="/customer/report-customer-sale"
+            path="/customer/report-sale"
             element={<ReportCustomerSalePage />}
           ></Route>
           <Route
@@ -80,7 +80,7 @@ export default function App() {
             <Route path=":code" element={<DraftVendorOrderPage />}></Route>
           </Route>
           <Route
-            path="/vendor/report-vendor-sale"
+            path="/vendor/find-purchase"
             element={<ReportVendorSalePage />}
           ></Route>
           <Route

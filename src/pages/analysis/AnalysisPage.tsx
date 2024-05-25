@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import api from "../../stores/api";
 import AnalysisResult from "./components/AnalysisResult";
 import CustomerRanking from "./components/CustomerRanking";
-import { BiSolidStore, BiSolidUserDetail } from "react-icons/bi";
+import { BiUser, BiStore } from "react-icons/bi";
 import ProductRanking from "./components/ProductRanking";
 import { AlertFromQueryError } from "../../components/Alert";
 import Spinner from "../../components/Spinner";
@@ -19,12 +19,12 @@ const FORMS_TRIGGERS: Array<OptionInfo> = [
   {
     displayName: "Customer Product",
     description: "Show which customers bought the most boxes in a time period.",
-    icon: <BiSolidUserDetail className="h-3/4 w-full" />,
+    icon: <BiUser className="h-3/4 w-full" />,
   },
   {
     displayName: "Product Count",
     description: "Show which products were the top picks in a time period.",
-    icon: <BiSolidStore className="h-3/4 w-full" />,
+    icon: <BiStore className="h-3/4 w-full" />,
   },
   // {
   //   displayName: "Customer Margin",
@@ -59,7 +59,7 @@ function AnalyticOption({ formIndex, onClick, children, style = null }) {
   );
 }
 
-export default function AnalyticPage() {
+export default function AnalysisPage() {
   const [pageState, setPageState] = useState({
     page: 0,
     focusForm: -1,

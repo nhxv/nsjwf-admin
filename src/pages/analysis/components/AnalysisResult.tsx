@@ -162,7 +162,7 @@ export default function AnalysisResult({ data }: AnalysisResultProps) {
     <>
       <div className="my-2 flex flex-row-reverse items-center">
         <div className="rounded-btn flex bg-warning p-2 text-sm font-semibold text-warning-content">
-          Total Count: {total}
+          {total} boxes
         </div>
         {/* <button className="btn btn-accent" onClick={onExportToCSV}>
           <span className="mr-2">Download CSV</span>
@@ -170,7 +170,7 @@ export default function AnalysisResult({ data }: AnalysisResultProps) {
         </button> */}
       </div>
       <div className="flex justify-center">
-        <table className="custom-card w-full table-auto border-separate border-spacing-x-1 border-spacing-y-1 p-4">
+        <table className="custom-card w-full table-auto border-separate border-spacing-y-2 p-4">
           <thead>
             <tr>
               {columns.map((col, i) => {
@@ -180,7 +180,7 @@ export default function AnalysisResult({ data }: AnalysisResultProps) {
                     return (
                       <th>
                         <input
-                          className="checkbox checkbox-primary rounded-btn border-2 border-base-300 dark:border-base-content"
+                          className="checkbox checkbox-primary border-2 border-base-300 dark:border-base-content"
                           type="checkbox"
                           checked={false}
                           onChange={onSelectAll}
@@ -192,7 +192,7 @@ export default function AnalysisResult({ data }: AnalysisResultProps) {
                   return (
                     <th>
                       <input
-                        className="checkbox checkbox-primary rounded-btn border-2 border-base-300 dark:border-base-content"
+                        className="checkbox checkbox-primary border-2 border-base-300 dark:border-base-content"
                         type="checkbox"
                         checked={true}
                         onChange={onDeselectAll}
@@ -224,12 +224,12 @@ export default function AnalysisResult({ data }: AnalysisResultProps) {
                         <td
                           className={`flex w-full justify-center rounded-l-lg py-2 ${
                             row[0]
-                              ? "bg-neutral-400 dark:bg-base-100"
+                              ? "bg-success text-primary dark:bg-primary dark:text-white"
                               : "bg-base-200 dark:bg-base-300"
                           }`}
                         >
                           <input
-                            className="checkbox checkbox-primary rounded-btn border-2 border-base-300 dark:border-base-content"
+                            className="checkbox checkbox-primary border-2 border-base-300 dark:border-base-content"
                             type="checkbox"
                             checked={row[0]}
                             onChange={() => onSelectRow(i)}
@@ -239,15 +239,10 @@ export default function AnalysisResult({ data }: AnalysisResultProps) {
                     } else if (j == row.length - 1) {
                       return (
                         <td
-                          className={`rounded-r-lg p-2 ${
+                          className={`rounded-r-lg p-2 text-center ${
                             row[0]
-                              ? "bg-neutral-400 dark:bg-base-100 dark:font-bold"
+                              ? "bg-success text-primary dark:bg-primary dark:text-white"
                               : "bg-base-200 dark:bg-base-300"
-                          } ${
-                            // Mimic Excel thing
-                            typeof data === "number"
-                              ? "text-right"
-                              : "text-left"
                           }`}
                         >
                           {data}
@@ -256,14 +251,10 @@ export default function AnalysisResult({ data }: AnalysisResultProps) {
                     } else {
                       return (
                         <td
-                          className={`p-2 ${
+                          className={`p-2 text-center ${
                             row[0]
-                              ? "bg-neutral-400 dark:bg-base-100 dark:font-bold"
+                              ? "bg-success text-primary dark:bg-primary dark:text-secondary"
                               : "bg-base-200 dark:bg-base-300"
-                          } ${
-                            typeof data === "number"
-                              ? "text-right"
-                              : "text-left"
                           }`}
                         >
                           {data}
