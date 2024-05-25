@@ -46,7 +46,7 @@ export default function CustomerRanking({
   return (
     <div className="custom-card mx-auto">
       <form onSubmit={searchForm.handleSubmit}>
-        <div className="flex flex-col xl:flex-row gap-3">
+        <div className="flex flex-col gap-3 xl:flex-row">
           <div className="xl:basis-6/12">
             <label className="custom-label mb-2 inline-block">Product</label>
             <TextInput
@@ -61,7 +61,7 @@ export default function CustomerRanking({
               }}
               value={searchForm.values.product}
             />
-          </div>           
+          </div>
           <div className="xl:basis-3/12">
             <label className="custom-label mb-2 inline-block">From</label>
             <DateInput
@@ -85,23 +85,20 @@ export default function CustomerRanking({
               value={searchForm.values.end_date}
               onChange={searchForm.handleChange}
             ></DateInput>
-          </div>         
+          </div>
         </div>
 
         <div className="mt-4 flex flex-col gap-3">
-          <button
-            className="btn btn-primary basis-full"
-            type="submit"
-          >
+          <button className="btn btn-primary basis-full" type="submit">
             Submit
-          </button>        
+          </button>
           <button
             className="btn btn-accent basis-full"
             type="button"
             onClick={onToPreviousPage}
           >
             Back
-          </button>         
+          </button>
         </div>
       </form>
     </div>

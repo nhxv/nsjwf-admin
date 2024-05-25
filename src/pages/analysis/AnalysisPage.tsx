@@ -114,7 +114,7 @@ export default function AnalysisPage() {
       {pageState.page === 0 ? (
         <>
           <div className="flex flex-col gap-12">
-            <div className="sm:lg:min-h-42 grid grid-cols-12 gap-2 xl:min-h-72">
+            <div className="sm:lg:min-h-42 xl:min-h-72 grid grid-cols-12 gap-2">
               {FORMS_TRIGGERS.map((option, i) => (
                 <AnalyticOption formIndex={i} onClick={onFormChosen}>
                   {option.icon}

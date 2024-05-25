@@ -154,10 +154,10 @@ export default function Layout({ children }) {
           href: "/analysis/product-sale",
           visible: [Role.MASTER, Role.ADMIN],
           icon: <BiPackage className="h-6 w-6" />,
-        }
+        },
       ],
       visible: [Role.MASTER, Role.ADMIN],
-    },    
+    },
     {
       name: "Stock",
       subItems: [
@@ -201,7 +201,7 @@ export default function Layout({ children }) {
           itemName: "Product",
           href: "/configure/view-product",
           visible: [Role.MASTER, Role.ADMIN],
-          icon: <PiCarrotBold className="h-6 w-6" />
+          icon: <PiCarrotBold className="h-6 w-6" />,
         },
         {
           itemName: "Customer",
