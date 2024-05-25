@@ -141,7 +141,7 @@ export default function StockList() {
         {search.products.map((p) => (
           <div
             key={p.name}
-            className="rounded-btn col-span-12 flex items-center justify-between bg-base-100 p-3 shadow-md dark:bg-base-200 md:col-span-6 lg:col-span-3"
+            className="rounded-btn col-span-12 flex items-center justify-between bg-base-100 p-3 shadow-md md:col-span-6 lg:col-span-3 dark:bg-base-200"
           >
             <div>
               <span>{p.name}</span>
