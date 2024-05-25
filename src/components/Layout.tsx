@@ -19,6 +19,7 @@ import {
   BiSupport,
   BiTask,
   BiUser,
+  BiLineChart,
 } from "react-icons/bi";
 import { NavLink, matchPath, useLocation, useNavigate } from "react-router-dom";
 import { Role } from "../commons/enums/role.enum";
@@ -48,6 +49,8 @@ export default function Layout({ children }) {
 
     "/stock/change-stock": "Update Stock",
     "/stock/view-stock": "View Stock",
+
+    "/analytic": "Analytic",
 
     "/task/view-task": "View Task",
     "/task/report-task": "Report Task",
@@ -153,6 +156,18 @@ export default function Layout({ children }) {
         },
       ],
       visible: [Role.MASTER, Role.ADMIN, Role.OPERATOR],
+    },
+    {
+      name: "Analytic",
+      subItems: [
+        {
+          itemName: "Analytic",
+          href: "/analytic",
+          visible: [Role.MASTER, Role.ADMIN],
+          icon: <BiLineChart className="h-6 w-6" />,
+        },
+      ],
+      visible: [Role.MASTER, Role.ADMIN],
     },
     {
       name: "Task",

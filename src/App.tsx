@@ -32,6 +32,7 @@ import ReportTaskPage from "./pages/task/report-task-page/ReportTaskPage";
 import ViewTaskPage from "./pages/task/view-task-page/ViewTaskPage";
 import ResetPage from "./pages/test/ResetPage";
 import ReportVendorSalePage from "./pages/vendor/report-vendor-purchase-page/ReportVendorSalePage";
+import AnalyticPage from "./pages/analytic/AnalyticPage";
 
 export default function App() {
   return (
@@ -100,6 +101,11 @@ export default function App() {
           ></Route>
         </Route>
         <Route path="/stock/view-stock" element={<ViewStockPage />}></Route>
+
+        {/* Analytic routes */}
+        <Route element={<AdminOutlet />}>
+          <Route path="/analytic" element={<AnalyticPage />}></Route>
+        </Route>
 
         {/* Task routes */}
         <Route path="/task/view-task" element={<ViewTaskPage />}></Route>
