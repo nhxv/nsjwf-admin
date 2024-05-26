@@ -8,10 +8,13 @@ interface FormFields {
 }
 
 export default function ProductSaleAnalysisForm({ onSubmit }) {
+  const today = new Date();
   const searchForm = useFormik<FormFields>({
     initialValues: {
-      start_date: convertTime(new Date()),
-      end_date: convertTime(new Date()),
+      start_date: convertTime(
+        new Date(today.getFullYear(), today.getMonth(), 1)
+      ),
+      end_date: convertTime(today),
     },
     onSubmit: (formData) => {
       let url = "/analytic/analyze-product-sale?";
