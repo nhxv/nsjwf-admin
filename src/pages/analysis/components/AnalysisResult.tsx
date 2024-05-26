@@ -4,21 +4,9 @@ import csvDownload from "json-to-csv-export";
 import { BiDownload } from "react-icons/bi";
 import Alert from "../../../components/Alert";
 
-type AnalysisResponse = {
-  columns: Array<string>;
-  /**
-   * entries: {
-   *  key1: [val, val, ...],
-   *  key2: [val, val, ...],
-   *  ...,
-   * }
-   * The keys will be ignored for this component.
-   */
-  entries: Object;
-};
-
 type AnalysisResultProps = {
-  data: AnalysisResponse;
+  columns: Array<string>;
+  data: Array<Array<any>>;
 };
 
 /**
@@ -53,7 +41,7 @@ function createCompareFn(sortCriteria: number) {
   };
 }
 
-export default function AnalysisResult({ data }: AnalysisResultProps) {
+export default function AnalysisResult({ columns, data }: AnalysisResultProps) {
   /**
    * Structure:
    * Column 0 is reserved for selecting row (to print or whatever).
@@ -64,8 +52,8 @@ export default function AnalysisResult({ data }: AnalysisResultProps) {
   // This is mainly to display the sort icon appropriately.
   const [sortColumn, setSortColumn] = useState(2);
 
-  const [columns, _initialRows] = useMemo(() => {
-    const columns = ["Select"].concat(data.columns);
+  const [cols, _initialRows] = useMemo(() => {
+    const cols = ["Select"].concat(columns);
     const rows = [];
     for (const row of Object.values(data.entries)) {
       rows.push([false].concat(row));
@@ -73,7 +61,7 @@ export default function AnalysisResult({ data }: AnalysisResultProps) {
 
     rows.sort(createCompareFn(sortColumn));
 
-    return [columns, rows];
+    return [cols, rows];
   }, [data]);
 
   const [rows, setRows] = useState(_initialRows);
@@ -89,7 +77,7 @@ export default function AnalysisResult({ data }: AnalysisResultProps) {
   }, [rows]);
 
   const onColumnSort = (column: string) => {
-    const i = columns.indexOf(column);
+    const i = cols.indexOf(column);
     if (i === 0) return;
 
     let sortNow = 0; // The sorting happens during this cycle, so this var is here.
@@ -144,7 +132,7 @@ export default function AnalysisResult({ data }: AnalysisResultProps) {
     const csvFile = {
       filename: `${convertTime(new Date()).split("-").join("")}_analysis`,
       data: toCSVTable,
-      headers: columns.slice(1),
+      headers: cols.slice(1),
       delimiter: ",",
     };
     csvDownload(csvFile);
@@ -173,7 +161,7 @@ export default function AnalysisResult({ data }: AnalysisResultProps) {
         <table className="custom-card w-full table-auto border-separate border-spacing-y-2 p-4">
           <thead>
             <tr>
-              {columns.map((col, i) => {
+              {cols.map((col, i) => {
                 if (i == 0) {
                   const isAllSelected = rows.filter((row) => row[0]);
                   if (isAllSelected.length !== rows.length) {
