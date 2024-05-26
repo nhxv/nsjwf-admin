@@ -83,10 +83,8 @@ export default function AnalysisResult({ columns, data }: AnalysisResultProps) {
     let sortNow = 0; // The sorting happens during this cycle, so this var is here.
     if (i !== sortColumn && i !== -sortColumn) {
       sortNow = i;
-      setSortColumn(i);
     } else {
       sortNow = -sortColumn;
-      setSortColumn(-sortColumn);
     }
 
     // Sort the thing here.
@@ -97,7 +95,9 @@ export default function AnalysisResult({ columns, data }: AnalysisResultProps) {
     // only capture select/unselect, but that doesn't sync well when I try to sort
     // both the data and the select array (cuz they need to retain the order, and also
     // sorting them both isn't great cuz they're state vs not state).
-    setRows(rows.toSorted(createCompareFn(sortNow)));
+    // setRows(rows.toSorted(createCompareFn(sortNow)));
+    setRows([...rows].sort(createCompareFn(sortNow)));
+    setSortColumn(sortNow);
   };
   const onSelectRow = (rowIndex: number) => {
     setRows(
