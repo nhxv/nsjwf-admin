@@ -60,7 +60,7 @@ export default function AnalyzeCustomerSalePage() {
   const onClear = () => {
     // TODO
     return;
-  }
+  };
 
   return (
     <section className="min-h-screen">
@@ -122,7 +122,7 @@ export default function AnalyzeCustomerSalePage() {
           </div>
         </form>
       </div>
-      
+
       {/* TODO: Add more strict status check here later. */}
       <div className="mx-auto w-11/12 xl:w-8/12">
         {!analyticQuery.isFetching && analyticQuery.status === "loading" ? (

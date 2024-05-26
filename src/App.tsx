@@ -96,8 +96,14 @@ export default function App() {
 
         {/* Analysis routes */}
         <Route element={<AdminOutlet />}>
-          <Route path="/analysis/analyze-customer-sale" element={<AnalyzeCustomerSalePage />}></Route>
-          <Route path="/analysis/analyze-product-sale" element={<AnalyzeProductSalePage />}></Route>
+          <Route
+            path="/analysis/analyze-customer-sale"
+            element={<AnalyzeCustomerSalePage />}
+          ></Route>
+          <Route
+            path="/analysis/analyze-product-sale"
+            element={<AnalyzeProductSalePage />}
+          ></Route>
         </Route>
 
         {/* Stock routes */}

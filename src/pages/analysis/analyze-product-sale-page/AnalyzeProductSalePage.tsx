@@ -53,7 +53,7 @@ export default function AnalyzeProductSalePage() {
   const onClear = () => {
     // TODO
     return;
-  }
+  };
 
   return (
     <section className="min-h-screen">
@@ -115,8 +115,8 @@ export default function AnalyzeProductSalePage() {
           </div>
         ) : (
           <AnalysisResult data={analyticQuery.data} />
-        )}  
+        )}
       </div>
-    </section> 
+    </section>
   );
 }
