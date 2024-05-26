@@ -24,15 +24,16 @@ import EmployeePage from "./pages/configure/employee-page/EmployeePage";
 import ViewCustomerPage from "./pages/configure/view-customer-page/ViewCustomerPage";
 import ViewProductPage from "./pages/configure/view-product-page/ViewProductPage";
 import ViewVendorPage from "./pages/configure/view-vendor-page/ViewVendorPage";
-import ReportCustomerSalePage from "./pages/customer/report-customer-sale-page/ReportCustomerSalePage";
+import FindCustomerSalePage from "./pages/customer/find-customer-sale-page/FindCustomerSalePage";
 import UpdateOrderPriorityPage from "./pages/customer/update-order-priority-page/UpdateOrderPriorityPage";
 import CustomerOrderDetailPage from "./pages/customer/view-customer-order-detail-page/CustomerOrderDetailPage";
 import DraftStockPage from "./pages/stock/draft-stock-page/DraftStockPage";
 import ReportTaskPage from "./pages/task/report-task-page/ReportTaskPage";
 import ViewTaskPage from "./pages/task/view-task-page/ViewTaskPage";
 import ResetPage from "./pages/test/ResetPage";
-import ReportVendorSalePage from "./pages/vendor/report-vendor-sale-page/ReportVendorSalePage";
-import AnalyticPage from "./pages/analysis/AnalysisPage";
+import FindVendorSalePage from "./pages/vendor/find-vendor-sale-page/FindVendorSalePage";
+import AnalyzeCustomerSalePage from "./pages/analysis/analyze-customer-sale-page/AnalyzeCustomerSalePage";
+import AnalyzeProductSalePage from "./pages/analysis/analyze-product-sale-page/AnalyzeProductSalePage";
 
 export default function App() {
   return (
@@ -58,8 +59,8 @@ export default function App() {
             element={<UpdateOrderPriorityPage />}
           ></Route>
           <Route
-            path="/customer/report-sale"
-            element={<ReportCustomerSalePage />}
+            path="/customer/find-sale"
+            element={<FindCustomerSalePage />}
           ></Route>
           <Route
             path="/customer/view-customer-order"
@@ -81,7 +82,7 @@ export default function App() {
           </Route>
           <Route
             path="/vendor/find-purchase"
-            element={<ReportVendorSalePage />}
+            element={<FindVendorSalePage />}
           ></Route>
           <Route
             path="/vendor/view-vendor-order"
@@ -93,6 +94,12 @@ export default function App() {
           ></Route>
         </Route>
 
+        {/* Analysis routes */}
+        <Route element={<AdminOutlet />}>
+          <Route path="/analysis/analyze-customer-sale" element={<AnalyzeCustomerSalePage />}></Route>
+          <Route path="/analysis/analyze-product-sale" element={<AnalyzeProductSalePage />}></Route>
+        </Route>
+
         {/* Stock routes */}
         <Route element={<AdminOutlet />}>
           <Route
@@ -101,11 +108,6 @@ export default function App() {
           ></Route>
         </Route>
         <Route path="/stock/view-stock" element={<ViewStockPage />}></Route>
-
-        {/* Analytic routes */}
-        <Route element={<AdminOutlet />}>
-          <Route path="/analytic" element={<AnalyticPage />}></Route>
-        </Route>
 
         {/* Task routes */}
         <Route path="/task/view-task" element={<ViewTaskPage />}></Route>

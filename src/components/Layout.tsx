@@ -39,19 +39,20 @@ export default function Layout({ children }) {
 
     "/customer/draft-customer-order": "Draft Order",
     "/customer/update-order-priority": "Update Priority",
-    "/customer/report-sale": "Report Sale",
+    "/customer/view-sale": "View Sale",
     "/customer/view-customer-order": "Customer Orders",
     "/customer/view-customer-order-detail/:code": "Customer Order",
 
     "/vendor/draft-vendor-order": "Draft Order",
-    "/vendor/find-purchase": "Find Purchase",
+    "/vendor/view-purchase": "View Purchase",
     "/vendor/view-vendor-order": "Vendor Orders",
     "/vendor/view-vendor-order-detail/:code": "Vendor Order",
 
+    "/analysis/analyze-customer-sale": "Customer Sale",
+    "/analysis/analyze-product-sale": "Product Sale",
+
     "/stock/change-stock": "Update Stock",
     "/stock/view-stock": "View Stock",
-
-    "/analysis": "Analysis",
 
     "/task/view-task": "View Task",
     "/task/report-task": "Report Task",
@@ -108,8 +109,8 @@ export default function Layout({ children }) {
           icon: <BiLogOutCircle className="h-6 w-6" />,
         },
         {
-          itemName: "Report Sale",
-          href: "/customer/report-sale",
+          itemName: "Find Sale",
+          href: "/customer/find-sale",
           visible: [Role.MASTER, Role.ADMIN],
           icon: <BiDollar className="h-6 w-6" />,
         },
@@ -145,13 +146,13 @@ export default function Layout({ children }) {
       subItems: [
         {
           itemName: "Customer Sale",
-          href: "/analysis/customer-sale",
+          href: "/analysis/analyze-customer-sale",
           visible: [Role.MASTER, Role.ADMIN],
           icon: <BiLineChart className="h-6 w-6" />,
         },
         {
           itemName: "Product Sale",
-          href: "/analysis/product-sale",
+          href: "/analysis/analyze-product-sale",
           visible: [Role.MASTER, Role.ADMIN],
           icon: <BiPackage className="h-6 w-6" />,
         },
