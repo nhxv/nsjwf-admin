@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { convertTime } from "../../../commons/utils/time.util";
 import csvDownload from "json-to-csv-export";
 import { BiDownload } from "react-icons/bi";
@@ -55,14 +55,14 @@ export default function AnalysisResult({ columns, data }: AnalysisResultProps) {
   const [cols, _initialRows] = useMemo(() => {
     const cols = ["Select"].concat(columns);
     const rows = [];
-    for (const row of Object.values(data.entries)) {
+    for (const row of Object.values(data)) {
       rows.push([false].concat(row));
     }
 
     rows.sort(createCompareFn(sortColumn));
 
     return [cols, rows];
-  }, [data]);
+  }, [columns, data]);
 
   const [rows, setRows] = useState(_initialRows);
 
@@ -149,11 +149,14 @@ export default function AnalysisResult({ columns, data }: AnalysisResultProps) {
   return (
     <>
       <div className="my-4 flex items-center justify-end gap-3">
-        <button className="btn btn-accent btn-sm" onClick={onExportToCSV}>
+        <button
+          className="rounded-btn flex bg-accent p-2 text-sm font-semibold"
+          onClick={onExportToCSV}
+        >
           <span className="mr-2">Download CSV</span>
-          <BiDownload className="h-6 w-6"></BiDownload>
+          <BiDownload className="h-5 w-5"></BiDownload>
         </button>
-        <div className="rounded-btn flex bg-warning p-2 text-sm font-semibold text-warning-content">
+        <div className="rounded-btn bg-warning p-2 text-sm font-semibold text-warning-content">
           {total} boxes
         </div>
       </div>
