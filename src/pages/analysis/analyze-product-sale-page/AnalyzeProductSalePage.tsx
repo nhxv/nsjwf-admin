@@ -27,10 +27,12 @@ export default function AnalyzeProductSalePage() {
     refetchOnWindowFocus: false,
   });
 
+  const today = new Date();
+
   const searchForm = useFormik<FormFields>({
     initialValues: {
-      start_date: convertTime(new Date()),
-      end_date: convertTime(new Date()),
+      start_date: convertTime(new Date(today.getFullYear(), today.getMonth(), 1)),
+      end_date: convertTime(today),
     },
     onSubmit: (formData) => {
       let url = "/analytic/product-count?";
@@ -49,11 +51,6 @@ export default function AnalyzeProductSalePage() {
       return errors;
     },
   });
-
-  const onClear = () => {
-    // TODO
-    return;
-  };
 
   return (
     <section className="min-h-screen">
@@ -89,13 +86,6 @@ export default function AnalyzeProductSalePage() {
           <div className="mt-4 flex flex-col gap-3">
             <button className="btn btn-primary basis-full" type="submit">
               Submit
-            </button>
-            <button
-              className="btn btn-accent basis-full"
-              type="button"
-              onClick={onClear}
-            >
-              Clear all
             </button>
           </div>
         </form>

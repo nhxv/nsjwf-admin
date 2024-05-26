@@ -160,14 +160,14 @@ export default function AnalysisResult({ data }: AnalysisResultProps) {
 
   return (
     <>
-      <div className="my-2 flex flex-row-reverse items-center">
+      <div className="my-4 flex justify-end items-center gap-3">
+        <button className="btn btn-accent btn-sm" onClick={onExportToCSV}>
+          <span className="mr-2">Download CSV</span>
+          <BiDownload className="h-6 w-6"></BiDownload>
+        </button>
         <div className="rounded-btn flex bg-warning p-2 text-sm font-semibold text-warning-content">
           {total} boxes
         </div>
-        {/* <button className="btn btn-accent" onClick={onExportToCSV}>
-          <span className="mr-2">Download CSV</span>
-          <BiDownload className="h-6 w-6"></BiDownload>
-        </button> */}
       </div>
       <div className="flex justify-center">
         <table className="custom-card w-full table-auto border-separate border-spacing-y-2 p-4">

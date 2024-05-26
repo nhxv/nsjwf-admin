@@ -30,10 +30,12 @@ export default function AnalyzeCustomerSalePage() {
     refetchOnWindowFocus: false,
   });
 
+  const today = new Date();
+
   const searchForm = useFormik<FormFields>({
     initialValues: {
-      start_date: convertTime(new Date()),
-      end_date: convertTime(new Date()),
+      start_date: convertTime(new Date(today.getFullYear(), today.getMonth(), 1)),
+      end_date: convertTime(today),
       product: "",
     },
     onSubmit: (formData) => {
@@ -56,11 +58,6 @@ export default function AnalyzeCustomerSalePage() {
       return errors;
     },
   });
-
-  const onClear = () => {
-    // TODO
-    return;
-  };
 
   return (
     <section className="min-h-screen">
@@ -111,13 +108,6 @@ export default function AnalyzeCustomerSalePage() {
           <div className="mt-4 flex flex-col gap-3">
             <button className="btn btn-primary basis-full" type="submit">
               Submit
-            </button>
-            <button
-              className="btn btn-accent basis-full"
-              type="button"
-              onClick={onClear}
-            >
-              Clear all
             </button>
           </div>
         </form>

@@ -8,6 +8,7 @@ import ProductRanking from "./components/ProductRanking";
 import { AlertFromQueryError } from "../../components/Alert";
 import Spinner from "../../components/Spinner";
 
+/* DEPRECATED */
 type OptionInfo = {
   displayName: string;
   description: string;
