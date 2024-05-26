@@ -5,7 +5,7 @@ import AnalysisResult from "./AnalysisResult";
 import { AlertFromQueryError } from "../../../components/Alert";
 import Spinner from "../../../components/Spinner";
 
-export default function AnalysisPage({ renderForm }) {
+export default function AnalysisContainer({ renderForm }) {
   const [queryURL, setQueryURL] = useState("");
   const analyticQuery = useQuery({
     queryKey: ["analytic", queryURL],

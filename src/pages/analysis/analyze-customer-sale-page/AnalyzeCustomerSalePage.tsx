@@ -1,9 +1,9 @@
 import AnalyzeCustomerSaleForm from "./components/AnalyzeCustomerSaleForm";
-import AnalysisPage from "../components/AnalysisPage";
+import AnalysisContainer from "../components/AnalysisContainer";
 
 export default function AnalyzeCustomerSalePage() {
   return (
-    <AnalysisPage
+    <AnalysisContainer
       renderForm={(onSubmit: (url: string) => void) => (
         <AnalyzeCustomerSaleForm onSubmit={onSubmit} />
       )}
