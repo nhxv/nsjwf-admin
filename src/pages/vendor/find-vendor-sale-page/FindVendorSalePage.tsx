@@ -3,11 +3,11 @@ import { useState } from "react";
 import { BiSearch, BiSortDown, BiSortUp } from "react-icons/bi";
 import { convertTime } from "../../../commons/utils/time.util";
 import api from "../../../stores/api";
-import CustomerSaleList from "./components/CustomerSaleList";
+import VendorSaleList from "./components/VendorSaleList";
 import SaleDetailModal from "./components/SaleDetailModal";
 import SearchSaleModal from "./components/SearchSaleModal";
 
-export default function ReportCustomerSalePage() {
+export default function FindVendorSalePage() {
   const [searchModal, setSearchModal] = useState({
     isOpen: false,
   });
@@ -15,20 +15,19 @@ export default function ReportCustomerSalePage() {
     isOpen: false,
   });
   const [queryURL, setQueryURL] = useState(
-    `/customer-orders/sold/search?start_date=${convertTime(
+    `/vendor-orders/sold/search?start_date=${convertTime(
       new Date()
     )}&end_date=${convertTime(new Date())}`
   );
   const [focus, setFocus] = useState({ report: null });
   const [latestFirst, setLatestFirst] = useState(true);
 
-  const customerQuery = useQuery({
-    queryKey: ["reports", "customers"],
+  const vendorQuery = useQuery({
+    queryKey: ["reports", "vendors"],
     queryFn: async () => {
-      const result = await api.get(`/customers/all`);
+      const result = await api.get(`/vendors/all`);
       return result.data;
     },
-    refetchOnWindowFocus: false, // Query is expensive.
   });
 
   const reportQuery = useQuery({
@@ -55,28 +54,33 @@ export default function ReportCustomerSalePage() {
   };
 
   const onSearchSubmit = (url: string) => {
-    setQueryURL(`/customer-orders/sold/search?${url}`);
+    setQueryURL(`/vendor-orders/sold/search?${url}`);
   };
 
-  const reports = reportQuery?.data?.sales
+  const reports = reportQuery?.data
     ? latestFirst
-      ? reportQuery.data.sales
-      : reportQuery.data.sales.toReversed()
+      ? reportQuery.data
+      : reportQuery.data.toReversed()
     : [];
 
   return (
     <section className="min-h-screen">
-      <SaleDetailModal
-        report={focus.report}
-        isOpen={detailModal.isOpen}
-        onClose={() => {
-          setSearchModal((prev) => ({ ...prev, isOpen: false }));
-          setFocus({ report: null });
-        }}
-      />
+      {/* isOpen DOESN'T WORK. God knows why. 
+      Using isOpen will somehow mess with the transformation inside the modal.
+      */}
+      {focus.report && (
+        <SaleDetailModal
+          report={focus.report}
+          isOpen={detailModal.isOpen}
+          onClose={() => {
+            setSearchModal((prev) => ({ ...prev, isOpen: false }));
+            setFocus({ report: null });
+          }}
+        />
+      )}
       <SearchSaleModal
         isOpen={searchModal.isOpen}
-        customers={customerQuery?.data ? customerQuery.data : []}
+        vendors={vendorQuery?.data ? vendorQuery.data : []}
         onClose={() => {
           setSearchModal((prev) => ({ ...prev, isOpen: false }));
         }}
@@ -96,7 +100,7 @@ export default function ReportCustomerSalePage() {
           </button>
         </div>
         <div className="mx-4">
-          <CustomerSaleList
+          <VendorSaleList
             reports={reports}
             reportQuery={reportQuery}
             onSelectSale={onSelectSale}

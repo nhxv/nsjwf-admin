@@ -24,14 +24,16 @@ import EmployeePage from "./pages/configure/employee-page/EmployeePage";
 import ViewCustomerPage from "./pages/configure/view-customer-page/ViewCustomerPage";
 import ViewProductPage from "./pages/configure/view-product-page/ViewProductPage";
 import ViewVendorPage from "./pages/configure/view-vendor-page/ViewVendorPage";
-import ReportCustomerSalePage from "./pages/customer/report-customer-sale-page/ReportCustomerSalePage";
+import FindCustomerSalePage from "./pages/customer/find-customer-sale-page/FindCustomerSalePage";
 import UpdateOrderPriorityPage from "./pages/customer/update-order-priority-page/UpdateOrderPriorityPage";
 import CustomerOrderDetailPage from "./pages/customer/view-customer-order-detail-page/CustomerOrderDetailPage";
 import DraftStockPage from "./pages/stock/draft-stock-page/DraftStockPage";
 import ReportTaskPage from "./pages/task/report-task-page/ReportTaskPage";
 import ViewTaskPage from "./pages/task/view-task-page/ViewTaskPage";
 import ResetPage from "./pages/test/ResetPage";
-import ReportVendorSalePage from "./pages/vendor/report-vendor-purchase-page/ReportVendorSalePage";
+import FindVendorSalePage from "./pages/vendor/find-vendor-sale-page/FindVendorSalePage";
+import AnalyzeCustomerSalePage from "./pages/analysis/analyze-customer-sale-page/AnalyzeCustomerSalePage";
+import AnalyzeProductSalePage from "./pages/analysis/analyze-product-sale-page/AnalyzeProductSalePage";
 
 export default function App() {
   return (
@@ -57,8 +59,8 @@ export default function App() {
             element={<UpdateOrderPriorityPage />}
           ></Route>
           <Route
-            path="/customer/report-customer-sale"
-            element={<ReportCustomerSalePage />}
+            path="/customer/find-sale"
+            element={<FindCustomerSalePage />}
           ></Route>
           <Route
             path="/customer/view-customer-order"
@@ -79,8 +81,8 @@ export default function App() {
             <Route path=":code" element={<DraftVendorOrderPage />}></Route>
           </Route>
           <Route
-            path="/vendor/report-vendor-sale"
-            element={<ReportVendorSalePage />}
+            path="/vendor/find-purchase"
+            element={<FindVendorSalePage />}
           ></Route>
           <Route
             path="/vendor/view-vendor-order"
@@ -89,6 +91,18 @@ export default function App() {
           <Route
             path="/vendor/view-vendor-order-detail/:code"
             element={<VendorOrderDetailPage />}
+          ></Route>
+        </Route>
+
+        {/* Analysis routes */}
+        <Route element={<AdminOutlet />}>
+          <Route
+            path="/analysis/analyze-customer-sale"
+            element={<AnalyzeCustomerSalePage />}
+          ></Route>
+          <Route
+            path="/analysis/analyze-product-sale"
+            element={<AnalyzeProductSalePage />}
           ></Route>
         </Route>
 

@@ -19,7 +19,9 @@ import {
   BiSupport,
   BiTask,
   BiUser,
+  BiLineChart,
 } from "react-icons/bi";
+import { PiCarrotBold } from "react-icons/pi";
 import { NavLink, matchPath, useLocation, useNavigate } from "react-router-dom";
 import { Role } from "../commons/enums/role.enum";
 import { useAuthStore } from "../stores/auth.store";
@@ -37,14 +39,17 @@ export default function Layout({ children }) {
 
     "/customer/draft-customer-order": "Draft Order",
     "/customer/update-order-priority": "Update Priority",
-    "/customer/report-customer-sale": "Customer Sale",
+    "/customer/view-sale": "View Sale",
     "/customer/view-customer-order": "Customer Orders",
     "/customer/view-customer-order-detail/:code": "Customer Order",
 
     "/vendor/draft-vendor-order": "Draft Order",
-    "/vendor/report-vendor-sale": "Vendor Sale",
+    "/vendor/view-purchase": "View Purchase",
     "/vendor/view-vendor-order": "Vendor Orders",
     "/vendor/view-vendor-order-detail/:code": "Vendor Order",
+
+    "/analysis/analyze-customer-sale": "Customer Sale",
+    "/analysis/analyze-product-sale": "Product Sale",
 
     "/stock/change-stock": "Update Stock",
     "/stock/view-stock": "View Stock",
@@ -104,8 +109,8 @@ export default function Layout({ children }) {
           icon: <BiLogOutCircle className="h-6 w-6" />,
         },
         {
-          itemName: "Customer Sale",
-          href: "/customer/report-customer-sale",
+          itemName: "Find Sale",
+          href: "/customer/find-sale",
           visible: [Role.MASTER, Role.ADMIN],
           icon: <BiDollar className="h-6 w-6" />,
         },
@@ -128,10 +133,28 @@ export default function Layout({ children }) {
           icon: <BiLogInCircle className="h-6 w-6" />,
         },
         {
-          itemName: "Vendor Sale",
-          href: "/vendor/report-vendor-sale",
+          itemName: "Find Purchase",
+          href: "/vendor/find-purchase",
           visible: [Role.MASTER, Role.ADMIN],
           icon: <BiDollarCircle className="h-6 w-6" />,
+        },
+      ],
+      visible: [Role.MASTER, Role.ADMIN],
+    },
+    {
+      name: "Analysis",
+      subItems: [
+        {
+          itemName: "Customer Sale",
+          href: "/analysis/analyze-customer-sale",
+          visible: [Role.MASTER, Role.ADMIN],
+          icon: <BiLineChart className="h-6 w-6" />,
+        },
+        {
+          itemName: "Product Sale",
+          href: "/analysis/analyze-product-sale",
+          visible: [Role.MASTER, Role.ADMIN],
+          icon: <BiPackage className="h-6 w-6" />,
         },
       ],
       visible: [Role.MASTER, Role.ADMIN],
@@ -179,7 +202,7 @@ export default function Layout({ children }) {
           itemName: "Product",
           href: "/configure/view-product",
           visible: [Role.MASTER, Role.ADMIN],
-          icon: <BiPackage className="h-6 w-6" />,
+          icon: <PiCarrotBold className="h-6 w-6" />,
         },
         {
           itemName: "Customer",
