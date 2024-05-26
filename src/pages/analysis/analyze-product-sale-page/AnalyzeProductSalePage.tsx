@@ -31,7 +31,9 @@ export default function AnalyzeProductSalePage() {
 
   const searchForm = useFormik<FormFields>({
     initialValues: {
-      start_date: convertTime(new Date(today.getFullYear(), today.getMonth(), 1)),
+      start_date: convertTime(
+        new Date(today.getFullYear(), today.getMonth(), 1)
+      ),
       end_date: convertTime(today),
     },
     onSubmit: (formData) => {

@@ -160,7 +160,7 @@ export default function AnalysisResult({ data }: AnalysisResultProps) {
 
   return (
     <>
-      <div className="my-4 flex justify-end items-center gap-3">
+      <div className="my-4 flex items-center justify-end gap-3">
         <button className="btn btn-accent btn-sm" onClick={onExportToCSV}>
           <span className="mr-2">Download CSV</span>
           <BiDownload className="h-6 w-6"></BiDownload>
