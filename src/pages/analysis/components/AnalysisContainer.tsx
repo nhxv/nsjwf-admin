@@ -49,7 +49,7 @@ export default function AnalysisContainer({ renderForm }) {
             </div>
           ) : (
             <AnalysisResult
-              columns={["Customer", "Box Count"]}
+              columns={["Customer", "Box"]}
               data={analyticQuery.data}
             />
           )}
