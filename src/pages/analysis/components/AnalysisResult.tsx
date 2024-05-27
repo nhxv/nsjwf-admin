@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
-import { convertTime } from "../../../commons/utils/time.util";
 import csvDownload from "json-to-csv-export";
+import { useMemo, useState } from "react";
 import { BiDownload } from "react-icons/bi";
+import { convertTime } from "../../../commons/utils/time.util";
 import Alert from "../../../components/Alert";
 
 type AnalysisResultProps = {
@@ -149,6 +149,9 @@ export default function AnalysisResult({ columns, data }: AnalysisResultProps) {
   return (
     <>
       <div className="my-4 flex items-center justify-end gap-3">
+        <div className="rounded-btn bg-warning p-2 text-sm font-semibold text-warning-content">
+          {total} boxes
+        </div>
         <button
           className="rounded-btn flex bg-accent p-2 text-sm font-semibold"
           onClick={onExportToCSV}
@@ -156,9 +159,6 @@ export default function AnalysisResult({ columns, data }: AnalysisResultProps) {
           <span className="mr-2">Download CSV</span>
           <BiDownload className="h-5 w-5"></BiDownload>
         </button>
-        <div className="rounded-btn bg-warning p-2 text-sm font-semibold text-warning-content">
-          {total} boxes
-        </div>
       </div>
       <div className="flex justify-center">
         <table className="custom-card w-full table-auto border-separate border-spacing-y-2 p-4">

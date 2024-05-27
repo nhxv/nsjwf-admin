@@ -74,11 +74,11 @@ export default function AnalyzeCustomerSaleForm({ onSubmit }) {
           <div className="xl:basis-3/12">
             <label className="custom-label mb-2 inline-block">To</label>
             <DateInput
-              id="start_date"
+              id="end_date"
               min="2022-01-01"
               max="2100-12-31"
               placeholder="Date"
-              name="start_date"
+              name="end_date"
               value={searchForm.values.end_date}
               onChange={searchForm.handleChange}
             ></DateInput>
