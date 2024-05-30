@@ -1,27 +1,33 @@
-import { useState, useMemo } from "react";
+import csvDownload from "json-to-csv-export";
+import { useMemo, useState } from "react";
 import {
-  BiExpandVertical,
   BiDownload,
+  BiExpandVertical,
   BiSortDown,
   BiSortUp,
 } from "react-icons/bi";
 import { convertTime } from "../../../../commons/utils/time.util";
-import csvDownload from "json-to-csv-export";
+import Alert from "../../../../components/Alert";
+import { niceVisualDecimal } from "../../../../commons/utils/fraction.util";
 
 export default function CustomerSaleResult({ data }) {
   const [customerSales, setCustomerSales] = useState(
     data.sort((a, b) => b.boxCount - a.boxCount)
   );
+
   const [sortBy, setSortBy] = useState({
     type: "Box",
     desc: true,
   });
-  const boxTotal = useMemo(() => {
-    let sum = 0;
+
+  const [priceTotal, boxTotal] = useMemo(() => {
+    let boxSum = 0;
+    let priceSum = 0;
     for (const customerSale of data) {
-      sum += customerSale.boxCount;
+      boxSum += customerSale.boxCount;
+      priceSum += customerSale.boxCount * customerSale.avgPrice;
     }
-    return sum.toFixed(0);
+    return [niceVisualDecimal(priceSum), boxSum.toFixed(0)];
   }, [customerSales]);
 
   const onExportToCSV = () => {
@@ -82,14 +88,25 @@ export default function CustomerSaleResult({ data }) {
     }
   };
 
+  if (customerSales?.length === 0) {
+    return (
+      <div className="mx-auto mt-4 w-11/12 md:w-10/12 lg:w-8/12">
+        <Alert type="empty" message={"Such empty, much hollow..."}></Alert>
+      </div>
+    );
+  }
+
   return (
     <>
-      <div className="my-4 flex items-center justify-end gap-3">
-        <div className="rounded-btn bg-warning p-2 text-sm font-semibold text-warning-content">
+      <div className="my-4 flex items-center justify-end gap-2">
+        <div className="rounded-btn bg-info p-2 text-sm font-semibold text-info-content">
           {boxTotal} boxes
         </div>
+        <div className="rounded-btn hidden bg-info p-2 text-sm font-semibold text-info-content md:block">
+          ${priceTotal} in total
+        </div>
         <button
-          className="rounded-btn flex bg-accent p-2 text-sm font-semibold"
+          className="rounded-btn flex bg-accent p-2 text-sm font-semibold hover:text-primary"
           onClick={onExportToCSV}
         >
           <span className="mr-2">Download CSV</span>

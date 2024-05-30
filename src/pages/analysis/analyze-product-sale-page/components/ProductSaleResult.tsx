@@ -1,116 +1,94 @@
 import csvDownload from "json-to-csv-export";
 import { useMemo, useState } from "react";
-import { BiDownload } from "react-icons/bi";
+import {
+  BiDownload,
+  BiExpandVertical,
+  BiSortDown,
+  BiSortUp,
+} from "react-icons/bi";
 import { convertTime } from "../../../../commons/utils/time.util";
 import Alert from "../../../../components/Alert";
-import { customCompare } from "../../../../commons/utils/custom-compare.util";
+import { niceVisualDecimal } from "../../../../commons/utils/fraction.util";
 
-type AnalysisResultProps = {
-  columns: Array<string>;
-  data: Array<Array<any>>;
-};
+export default function ProductSaleResult({ data }) {
+  const [productSales, setProductSales] = useState(
+    data.sort((a, b) => b.boxCount - a.boxCount)
+  );
 
-export default function ProductSaleResult({
-  columns,
-  data,
-}: AnalysisResultProps) {
-  /**
-   * Structure:
-   * Column 0 is reserved for selecting row (to print or whatever).
-   * Column 1 onward is where the data actually is.
-   * sortColumn being negative implies ascending sort.
-   */
+  const [sortBy, setSortBy] = useState({
+    type: "Box",
+    desc: true,
+  });
 
-  // This is mainly to display the sort icon appropriately.
-  const [sortColumn, setSortColumn] = useState(2);
-
-  const [cols, _initialRows] = useMemo(() => {
-    const cols = ["Select"].concat(columns);
-    const rows = [];
-    for (const row of Object.values(data)) {
-      rows.push([false].concat(row));
+  const [priceTotal, boxTotal] = useMemo(() => {
+    let boxSum = 0;
+    let priceSum = 0;
+    for (const productSale of data) {
+      boxSum += productSale.boxCount;
+      priceSum += productSale.boxCount * productSale.avgPrice;
     }
-
-    rows.sort(customCompare(sortColumn));
-
-    return [cols, rows];
-  }, [columns, data]);
-
-  const [rows, setRows] = useState(_initialRows);
-
-  const total = useMemo(() => {
-    let sum = 0;
-    for (const row of rows) {
-      if (row[0]) {
-        sum += +row[2]; // Hardcode this number 2.
-      }
-    }
-    return sum.toFixed(2);
-  }, [rows]);
-
-  const onColumnSort = (column: string) => {
-    const i = cols.indexOf(column);
-    if (i === 0) return;
-
-    let sortNow = 0; // The sorting happens during this cycle, so this var is here.
-    if (i !== sortColumn && i !== -sortColumn) {
-      sortNow = i;
-    } else {
-      sortNow = -sortColumn;
-    }
-
-    // Sort the thing here.
-    // NOTE: I tried to sort as the component is rendering, but
-    // since the thing needs to be a state (to update select/unselect) and
-    // also not a state (cuz sort), idk how to circumvent it.
-    // I also tried to make it a non-state and apply a separate state over it that
-    // only capture select/unselect, but that doesn't sync well when I try to sort
-    // both the data and the select array (cuz they need to retain the order, and also
-    // sorting them both isn't great cuz they're state vs not state).
-    // setRows(rows.toSorted(customCompare(sortNow)));
-    setRows([...rows].sort(customCompare(sortNow)));
-    setSortColumn(sortNow);
-  };
-  const onSelectRow = (rowIndex: number) => {
-    setRows(
-      rows.map((row, index) => {
-        if (rowIndex !== index) return row;
-
-        return [!row[0], ...row.slice(1)];
-      })
-    );
-  };
-  const onSelectAll = () => {
-    setRows(rows.map((row) => [true, ...row.slice(1)]));
-  };
-  const onDeselectAll = () => {
-    setRows(rows.map((row) => [false, ...row.slice(1)]));
-  };
+    return [niceVisualDecimal(priceSum), boxSum.toFixed(0)];
+  }, [productSales]);
 
   const onExportToCSV = () => {
-    let selectedRows = rows.filter((row) => row[0]);
-
-    if (selectedRows.length === 0) {
-      selectedRows = rows;
-    }
-
-    const toCSVTable = selectedRows.map((entry) => {
-      return Object.assign({}, entry.slice(1));
-    });
-
-    if (toCSVTable.length === 0) return;
-
-    // TODO: Somehow find a way to name the file with the date range.
     const csvFile = {
       filename: `${convertTime(new Date()).split("-").join("")}_analysis`,
-      data: toCSVTable,
-      headers: cols.slice(1),
+      data: productSales,
+      headers: ["Product", "Box Count", "Average Price"],
       delimiter: ",",
     };
     csvDownload(csvFile);
   };
 
-  if (rows.length === 0) {
+  const onSort = (type: string) => {
+    if (sortBy.type !== type) {
+      setSortBy((prev) => ({
+        ...prev,
+        type: type,
+        desc: true,
+      }));
+      const sorted = [...productSales].sort((saleA, saleB) => {
+        if (type === "Product") {
+          return saleA.productName.localeCompare(saleB.productName);
+        } else if (type === "Box") {
+          return saleB.boxCount - saleA.boxCount;
+        } else if (type === "Price") {
+          return saleB.avgPrice - saleA.avgPrice;
+        }
+      });
+      setProductSales(sorted);
+    } else {
+      setSortBy((prev) => ({
+        ...prev,
+        desc: !prev.desc,
+      }));
+      setProductSales(productSales.toReversed());
+    }
+  };
+
+  const displaySortIcon = (type: string) => {
+    if (sortBy.type !== type) {
+      return (
+        <span>
+          <BiExpandVertical className="h-4 w-4"></BiExpandVertical>
+        </span>
+      );
+    } else if (sortBy.type === type && !sortBy.desc) {
+      return (
+        <span>
+          <BiSortUp className="h-6 w-6 text-primary"></BiSortUp>
+        </span>
+      );
+    } else if (sortBy.type === type && sortBy.desc) {
+      return (
+        <span>
+          <BiSortDown className="h-6 w-6 text-primary"></BiSortDown>
+        </span>
+      );
+    }
+  };
+
+  if (productSales?.length === 0) {
     return (
       <div className="mx-auto mt-4 w-11/12 md:w-10/12 lg:w-8/12">
         <Alert type="empty" message={"Such empty, much hollow..."}></Alert>
@@ -121,8 +99,11 @@ export default function ProductSaleResult({
   return (
     <>
       <div className="my-4 flex items-center justify-end gap-3">
-        <div className="rounded-btn bg-warning p-2 text-sm font-semibold text-warning-content">
-          {total} boxes
+        <div className="rounded-btn bg-info p-2 text-sm font-semibold text-info-content">
+          {boxTotal} boxes
+        </div>
+        <div className="rounded-btn hidden bg-info p-2 text-sm font-semibold text-info-content md:block">
+          ${priceTotal} in total
         </div>
         <button
           className="rounded-btn flex bg-accent p-2 text-sm font-semibold"
@@ -132,104 +113,33 @@ export default function ProductSaleResult({
           <BiDownload className="h-5 w-5"></BiDownload>
         </button>
       </div>
-      <div className="flex justify-center">
-        <table className="custom-card w-full table-auto border-separate border-spacing-y-2 p-4">
-          <thead>
-            <tr>
-              {cols.map((col, i) => {
-                if (i == 0) {
-                  const isAllSelected = rows.filter((row) => row[0]);
-                  if (isAllSelected.length !== rows.length) {
-                    return (
-                      <th>
-                        <input
-                          className="checkbox checkbox-primary border-2 border-base-300 dark:border-base-content"
-                          type="checkbox"
-                          checked={false}
-                          onChange={onSelectAll}
-                        />
-                      </th>
-                    );
-                  }
-
-                  return (
-                    <th>
-                      <input
-                        className="checkbox checkbox-primary border-2 border-base-300 dark:border-base-content"
-                        type="checkbox"
-                        checked={true}
-                        onChange={onDeselectAll}
-                      />
-                    </th>
-                  );
-                }
-
-                return (
-                  <th
-                    className="select-none hover:cursor-pointer"
-                    scope="col"
-                    onClick={() => onColumnSort(col)}
-                  >
-                    {col}
-                  </th>
-                );
-              })}
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row, i) => {
-              return (
-                <tr>
-                  {row.map((data: any, j: number) => {
-                    // border radius doesn't work on tr for some reasons so have to do it manually at td.
-                    if (j == 0) {
-                      return (
-                        <td
-                          className={`flex w-full justify-center rounded-l-lg py-2 ${
-                            row[0]
-                              ? "bg-success text-primary dark:bg-primary dark:text-white"
-                              : "bg-base-200 dark:bg-base-300"
-                          }`}
-                        >
-                          <input
-                            className="checkbox checkbox-primary border-2 border-base-300 dark:border-base-content"
-                            type="checkbox"
-                            checked={row[0]}
-                            onChange={() => onSelectRow(i)}
-                          />
-                        </td>
-                      );
-                    } else if (j == row.length - 1) {
-                      return (
-                        <td
-                          className={`rounded-r-lg p-2 text-center ${
-                            row[0]
-                              ? "bg-success text-primary dark:bg-primary dark:text-white"
-                              : "bg-base-200 dark:bg-base-300"
-                          }`}
-                        >
-                          {data}
-                        </td>
-                      );
-                    } else {
-                      return (
-                        <td
-                          className={`p-2 text-center ${
-                            row[0]
-                              ? "bg-success text-primary dark:bg-primary dark:text-secondary"
-                              : "bg-base-200 dark:bg-base-300"
-                          }`}
-                        >
-                          {data}
-                        </td>
-                      );
-                    }
-                  })}
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+      <div className="custom-card w-full">
+        <div className="flex justify-between gap-3">
+          <div className="custom-label flex cursor-pointer items-center gap-1 hover:text-primary md:w-6/12">
+            <span onClick={() => onSort("Product")}>Product</span>
+            {displaySortIcon("Product")}
+          </div>
+          <div className="custom-label flex cursor-pointer items-center gap-1 hover:text-primary md:w-5/12">
+            <span onClick={() => onSort("Box")}>Box</span>
+            {displaySortIcon("Box")}
+          </div>
+          <div className="custom-label hidden cursor-pointer items-center gap-1 hover:text-primary md:flex md:w-1/12">
+            <span onClick={() => onSort("Price")}>Price</span>
+            {displaySortIcon("Price")}
+          </div>
+        </div>
+        {productSales.map((productSale) => (
+          <div
+            key={productSale.productName}
+            className="my-2 flex w-full justify-between rounded-lg bg-base-200 p-2 dark:bg-base-300"
+          >
+            <div className="md:w-6/12">{productSale.productName}</div>
+            <div className="md:w-5/12">{productSale.boxCount}</div>
+            <div className="hidden md:flex md:w-1/12">
+              ${productSale.avgPrice}
+            </div>
+          </div>
+        ))}
       </div>
     </>
   );
