@@ -1,12 +1,13 @@
-import AnalyzeProductSaleForm from "./components/AnalyzeProductSaleForm";
-import AnalysisContainer from "../components/AnalysisContainer";
+import ProductSaleFormContainer from "./components/ProductSaleFormContainer";
 
 export default function AnalyzeProductSalePage() {
   return (
-    <AnalysisContainer
-      renderForm={(onSubmit: (url: string) => void) => (
-        <AnalyzeProductSaleForm onSubmit={onSubmit} />
-      )}
-    />
+    <section className="min-h-screen">
+      <div className="flex justify-center">
+        <div className="w-11/12">
+          <ProductSaleFormContainer></ProductSaleFormContainer>
+        </div>
+      </div>
+    </section>
   );
 }

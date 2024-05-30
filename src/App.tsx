@@ -17,6 +17,8 @@ import ViewVendorOrderPage from "./pages/vendor/view-vendor-order-page/ViewVendo
 
 import ViewStockPage from "./pages/stock/view-stock-page/ViewStockPage";
 
+import AnalyzeCustomerSalePage from "./pages/analysis/analyze-customer-sale-page/AnalyzeCustomerSalePage";
+import AnalyzeProductSalePage from "./pages/analysis/analyze-product-sale-page/AnalyzeProductSalePage";
 import DraftCustomerPage from "./pages/configure/draft-customer-page/DraftCustomerPage";
 import DraftProductPage from "./pages/configure/draft-product-page/DraftProductPage";
 import DraftVendorPage from "./pages/configure/draft-vendor-page/DraftVendorPage";
@@ -32,8 +34,6 @@ import ReportTaskPage from "./pages/task/report-task-page/ReportTaskPage";
 import ViewTaskPage from "./pages/task/view-task-page/ViewTaskPage";
 import ResetPage from "./pages/test/ResetPage";
 import FindVendorSalePage from "./pages/vendor/find-vendor-sale-page/FindVendorSalePage";
-import AnalyzeCustomerSalePage from "./pages/analysis/analyze-customer-sale-page/AnalyzeCustomerSalePage";
-import AnalyzeProductSalePage from "./pages/analysis/analyze-product-sale-page/AnalyzeProductSalePage";
 
 export default function App() {
   return (

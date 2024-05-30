@@ -1,47 +1,19 @@
 import csvDownload from "json-to-csv-export";
 import { useMemo, useState } from "react";
 import { BiDownload } from "react-icons/bi";
-import { convertTime } from "../../../commons/utils/time.util";
-import Alert from "../../../components/Alert";
+import { convertTime } from "../../../../commons/utils/time.util";
+import Alert from "../../../../components/Alert";
+import { customCompare } from "../../../../commons/utils/custom-compare.util";
 
 type AnalysisResultProps = {
   columns: Array<string>;
   data: Array<Array<any>>;
 };
 
-/**
- * Return the `compareFn` used in `Array.sort()`. This exists to capture variables (`sortCriteria` in this case).
- */
-function createCompareFn(sortCriteria: number) {
-  return (rowA: any, rowB: any) => {
-    let i = sortCriteria;
-    if (sortCriteria === 0) {
-      return -1;
-    } else if (sortCriteria < 0) {
-      i = -sortCriteria;
-    }
-
-    // TODO: Detect type and use localeCompare() accordingly.
-    let cmpValue = 0;
-    if (rowA[i] === rowB[i]) {
-      cmpValue = 0;
-    } else if (rowA[i] < rowB[i]) {
-      cmpValue = -1;
-    } else {
-      cmpValue = 1;
-    }
-
-    if (sortCriteria > 0) {
-      // Descending
-      return -cmpValue;
-    } else {
-      // Ascending
-      return cmpValue;
-    }
-  };
-}
-
-export default function AnalysisResult({ columns, data }: AnalysisResultProps) {
+export default function ProductSaleResult({
+  columns,
+  data,
+}: AnalysisResultProps) {
   /**
    * Structure:
    * Column 0 is reserved for selecting row (to print or whatever).
@@ -59,7 +31,7 @@ export default function AnalysisResult({ columns, data }: AnalysisResultProps) {
       rows.push([false].concat(row));
     }
 
-    rows.sort(createCompareFn(sortColumn));
+    rows.sort(customCompare(sortColumn));
 
     return [cols, rows];
   }, [columns, data]);
@@ -95,8 +67,8 @@ export default function AnalysisResult({ columns, data }: AnalysisResultProps) {
     // only capture select/unselect, but that doesn't sync well when I try to sort
     // both the data and the select array (cuz they need to retain the order, and also
     // sorting them both isn't great cuz they're state vs not state).
-    // setRows(rows.toSorted(createCompareFn(sortNow)));
-    setRows([...rows].sort(createCompareFn(sortNow)));
+    // setRows(rows.toSorted(customCompare(sortNow)));
+    setRows([...rows].sort(customCompare(sortNow)));
     setSortColumn(sortNow);
   };
   const onSelectRow = (rowIndex: number) => {
