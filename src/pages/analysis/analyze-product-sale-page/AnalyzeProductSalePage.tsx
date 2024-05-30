@@ -4,7 +4,7 @@ export default function AnalyzeProductSalePage() {
   return (
     <section className="min-h-screen">
       <div className="flex justify-center">
-        <div className="w-11/12">
+        <div className="w-11/12 xl:w-8/12">
           <ProductSaleFormContainer></ProductSaleFormContainer>
         </div>
       </div>

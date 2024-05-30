@@ -53,10 +53,7 @@ export default function ProductSaleFormContainer() {
           <AlertFromQueryError queryError={analysisQuery.error} />
         </div>
       ) : (
-        <ProductSaleResult
-          columns={["Customer", "Box"]}
-          data={analysisQuery.data}
-        />
+        <ProductSaleResult data={analysisQuery.data} />
       )}
     </>
   );
