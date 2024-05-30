@@ -37,7 +37,7 @@ export default function ProductSaleForm({ onFormSubmit, onFormClear }) {
   const onClear = () => {
     searchForm.resetForm();
     onFormClear();
-  }
+  };
 
   return (
     <form onSubmit={searchForm.handleSubmit} className="custom-card mx-auto">
@@ -69,13 +69,16 @@ export default function ProductSaleForm({ onFormSubmit, onFormClear }) {
       </div>
 
       <div className="mt-5 flex flex-col gap-3">
-        <button
-          className="btn btn-primary w-full"
-          type="submit"
-        >
+        <button className="btn btn-primary w-full" type="submit">
           Submit
         </button>
-        <button className="btn btn-accent w-full" type="button" onClick={onClear}>Clear all</button>
+        <button
+          className="btn btn-accent w-full"
+          type="button"
+          onClick={onClear}
+        >
+          Clear all
+        </button>
       </div>
     </form>
   );

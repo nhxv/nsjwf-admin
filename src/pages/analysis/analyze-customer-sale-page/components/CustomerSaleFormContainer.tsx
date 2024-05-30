@@ -26,13 +26,13 @@ export default function CustomerSaleFormContainer() {
 
   const onFormClear = () => {
     setQueryURL("");
-  }
+  };
 
   return (
     <>
-      <CustomerSaleForm 
-      onFormSubmit={onFormSubmit}
-      onFormClear={onFormClear}
+      <CustomerSaleForm
+        onFormSubmit={onFormSubmit}
+        onFormClear={onFormClear}
       ></CustomerSaleForm>
       {/* TODO: Add more strict status check here later. */}
       {/* Since query is disabled at the beginning,
@@ -56,10 +56,8 @@ export default function CustomerSaleFormContainer() {
         //   columns={["Customer", "Box"]}
         //   data={analysisQuery.data}
         // />
-        <CustomerSaleResult
-        data={analysisQuery.data}
-        ></CustomerSaleResult>
+        <CustomerSaleResult data={analysisQuery.data}></CustomerSaleResult>
       )}
     </>
-  );  
+  );
 }

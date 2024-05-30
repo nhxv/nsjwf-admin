@@ -10,7 +10,10 @@ type AnalysisResultProps = {
   data: Array<Array<any>>;
 };
 
-export default function ProductSaleResult({ columns, data }: AnalysisResultProps) {
+export default function ProductSaleResult({
+  columns,
+  data,
+}: AnalysisResultProps) {
   /**
    * Structure:
    * Column 0 is reserved for selecting row (to print or whatever).

@@ -26,13 +26,13 @@ export default function ProductSaleFormContainer() {
 
   const onFormClear = () => {
     setQueryURL("");
-  }
+  };
 
   return (
     <>
-      <ProductSaleForm 
-      onFormSubmit={onFormSubmit}
-      onFormClear={onFormClear}
+      <ProductSaleForm
+        onFormSubmit={onFormSubmit}
+        onFormClear={onFormClear}
       ></ProductSaleForm>
 
       {/* TODO: Add more strict status check here later. */}
@@ -59,5 +59,5 @@ export default function ProductSaleFormContainer() {
         />
       )}
     </>
-  );  
+  );
 }
