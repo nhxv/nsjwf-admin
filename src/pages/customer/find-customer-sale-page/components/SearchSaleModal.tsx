@@ -1,10 +1,9 @@
+import { useFormik } from "formik";
 import { BiX } from "react-icons/bi";
 import Modal from "../../../../components/Modal";
-import { useFormik } from "formik";
 import DateInput from "../../../../components/forms/DateInput";
 import SelectSearch from "../../../../components/forms/SelectSearch";
 import TextInput from "../../../../components/forms/TextInput";
-import { convertTime } from "../../../../commons/utils/time.util";
 
 interface SearchSaleModalProps {
   isOpen: boolean;
@@ -25,7 +24,7 @@ export default function SearchSaleModal({
       customer: "",
       product: "",
       start_date: "",
-      end_date: convertTime(new Date()),
+      end_date: "",
     },
     onSubmit: (form_data) => {
       let url = "";
