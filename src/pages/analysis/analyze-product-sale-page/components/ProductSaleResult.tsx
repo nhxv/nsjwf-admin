@@ -131,7 +131,7 @@ export default function ProductSaleResult({ data }) {
         {productSales.map((productSale) => (
           <div
             key={productSale.productName}
-            className="my-2 flex w-full justify-between rounded-lg bg-base-200 p-2 dark:bg-base-300"
+            className="my-2 flex w-full justify-between rounded-lg bg-base-200 p-3 dark:bg-base-300"
           >
             <div className="md:w-6/12">{productSale.productName}</div>
             <div className="md:w-5/12">{productSale.boxCount}</div>
