@@ -6,6 +6,7 @@ import api from "../../../stores/api";
 import CustomerSaleList from "./components/CustomerSaleList";
 import SaleDetailModal from "./components/SaleDetailModal";
 import SearchSaleModal from "./components/SearchSaleModal";
+import SearchSaleForm from "./components/SearchSaleForm";
 
 export default function FindCustomerSalePage() {
   const [searchModal, setSearchModal] = useState({
@@ -91,11 +92,20 @@ export default function FindCustomerSalePage() {
               <BiSortUp className="h-6 w-6"></BiSortUp>
             )}
           </button>
-          <button className="btn btn-circle btn-accent" onClick={onSearch}>
+          <button
+            className="btn btn-circle btn-accent sm:hidden"
+            onClick={onSearch}
+          >
             <BiSearch className="h-6 w-6"></BiSearch>
           </button>
         </div>
         <div className="mx-4">
+          <div className="hidden md:lg:block">
+            <SearchSaleForm
+              customers={customerQuery?.data ? customerQuery.data : []}
+              onSearchSubmit={onSearchSubmit}
+            />
+          </div>
           <CustomerSaleList
             reports={reports}
             reportQuery={reportQuery}
