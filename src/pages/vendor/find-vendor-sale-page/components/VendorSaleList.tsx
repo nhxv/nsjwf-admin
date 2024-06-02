@@ -188,7 +188,7 @@ export default function VendorSaleList({
           <div
             key={report.orderCode}
             className={
-              "rounded-box col-span-12 flex flex-col justify-between border-2 border-yellow-700 bg-yellow-100 p-3 text-yellow-700 shadow-md hover:cursor-pointer dark:border-yellow-700 dark:bg-transparent hover:dark:bg-yellow-900 hover:dark:bg-opacity-10 sm:col-span-6 md:col-span-4 lg:col-span-3 xl:col-span-2"
+              "rounded-box col-span-12 flex flex-col justify-between border-2 border-yellow-700 bg-yellow-100 p-3 text-yellow-700 shadow-md hover:cursor-pointer sm:col-span-6 md:col-span-4 lg:col-span-3 xl:col-span-2 dark:border-yellow-700 dark:bg-transparent hover:dark:bg-yellow-900 hover:dark:bg-opacity-10"
             }
             onClick={() => {
               onSelectSale(report);
