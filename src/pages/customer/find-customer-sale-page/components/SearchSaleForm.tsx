@@ -44,7 +44,7 @@ export default function SearchSaleForm({
 
   return (
     <form onSubmit={searchForm.handleSubmit}>
-      <div className="mb-4 flex flex-col items-end gap-4 sm:flex-row">
+      <div className="mb-4 flex flex-col items-end gap-3 sm:flex-row">
         <div className="shrink-0 basis-1/12">
           <label className="custom-label mb-2 inline-block">Code</label>
           <TextInput

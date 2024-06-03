@@ -53,7 +53,7 @@ export default function CustomerSaleForm({ onFormSubmit, onFormClear }) {
           <TextInput
             id="product-select"
             name="product-select"
-            placeholder="Keywords"
+            placeholder="Name of product"
             onChange={(e) => {
               searchForm.setFieldValue(
                 "product",
