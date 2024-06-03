@@ -93,14 +93,14 @@ export default function FindCustomerSalePage() {
             )}
           </button>
           <button
-            className="btn btn-circle btn-accent sm:hidden"
+            className="btn btn-circle btn-accent lg:hidden"
             onClick={onSearch}
           >
             <BiSearch className="h-6 w-6"></BiSearch>
           </button>
         </div>
-        <div className="mx-4">
-          <div className="hidden md:lg:block">
+        <div className="mx-auto">
+          <div className="hidden lg:block">
             <SearchSaleForm
               customers={customerQuery?.data ? customerQuery.data : []}
               onSearchSubmit={onSearchSubmit}
