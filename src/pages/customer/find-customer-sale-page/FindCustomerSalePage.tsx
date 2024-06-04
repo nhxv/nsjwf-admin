@@ -99,7 +99,7 @@ export default function FindCustomerSalePage() {
             <BiSearch className="h-6 w-6"></BiSearch>
           </button>
         </div>
-        <div className="mx-auto">
+        <div className="mx-4">
           <div className="hidden lg:block">
             <SearchSaleForm
               customers={customerQuery?.data ? customerQuery.data : []}
