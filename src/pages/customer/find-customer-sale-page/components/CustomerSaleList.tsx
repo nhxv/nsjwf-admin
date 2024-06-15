@@ -1,6 +1,6 @@
 import csvDownload from "json-to-csv-export";
-import { useMemo } from "react";
-import { BiDownload, BiExport } from "react-icons/bi";
+import { useMemo, useState } from "react";
+import { BiDownload, BiExport, BiPin, BiSolidPin } from "react-icons/bi";
 import { PaymentStatus } from "../../../../commons/enums/payment-status.enum";
 import {
   convertTime,
@@ -50,11 +50,26 @@ export default function CustomerSaleList({
   onSelectSale,
 }: CustomerSaleListProps) {
   const navigate = useNavigate();
+  const [pinnedSale, setPinnedSale] = useState([]);
+
   const total = useMemo(() => {
     let cash = 0;
     let check = 0;
     let receivable = 0;
-    for (const report of reports) {
+    for (const report of pinnedSale) {
+      if (report.paymentStatus === PaymentStatus.CASH) {
+        cash += parseFloat(report.sale);
+      } else if (report.paymentStatus === PaymentStatus.CHECK) {
+        check += parseFloat(report.sale);
+      } else if (report.paymentStatus === PaymentStatus.RECEIVABLE) {
+        receivable += parseFloat(report.sale);
+      }
+    }
+
+    const unpinnedSales = reports.filter((report) => {
+      return !pinnedSale.find((sale) => sale.orderCode === report.orderCode);
+    });
+    for (const report of unpinnedSales) {
       if (report.paymentStatus === PaymentStatus.CASH) {
         cash += parseFloat(report.sale);
       } else if (report.paymentStatus === PaymentStatus.CHECK) {
@@ -68,7 +83,7 @@ export default function CustomerSaleList({
       check: niceVisualDecimal(check),
       receivable: niceVisualDecimal(receivable),
     };
-  }, [reports]);
+  }, [reports, pinnedSale]);
 
   const queryClient = useQueryClient();
   const paymentMethodMut = useMutation<any, any, any>({
@@ -88,16 +103,27 @@ export default function CustomerSaleList({
   });
 
   const onDownloadExcelReport = () => {
-    const reportData = reports.map((report) => ({
+    const transformReport = (report) => ({
       order_date: convertTime(new Date(report.invoiceDate)),
-      payment_date: convertTime(new Date(report.completedAt)),
+      payment_date: convertTime(new Date(report.invoiceDate)),
       customer: report.customerName,
       code: `${report.manualCode ? report.manualCode : report.orderCode}`,
       sale: parseFloat(report.sale),
       test: report.isTest ? "S" : "L",
       payment_status:
         report.paymentStatus === "RECEIVABLE" ? "AR" : report.paymentStatus,
-    }));
+    });
+
+    const reportData = pinnedSale.map(transformReport).concat(
+      reports
+        .filter((report) => {
+          return !pinnedSale.find(
+            (sale) => sale.orderCode === report.orderCode
+          );
+        })
+        .map(transformReport)
+    );
+
     const saleFile = {
       data: reportData,
       filename: `${convertTime(new Date()).split("-").join("")}_report`,
@@ -131,7 +157,7 @@ export default function CustomerSaleList({
      *    - Memo: Comment on invoice. Empty column.
      */
 
-    const exportData = reports.map((invoice) => {
+    const transformReport = (invoice) => {
       // 3 lines of code to add 1 day to a date. Incredible.
       const invoiceDate = new Date(invoice.invoiceDate);
       const dueDate = new Date(invoiceDate);
@@ -158,7 +184,17 @@ export default function CustomerSaleList({
         terms: "Net 30", // Correspond to 30-day due date. Optional.
         memo: qbPaymentReminder,
       };
-    });
+    };
+
+    const exportData = pinnedSale.map(transformReport).concat(
+      reports
+        .filter((report) => {
+          return !pinnedSale.find(
+            (sale) => sale.orderCode === report.orderCode
+          );
+        })
+        .map(transformReport)
+    );
 
     const saleFile = {
       data: exportData,
@@ -177,6 +213,13 @@ export default function CustomerSaleList({
     };
 
     csvDownload(saleFile);
+  };
+
+  const onPinOrder = (sale) => {
+    setPinnedSale(pinnedSale.concat([sale]));
+  };
+  const onUnpinOrder = (sale) => {
+    setPinnedSale(pinnedSale.filter((s) => s.orderCode !== sale.orderCode));
   };
 
   const onUpdatePayment = (status: string, code: string) => {
@@ -283,23 +326,34 @@ export default function CustomerSaleList({
         </div>
       </div>
       <div className="grid grid-cols-12 gap-2">
-        {reports.map((report) => (
+        {/* TODO: Perharps extract this part to some component? It's duplicating code right now. */}
+        {pinnedSale.map((report) => (
           <div
             key={report.orderCode}
             className={`rounded-box col-span-12 border-2 p-3 shadow-md hover:cursor-pointer sm:col-span-6 md:col-span-4 lg:col-span-3 xl:col-span-2
-            ${
-              report.paymentStatus === PaymentStatus.CASH
-                ? "border-primary bg-green-100 text-primary dark:border-primary dark:bg-transparent hover:dark:bg-emerald-900 hover:dark:bg-opacity-10"
-                : report.paymentStatus === PaymentStatus.CHECK
-                ? "border-sky-700 bg-sky-100 text-sky-700 dark:bg-transparent hover:dark:bg-sky-900 hover:dark:bg-opacity-10"
-                : "border-yellow-700 bg-yellow-100 text-yellow-700 dark:border-yellow-700 dark:bg-transparent hover:dark:bg-yellow-900 hover:dark:bg-opacity-10"
-            }`}
+          ${
+            report.paymentStatus === PaymentStatus.CASH
+              ? "border-primary bg-green-100 text-primary dark:border-primary dark:bg-transparent hover:dark:bg-emerald-900 hover:dark:bg-opacity-10"
+              : report.paymentStatus === PaymentStatus.CHECK
+              ? "border-sky-700 bg-sky-100 text-sky-700 dark:bg-transparent hover:dark:bg-sky-900 hover:dark:bg-opacity-10"
+              : "border-yellow-700 bg-yellow-100 text-yellow-700 dark:border-yellow-700 dark:bg-transparent hover:dark:bg-yellow-900 hover:dark:bg-opacity-10"
+          }`}
             onClick={() => {
               onSelectSale(report);
             }}
           >
-            <div>
-              #{report.manualCode ? report.manualCode : report.orderCode}
+            <div className="flex justify-between">
+              <span>
+                #{report.manualCode ? report.manualCode : report.orderCode}
+              </span>
+              <span
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onUnpinOrder(report);
+                }}
+              >
+                <BiPin className="h-6 w-6" />
+              </span>
             </div>
             <div className="font-semibold">{report.customerName}</div>
             <div className="text-sm">
@@ -307,13 +361,13 @@ export default function CustomerSaleList({
             </div>
             <div className="">${niceVisualDecimal(report.sale)}</div>
             <div className="mt-3 grid grid-cols-12 gap-2">
+              {/* TODO: The buttons are disabled because there is a bug
+                where if the user change the payment, the pinned order won't update. Will figure it out later.
+              */}
               {report.paymentStatus !== PaymentStatus.CHECK && (
                 <button
                   className="btn btn-sm col-span-6 w-full border-sky-700 bg-sky-100 text-sky-700 hover:border-sky-700 hover:bg-sky-700 hover:text-white dark:bg-transparent"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onUpdatePayment(PaymentStatus.CHECK, report.orderCode);
-                  }}
+                  disabled
                 >
                   Check
                 </button>
@@ -322,10 +376,7 @@ export default function CustomerSaleList({
                 <button
                   type="button"
                   className="btn btn-sm col-span-6 w-full border-emerald-700 bg-green-100 text-emerald-700 hover:border-emerald-700 hover:bg-emerald-700 hover:text-white dark:bg-transparent"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onUpdatePayment(PaymentStatus.CASH, report.orderCode);
-                  }}
+                  disabled
                 >
                   Cash
                 </button>
@@ -334,10 +385,7 @@ export default function CustomerSaleList({
                 <button
                   type="button"
                   className="btn btn-sm col-span-6 w-full border-yellow-700 bg-yellow-100 text-yellow-700 hover:border-yellow-700 hover:bg-yellow-700 hover:text-white dark:bg-transparent"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onUpdatePayment(PaymentStatus.RECEIVABLE, report.orderCode);
-                  }}
+                  disabled
                 >
                   AR
                 </button>
@@ -345,6 +393,87 @@ export default function CustomerSaleList({
             </div>
           </div>
         ))}
+        {reports
+          .filter((report) => {
+            return !pinnedSale.find(
+              (sale) => sale.orderCode === report.orderCode
+            );
+          })
+          .map((report) => (
+            <div
+              key={report.orderCode}
+              className={`rounded-box col-span-12 border-2 p-3 shadow-md hover:cursor-pointer sm:col-span-6 md:col-span-4 lg:col-span-3 xl:col-span-2
+            ${
+              report.paymentStatus === PaymentStatus.CASH
+                ? "border-primary bg-green-100 text-primary dark:border-primary dark:bg-transparent hover:dark:bg-emerald-900 hover:dark:bg-opacity-10"
+                : report.paymentStatus === PaymentStatus.CHECK
+                ? "border-sky-700 bg-sky-100 text-sky-700 dark:bg-transparent hover:dark:bg-sky-900 hover:dark:bg-opacity-10"
+                : "border-yellow-700 bg-yellow-100 text-yellow-700 dark:border-yellow-700 dark:bg-transparent hover:dark:bg-yellow-900 hover:dark:bg-opacity-10"
+            }`}
+              onClick={() => {
+                onSelectSale(report);
+              }}
+            >
+              <div className="flex justify-between">
+                <span>
+                  #{report.manualCode ? report.manualCode : report.orderCode}
+                </span>
+                <span
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onPinOrder(report);
+                  }}
+                >
+                  <BiPin className="h-6 w-6 rotate-45" />
+                </span>
+              </div>
+              <div className="font-semibold">{report.customerName}</div>
+              <div className="text-sm">
+                {convertTimeToText(new Date(report.invoiceDate))}
+              </div>
+              <div className="">${niceVisualDecimal(report.sale)}</div>
+              <div className="mt-3 grid grid-cols-12 gap-2">
+                {report.paymentStatus !== PaymentStatus.CHECK && (
+                  <button
+                    className="btn btn-sm col-span-6 w-full border-sky-700 bg-sky-100 text-sky-700 hover:border-sky-700 hover:bg-sky-700 hover:text-white dark:bg-transparent"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onUpdatePayment(PaymentStatus.CHECK, report.orderCode);
+                    }}
+                  >
+                    Check
+                  </button>
+                )}
+                {report.paymentStatus !== PaymentStatus.CASH && (
+                  <button
+                    type="button"
+                    className="btn btn-sm col-span-6 w-full border-emerald-700 bg-green-100 text-emerald-700 hover:border-emerald-700 hover:bg-emerald-700 hover:text-white dark:bg-transparent"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onUpdatePayment(PaymentStatus.CASH, report.orderCode);
+                    }}
+                  >
+                    Cash
+                  </button>
+                )}
+                {report.paymentStatus !== PaymentStatus.RECEIVABLE && (
+                  <button
+                    type="button"
+                    className="btn btn-sm col-span-6 w-full border-yellow-700 bg-yellow-100 text-yellow-700 hover:border-yellow-700 hover:bg-yellow-700 hover:text-white dark:bg-transparent"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onUpdatePayment(
+                        PaymentStatus.RECEIVABLE,
+                        report.orderCode
+                      );
+                    }}
+                  >
+                    AR
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
       </div>
     </>
   );
