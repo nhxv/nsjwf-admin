@@ -109,11 +109,7 @@ export default function SearchSaleForm({
             value={searchForm.values.product}
           />
         </div>
-        <button
-          type="submit"
-          className="btn btn-accent"
-          //disabled={stateReducer.loading}
-        >
+        <button type="submit" className="btn btn-accent">
           <BiSearch className="h-6 w-6"></BiSearch>
         </button>
       </div>
