@@ -87,6 +87,7 @@ export default function CustomerOrderPrint({ order }) {
           className="btn btn-circle btn-ghost bg-base-200 text-neutral dark:bg-base-300 dark:text-neutral-content"
           onClick={(e) => {
             e.stopPropagation();
+            console.log("Cook");
             handleOrderPrint();
           }}
         >
