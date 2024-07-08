@@ -66,7 +66,7 @@ export default function BottomNav() {
           className={(navData) =>
             navData.isActive
               ? `rounded-btn mx-1 hidden bg-info text-info-content md:flex`
-              : `rounded-btn  mx-1 hidden hover:bg-base-200 dark:hover:bg-base-300 md:flex`
+              : `rounded-btn  mx-1 hidden hover:bg-base-200 md:flex dark:hover:bg-base-300`
           }
         >
           <BiShoppingBag className="h-6 w-6"></BiShoppingBag>
@@ -114,7 +114,7 @@ export default function BottomNav() {
           className={(navData) =>
             navData.isActive
               ? `rounded-btn mx-1 hidden bg-info text-info-content md:flex`
-              : `rounded-btn mx-1 hidden hover:bg-base-200 dark:hover:bg-base-300 md:flex`
+              : `rounded-btn mx-1 hidden hover:bg-base-200 md:flex dark:hover:bg-base-300`
           }
         >
           <BiSpreadsheet className="h-6 w-6"></BiSpreadsheet>
