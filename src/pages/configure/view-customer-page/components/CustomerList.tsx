@@ -92,8 +92,8 @@ export default function CustomerList() {
     );
   }
 
-  // TODO: Hanlde empty better.
-  if (search.customers.length === 0) {
+  // Only display this when the init search is empty, not client subsequent search
+  if (query.data.length === 0) {
     return (
       <>
         <div className="fixed bottom-24 right-6 z-20 md:right-8">
