@@ -137,6 +137,13 @@ export default function VendorOrderFormContainer() {
                 }
               }
             }
+
+            let attachmentPromise = null;
+            if (orderRes.data.attachment) {
+              attachmentPromise = api.get(
+                `/images/vendor-orders/${params.code}`
+              );
+            }
             setInitialFields((prev) => ({
               ...prev,
               vendorName: orderRes.data.vendor_name,
@@ -144,8 +151,18 @@ export default function VendorOrderFormContainer() {
               isTest: orderRes.data.is_test,
               code: orderRes.data.code,
               expectedAt: convertTime(new Date(orderRes.data.expected_at)),
+              attachment: null,
               ...productFieldData,
             }));
+            if (attachmentPromise !== null) {
+              attachmentPromise.then((res) => {
+                console.log(res);
+                setInitialFields((prev) => ({
+                  ...prev,
+                  attachment: res.data,
+                }));
+              });
+            }
             setFetchData((prev) => ({
               ...prev,
               editedProducts: editedProducts,
@@ -210,6 +227,7 @@ export default function VendorOrderFormContainer() {
               status: OrderStatus.SHIPPING,
               isTest: false,
               expectedAt: convertTime(today),
+              attachment: null,
               ...productFieldData,
             }));
             setFetchData((prev) => ({

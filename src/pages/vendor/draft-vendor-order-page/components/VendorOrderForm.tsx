@@ -15,6 +15,7 @@ import api from "../../../../stores/api";
 import { handleTokenExpire } from "../../../../commons/utils/token.util";
 import { useNavigate } from "react-router-dom";
 import { niceVisualDecimal } from "../../../../commons/utils/fraction.util";
+import FileInput from "../../../../components/forms/FileInput";
 
 export default function VendorOrderForm({
   edit,
@@ -98,6 +99,7 @@ export default function VendorOrderForm({
           }
         }
         reqData["productVendorOrders"] = [...productOrders.values()];
+        reqData["attachment"] = data["attachment"];
         setFormState((prev) => ({
           ...prev,
           error: "",
@@ -114,8 +116,9 @@ export default function VendorOrderForm({
             navigate(`/vendor/view-vendor-order`);
           }
         } else {
+          console.log("Sending ", reqData);
           // create order
-          const res = await api.post(`/vendor-orders`, reqData);
+          const res = await api.postForm(`/vendor-orders`, reqData);
           if (res) {
             navigate(`/vendor/view-vendor-order`);
           }
@@ -301,6 +304,8 @@ export default function VendorOrderForm({
     setSearch((prev) => ({ ...prev, products: [], query: "" }));
   };
 
+  console.log(vendorOrderForm.values.attachment);
+
   return (
     <form onSubmit={vendorOrderForm.handleSubmit}>
       {formState.page === 0 ? (
@@ -451,6 +456,17 @@ export default function VendorOrderForm({
                     </div>
                   )}
                 </div>
+
+                <FileInput
+                  accept="image/*"
+                  handleFiles={(files) => {
+                    const file = files[0];
+                    // TODO: Handle incorrect file type.
+                    if (file.type.startsWith("image/")) {
+                      vendorOrderForm.setFieldValue("attachment", file);
+                    }
+                  }}
+                />
               </div>
 
               <div className="mb-5 w-full xl:w-7/12">
