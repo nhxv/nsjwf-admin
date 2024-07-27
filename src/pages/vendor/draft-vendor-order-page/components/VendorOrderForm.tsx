@@ -1,5 +1,5 @@
 import { useFormik } from "formik";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BiLeftArrowAlt, BiRightArrowAlt, BiX } from "react-icons/bi";
 import { OrderStatus } from "../../../../commons/enums/order-status.enum";
 import Alert from "../../../../components/Alert";
@@ -16,6 +16,17 @@ import { handleTokenExpire } from "../../../../commons/utils/token.util";
 import { useNavigate } from "react-router-dom";
 import { niceVisualDecimal } from "../../../../commons/utils/fraction.util";
 import FileInput from "../../../../components/forms/FileInput";
+
+async function bytesToBase64DataUrl(bytes, type = "application/octet-stream") {
+  // https://developer.mozilla.org/en-US/docs/Glossary/Base64#converting_arbitrary_binary_data
+  return await new Promise((resolve, reject) => {
+    const reader = Object.assign(new FileReader(), {
+      onload: () => resolve(reader.result),
+      onerror: () => reject(reader.error),
+    });
+    reader.readAsDataURL(new File([bytes], "", { type }));
+  });
+}
 
 export default function VendorOrderForm({
   edit,
@@ -43,6 +54,8 @@ export default function VendorOrderForm({
     products: [],
     query: "",
   });
+
+  const [image, setImage] = useState(null);
 
   const vendorOrderForm = useFormik({
     enableReinitialize: true,
@@ -108,7 +121,7 @@ export default function VendorOrderForm({
         }));
         if (edit) {
           reqData["code"] = data["code"];
-          const res = await api.put(
+          const res = await api.putForm(
             `/vendor-orders/${reqData["code"]}`,
             reqData
           );
@@ -304,7 +317,20 @@ export default function VendorOrderForm({
     setSearch((prev) => ({ ...prev, products: [], query: "" }));
   };
 
-  console.log(vendorOrderForm.values.attachment);
+  // Maybe the code can be put in a better hook? It works for now.
+  useEffect(() => {
+    if (vendorOrderForm.values.attachment !== null) {
+      // attachment is null | File | Blob where File inherits Blob.
+      vendorOrderForm.values.attachment
+        .arrayBuffer()
+        .then((buffer: ArrayBuffer) => {
+          const bytes = new Uint8Array(buffer);
+          bytesToBase64DataUrl(bytes, "image/").then((base64str) => {
+            setImage(base64str);
+          });
+        });
+    }
+  }, [vendorOrderForm.values.attachment]);
 
   return (
     <form onSubmit={vendorOrderForm.handleSubmit}>
@@ -459,7 +485,7 @@ export default function VendorOrderForm({
 
                 <FileInput
                   accept="image/*"
-                  handleFiles={(files) => {
+                  handleFiles={async (files) => {
                     const file = files[0];
                     // TODO: Handle incorrect file type.
                     if (file.type.startsWith("image/")) {
@@ -467,6 +493,7 @@ export default function VendorOrderForm({
                     }
                   }}
                 />
+                {image && <img src={image}></img>}
               </div>
 
               <div className="mb-5 w-full xl:w-7/12">

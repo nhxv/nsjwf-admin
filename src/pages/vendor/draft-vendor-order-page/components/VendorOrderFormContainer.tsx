@@ -141,7 +141,11 @@ export default function VendorOrderFormContainer() {
             let attachmentPromise = null;
             if (orderRes.data.attachment) {
               attachmentPromise = api.get(
-                `/images/vendor-orders/${params.code}`
+                `/images/vendor-orders/${params.code}`,
+                {
+                  // This wasted 1 real life day of debugging. I love you Javascript.
+                  responseType: "blob",
+                }
               );
             }
             setInitialFields((prev) => ({
@@ -154,14 +158,27 @@ export default function VendorOrderFormContainer() {
               attachment: null,
               ...productFieldData,
             }));
+
             if (attachmentPromise !== null) {
-              attachmentPromise.then((res) => {
-                console.log(res);
-                setInitialFields((prev) => ({
-                  ...prev,
-                  attachment: res.data,
-                }));
-              });
+              attachmentPromise
+                .then((res) => {
+                  if (res.data) {
+                    const blob: Blob = res.data;
+                    // Convert to File cuz if user doesn't change the attachment,
+                    // the file will be sent back to backend to save again.
+                    // If it is left as a Blob, this "file" will have the name "blob",
+                    // which can cause conflict if another VO is updated.
+                    // Naming it as the VO's code mitigate this problem.
+                    const file = new File([blob], orderRes.data.code);
+                    setInitialFields((prev) => ({
+                      ...prev,
+                      attachment: file,
+                    }));
+                  }
+                })
+                .catch(() => {
+                  // No-op.
+                });
             }
             setFetchData((prev) => ({
               ...prev,
