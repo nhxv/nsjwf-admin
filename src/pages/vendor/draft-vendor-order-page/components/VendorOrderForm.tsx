@@ -1,6 +1,11 @@
 import { useFormik } from "formik";
-import { useEffect, useState } from "react";
-import { BiLeftArrowAlt, BiRightArrowAlt, BiX } from "react-icons/bi";
+import { useState } from "react";
+import {
+  BiCloudUpload,
+  BiLeftArrowAlt,
+  BiRightArrowAlt,
+  BiX,
+} from "react-icons/bi";
 import { OrderStatus } from "../../../../commons/enums/order-status.enum";
 import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
@@ -16,17 +21,8 @@ import { handleTokenExpire } from "../../../../commons/utils/token.util";
 import { useNavigate } from "react-router-dom";
 import { niceVisualDecimal } from "../../../../commons/utils/fraction.util";
 import FileInput from "../../../../components/forms/FileInput";
-
-async function bytesToBase64DataUrl(bytes, type = "application/octet-stream") {
-  // https://developer.mozilla.org/en-US/docs/Glossary/Base64#converting_arbitrary_binary_data
-  return await new Promise((resolve, reject) => {
-    const reader = Object.assign(new FileReader(), {
-      onload: () => resolve(reader.result),
-      onerror: () => reject(reader.error),
-    });
-    reader.readAsDataURL(new File([bytes], "", { type }));
-  });
-}
+import ImageModal from "./ImageModal";
+import { useStateURL } from "../../../../commons/hooks/objecturl.hook";
 
 export default function VendorOrderForm({
   edit,
@@ -55,7 +51,7 @@ export default function VendorOrderForm({
     query: "",
   });
 
-  const [image, setImage] = useState(null);
+  const [imageModalIsOpen, setModalOpen] = useState(false);
 
   const vendorOrderForm = useFormik({
     enableReinitialize: true,
@@ -153,6 +149,8 @@ export default function VendorOrderForm({
       }
     },
   });
+
+  const imageURL = useStateURL(vendorOrderForm.values.attachment);
 
   const handlePriceChange = (e, inputId: string) => {
     vendorOrderForm.setFieldValue(inputId, e.target.value);
@@ -317,21 +315,6 @@ export default function VendorOrderForm({
     setSearch((prev) => ({ ...prev, products: [], query: "" }));
   };
 
-  // Maybe the code can be put in a better hook? It works for now.
-  useEffect(() => {
-    if (vendorOrderForm.values.attachment !== null) {
-      // attachment is null | File | Blob where File inherits Blob.
-      vendorOrderForm.values.attachment
-        .arrayBuffer()
-        .then((buffer: ArrayBuffer) => {
-          const bytes = new Uint8Array(buffer);
-          bytesToBase64DataUrl(bytes, "image/").then((base64str) => {
-            setImage(base64str);
-          });
-        });
-    }
-  }, [vendorOrderForm.values.attachment]);
-
   return (
     <form onSubmit={vendorOrderForm.handleSubmit}>
       {formState.page === 0 ? (
@@ -437,6 +420,57 @@ export default function VendorOrderForm({
                   ></Checkbox>
                 </div>
 
+                <div className="my-5 flex justify-between gap-2">
+                  {imageURL ? (
+                    <div
+                      className="custom-card relative w-full bg-accent text-center hover:cursor-pointer hover:text-primary hover:underline"
+                      onClick={() => {
+                        setModalOpen(true);
+                      }}
+                    >
+                      {/* BUG: For some reasons CLICKing outside the modal trigger the div onClick,
+                      which reopen the modal again. Esc and onClose() still works. */}
+                      <ImageModal
+                        isOpen={imageModalIsOpen}
+                        onClose={() => setModalOpen(false)}
+                        imageSrc={imageURL}
+                      />
+                      <button
+                        type="button"
+                        className="btn btn-circle btn-accent btn-sm absolute -right-4 -top-4 shadow-md"
+                        onClick={(e) => {
+                          e.stopPropagation(); // Stop propagation to div
+
+                          vendorOrderForm.setFieldValue("attachment", null);
+                        }}
+                      >
+                        <span>
+                          <BiX className="h-6 w-6"></BiX>
+                        </span>
+                      </button>
+                      <span className="">Click to view attachment</span>
+                    </div>
+                  ) : (
+                    <div className="w-full">
+                      <FileInput
+                        accept="image/*"
+                        handleFiles={(files) => {
+                          const file = files[0];
+                          if (file.type.startsWith("image/")) {
+                            vendorOrderForm.setFieldValue("attachment", file);
+                          }
+                        }}
+                      >
+                        <span>
+                          <BiCloudUpload className="h-8 w-8"></BiCloudUpload>
+                        </span>
+                        <div>Drag and drop image here</div>
+                        <div>or click to browse</div>
+                      </FileInput>
+                    </div>
+                  )}
+                </div>
+
                 <div className="grid grid-cols-12 gap-3">
                   <button
                     type="button"
@@ -482,18 +516,6 @@ export default function VendorOrderForm({
                     </div>
                   )}
                 </div>
-
-                <FileInput
-                  accept="image/*"
-                  handleFiles={async (files) => {
-                    const file = files[0];
-                    // TODO: Handle incorrect file type.
-                    if (file.type.startsWith("image/")) {
-                      vendorOrderForm.setFieldValue("attachment", file);
-                    }
-                  }}
-                />
-                {image && <img src={image}></img>}
               </div>
 
               <div className="mb-5 w-full xl:w-7/12">

@@ -1,12 +1,17 @@
 interface FileInputProps {
   accept: string;
   handleFiles: (files: FileList) => any;
+  children?: React.ReactNode;
 }
 
-export default function FileInput({ accept, handleFiles }: FileInputProps) {
+export default function FileInput({
+  accept,
+  handleFiles,
+  children,
+}: FileInputProps) {
   return (
     <div
-      className="h-72 w-full bg-white outline-dotted"
+      className="rounded-md border-2 border-dashed border-accent hover:border-primary hover:text-primary"
       onDragEnter={(e) => {
         e.stopPropagation();
         e.preventDefault();
@@ -25,8 +30,9 @@ export default function FileInput({ accept, handleFiles }: FileInputProps) {
         handleFiles(files);
       }}
     >
-      <label>
-        Upload something, just anything
+      <label className="flex h-36 flex-col items-center justify-center text-center hover:cursor-pointer">
+        {children}
+
         <input
           className="hidden"
           type="file"
@@ -36,6 +42,7 @@ export default function FileInput({ accept, handleFiles }: FileInputProps) {
             const files = e.currentTarget.files;
             handleFiles(files);
           }}
+          capture="environment" // NOTE: Non-PC exclusive, need test to see if it works.
         ></input>
       </label>
     </div>
