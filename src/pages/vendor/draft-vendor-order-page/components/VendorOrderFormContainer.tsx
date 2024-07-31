@@ -160,6 +160,9 @@ export default function VendorOrderFormContainer() {
             }));
 
             if (attachmentPromise !== null) {
+              // BUG: If network sucks, this Promise will take FOREVER (tried with 3G throttle)
+              // Figure out how to pass this promise into ImageModal instead and let
+              // it resolve in there instead of blocking it here.
               attachmentPromise
                 .then((res) => {
                   if (res.data) {
