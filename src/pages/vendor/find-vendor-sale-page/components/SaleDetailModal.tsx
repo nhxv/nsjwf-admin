@@ -225,12 +225,21 @@ export default function SaleDetailModal({ isOpen, onClose, report }) {
           })}
         </div>
         <div className="divider"></div>
-        <div className="mt-2 flex items-center">
+        <div className="my-2 flex items-center">
           <span className="mr-2">Total:</span>
           <span className="mr-2 text-xl font-medium">
             ${niceVisualDecimal(report.sale)}
           </span>
         </div>
+
+        <button
+          className="btn btn-primary w-full"
+          onClick={() =>
+            navigate(`/vendor/view-vendor-order-detail/${report.orderCode}`)
+          }
+        >
+          View Detail
+        </button>
 
         <div>
           {saleRevertMut.status === "loading" && (
