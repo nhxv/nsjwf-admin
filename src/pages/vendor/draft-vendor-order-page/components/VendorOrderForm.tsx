@@ -485,7 +485,11 @@ export default function VendorOrderForm({
                   <button
                     type="submit"
                     className="btn btn-primary col-span-6"
-                    disabled={formState.loading || vendorOrderForm.isSubmitting}
+                    disabled={
+                      initialData.status === "COMPLETED" ||
+                      formState.loading ||
+                      vendorOrderForm.isSubmitting
+                    }
                   >
                     <span>{edit ? "Update" : "Create"}</span>
                   </button>
