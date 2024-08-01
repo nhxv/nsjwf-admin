@@ -101,13 +101,6 @@ export default function VendorSaleList({
     csvDownload(saleFile);
   };
 
-  const onUpdatePayment = (status: string, code: string) => {
-    paymentMethodMut.mutate({
-      code: code,
-      status: status,
-    });
-  };
-
   if (
     reportQuery.status === "loading" ||
     reportQuery.fetchStatus === "fetching"
