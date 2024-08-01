@@ -1,6 +1,11 @@
 import { useFormik } from "formik";
 import { useState } from "react";
-import { BiLeftArrowAlt, BiRightArrowAlt, BiX } from "react-icons/bi";
+import {
+  BiCloudUpload,
+  BiLeftArrowAlt,
+  BiRightArrowAlt,
+  BiX,
+} from "react-icons/bi";
 import { OrderStatus } from "../../../../commons/enums/order-status.enum";
 import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
@@ -15,6 +20,9 @@ import api from "../../../../stores/api";
 import { handleTokenExpire } from "../../../../commons/utils/token.util";
 import { useNavigate } from "react-router-dom";
 import { niceVisualDecimal } from "../../../../commons/utils/fraction.util";
+import FileInput from "../../../../components/forms/FileInput";
+import ImageModal from "./ImageModal";
+import { useStateURL } from "../../../../commons/hooks/objecturl.hook";
 
 export default function VendorOrderForm({
   edit,
@@ -42,6 +50,8 @@ export default function VendorOrderForm({
     products: [],
     query: "",
   });
+
+  const [imageModalIsOpen, setModalOpen] = useState(false);
 
   const vendorOrderForm = useFormik({
     enableReinitialize: true,
@@ -98,6 +108,7 @@ export default function VendorOrderForm({
           }
         }
         reqData["productVendorOrders"] = [...productOrders.values()];
+        reqData["attachment"] = data["attachment"];
         setFormState((prev) => ({
           ...prev,
           error: "",
@@ -106,7 +117,7 @@ export default function VendorOrderForm({
         }));
         if (edit) {
           reqData["code"] = data["code"];
-          const res = await api.put(
+          const res = await api.putForm(
             `/vendor-orders/${reqData["code"]}`,
             reqData
           );
@@ -114,8 +125,9 @@ export default function VendorOrderForm({
             navigate(`/vendor/view-vendor-order`);
           }
         } else {
+          console.log("Sending ", reqData);
           // create order
-          const res = await api.post(`/vendor-orders`, reqData);
+          const res = await api.postForm(`/vendor-orders`, reqData);
           if (res) {
             navigate(`/vendor/view-vendor-order`);
           }
@@ -137,6 +149,8 @@ export default function VendorOrderForm({
       }
     },
   });
+
+  const imageURL = useStateURL(vendorOrderForm.values.attachment);
 
   const handlePriceChange = (e, inputId: string) => {
     vendorOrderForm.setFieldValue(inputId, e.target.value);
@@ -404,6 +418,57 @@ export default function VendorOrderForm({
                     }
                     checked={vendorOrderForm.values["isTest"]}
                   ></Checkbox>
+                </div>
+
+                <div className="my-5 flex justify-between gap-2">
+                  {imageURL ? (
+                    <div
+                      className="custom-card relative w-full bg-accent text-center hover:cursor-pointer hover:text-primary hover:underline"
+                      onClick={() => {
+                        setModalOpen(true);
+                      }}
+                    >
+                      {/* BUG: For some reasons CLICKing outside the modal trigger the div onClick,
+                      which reopen the modal again. Esc and onClose() still works. */}
+                      <ImageModal
+                        isOpen={imageModalIsOpen}
+                        onClose={() => setModalOpen(false)}
+                        imageSrc={imageURL}
+                      />
+                      <button
+                        type="button"
+                        className="btn btn-circle btn-accent btn-sm absolute -right-4 -top-4 shadow-md"
+                        onClick={(e) => {
+                          e.stopPropagation(); // Stop propagation to div
+
+                          vendorOrderForm.setFieldValue("attachment", null);
+                        }}
+                      >
+                        <span>
+                          <BiX className="h-6 w-6"></BiX>
+                        </span>
+                      </button>
+                      <span className="">Click to view attachment</span>
+                    </div>
+                  ) : (
+                    <div className="w-full">
+                      <FileInput
+                        accept="image/*"
+                        handleFiles={(files) => {
+                          const file = files[0];
+                          if (file.type.startsWith("image/")) {
+                            vendorOrderForm.setFieldValue("attachment", file);
+                          }
+                        }}
+                      >
+                        <span>
+                          <BiCloudUpload className="h-8 w-8"></BiCloudUpload>
+                        </span>
+                        <div>Drag and drop image here</div>
+                        <div>or click to browse</div>
+                      </FileInput>
+                    </div>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-12 gap-3">
