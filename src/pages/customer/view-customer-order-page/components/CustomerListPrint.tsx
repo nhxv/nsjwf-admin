@@ -1,4 +1,4 @@
-import PackingSlipToPrint from "../../../../components/PackingSlipToPrint";
+import PackingSlipToPrint from "../../view-customer-order-detail-page/components/PackingSlipToPrint";
 
 export default function CustomerListPrint({ printRef, orders }) {
   return (

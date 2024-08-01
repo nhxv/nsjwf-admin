@@ -477,7 +477,9 @@ export default function CustomerOrderForm({
                     type="submit"
                     className="btn btn-primary col-span-6"
                     disabled={
-                      formState.loading || customerOrderForm.isSubmitting
+                      initialData.status === "COMPLETED" ||
+                      formState.loading ||
+                      customerOrderForm.isSubmitting
                     }
                   >
                     <span>{edit ? "Update" : "Create"}</span>

@@ -137,6 +137,17 @@ export default function VendorOrderFormContainer() {
                 }
               }
             }
+
+            let attachmentPromise = null;
+            if (orderRes.data.attachment) {
+              attachmentPromise = api.get(
+                `/images/vendor-orders/${params.code}`,
+                {
+                  // This wasted 1 real life day of debugging. I love you Javascript.
+                  responseType: "blob",
+                }
+              );
+            }
             setInitialFields((prev) => ({
               ...prev,
               vendorName: orderRes.data.vendor_name,
@@ -144,8 +155,34 @@ export default function VendorOrderFormContainer() {
               isTest: orderRes.data.is_test,
               code: orderRes.data.code,
               expectedAt: convertTime(new Date(orderRes.data.expected_at)),
+              attachment: null,
               ...productFieldData,
             }));
+
+            if (attachmentPromise !== null) {
+              // BUG: If network sucks, this Promise will take FOREVER (tried with 3G throttle)
+              // Figure out how to pass this promise into ImageModal instead and let
+              // it resolve in there instead of blocking it here.
+              attachmentPromise
+                .then((res) => {
+                  if (res.data) {
+                    const blob: Blob = res.data;
+                    // Convert to File cuz if user doesn't change the attachment,
+                    // the file will be sent back to backend to save again.
+                    // If it is left as a Blob, this "file" will have the name "blob",
+                    // which can cause conflict if another VO is updated.
+                    // Naming it as the VO's code mitigate this problem.
+                    const file = new File([blob], orderRes.data.code);
+                    setInitialFields((prev) => ({
+                      ...prev,
+                      attachment: file,
+                    }));
+                  }
+                })
+                .catch(() => {
+                  // No-op.
+                });
+            }
             setFetchData((prev) => ({
               ...prev,
               editedProducts: editedProducts,
@@ -210,6 +247,7 @@ export default function VendorOrderFormContainer() {
               status: OrderStatus.SHIPPING,
               isTest: false,
               expectedAt: convertTime(today),
+              attachment: null,
               ...productFieldData,
             }));
             setFetchData((prev) => ({
