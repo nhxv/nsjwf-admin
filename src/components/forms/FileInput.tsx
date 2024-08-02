@@ -42,7 +42,7 @@ export default function FileInput({
             const files = e.currentTarget.files;
             handleFiles(files);
           }}
-          capture="environment" // NOTE: Non-PC exclusive, need test to see if it works.
+          // capture="environment"
         ></input>
       </label>
     </div>
