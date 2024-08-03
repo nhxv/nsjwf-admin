@@ -19,6 +19,7 @@ export default function CustomerOrderList() {
   const [search, setSearch] = useState({
     orders: [],
     query: "",
+    boxCount: 0,
     status: "ALL",
   });
   const total = useMemo(() => {
@@ -83,15 +84,34 @@ export default function CustomerOrderList() {
           );
         }
       );
+
+      // Count how many boxes that match with this query.
+      let qtyTotal = 0;
+      for (const order of filterByStatus(query.data, search.status)) {
+        const matchedProducts = order.productCustomerOrders.filter((pOrder) => {
+          return pOrder.product_name
+            .toLowerCase()
+            .replace(/\s+/g, "")
+            .includes(e.target.value.toLowerCase().replace(/\s+/g, ""));
+        });
+        for (const product of matchedProducts) {
+          if (product.unit_code.endsWith("BOX")) {
+            qtyTotal += product.quantity;
+          }
+        }
+      }
+
       setSearch((prev) => ({
         ...prev,
         orders: searched,
+        boxCount: qtyTotal,
         query: e.target.value,
       }));
     } else {
       setSearch((prev) => ({
         ...prev,
         orders: filterByStatus(query.data, prev.status),
+        boxCount: 0,
         query: e.target.value,
       }));
     }
@@ -101,6 +121,7 @@ export default function CustomerOrderList() {
     setSearch((prev) => ({
       ...prev,
       orders: filterByStatus(query.data, prev.status),
+      boxCount: 0,
       query: "",
     }));
   };
@@ -150,6 +171,11 @@ export default function CustomerOrderList() {
           <div className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content">
             <span>${total} in total</span>
           </div>
+          {search.boxCount > 0 && (
+            <div className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content">
+              <span>{search.boxCount} boxes</span>
+            </div>
+          )}
         </div>
         <div className="flex w-full flex-col-reverse gap-2 md:flex-row xl:w-5/12 xl:flex-row">
           <div className="md:w-4/12 xl:w-5/12">
