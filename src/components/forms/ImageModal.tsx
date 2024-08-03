@@ -1,5 +1,5 @@
 import { BiX } from "react-icons/bi";
-import Modal from "../../../../components/Modal";
+import Modal from "../Modal";
 
 interface ImageModalProps {
   isOpen: boolean;
@@ -19,7 +19,7 @@ export default function ImageModal({
 }: ImageModalProps) {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <div className="min-h-20 min-w-20">
+      <div className="min-h-20 min-w-20 max-w-screen-lg">
         <button
           type="button"
           className="btn btn-circle btn-accent btn-sm absolute right-4 top-4"
