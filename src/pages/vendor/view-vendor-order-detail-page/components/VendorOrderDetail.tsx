@@ -9,6 +9,7 @@ import { AlertFromQueryError } from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
 import StatusTag from "../../../../components/StatusTag";
 import api from "../../../../stores/api";
+import { useStateURL } from "../../../../commons/hooks/objecturl.hook";
 
 export default function VendorOrderDetail() {
   const params = useParams();
@@ -24,6 +25,18 @@ export default function VendorOrderDetail() {
       return result.data;
     },
   });
+  const order = orderQuery.data;
+
+  const { isSuccess: isAttachmentReady, data: image } = useQuery<any, any>({
+    queryKey: ["images", "vendor-orders", `${params.code}`],
+    queryFn: async () => {
+      const result = await api.get(order.attachment, { responseType: "blob" });
+      return new File([result.data], `${params.code}`);
+    },
+    enabled: !!order?.attachment,
+  });
+
+  const imageURL = useStateURL(image);
 
   const onUpdateOrder = (code: string) => {
     navigate(`/vendor/draft-vendor-order/${code}`);
@@ -42,8 +55,6 @@ export default function VendorOrderDetail() {
   ) {
     return <AlertFromQueryError queryError={orderQuery.error} />;
   }
-
-  const order = orderQuery.data;
 
   return (
     <div className="custom-card" onClick={() => onUpdateOrder(order.code)}>
@@ -153,6 +164,10 @@ export default function VendorOrderDetail() {
       >
         Update order
       </button>
+
+      {isAttachmentReady && (
+        <img className="mt-5" src={imageURL}></img>
+      )}
     </div>
   );
 }
