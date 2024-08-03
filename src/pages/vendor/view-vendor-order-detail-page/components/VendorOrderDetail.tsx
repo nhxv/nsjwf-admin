@@ -1,6 +1,6 @@
 import { Disclosure } from "@headlessui/react";
 import { useQuery } from "@tanstack/react-query";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import { BiChevronDown, BiChevronUp } from "react-icons/bi";
 import { useNavigate, useParams } from "react-router-dom";
 import { niceVisualDecimal } from "../../../../commons/utils/fraction.util";
@@ -10,6 +10,7 @@ import Spinner from "../../../../components/Spinner";
 import StatusTag from "../../../../components/StatusTag";
 import api from "../../../../stores/api";
 import { useStateURL } from "../../../../commons/hooks/objecturl.hook";
+import ImageModal from "../../../../components/forms/ImageModal";
 
 export default function VendorOrderDetail() {
   const params = useParams();
@@ -37,6 +38,7 @@ export default function VendorOrderDetail() {
   });
 
   const imageURL = useStateURL(image);
+  const [isImgModalOpen, setIsImgModalOpen] = useState(false);
 
   const onUpdateOrder = (code: string) => {
     navigate(`/vendor/draft-vendor-order/${code}`);
@@ -166,7 +168,21 @@ export default function VendorOrderDetail() {
       </button>
 
       {isAttachmentReady && (
-        <img className="mt-5" src={imageURL}></img>
+        <>
+          <img
+            className="mt-5 hover:cursor-pointer"
+            src={imageURL}
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsImgModalOpen(true);
+            }}
+          />
+          <ImageModal
+            isOpen={isImgModalOpen}
+            onClose={() => setIsImgModalOpen(false)}
+            imageSrc={imageURL}
+          />
+        </>
       )}
     </div>
   );
