@@ -122,18 +122,16 @@ export default function VendorOrderFormContainer() {
                   });
                 }
               } else {
-                if (!product.discontinued) {
-                  for (let i = 1; i <= product.units.length; i++) {
-                    productFieldData[`quantity${product.id}-${i}`] = 0;
-                    productFieldData[`unit${product.id}-${i}`] = "BOX";
-                    productFieldData[`price${product.id}-${i}`] = 0;
-                    updatedPrices.push({
-                      id: product.id,
-                      appear: i,
-                      quantity: productFieldData[`quantity${product.id}-${i}`],
-                      price: productFieldData[`price${product.id}-${i}`],
-                    });
-                  }
+                for (let i = 1; i <= product.units.length; i++) {
+                  productFieldData[`quantity${product.id}-${i}`] = 0;
+                  productFieldData[`unit${product.id}-${i}`] = "BOX";
+                  productFieldData[`price${product.id}-${i}`] = 0;
+                  updatedPrices.push({
+                    id: product.id,
+                    appear: i,
+                    quantity: productFieldData[`quantity${product.id}-${i}`],
+                    price: productFieldData[`price${product.id}-${i}`],
+                  });
                 }
               }
             }
