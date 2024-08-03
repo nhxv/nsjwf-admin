@@ -21,7 +21,7 @@ import { handleTokenExpire } from "../../../../commons/utils/token.util";
 import { useNavigate } from "react-router-dom";
 import { niceVisualDecimal } from "../../../../commons/utils/fraction.util";
 import FileInput from "../../../../components/forms/FileInput";
-import ImageModal from "./ImageModal";
+import ImageModal from "../../../../components/forms/ImageModal";
 import { useStateURL } from "../../../../commons/hooks/objecturl.hook";
 
 export default function VendorOrderForm({
