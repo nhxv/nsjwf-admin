@@ -1,5 +1,5 @@
 import { useFormik } from "formik";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   BiCloudUpload,
   BiLeftArrowAlt,
@@ -23,6 +23,7 @@ import { niceVisualDecimal } from "../../../../commons/utils/fraction.util";
 import FileInput from "../../../../components/forms/FileInput";
 import ImageModal from "../../../../components/forms/ImageModal";
 import { useStateURL } from "../../../../commons/hooks/objecturl.hook";
+import imageCompression from "browser-image-compression";
 
 export default function VendorOrderForm({
   edit,
@@ -50,6 +51,7 @@ export default function VendorOrderForm({
     products: [],
     query: "",
   });
+  const imageCompressAborter = useRef(new AbortController());
 
   const [imageModalIsOpen, setModalOpen] = useState(false);
 
@@ -159,6 +161,7 @@ export default function VendorOrderForm({
 
   const onClearForm = () => {
     onClear();
+    imageCompressAborter.current.abort();
   };
 
   const onNextPage = async () => {
@@ -454,10 +457,40 @@ export default function VendorOrderForm({
                     <div className="w-full">
                       <FileInput
                         accept="image/*"
-                        handleFiles={(files) => {
+                        handleFiles={async (files) => {
                           const file = files[0];
                           if (file.type.startsWith("image/")) {
-                            vendorOrderForm.setFieldValue("attachment", file);
+                            try {
+                              const compressedFile = await imageCompression(
+                                file,
+                                {
+                                  maxSizeMB: 0.5,
+                                  signal: imageCompressAborter.current.signal,
+                                  onProgress: (progress) => {
+                                    if (progress < 100) {
+                                      setFormState((prev) => ({
+                                        ...prev,
+                                        loading: true,
+                                      }));
+                                    } else {
+                                      setFormState((prev) => ({
+                                        ...prev,
+                                        loading: false,
+                                      }));
+                                    }
+                                  },
+                                }
+                              );
+                              vendorOrderForm.setFieldValue(
+                                "attachment",
+                                compressedFile
+                              );
+                            } catch (error) {
+                              setFormState((prev) => ({
+                                ...prev,
+                                error: error.message,
+                              }));
+                            }
                           }
                         }}
                       >
@@ -476,6 +509,7 @@ export default function VendorOrderForm({
                     type="button"
                     className="btn-outline-primary btn col-span-6"
                     onClick={onPreviousPage}
+                    disabled={formState.loading || vendorOrderForm.isSubmitting}
                   >
                     <span>
                       <BiLeftArrowAlt className="mr-1 h-7 w-7"></BiLeftArrowAlt>
