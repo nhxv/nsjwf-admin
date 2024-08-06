@@ -111,12 +111,12 @@ export default function VendorOrderForm({
         }
         reqData["productVendorOrders"] = [...productOrders.values()];
         reqData["attachment"] = data["attachment"];
-        setFormState((prev) => ({
-          ...prev,
-          error: "",
-          empty: "",
-          loading: false,
-        }));
+        // setFormState((prev) => ({
+        //   ...prev,
+        //   error: "",
+        //   empty: "",
+        //   loading: false,
+        // }));
         if (edit) {
           reqData["code"] = data["code"];
           const res = await api.putForm(
