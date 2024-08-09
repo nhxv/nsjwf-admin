@@ -3,9 +3,10 @@ import {
   BiLogOutCircle,
   BiHomeAlt,
   BiShoppingBag,
-  BiSpreadsheet,
   BiClipboard,
   BiBarChartAlt2,
+  BiLineChart,
+  BiDollar,
 } from "react-icons/bi";
 import { NavLink } from "react-router-dom";
 import { Role } from "../commons/enums/role.enum";
@@ -86,15 +87,15 @@ export default function BottomNav() {
         </NavLink>
 
         <NavLink
-          to="/stock/view-stock"
+          to="/customer/find-sale"
           className={(navData) =>
             navData.isActive
               ? `rounded-btn mx-1 bg-info text-info-content`
               : `rounded-btn mx-1 hover:bg-base-200 dark:hover:bg-base-300`
           }
         >
-          <BiHomeAlt className="h-6 w-6" />
-          <span className="btm-nav-label font-medium">Stock</span>
+          <BiDollar className="h-6 w-6" />
+          <span className="btm-nav-label font-medium">Find Sale</span>
         </NavLink>
 
         <NavLink
@@ -110,15 +111,15 @@ export default function BottomNav() {
         </NavLink>
 
         <NavLink
-          to="/vendor/draft-vendor-order"
+          to="/analysis/analyze-customer-sale"
           className={(navData) =>
             navData.isActive
               ? `rounded-btn mx-1 hidden bg-info text-info-content md:flex`
               : `rounded-btn mx-1 hidden hover:bg-base-200 md:flex dark:hover:bg-base-300`
           }
         >
-          <BiSpreadsheet className="h-6 w-6"></BiSpreadsheet>
-          <span className="btm-nav-label font-medium">Draft VO</span>
+          <BiLineChart className="h-6 w-6"></BiLineChart>
+          <span className="btm-nav-label font-medium">Analysis</span>
         </NavLink>
       </div>
     );

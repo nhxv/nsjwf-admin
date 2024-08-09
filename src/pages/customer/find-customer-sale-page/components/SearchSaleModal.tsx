@@ -4,6 +4,7 @@ import Modal from "../../../../components/Modal";
 import DateInput from "../../../../components/forms/DateInput";
 import SelectSearch from "../../../../components/forms/SelectSearch";
 import TextInput from "../../../../components/forms/TextInput";
+import { convertTime } from "../../../../commons/utils/time.util";
 
 interface SearchSaleModalProps {
   isOpen: boolean;
@@ -18,13 +19,15 @@ export default function SearchSaleModal({
   onSearchSubmit,
   onClose,
 }: SearchSaleModalProps) {
+  const startOfMonth = new Date();
+  startOfMonth.setDate(1);
   const searchForm = useFormik({
     initialValues: {
       manualCode: "",
       customer: "",
       product: "",
-      start_date: "",
-      end_date: "",
+      start_date: convertTime(startOfMonth),
+      end_date: convertTime(new Date()),
     },
     onSubmit: (form_data) => {
       let url = "";

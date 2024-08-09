@@ -3,8 +3,9 @@ import { BiSearch } from "react-icons/bi";
 import DateInput from "../../../../components/forms/DateInput";
 import SelectSearch from "../../../../components/forms/SelectSearch";
 import TextInput from "../../../../components/forms/TextInput";
+import { convertTime } from "../../../../commons/utils/time.util";
 
-interface SearchSaleModalProps {
+interface SearchSaleFormProps {
   customers: Array<any>;
   onSearchSubmit: (urlParams: string) => void;
 }
@@ -12,14 +13,16 @@ interface SearchSaleModalProps {
 export default function SearchSaleForm({
   customers,
   onSearchSubmit,
-}: SearchSaleModalProps) {
+}: SearchSaleFormProps) {
+  const startOfMonth = new Date();
+  startOfMonth.setDate(1);
   const searchForm = useFormik({
     initialValues: {
       manualCode: "",
       customer: "",
       product: "",
-      start_date: "",
-      end_date: "",
+      start_date: convertTime(startOfMonth),
+      end_date: convertTime(new Date()),
     },
     onSubmit: (form_data) => {
       let url = "";

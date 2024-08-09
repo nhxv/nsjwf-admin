@@ -127,7 +127,6 @@ export default function VendorOrderForm({
             navigate(`/vendor/view-vendor-order`);
           }
         } else {
-          console.log("Sending ", reqData);
           // create order
           const res = await api.postForm(`/vendor-orders`, reqData);
           if (res) {
