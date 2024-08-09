@@ -15,7 +15,6 @@ const toForceFixedDecimal = (n: number | string, fix: number = 2) => {
 };
 
 export default function InvoiceToPrint({ printRef, order }) {
-  console.log(order);
   return (
     <div
       className="flex h-[11in] flex-col gap-1 p-4 text-primary"
