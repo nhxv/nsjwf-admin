@@ -9,13 +9,9 @@ import Spinner from "../../../../components/Spinner";
 import SearchInput from "../../../../components/forms/SearchInput";
 import SelectInput from "../../../../components/forms/SelectInput";
 import api from "../../../../stores/api";
-import { BiPlus } from "react-icons/bi";
-import { useAuthStore } from "../../../../stores/auth.store";
-import { Role } from "../../../../commons/enums/role.enum";
 
 export default function VendorOrderList() {
   const navigate = useNavigate();
-  const role = useAuthStore((state) => state.role);
   const [search, setSearch] = useState({
     orders: [],
     query: "",
@@ -130,21 +126,6 @@ export default function VendorOrderList() {
 
   return (
     <>
-      {(role === Role.MASTER || role === Role.ADMIN) && (
-        <div className="fixed bottom-24 right-6 z-20 md:right-8">
-          <button
-            type="button"
-            className="btn btn-circle btn-primary"
-            onClick={() => {
-              navigate("/vendor/draft-vendor-order");
-            }}
-          >
-            <span>
-              <BiPlus className="h-8 w-8"></BiPlus>
-            </span>
-          </button>
-        </div>
-      )}
       <div className="m-4 flex flex-col items-center justify-between gap-3 xl:flex-row">
         <div className="flex items-center gap-2">
           <div className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content">
