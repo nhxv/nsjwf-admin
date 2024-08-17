@@ -538,7 +538,7 @@ export default function VendorOrderForm({
                     className="btn btn-accent col-span-12"
                     onClick={onClearForm}
                   >
-                    <span>Clear change(s)</span>
+                    <span>Revert change(s)</span>
                   </button>
                 </div>
 
