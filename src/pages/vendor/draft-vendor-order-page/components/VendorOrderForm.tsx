@@ -426,7 +426,7 @@ export default function VendorOrderForm({
                 <div className="my-5 flex justify-between gap-2">
                   {imageURL ? (
                     <div
-                      className="custom-card sticker-yellow relative w-full text-center hover:cursor-pointer dark:border-2"
+                      className="custom-card sticker-primary relative w-full text-center hover:cursor-pointer dark:border-2"
                       onClick={() => {
                         setModalOpen(true);
                       }}
