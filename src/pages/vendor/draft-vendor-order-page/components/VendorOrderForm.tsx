@@ -2,6 +2,7 @@ import { useFormik } from "formik";
 import { useRef, useState } from "react";
 import {
   BiCloudUpload,
+  BiImage,
   BiLeftArrowAlt,
   BiRightArrowAlt,
   BiX,
@@ -425,7 +426,7 @@ export default function VendorOrderForm({
                 <div className="my-5 flex justify-between gap-2">
                   {imageURL ? (
                     <div
-                      className="custom-card relative w-full bg-accent text-center hover:cursor-pointer hover:text-primary hover:underline"
+                      className="custom-card sticker-yellow relative w-full text-center hover:cursor-pointer dark:border-2"
                       onClick={() => {
                         setModalOpen(true);
                       }}
