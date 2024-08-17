@@ -75,79 +75,86 @@ export default function VendorOrderDetail() {
           </div>
         </div>
       </div>
-      <Disclosure>
-        {({ open }) => (
-          <>
-            <Disclosure.Button
-              className="divider w-full py-6 hover:text-primary hover:before:bg-primary hover:after:bg-primary"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {open ? (
-                <>
-                  Hide
-                  <span className="scale-150">
-                    <BiChevronUp></BiChevronUp>
-                  </span>
-                </>
-              ) : (
-                <>
-                  View {order.productVendorOrders.length} Product
-                  {order.productVendorOrders.length > 1 ? "s" : ""}
-                  <span className="scale-150">
-                    <BiChevronDown></BiChevronDown>
-                  </span>
-                </>
-              )}
-            </Disclosure.Button>
-            <Disclosure.Panel as={Fragment}>
-              <Disclosure.Button as="div" onClick={(e) => e.stopPropagation()}>
-                <div className="mb-2 flex items-center">
-                  <div className="w-6/12">
-                    <span className="font-medium">Product</span>
-                  </div>
-                  <div className="w-3/12 text-center">
-                    <span className="font-medium">Qty</span>
-                  </div>
-                  <div className="w-3/12 text-center">
-                    <span className="font-medium">Price</span>
-                  </div>
-                </div>
-
-                {/* products in order */}
-                {order.productVendorOrders.map((productOrder) => {
-                  return (
-                    <div
-                      key={productOrder.unit_code}
-                      className="rounded-btn mb-2 flex items-center justify-center bg-base-200 py-3 dark:bg-base-300"
-                    >
-                      <div className="ml-3 w-6/12">
-                        <span>{productOrder.product_name}</span>
-                      </div>
-                      <div className="w-3/12 text-center">
-                        <span>
-                          {productOrder.quantity}{" "}
-                          {productOrder.unit_code
-                            .split("_")[1]
-                            .toLowerCase() === "box"
-                            ? ``
-                            : `(${productOrder.unit_code
-                                .split("_")[1]
-                                .toLowerCase()})`}
-                        </span>
-                      </div>
-                      <div className="w-3/12 text-center">
-                        {niceVisualDecimal(productOrder.unit_price)}
-                      </div>
-                    </div>
-                  );
-                })}
-
-                <div className="divider"></div>
+      {order.productVendorOrders.length === 0 ? (
+        <div className="divider w-full py-6 italic">No product entered</div>
+      ) : (
+        <Disclosure>
+          {({ open }) => (
+            <>
+              <Disclosure.Button
+                className="divider w-full py-6 hover:text-primary hover:before:bg-primary hover:after:bg-primary"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {open ? (
+                  <>
+                    Hide
+                    <span className="scale-150">
+                      <BiChevronUp></BiChevronUp>
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    View {order.productVendorOrders.length} Product
+                    {order.productVendorOrders.length > 1 ? "s" : ""}
+                    <span className="scale-150">
+                      <BiChevronDown></BiChevronDown>
+                    </span>
+                  </>
+                )}
               </Disclosure.Button>
-            </Disclosure.Panel>
-          </>
-        )}
-      </Disclosure>
+              <Disclosure.Panel as={Fragment}>
+                <Disclosure.Button
+                  as="div"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="mb-2 flex items-center">
+                    <div className="w-6/12">
+                      <span className="font-medium">Product</span>
+                    </div>
+                    <div className="w-3/12 text-center">
+                      <span className="font-medium">Qty</span>
+                    </div>
+                    <div className="w-3/12 text-center">
+                      <span className="font-medium">Price</span>
+                    </div>
+                  </div>
+
+                  {/* products in order */}
+                  {order.productVendorOrders.map((productOrder) => {
+                    return (
+                      <div
+                        key={productOrder.unit_code}
+                        className="rounded-btn mb-2 flex items-center justify-center bg-base-200 py-3 dark:bg-base-300"
+                      >
+                        <div className="ml-3 w-6/12">
+                          <span>{productOrder.product_name}</span>
+                        </div>
+                        <div className="w-3/12 text-center">
+                          <span>
+                            {productOrder.quantity}{" "}
+                            {productOrder.unit_code
+                              .split("_")[1]
+                              .toLowerCase() === "box"
+                              ? ``
+                              : `(${productOrder.unit_code
+                                  .split("_")[1]
+                                  .toLowerCase()})`}
+                          </span>
+                        </div>
+                        <div className="w-3/12 text-center">
+                          {niceVisualDecimal(productOrder.unit_price)}
+                        </div>
+                      </div>
+                    );
+                  })}
+
+                  <div className="divider"></div>
+                </Disclosure.Button>
+              </Disclosure.Panel>
+            </>
+          )}
+        </Disclosure>
+      )}
       <div className="mt-2 flex items-center">
         <span className="mr-2">Total:</span>
         <span className="text-xl font-medium">

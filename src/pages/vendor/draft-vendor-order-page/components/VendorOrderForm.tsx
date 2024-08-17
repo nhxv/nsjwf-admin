@@ -2,6 +2,7 @@ import { useFormik } from "formik";
 import { useRef, useState } from "react";
 import {
   BiCloudUpload,
+  BiImage,
   BiLeftArrowAlt,
   BiRightArrowAlt,
   BiX,
@@ -425,7 +426,7 @@ export default function VendorOrderForm({
                 <div className="my-5 flex justify-between gap-2">
                   {imageURL ? (
                     <div
-                      className="custom-card relative w-full bg-accent text-center hover:cursor-pointer hover:text-primary hover:underline"
+                      className="custom-card sticker-primary relative w-full text-center hover:cursor-pointer dark:border-2"
                       onClick={() => {
                         setModalOpen(true);
                       }}
@@ -450,7 +451,12 @@ export default function VendorOrderForm({
                           <BiX className="h-6 w-6"></BiX>
                         </span>
                       </button>
-                      <span className="">Click to view attachment</span>
+                      <div className="hover:text-primary hover:underline">
+                        <span className="flex justify-center">
+                          <BiImage className="h-16 w-16"></BiImage>
+                        </span>
+                        <span>Click to view attachment</span>
+                      </div>
                     </div>
                   ) : (
                     <div className="w-full">
@@ -532,7 +538,7 @@ export default function VendorOrderForm({
                     className="btn btn-accent col-span-12"
                     onClick={onClearForm}
                   >
-                    <span>Clear change(s)</span>
+                    <span>Revert change(s)</span>
                   </button>
                 </div>
 

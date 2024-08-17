@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useRef, useState } from "react";
-import { BiPlus, BiPrinter } from "react-icons/bi";
+import { BiPrinter } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
 import { OrderStatus } from "../../../../commons/enums/order-status.enum";
@@ -12,13 +12,10 @@ import SearchInput from "../../../../components/forms/SearchInput";
 import SelectInput from "../../../../components/forms/SelectInput";
 import api from "../../../../stores/api";
 import CustomerListPrint from "./CustomerListPrint";
-import { useAuthStore } from "../../../../stores/auth.store";
-import { Role } from "../../../../commons/enums/role.enum";
 
 export default function CustomerOrderList() {
   const printRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-  const role = useAuthStore((state) => state.role);
   const [search, setSearch] = useState({
     orders: [],
     query: "",
@@ -162,22 +159,6 @@ export default function CustomerOrderList() {
         {/* Not sure why it has to be a component here for it to print. */}
         <CustomerListPrint printRef={printRef} orders={search.orders} />
       </div>
-
-      {(role === Role.MASTER || role === Role.ADMIN) && (
-        <div className="fixed bottom-24 right-6 z-20 md:right-8">
-          <button
-            type="button"
-            className="btn btn-circle btn-primary"
-            onClick={() => {
-              navigate("/customer/draft-customer-order");
-            }}
-          >
-            <span>
-              <BiPlus className="h-8 w-8"></BiPlus>
-            </span>
-          </button>
-        </div>
-      )}
 
       <div className="m-4 flex flex-col items-center justify-between gap-3 xl:flex-row">
         <div className="flex items-center gap-2">

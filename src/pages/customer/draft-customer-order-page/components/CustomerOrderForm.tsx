@@ -419,7 +419,7 @@ export default function CustomerOrderForm({
             className="btn btn-accent col-span-12 mt-3"
             onClick={onClearForm}
           >
-            <span>Clear change(s)</span>
+            <span>Revert change(s)</span>
           </button>
         </div>
       ) : (
