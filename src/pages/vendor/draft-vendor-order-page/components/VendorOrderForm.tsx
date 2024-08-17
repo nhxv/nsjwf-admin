@@ -451,7 +451,12 @@ export default function VendorOrderForm({
                           <BiX className="h-6 w-6"></BiX>
                         </span>
                       </button>
-                      <span className="">Click to view attachment</span>
+                      <div className="hover:text-primary hover:underline">
+                        <span className="flex justify-center">
+                          <BiImage className="h-16 w-16"></BiImage>
+                        </span>
+                        <span>Click to view attachment</span>
+                      </div>
                     </div>
                   ) : (
                     <div className="w-full">
