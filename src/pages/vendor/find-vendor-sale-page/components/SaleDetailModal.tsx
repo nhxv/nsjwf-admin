@@ -123,7 +123,7 @@ export default function SaleDetailModal({ isOpen, onClose, report }) {
         {/* basic report info */}
         <div className="flex flex-row justify-between">
           <div>
-            <p>#{report.orderCode}</p>
+            <p>#{report.manualCode ?? report.orderCode}</p>
             <p className="text-xl font-semibold">{report.vendorName}</p>
             <p className="text-sm text-neutral">
               Completed at {convertTimeToText(new Date(report.updatedAt))}

@@ -152,6 +152,7 @@ export default function VendorOrderFormContainer() {
               status: orderRes.data.status,
               isTest: orderRes.data.is_test,
               code: orderRes.data.code,
+              manualCode: orderRes.data.manual_code ?? "",
               expectedAt: convertTime(new Date(orderRes.data.expected_at)),
               attachment: null,
               ...productFieldData,
@@ -242,6 +243,7 @@ export default function VendorOrderFormContainer() {
             setInitialFields((prev) => ({
               ...prev,
               vendorName: ``,
+              manualCode: "",
               status: OrderStatus.SHIPPING,
               isTest: false,
               expectedAt: convertTime(today),

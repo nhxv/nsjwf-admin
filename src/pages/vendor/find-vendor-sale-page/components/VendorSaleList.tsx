@@ -189,7 +189,7 @@ export default function VendorSaleList({
           >
             {/* Make it look a bit better when the name is too long and wrap into newline. */}
             <div>
-              <div>#{report.orderCode}</div>
+              <div>#{report.manualCode ?? report.orderCode}</div>
               <div className="font-semibold">{report.vendorName}</div>
             </div>
             <div>

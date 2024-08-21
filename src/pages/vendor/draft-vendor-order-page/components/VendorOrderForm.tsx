@@ -73,6 +73,9 @@ export default function VendorOrderForm({
         reqData["status"] = data["status"];
         reqData["isTest"] = data["isTest"];
         reqData["expectedAt"] = data["expectedAt"];
+        // Ensure this is either true-ish or null, no empty string allowed.
+        // Makes it easier to deal with later.
+        reqData["manualCode"] = data["manualCode"] ? data["manualCode"] : null;
         const properties = Object.keys(data).sort();
         for (const property of properties) {
           if (property.includes("price")) {
@@ -323,7 +326,7 @@ export default function VendorOrderForm({
       {formState.page === 0 ? (
         <div className="custom-card mx-auto grid grid-cols-12 gap-x-2 xl:w-7/12">
           {/* 1st page */}
-          <div className="col-span-12 mb-5">
+          <div className="col-span-12 mb-5 xl:col-span-6">
             <label className="custom-label mb-2 inline-block">
               <span>Order to vendor</span>
               <span className="text-red-500">*</span>
@@ -334,6 +337,20 @@ export default function VendorOrderForm({
               setValue={(v) => vendorOrderForm.setFieldValue("vendorName", v)}
               options={vendors.map((vendor) => vendor.name)}
             />
+          </div>
+
+          <div className="col-span-12 mb-5 xl:col-span-6">
+            <label className="custom-label mb-2 inline-block">
+              <span>Manual code</span>
+            </label>
+            <TextInput
+              id="manual-code"
+              type="text"
+              placeholder={`Manual code`}
+              name="manualCode"
+              value={vendorOrderForm.values.manualCode}
+              onChange={vendorOrderForm.handleChange}
+            ></TextInput>
           </div>
 
           <div className="col-span-12 mb-5 xl:col-span-6">
