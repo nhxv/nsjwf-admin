@@ -37,14 +37,14 @@ export default function Layout({ children }) {
   const titleBar = {
     "/profile": "Profile",
 
-    "/customer/draft-customer-order": "Draft Order",
+    "/customer/draft-customer-order": "Draft Customer Order",
     "/customer/update-order-priority": "Update Priority",
-    "/customer/view-sale": "View Sale",
+    "/customer/view-sale": "Find Sale",
     "/customer/view-customer-order": "Customer Orders",
     "/customer/view-customer-order-detail/:code": "Customer Order",
 
-    "/vendor/draft-vendor-order": "Draft Order",
-    "/vendor/view-purchase": "View Purchase",
+    "/vendor/draft-vendor-order": "Draft Vendor Order",
+    "/vendor/view-purchase": "Find Purchase",
     "/vendor/view-vendor-order": "Vendor Orders",
     "/vendor/view-vendor-order-detail/:code": "Vendor Order",
 
