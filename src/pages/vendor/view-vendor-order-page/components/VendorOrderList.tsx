@@ -184,7 +184,7 @@ export default function VendorOrderList() {
             ${order.status === OrderStatus.DELIVERED ? "sticker-primary" : ""}`}
             onClick={() => onToDetails(order.code)}
           >
-            <div>#{order.code}</div>
+            <div>#{order.manual_code ?? order.code}</div>
             <div className="font-semibold">{order.vendor_name}</div>
             <div className="text-sm">
               {convertTimeToText(new Date(order.expected_at))}
