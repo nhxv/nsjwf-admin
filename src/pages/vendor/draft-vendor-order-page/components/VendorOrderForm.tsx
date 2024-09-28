@@ -115,12 +115,6 @@ export default function VendorOrderForm({
         }
         reqData["productVendorOrders"] = [...productOrders.values()];
         reqData["attachment"] = data["attachment"];
-        // setFormState((prev) => ({
-        //   ...prev,
-        //   error: "",
-        //   empty: "",
-        //   loading: false,
-        // }));
         if (edit) {
           reqData["code"] = data["code"];
           const res = await api.putForm(
@@ -198,7 +192,7 @@ export default function VendorOrderForm({
               `unit${product.id}`,
               found.unit_code.split("_")[1]
             );
-            vendorOrderForm.setFieldValue(`price${product.id}-${appear}`, 0);
+            vendorOrderForm.setFieldValue(`price${product.id}-${appear}`, "0");
             updatedPrices.push({
               id: product.id,
               appear: appear,
@@ -300,15 +294,14 @@ export default function VendorOrderForm({
       ...selectedProducts.filter((p) => p.name !== product.name),
     ]);
     vendorOrderForm.setFieldValue(`quantity${product.id}-${appear}`, 0);
-    // Set price to 0, fuck them Roman.
-    vendorOrderForm.setFieldValue(`price${product.id}-${appear}`, 0);
+    vendorOrderForm.setFieldValue(`price${product.id}-${appear}`, "0");
   };
 
   const onRemoveProduct = (id, appear) => {
     setSearch((prev) => ({ ...prev, products: [], query: "" }));
     vendorOrderForm.setFieldValue(`quantity${id}-${appear}`, 0);
     vendorOrderForm.setFieldValue(`unit${id}-${appear}`, "BOX");
-    vendorOrderForm.setFieldValue(`price${id}-${appear}`, 0);
+    vendorOrderForm.setFieldValue(`price${id}-${appear}`, "0");
     updatePrice(0, `remove${id}-${appear}`);
     setSelectedProducts(
       selectedProducts.filter(
@@ -685,11 +678,7 @@ export default function VendorOrderForm({
                                 vendorOrderForm.values[
                                   `price${product.id}-${product.appear}`
                                 ] === ""
-                                  ? ""
-                                  : vendorOrderForm.values[
-                                      `price${product.id}-${product.appear}`
-                                    ] === "0"
-                                  ? "N/C"
+                                  ? 0
                                   : niceVisualDecimal(
                                       parseFloat(
                                         (
