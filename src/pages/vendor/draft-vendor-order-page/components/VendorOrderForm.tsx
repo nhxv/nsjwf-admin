@@ -300,8 +300,8 @@ export default function VendorOrderForm({
       ...selectedProducts.filter((p) => p.name !== product.name),
     ]);
     vendorOrderForm.setFieldValue(`quantity${product.id}-${appear}`, 0);
-    // Can't set to 0 to prevent user forgetting a field.
-    vendorOrderForm.setFieldValue(`price${product.id}-${appear}`, "");
+    // Set price to 0, fuck them Roman.
+    vendorOrderForm.setFieldValue(`price${product.id}-${appear}`, 0);
   };
 
   const onRemoveProduct = (id, appear) => {
