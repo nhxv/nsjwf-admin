@@ -6,6 +6,7 @@ import api from "../../../stores/api";
 import VendorSaleList from "./components/VendorSaleList";
 import SaleDetailModal from "./components/SaleDetailModal";
 import SearchSaleModal from "./components/SearchSaleModal";
+import SearchSaleForm from "./components/SearchSaleForm";
 
 export default function FindVendorSalePage() {
   const [searchModal, setSearchModal] = useState({
@@ -95,11 +96,20 @@ export default function FindVendorSalePage() {
               <BiSortUp className="h-6 w-6"></BiSortUp>
             )}
           </button>
-          <button className="btn btn-circle btn-accent" onClick={onSearch}>
+          <button
+            className="btn btn-circle btn-accent lg:hidden"
+            onClick={onSearch}
+          >
             <BiSearch className="h-6 w-6"></BiSearch>
           </button>
         </div>
         <div className="mx-4">
+          <div className="hidden lg:block">
+            <SearchSaleForm
+              vendors={vendorQuery?.data ? vendorQuery.data : []}
+              onSearchSubmit={onSearchSubmit}
+            />
+          </div>
           <VendorSaleList
             reports={reports}
             reportQuery={reportQuery}
