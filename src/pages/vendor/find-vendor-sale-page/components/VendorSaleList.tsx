@@ -69,38 +69,6 @@ export default function VendorSaleList({
     },
   });
 
-  const onDownloadReport = () => {
-    const reportData = reports.map((report) => ({
-      // For these 2 dates, most of the time, they'll be the same since the app only allows
-      // user to view orders that are completed today. However, to respect data, we'll
-      // use report.date instead of Date.now().
-      // In the case of receivable, we also put the date the same (as of my knowledge).
-      order_date: convertTime(new Date(report.updatedAt)),
-      payment_date: convertTime(new Date(report.updatedAt)),
-      vendor: report.vendorName,
-      code: `${report.orderCode}`,
-      sale: parseFloat(report.sale),
-      test: report.isTest ? "S" : "L",
-      payment_status:
-        report.paymentStatus === "RECEIVABLE" ? "AR" : report.paymentStatus,
-    }));
-    const saleFile = {
-      data: reportData,
-      filename: `${convertTime(new Date()).split("-").join("")}_report`,
-      delimiter: ",",
-      headers: [
-        "Order Date",
-        "Payment Date",
-        "Vendor",
-        "Order No.",
-        "Sale",
-        "Type",
-        "Payment Method",
-      ],
-    };
-    csvDownload(saleFile);
-  };
-
   if (
     reportQuery.status === "loading" ||
     reportQuery.fetchStatus === "fetching"
@@ -170,11 +138,6 @@ export default function VendorSaleList({
         <div className="rounded-btn flex items-center bg-warning p-2 text-sm font-semibold text-warning-content">
           ${total.receivable} in total
         </div>
-
-        <button className="btn btn-accent" onClick={onDownloadReport}>
-          <span className="mr-2">Download report</span>
-          <BiDownload className="h-6 w-6"></BiDownload>
-        </button>
       </div>
       <div className="grid grid-cols-12 gap-2">
         {reports.map((report) => (
@@ -194,7 +157,7 @@ export default function VendorSaleList({
             </div>
             <div>
               <div className="text-sm">
-                {convertTimeToText(new Date(report.updatedAt))}
+                {convertTimeToText(new Date(report.expectedAt))}
               </div>
               <div className="">${niceVisualDecimal(report.sale)}</div>
             </div>

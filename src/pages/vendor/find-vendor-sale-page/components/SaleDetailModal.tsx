@@ -126,7 +126,7 @@ export default function SaleDetailModal({ isOpen, onClose, report }) {
             <p>#{report.manualCode ?? report.orderCode}</p>
             <p className="text-xl font-semibold">{report.vendorName}</p>
             <p className="text-sm text-neutral">
-              Completed at {convertTimeToText(new Date(report.updatedAt))}
+              Delivered at {convertTimeToText(new Date(report.expectedAt))}
             </p>
             <div className="mt-5">
               <StatusTag status={report.paymentStatus}></StatusTag>
