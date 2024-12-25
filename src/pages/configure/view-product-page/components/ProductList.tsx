@@ -1,13 +1,16 @@
-import { useEffect, useState } from "react";
-import { BiEdit, BiPlus } from "react-icons/bi";
+import { useEffect, useRef, useState } from "react";
+import { BiEdit, BiPlus, BiPrinter } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import Alert from "../../../../components/Alert";
 import SearchInput from "../../../../components/forms/SearchInput";
 import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
 import { handleTokenExpire } from "../../../../commons/utils/token.util";
+import InventoryToPrint from "./InventoryToPrint";
+import { useReactToPrint } from "react-to-print";
 
 export default function ProductList() {
+  const printRef = useRef<HTMLDivElement>(null);
   const [fetchData, setFetchData] = useState({
     products: [],
     error: "",
@@ -96,6 +99,10 @@ export default function ProductList() {
     }));
   };
 
+  const handlePrint = useReactToPrint({
+    content: () => printRef.current,
+  });
+
   if (fetchData.loading) {
     return <Spinner></Spinner>;
   }
@@ -136,6 +143,11 @@ export default function ProductList() {
 
   return (
     <>
+      {fetchData.products.length > 0 && (
+        <div className="hidden">
+          <InventoryToPrint printRef={printRef} products={fetchData.products} />
+        </div>
+      )}
       <div className="fixed bottom-24 right-6 z-20 md:right-8">
         <button className="btn btn-circle btn-primary" onClick={onAdd}>
           <span>
@@ -143,7 +155,7 @@ export default function ProductList() {
           </span>
         </button>
       </div>
-      <div className="mx-auto mb-5 w-11/12 md:w-10/12 lg:w-6/12">
+      <div className="mx-auto mb-5 flex w-11/12 gap-4 md:w-10/12 lg:w-6/12">
         <SearchInput
           id="product-search"
           placeholder="Search product"
@@ -153,6 +165,9 @@ export default function ProductList() {
           onClear={onClearQuery}
           onFocus={null}
         ></SearchInput>
+        <label className="btn btn-square btn-accent">
+          <BiPrinter className="h-6 w-6" onClick={handlePrint}></BiPrinter>
+        </label>
       </div>
       <div className="grid grid-cols-12 gap-4 px-4">
         {search.products.map((product) => (
