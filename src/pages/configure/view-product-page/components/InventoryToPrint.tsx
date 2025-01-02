@@ -16,7 +16,7 @@ export default function InventoryToPrint({ printRef, products }) {
   }
 
   return (
-    <div ref={printRef} className="columns-2 gap-x-2 p-2 text-xs">
+    <div ref={printRef} className="columns-2 gap-x-2 p-4 text-xs">
       {Object.keys(locationMapping)
         .sort()
         .map((coolerName) => (
