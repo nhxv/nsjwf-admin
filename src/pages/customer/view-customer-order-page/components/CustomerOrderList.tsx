@@ -226,7 +226,9 @@ export default function CustomerOrderList() {
             onClick={() => onToDetails(order.code)}
           >
             <div>#{order.manual_code ? order.manual_code : order.code}</div>
-            <div className="font-semibold">{order.customer_name}</div>
+            <div className="overflow-hidden text-ellipsis text-nowrap font-semibold">
+              {order.customer_name}
+            </div>
             <div className="text-sm">
               {convertTimeToText(new Date(order.expected_at))}
             </div>
