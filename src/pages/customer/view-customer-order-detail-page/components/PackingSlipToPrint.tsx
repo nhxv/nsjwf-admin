@@ -31,13 +31,21 @@ function SplitProductsIntoPages(order, columnCount: number = 2) {
     i < order.productCustomerOrders.length;
     i += MAX_LINES_PER_PAGE * columnCount
   ) {
+    // Sort by Cooler.
+    const productCustomerOrders = order.productCustomerOrders.toSorted(
+      (productOrderA, productOrderB) => {
+        const locationA = productOrderA.product.location_name;
+        const locationB = productOrderB.product.location_name;
+        return locationA.localeCompare(locationB);
+      }
+    );
     pages.set(
       // Key
       `${order.productCustomerOrders[i].product_name}-${order.productCustomerOrders[i].unit_code}`,
       // Value
       <div className="flex flex-col">
         {/* Headers */}
-        <div className="mb-4">
+        <div className="mb-2">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="block font-serif text-[0.625rem]">
@@ -72,7 +80,7 @@ function SplitProductsIntoPages(order, columnCount: number = 2) {
         </div>
 
         {/* Title */}
-        <div className="mb-4 ">
+        <div className="">
           <div className="block text-xl">Packing Slip</div>
           <div className="block text-2xl font-bold">{order.customer_name}</div>
           <div className="block">{order.note}</div>
@@ -84,11 +92,16 @@ function SplitProductsIntoPages(order, columnCount: number = 2) {
             All of this just to render this header columnCount times. Incredible.*/}
           {Array.from({ length: columnCount }, (_, i) => i).map((ind) => (
             <div
-              className="flex w-full border-b-4 border-black pb-1"
+              className="flex w-full justify-between border-b-4 border-black pb-1"
               key={`${ind}`}
             >
-              <div className="w-[64px] text-sm font-semibold">Qty</div>
-              <div className="ml-8 text-sm font-semibold">Item Description</div>
+              <div className="flex">
+                <div className="w-[64px] text-sm font-semibold">Qty</div>
+                <div className="ml-8 text-sm font-semibold">
+                  Item Description
+                </div>
+              </div>
+              <div className="text-sm font-semibold">Location</div>
             </div>
           ))}
         </div>
@@ -97,29 +110,32 @@ function SplitProductsIntoPages(order, columnCount: number = 2) {
         <div className={columnStyling}>
           {/* Fill out the first column, then the 2nd column */}
           <div>
-            {order.productCustomerOrders
+            {productCustomerOrders
               .slice(i, i + MAX_LINES_PER_PAGE)
               .map((productOrder) => (
                 <div
                   key={`${order.code}-${productOrder.product_name}-${productOrder.unit_code}`}
-                  className="flex w-full border-b border-black py-2"
+                  className="flex w-full justify-between border-b border-black py-2"
                 >
-                  <div className="w-[64px] font-semibold">
-                    {productOrder.quantity}{" "}
-                    {productOrder.unit_code.split("_")[1].toLowerCase() ===
-                    "box"
-                      ? ``
-                      : `(${productOrder.unit_code
-                          .split("_")[1]
-                          .toLowerCase()})`}
+                  <div className="flex">
+                    <div className="w-[64px] font-semibold">
+                      {productOrder.quantity}{" "}
+                      {productOrder.unit_code.split("_")[1].toLowerCase() ===
+                      "box"
+                        ? ``
+                        : `(${productOrder.unit_code
+                            .split("_")[1]
+                            .toLowerCase()})`}
+                    </div>
+                    <div className="ml-8">{productOrder.product_name}</div>
                   </div>
-                  <div className="ml-8">{productOrder.product_name}</div>
+                  <div className="">{productOrder.product.location_name}</div>
                 </div>
               ))}
           </div>
           {/* 2nd column */}
           <div>
-            {order.productCustomerOrders
+            {productCustomerOrders
               .slice(
                 i + MAX_LINES_PER_PAGE,
                 i + MAX_LINES_PER_PAGE * columnCount
@@ -127,18 +143,21 @@ function SplitProductsIntoPages(order, columnCount: number = 2) {
               .map((productOrder) => (
                 <div
                   key={`${order.code}-${productOrder.product_name}-${productOrder.unit_code}`}
-                  className="flex w-full border-b border-black py-2"
+                  className="flex w-full justify-between border-b border-black py-2"
                 >
-                  <div className="w-[64px] font-semibold">
-                    {productOrder.quantity}{" "}
-                    {productOrder.unit_code.split("_")[1].toLowerCase() ===
-                    "box"
-                      ? ``
-                      : `(${productOrder.unit_code
-                          .split("_")[1]
-                          .toLowerCase()})`}
+                  <div className="flex">
+                    <div className="w-[64px] font-semibold">
+                      {productOrder.quantity}{" "}
+                      {productOrder.unit_code.split("_")[1].toLowerCase() ===
+                      "box"
+                        ? ``
+                        : `(${productOrder.unit_code
+                            .split("_")[1]
+                            .toLowerCase()})`}
+                    </div>
+                    <div className="ml-8">{productOrder.product_name}</div>
                   </div>
-                  <div className="ml-8">{productOrder.product_name}</div>
+                  <div className="">{productOrder.product.location_name}</div>
                 </div>
               ))}
           </div>

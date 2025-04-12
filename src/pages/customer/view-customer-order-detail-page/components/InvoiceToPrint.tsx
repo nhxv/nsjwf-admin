@@ -106,7 +106,6 @@ export default function InvoiceToPrint({ printRef, order }) {
       </div>
 
       {/* Summary */}
-      {/* TODO: Make it so that this is at the bottom of the page. */}
       <div className="flex h-full flex-col justify-end">
         <div className="flex justify-between">
           <div className="text-xl">Customer Signature:</div>
