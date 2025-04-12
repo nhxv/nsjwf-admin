@@ -35,6 +35,12 @@ export default function ProductList() {
             loading: false,
           }));
         } else {
+          // Prioritize products that are in use.
+          res.data.sort((a, b) => {
+            if (a.discontinued && !b.discontinued) return 1;
+            if (!a.discontinued && b.discontinued) return -1;
+            return 0;
+          });
           setSearch((prev) => ({ ...prev, products: res.data, query: "" }));
           setFetchData((prev) => ({
             ...prev,
