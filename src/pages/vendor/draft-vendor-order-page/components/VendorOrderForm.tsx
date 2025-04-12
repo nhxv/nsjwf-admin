@@ -374,7 +374,7 @@ export default function VendorOrderForm({
               options={Object.values(OrderStatus).filter(
                 (status) =>
                   status !== OrderStatus.PICKING &&
-                  status !== OrderStatus.CHECKING &&
+                  status !== OrderStatus.SHIPPING &&
                   status !== OrderStatus.CANCELED &&
                   // status !== OrderStatus.COMPLETED
                   status !== OrderStatus.DELIVERED
