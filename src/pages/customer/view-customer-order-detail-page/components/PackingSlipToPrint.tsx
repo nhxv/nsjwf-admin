@@ -32,7 +32,7 @@ function SplitProductsIntoPages(order, columnCount: number = 2) {
     i += MAX_LINES_PER_PAGE * columnCount
   ) {
     // Sort by Cooler.
-    const productCustomerOrders = order.productCustomerOrders.toSorted(
+    const productCustomerOrders = [...order.productCustomerOrders].sort(
       (productOrderA, productOrderB) => {
         const locationA = productOrderA.product.location_name;
         const locationB = productOrderB.product.location_name;
