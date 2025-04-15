@@ -34,7 +34,7 @@ export default function Task({ order, reload, status }) {
       }
     } catch (e) {
       const error = JSON.parse(
-        JSON.stringify(e.response ? e.response.data.error : e)
+        JSON.stringify(e.response ? e.response.data.error : e),
       );
       setFormState((prev) => ({
         ...prev,
@@ -52,7 +52,7 @@ export default function Task({ order, reload, status }) {
     setFormState((prev) => ({ ...prev, error: "", loading: true }));
     try {
       const res = await api.put(
-        `/customer-orders/tasks/start-doing?code=${code}&nickname=${nickname}`
+        `/customer-orders/tasks/start-doing?code=${code}&nickname=${nickname}`,
       );
       if (res) {
         setFormState((prev) => ({ ...prev, error: "", loading: false }));
@@ -60,7 +60,7 @@ export default function Task({ order, reload, status }) {
       }
     } catch (e) {
       const error = JSON.parse(
-        JSON.stringify(e.response ? e.response.data.error : e)
+        JSON.stringify(e.response ? e.response.data.error : e),
       );
       setFormState((prev) => ({
         ...prev,
@@ -89,7 +89,7 @@ export default function Task({ order, reload, status }) {
       }
     } catch (e) {
       const error = JSON.parse(
-        JSON.stringify(e.response ? e.response.data.error : e)
+        JSON.stringify(e.response ? e.response.data.error : e),
       );
       setFormState((prev) => ({
         ...prev,

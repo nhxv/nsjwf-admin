@@ -45,8 +45,8 @@ export function AlertFromQueryError({ queryError }) {
   const navigate = useNavigate();
   let error = JSON.parse(
     JSON.stringify(
-      queryError.response ? queryError.response.data.error : queryError
-    )
+      queryError.response ? queryError.response.data.error : queryError,
+    ),
   );
 
   if (error.status === 401) {
@@ -56,7 +56,7 @@ export function AlertFromQueryError({ queryError }) {
       (err) => {
         error = err;
       },
-      (msg) => ({ ...error, message: msg })
+      (msg) => ({ ...error, message: msg }),
     );
   }
 

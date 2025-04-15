@@ -43,7 +43,7 @@ export default function DraftUnitForm({ productId, unit, isOpen, onClose }) {
         }
       } catch (e) {
         const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e)
+          JSON.stringify(e.response ? e.response.data.error : e),
         );
         setFormState((prev) => ({
           ...prev,
@@ -117,7 +117,7 @@ export default function DraftUnitForm({ productId, unit, isOpen, onClose }) {
               onChange={() =>
                 unitForm.setFieldValue(
                   "discontinued",
-                  !unitForm.values.discontinued
+                  !unitForm.values.discontinued,
                 )
               }
               checked={!unitForm.values.discontinued}

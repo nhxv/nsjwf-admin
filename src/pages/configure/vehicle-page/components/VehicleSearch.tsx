@@ -16,7 +16,7 @@ export default function VehicleSearch() {
     found: [],
   });
   const editVehicleConfig = useVehicleConfigStore(
-    (state) => state.editVehicleConfig
+    (state) => state.editVehicleConfig,
   );
 
   const searchForm = useFormik({
@@ -27,7 +27,7 @@ export default function VehicleSearch() {
       setSearchState((prev) => ({ ...prev, found: [], loading: true }));
       try {
         const res = await api.get(
-          `/vehicles/basic-search?keyword=${data.keyword}`
+          `/vehicles/basic-search?keyword=${data.keyword}`,
         );
         const resData: VehicleResponse[] = res.data;
         if (resData.length < 1) {
@@ -41,7 +41,7 @@ export default function VehicleSearch() {
         setSearchState((prev) => ({ ...prev, loading: false, found: resData }));
       } catch (e) {
         const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e)
+          JSON.stringify(e.response ? e.response.data.error : e),
         );
         setSearchState((prev) => ({
           ...prev,

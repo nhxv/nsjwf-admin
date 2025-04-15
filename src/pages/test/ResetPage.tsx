@@ -17,7 +17,7 @@ export default function ResetPage() {
       }, 2000);
     } catch (e) {
       const error = JSON.parse(
-        JSON.stringify(e.response ? e.response.data.error : e)
+        JSON.stringify(e.response ? e.response.data.error : e),
       );
       setMessage(error.message);
       setTimeout(() => {
@@ -38,7 +38,7 @@ export default function ResetPage() {
       }, 2000);
     } catch (e) {
       const error = JSON.parse(
-        JSON.stringify(e.response ? e.response.data.error : e)
+        JSON.stringify(e.response ? e.response.data.error : e),
       );
       setMessage(error.message);
       setTimeout(() => {

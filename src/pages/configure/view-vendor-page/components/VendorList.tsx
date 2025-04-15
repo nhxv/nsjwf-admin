@@ -44,7 +44,7 @@ export default function VendorList() {
       })
       .catch((e) => {
         const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e)
+          JSON.stringify(e.response ? e.response.data.error : e),
         );
         setFetchData((prev) => ({
           ...prev,
@@ -65,7 +65,7 @@ export default function VendorList() {
         vendor.name
           .toLowerCase()
           .replace(/\s+/g, "")
-          .includes(e.target.value.toLowerCase().replace(/\s+/g, ""))
+          .includes(e.target.value.toLowerCase().replace(/\s+/g, "")),
       );
       setSearch((prev) => ({
         ...prev,

@@ -40,7 +40,7 @@ export default function ViewTaskPage() {
     let orderPromise = null;
     if (status === OrderStatus.PICKING || status === OrderStatus.SHIPPING) {
       orderPromise = api.get(
-        `/customer-orders/tasks/search?nickname=${nickname}&status=${status}`
+        `/customer-orders/tasks/search?nickname=${nickname}&status=${status}`,
       );
     } else if (status === OrderStatus.CHECKING || OrderStatus.DELIVERED) {
       orderPromise = api.get(`/customer-orders/basic-list/${status}`);
@@ -114,7 +114,7 @@ export default function ViewTaskPage() {
       })
       .catch((e) => {
         const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e)
+          JSON.stringify(e.response ? e.response.data.error : e),
         );
         setFetchData((prev) => ({
           ...prev,
@@ -176,7 +176,8 @@ export default function ViewTaskPage() {
           <div className="mb-6">
             <Stepper
               steps={Object.values(OrderStatus).filter(
-                (s) => s !== OrderStatus.CANCELED && s !== OrderStatus.COMPLETED
+                (s) =>
+                  s !== OrderStatus.CANCELED && s !== OrderStatus.COMPLETED,
               )}
               selected={status}
               onSelect={setStep}
