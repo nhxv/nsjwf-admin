@@ -33,7 +33,7 @@ export default function CustomerList() {
         customer.name
           .toLowerCase()
           .replace(/\s+/g, "")
-          .includes(e.target.value.toLowerCase().replace(/\s+/g, ""))
+          .includes(e.target.value.toLowerCase().replace(/\s+/g, "")),
       );
       setSearch((prev) => ({
         ...prev,

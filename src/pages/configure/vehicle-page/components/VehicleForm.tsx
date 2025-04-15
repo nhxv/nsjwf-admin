@@ -21,7 +21,7 @@ export default function VehicleForm() {
     return state;
   });
   const clearVehicleConfig = useVehicleConfigStore(
-    (state) => state.clearVehicleConfig
+    (state) => state.clearVehicleConfig,
   );
 
   const vehicleForm = useFormik({
@@ -45,7 +45,7 @@ export default function VehicleForm() {
         try {
           const res = await api.put<VehicleResponse>(
             `/vehicles/${vehicle.id}`,
-            data
+            data,
           );
           setFormState((prev) => ({
             ...prev,
@@ -59,7 +59,7 @@ export default function VehicleForm() {
           }, 2000);
         } catch (e) {
           const error = JSON.parse(
-            JSON.stringify(e.response ? e.response.data.error : e)
+            JSON.stringify(e.response ? e.response.data.error : e),
           );
           setFormState((prev) => ({
             ...prev,
@@ -84,7 +84,7 @@ export default function VehicleForm() {
           vehicleForm.resetForm();
         } catch (e) {
           const error = JSON.parse(
-            JSON.stringify(e.response ? e.response.data.error : e)
+            JSON.stringify(e.response ? e.response.data.error : e),
           );
           setFormState((prev) => ({
             ...prev,
@@ -171,7 +171,7 @@ export default function VehicleForm() {
             onChange={() =>
               vehicleForm.setFieldValue(
                 "available",
-                !vehicleForm.values.available
+                !vehicleForm.values.available,
               )
             }
             checked={vehicleForm.values.available}
@@ -186,7 +186,7 @@ export default function VehicleForm() {
             onChange={() =>
               vehicleForm.setFieldValue(
                 "discontinued",
-                !vehicleForm.values.discontinued
+                !vehicleForm.values.discontinued,
               )
             }
             checked={!vehicleForm.values.discontinued}

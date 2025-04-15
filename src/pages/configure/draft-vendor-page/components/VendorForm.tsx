@@ -27,7 +27,7 @@ export default function VendorForm({
     page: 0,
   });
   const [selectedProducts, setSelectedProducts] = useState(
-    editedProducts ? editedProducts : []
+    editedProducts ? editedProducts : [],
   );
   const [search, setSearch] = useState({
     products: [],
@@ -110,7 +110,7 @@ export default function VendorForm({
         }
       } catch (e) {
         const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e)
+          JSON.stringify(e.response ? e.response.data.error : e),
         );
         setFormState((prev) => ({
           ...prev,
@@ -139,7 +139,7 @@ export default function VendorForm({
         product.name
           .toLowerCase()
           .replace(/\s+/g, "")
-          .includes(e.target.value.toLowerCase().replace(/\s+/g, ""))
+          .includes(e.target.value.toLowerCase().replace(/\s+/g, "")),
       );
       setSearch((prev) => ({
         ...prev,
@@ -166,7 +166,7 @@ export default function VendorForm({
     vendorForm.setFieldValue(`quantity${id}`, 0);
     vendorForm.setFieldValue(`unit${id}`, "BOX");
     setSelectedProducts(
-      selectedProducts.filter((product) => product.id !== id)
+      selectedProducts.filter((product) => product.id !== id),
     );
   };
 
@@ -260,7 +260,7 @@ export default function VendorForm({
               onChange={() =>
                 vendorForm.setFieldValue(
                   "discontinued",
-                  !vendorForm.values.discontinued
+                  !vendorForm.values.discontinued,
                 )
               }
               checked={!vendorForm.values.discontinued}
@@ -352,7 +352,7 @@ export default function VendorForm({
                                 vendorForm.setFieldValue(`unit${product.id}`, v)
                               }
                               options={product.units.map(
-                                (unit) => unit.code.split("_")[1]
+                                (unit) => unit.code.split("_")[1],
                               )}
                             ></SelectInput>
                           </div>

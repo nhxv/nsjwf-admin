@@ -24,10 +24,10 @@ export default function VendorOrderList() {
           prev +
           curr.productVendorOrders.reduce(
             (prev, curr) => prev + curr.quantity * curr.unit_price,
-            0
+            0,
           ),
-        0
-      )
+        0,
+      ),
     );
   }, [search.orders]);
 
@@ -48,7 +48,7 @@ export default function VendorOrderList() {
   // Cursed. Have to attach this pretty much on every search.orders
   const filterByStatus = (orders, status) => {
     return orders.filter((order) =>
-      status === "ALL" ? true : order.status === status
+      status === "ALL" ? true : order.status === status,
     );
   };
 
@@ -73,7 +73,7 @@ export default function VendorOrderList() {
                 .includes(e.target.value.toLowerCase().replace(/\s+/g, ""));
             }).length !== 0
           );
-        }
+        },
       );
       setSearch((prev) => ({
         ...prev,
@@ -156,8 +156,8 @@ export default function VendorOrderList() {
                     s != OrderStatus.PICKING &&
                     s != OrderStatus.CHECKING &&
                     s != OrderStatus.COMPLETED &&
-                    s != OrderStatus.CANCELED
-                )
+                    s != OrderStatus.CANCELED,
+                ),
               )}
             />
           </div>

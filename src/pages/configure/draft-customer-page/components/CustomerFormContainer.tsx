@@ -31,7 +31,7 @@ export default function CustomerFormContainer() {
           const productFieldData = {};
           for (const product of allProductsRes) {
             const found = customerRes.customerProductTendencies.find(
-              (p) => p.name === product.name
+              (p) => p.name === product.name,
             );
             if (found) {
               productFieldData[`quantity${product.id}`] = found.quantity;
@@ -65,7 +65,7 @@ export default function CustomerFormContainer() {
         })
         .catch((e) => {
           const error = JSON.parse(
-            JSON.stringify(e.response ? e.response.data.error : e)
+            JSON.stringify(e.response ? e.response.data.error : e),
           );
           setFetchData((prev) => ({
             ...prev,
@@ -111,7 +111,7 @@ export default function CustomerFormContainer() {
         })
         .catch((e) => {
           const error = JSON.parse(
-            JSON.stringify(e.response ? e.response.data.error : e)
+            JSON.stringify(e.response ? e.response.data.error : e),
           );
           setFetchData((prev) => ({
             ...prev,

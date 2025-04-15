@@ -17,8 +17,8 @@ export default function FindVendorSalePage() {
   });
   const [queryURL, setQueryURL] = useState(
     `/vendor-orders/sold/search?start_date=${convertTime(
-      new Date()
-    )}&end_date=${convertTime(new Date())}`
+      new Date(),
+    )}&end_date=${convertTime(new Date())}`,
   );
   const [focus, setFocus] = useState({ report: null });
   const [latestFirst, setLatestFirst] = useState(true);
