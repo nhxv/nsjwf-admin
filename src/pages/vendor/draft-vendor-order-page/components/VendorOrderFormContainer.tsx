@@ -244,7 +244,7 @@ export default function VendorOrderFormContainer() {
               ...prev,
               vendorName: ``,
               manualCode: "",
-              status: OrderStatus.SHIPPING,
+              status: OrderStatus.CHECKING,
               isTest: false,
               expectedAt: convertTime(today),
               attachment: null,
