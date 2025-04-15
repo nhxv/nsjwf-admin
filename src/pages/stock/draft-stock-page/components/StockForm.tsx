@@ -75,7 +75,7 @@ export default function StockForm({ initialData, products, onClear }) {
         }, 2000);
       } catch (e) {
         const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e),
+          JSON.stringify(e.response ? e.response.data.error : e)
         );
         setFormState((prev) => ({
           ...prev,
@@ -101,7 +101,7 @@ export default function StockForm({ initialData, products, onClear }) {
         product.name
           .toLowerCase()
           .replace(/\s+/g, "")
-          .includes(e.target.value.toLowerCase().replace(/\s+/g, "")),
+          .includes(e.target.value.toLowerCase().replace(/\s+/g, ""))
       );
       setSearch((prev) => ({
         ...prev,
@@ -127,7 +127,7 @@ export default function StockForm({ initialData, products, onClear }) {
     setSearch((prev) => ({ ...prev, products: [], query: "" }));
     stockForm.setFieldValue(`quantity${id}`, 0);
     setSelectedProducts(
-      selectedProducts.filter((product) => product.id !== id),
+      selectedProducts.filter((product) => product.id !== id)
     );
   };
 
@@ -152,7 +152,7 @@ export default function StockForm({ initialData, products, onClear }) {
                 reason !== StockChangeReason.CUSTOMER_RETURN_RECEIVED &&
                 reason !== StockChangeReason.VENDOR_ORDER_COMPLETED &&
                 reason !== StockChangeReason.VENDOR_RETURN_RECEIVED &&
-                reason !== StockChangeReason.EMPLOYEE_BORROW,
+                reason !== StockChangeReason.EMPLOYEE_BORROW
             )}
           ></SelectInput>
         </div>
@@ -221,7 +221,7 @@ export default function StockForm({ initialData, products, onClear }) {
                           stockForm.setFieldValue(`unit${product.id}`, v)
                         }
                         options={product.units.map(
-                          (unit) => unit.code.split("_")[1],
+                          (unit) => unit.code.split("_")[1]
                         )}
                       ></SelectInput>
                     </div>

@@ -46,7 +46,7 @@ export default function VendorOrderForm({
     page: 0,
   });
   const [selectedProducts, setSelectedProducts] = useState(
-    editedProducts ? editedProducts : [],
+    editedProducts ? editedProducts : []
   );
   const [search, setSearch] = useState({
     products: [],
@@ -81,7 +81,7 @@ export default function VendorOrderForm({
           if (property.includes("price")) {
             const [id, appear] = property.replace("price", "").split("-");
             const selected = selectedProducts.find(
-              (p) => p.id === +id && p.appear === +appear,
+              (p) => p.id === +id && p.appear === +appear
             );
             if (selected) {
               productOrders.set(`${selected.id}-${selected.appear}`, {
@@ -92,7 +92,7 @@ export default function VendorOrderForm({
           } else if (property.includes("quantity")) {
             const [id, appear] = property.replace("quantity", "").split("-");
             const selected = selectedProducts.find(
-              (p) => p.id === +id && p.appear === +appear,
+              (p) => p.id === +id && p.appear === +appear
             );
             if (selected) {
               productOrders.set(`${selected.id}-${selected.appear}`, {
@@ -103,7 +103,7 @@ export default function VendorOrderForm({
           } else if (property.includes("unit")) {
             const [id, appear] = property.replace("unit", "").split("-");
             const selected = selectedProducts.find(
-              (p) => p.id === +id && p.appear === +appear,
+              (p) => p.id === +id && p.appear === +appear
             );
             if (selected) {
               productOrders.set(`${selected.id}-${selected.appear}`, {
@@ -119,7 +119,7 @@ export default function VendorOrderForm({
           reqData["code"] = data["code"];
           const res = await api.putForm(
             `/vendor-orders/${reqData["code"]}`,
-            reqData,
+            reqData
           );
           if (res) {
             navigate(`/vendor/view-vendor-order`);
@@ -133,7 +133,7 @@ export default function VendorOrderForm({
         }
       } catch (e) {
         const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e),
+          JSON.stringify(e.response ? e.response.data.error : e)
         );
         setFormState((prev) => ({
           ...prev,
@@ -186,11 +186,11 @@ export default function VendorOrderForm({
             });
             vendorOrderForm.setFieldValue(
               `quantity${product.id}-${appear}`,
-              found.quantity,
+              found.quantity
             );
             vendorOrderForm.setFieldValue(
               `unit${product.id}`,
-              found.unit_code.split("_")[1],
+              found.unit_code.split("_")[1]
             );
             vendorOrderForm.setFieldValue(`price${product.id}-${appear}`, "0");
             updatedPrices.push({
@@ -242,7 +242,7 @@ export default function VendorOrderForm({
         product.name
           .toLowerCase()
           .replace(/\s+/g, "")
-          .includes(e.target.value.toLowerCase().replace(/\s+/g, "")),
+          .includes(e.target.value.toLowerCase().replace(/\s+/g, ""))
       );
       setSearch((prev) => ({
         ...prev,
@@ -305,8 +305,8 @@ export default function VendorOrderForm({
     updatePrice(0, `remove${id}-${appear}`);
     setSelectedProducts(
       selectedProducts.filter(
-        (product) => product.id !== id || product.appear !== appear,
-      ),
+        (product) => product.id !== id || product.appear !== appear
+      )
     );
   };
 
@@ -377,7 +377,7 @@ export default function VendorOrderForm({
                   status !== OrderStatus.SHIPPING &&
                   status !== OrderStatus.CANCELED &&
                   // status !== OrderStatus.COMPLETED
-                  status !== OrderStatus.DELIVERED,
+                  status !== OrderStatus.DELIVERED
               )}
             ></SelectInput>
           </div>
@@ -426,7 +426,7 @@ export default function VendorOrderForm({
                     onChange={() =>
                       vendorOrderForm.setFieldValue(
                         "isTest",
-                        !vendorOrderForm.values["isTest"],
+                        !vendorOrderForm.values["isTest"]
                       )
                     }
                     checked={vendorOrderForm.values["isTest"]}
@@ -494,11 +494,11 @@ export default function VendorOrderForm({
                                       }));
                                     }
                                   },
-                                },
+                                }
                               );
                               vendorOrderForm.setFieldValue(
                                 "attachment",
-                                compressedFile,
+                                compressedFile
                               );
                             } catch (error) {
                               setFormState((prev) => ({
@@ -622,7 +622,7 @@ export default function VendorOrderForm({
                               onChange={(e) =>
                                 handlePriceChange(
                                   e,
-                                  `quantity${product.id}-${product.appear}`,
+                                  `quantity${product.id}-${product.appear}`
                                 )
                               }
                             ></NumberInput>
@@ -643,7 +643,7 @@ export default function VendorOrderForm({
                               onChange={(e) =>
                                 handlePriceChange(
                                   e,
-                                  `price${product.id}-${product.appear}`,
+                                  `price${product.id}-${product.appear}`
                                 )
                               }
                             ></TextInput>
@@ -662,11 +662,11 @@ export default function VendorOrderForm({
                               setValue={(v) =>
                                 vendorOrderForm.setFieldValue(
                                   `unit${product.id}-${product.appear}`,
-                                  v,
+                                  v
                                 )
                               }
                               options={product.units.map(
-                                (unit) => unit.code.split("_")[1],
+                                (unit) => unit.code.split("_")[1]
                               )}
                             ></SelectInput>
                           </div>
@@ -688,8 +688,8 @@ export default function VendorOrderForm({
                                           vendorOrderForm.values[
                                             `price${product.id}-${product.appear}`
                                           ]
-                                        ).toString(), // Silent linter.
-                                      ),
+                                        ).toString() // Silent linter.
+                                      )
                                     )
                               }
                             </div>

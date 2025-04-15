@@ -28,8 +28,8 @@ export default function StockList() {
           (!curr.recent_cost
             ? 0
             : curr.recent_cost * parseFraction(curr.stock.quantity)),
-        0,
-      ),
+        0
+      )
     );
   }, [search.products]);
 
@@ -52,7 +52,7 @@ export default function StockList() {
         product.name
           .toLowerCase()
           .replace(/\s+/g, "")
-          .includes(e.target.value.toLowerCase().replace(/\s+/g, "")),
+          .includes(e.target.value.toLowerCase().replace(/\s+/g, ""))
       );
       setSearch((prev) => ({
         ...prev,

@@ -12,7 +12,7 @@ import { niceVisualDecimal } from "../../../../commons/utils/fraction.util";
 
 export default function CustomerSaleResult({ data }) {
   const [customerSales, setCustomerSales] = useState(
-    data.sort((a, b) => b.boxCount - a.boxCount),
+    data.sort((a, b) => b.boxCount - a.boxCount)
   );
 
   const [sortBy, setSortBy] = useState({

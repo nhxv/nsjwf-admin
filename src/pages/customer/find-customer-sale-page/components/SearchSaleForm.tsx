@@ -106,7 +106,7 @@ export default function SearchSaleForm({
             onChange={(e) => {
               searchForm.setFieldValue(
                 "product",
-                e.target.value ? e.target.value : "",
+                e.target.value ? e.target.value : ""
               );
             }}
             value={searchForm.values.product}

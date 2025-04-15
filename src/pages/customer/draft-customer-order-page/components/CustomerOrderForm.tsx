@@ -39,10 +39,10 @@ export default function CustomerOrderForm({
   const navigate = useNavigate();
 
   const [availableProducts, _] = useState(
-    allProducts.filter((product) => !product.discontinued),
+    allProducts.filter((product) => !product.discontinued)
   );
   const [selectedProducts, setSelectedProducts] = useState(
-    editedProducts ? editedProducts : [],
+    editedProducts ? editedProducts : []
   );
   const [search, setSearch] = useState({
     products: [],
@@ -74,7 +74,7 @@ export default function CustomerOrderForm({
           if (property.includes("price")) {
             const [id, appear] = property.replace("price", "").split("-");
             const selected = selectedProducts.find(
-              (p) => p.id === +id && p.appear === +appear,
+              (p) => p.id === +id && p.appear === +appear
             );
             if (selected) {
               productOrders.set(`${selected.id}-${selected.appear}`, {
@@ -86,7 +86,7 @@ export default function CustomerOrderForm({
           } else if (property.includes("quantity")) {
             const [id, appear] = property.replace("quantity", "").split("-");
             const selected = selectedProducts.find(
-              (p) => p.id === +id && p.appear === +appear,
+              (p) => p.id === +id && p.appear === +appear
             );
             if (selected) {
               productOrders.set(`${selected.id}-${selected.appear}`, {
@@ -97,7 +97,7 @@ export default function CustomerOrderForm({
           } else if (property.includes("unit")) {
             const [id, appear] = property.replace("unit", "").split("-");
             const selected = selectedProducts.find(
-              (p) => p.id === +id && p.appear === +appear,
+              (p) => p.id === +id && p.appear === +appear
             );
             if (selected) {
               productOrders.set(`${selected.id}-${selected.appear}`, {
@@ -119,7 +119,7 @@ export default function CustomerOrderForm({
           reqData["code"] = data["code"];
           const res = await api.put(
             `/customer-orders/${reqData["code"]}`,
-            reqData,
+            reqData
           );
           if (res) {
             navigate(`/customer/view-customer-order-detail/${reqData["code"]}`);
@@ -133,7 +133,7 @@ export default function CustomerOrderForm({
         }
       } catch (e) {
         const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e),
+          JSON.stringify(e.response ? e.response.data.error : e)
         );
         setFormState((prev) => ({
           ...prev,
@@ -167,7 +167,7 @@ export default function CustomerOrderForm({
         loading: true,
       }));
       const template = await loadTemplate(
-        customerOrderForm.values[`customerName`],
+        customerOrderForm.values[`customerName`]
       );
       if (template) {
         const selected = [];
@@ -187,11 +187,11 @@ export default function CustomerOrderForm({
             });
             customerOrderForm.setFieldValue(
               `quantity${product.id}-${appear}`,
-              found.quantity,
+              found.quantity
             );
             customerOrderForm.setFieldValue(
               `unit${product.id}-${appear}`,
-              found.unit_code.split("_")[1],
+              found.unit_code.split("_")[1]
             );
             customerOrderForm.setFieldValue(`price${product.id}-${appear}`, 0);
             updatedPrices.push({
@@ -242,7 +242,7 @@ export default function CustomerOrderForm({
         product.name
           .toLowerCase()
           .replace(/\s+/g, "")
-          .includes(e.target.value.toLowerCase().replace(/\s+/g, "")),
+          .includes(e.target.value.toLowerCase().replace(/\s+/g, ""))
       );
       setSearch((prev) => ({
         ...prev,
@@ -310,8 +310,8 @@ export default function CustomerOrderForm({
     updatePrice(0, `remove${id}-${appear}`);
     setSelectedProducts(
       selectedProducts.filter(
-        (product) => product.id !== id || product.appear !== appear,
-      ),
+        (product) => product.id !== id || product.appear !== appear
+      )
     );
   };
 
@@ -396,7 +396,7 @@ export default function CustomerOrderForm({
               value={customerOrderForm.values["status"]}
               setValue={(v) => customerOrderForm.setFieldValue("status", v)}
               options={Object.values(OrderStatus).filter(
-                (status) => status !== OrderStatus.CANCELED,
+                (status) => status !== OrderStatus.CANCELED
               )}
             ></SelectInput>
           </div>
@@ -455,7 +455,7 @@ export default function CustomerOrderForm({
                     onChange={() =>
                       customerOrderForm.setFieldValue(
                         "isTest",
-                        !customerOrderForm.values["isTest"],
+                        !customerOrderForm.values["isTest"]
                       )
                     }
                     checked={customerOrderForm.values["isTest"]}
@@ -575,7 +575,7 @@ export default function CustomerOrderForm({
                               onChange={(e) =>
                                 handlePriceChange(
                                   e,
-                                  `quantity${product.id}-${product.appear}`,
+                                  `quantity${product.id}-${product.appear}`
                                 )
                               }
                             ></NumberInput>
@@ -596,7 +596,7 @@ export default function CustomerOrderForm({
                               onChange={(e) =>
                                 handlePriceChange(
                                   e,
-                                  `price${product.id}-${product.appear}`,
+                                  `price${product.id}-${product.appear}`
                                 )
                               }
                             ></TextInput>
@@ -615,11 +615,11 @@ export default function CustomerOrderForm({
                               setValue={(v) =>
                                 customerOrderForm.setFieldValue(
                                   `unit${product.id}-${product.appear}`,
-                                  v,
+                                  v
                                 )
                               }
                               options={product.units.map(
-                                (unit) => unit.code.split("_")[1],
+                                (unit) => unit.code.split("_")[1]
                               )}
                             ></SelectInput>
                           </div>
@@ -633,21 +633,21 @@ export default function CustomerOrderForm({
                                 ] === ""
                                   ? ""
                                   : customerOrderForm.values[
-                                        `price${product.id}-${product.appear}`
-                                      ] === "0"
-                                    ? "N/C"
-                                    : niceVisualDecimal(
-                                        parseFloat(
-                                          (
-                                            customerOrderForm.values[
-                                              `quantity${product.id}-${product.appear}`
-                                            ] *
-                                            customerOrderForm.values[
-                                              `price${product.id}-${product.appear}`
-                                            ]
-                                          ).toString(), // Silent linter.
-                                        ),
+                                      `price${product.id}-${product.appear}`
+                                    ] === "0"
+                                  ? "N/C"
+                                  : niceVisualDecimal(
+                                      parseFloat(
+                                        (
+                                          customerOrderForm.values[
+                                            `quantity${product.id}-${product.appear}`
+                                          ] *
+                                          customerOrderForm.values[
+                                            `price${product.id}-${product.appear}`
+                                          ]
+                                        ).toString() // Silent linter.
                                       )
+                                    )
                               }
                             </div>
                           </div>

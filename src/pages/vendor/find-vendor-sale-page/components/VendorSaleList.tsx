@@ -88,8 +88,8 @@ export default function VendorSaleList({
       JSON.stringify(
         paymentMethodMut.error.response
           ? paymentMethodMut.error.response.data.error
-          : paymentMethodMut.error,
-      ),
+          : paymentMethodMut.error
+      )
     );
     if (error.status === 401) {
       // This is just cursed.
@@ -98,7 +98,7 @@ export default function VendorSaleList({
         (err) => {
           error = err;
         },
-        (msg) => ({ ...error, message: msg }),
+        (msg) => ({ ...error, message: msg })
       );
     } else {
       setTimeout(() => {

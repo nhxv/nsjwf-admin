@@ -77,7 +77,7 @@ export default function ProductSaleTable({
         if (rowIndex !== index) return row;
 
         return [!row[0], ...row.slice(1)];
-      }),
+      })
     );
   };
   const onSelectAll = () => {

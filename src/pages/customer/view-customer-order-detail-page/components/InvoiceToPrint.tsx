@@ -97,8 +97,8 @@ export default function InvoiceToPrint({ printRef, order }) {
                     parseFloat(
                       (
                         productOrder.quantity * productOrder.unit_price
-                      ).toString(),
-                    ),
+                      ).toString()
+                    )
                   )}`}
             </div>
           </Fragment>
@@ -119,7 +119,7 @@ export default function InvoiceToPrint({ printRef, order }) {
                   return (
                     total + productOrder.quantity * productOrder.unit_price
                   );
-                }, 0),
+                }, 0)
               )}
             </span>
           </div>

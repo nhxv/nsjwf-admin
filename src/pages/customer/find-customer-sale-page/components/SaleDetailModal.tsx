@@ -39,7 +39,7 @@ export default function SaleDetailModal({ isOpen, onClose, report }) {
     },
     onError: (err: any) => {
       let _error = JSON.parse(
-        JSON.stringify(err.response ? err.response.data.error : err),
+        JSON.stringify(err.response ? err.response.data.error : err)
       );
       if (_error.status === 401) {
         handleTokenExpire(navigate, setError, (msg) => msg);

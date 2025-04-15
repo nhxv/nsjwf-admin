@@ -12,7 +12,7 @@ export const handleTokenExpire = (
   // Have to typehint the return type so TS stops screaming.
   paramCallback: (msg: string) => any = function (msg: string) {
     return (prev) => ({ ...prev, error: msg });
-  },
+  }
 ) => {
   const message = "Invalid session, redirecting to sign in page...";
 

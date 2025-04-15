@@ -17,10 +17,10 @@ export default function FindCustomerSalePage() {
   });
   const [queryURL, setQueryURL] = useState(
     `/customer-orders/sold/search?start_date=${convertTime(
-      new Date(),
+      new Date()
     )}&end_date=${convertTime(new Date())}&date_type=${encodeURIComponent(
-      "updated_at",
-    )}`,
+      "updated_at"
+    )}`
   );
   const [focus, setFocus] = useState({ report: null });
   const [latestFirst, setLatestFirst] = useState(true);

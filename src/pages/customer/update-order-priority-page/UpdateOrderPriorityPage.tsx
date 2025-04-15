@@ -61,7 +61,7 @@ export default function UpdateOrderPriorityPage() {
       })
       .catch((e) => {
         const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e),
+          JSON.stringify(e.response ? e.response.data.error : e)
         );
         setFetchData((prev) => ({
           ...prev,
@@ -101,7 +101,7 @@ export default function UpdateOrderPriorityPage() {
               s !== OrderStatus.CANCELED &&
               s !== OrderStatus.CHECKING &&
               s !== OrderStatus.DELIVERED &&
-              s !== OrderStatus.COMPLETED,
+              s !== OrderStatus.COMPLETED
           )}
           selected={status}
           onSelect={setStatus}

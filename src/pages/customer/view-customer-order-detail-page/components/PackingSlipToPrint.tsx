@@ -8,12 +8,12 @@ export default function PackingSlipToPrint({ printRef, order }) {
   const renderPages = [];
   for (const [key, packingSlipPage] of SplitProductsIntoPages(
     order,
-    columnNumber,
+    columnNumber
   ).entries()) {
     renderPages.push(
       <div className="break-after-page px-4 py-4" key={key}>
         {packingSlipPage}
-      </div>,
+      </div>
     );
   }
 
@@ -37,7 +37,7 @@ function SplitProductsIntoPages(order, columnCount: number = 2) {
         const locationA = productOrderA.product.location_name;
         const locationB = productOrderB.product.location_name;
         return locationA.localeCompare(locationB);
-      },
+      }
     );
     pages.set(
       // Key
@@ -138,7 +138,7 @@ function SplitProductsIntoPages(order, columnCount: number = 2) {
             {productCustomerOrders
               .slice(
                 i + MAX_LINES_PER_PAGE,
-                i + MAX_LINES_PER_PAGE * columnCount,
+                i + MAX_LINES_PER_PAGE * columnCount
               )
               .map((productOrder) => (
                 <div
@@ -162,7 +162,7 @@ function SplitProductsIntoPages(order, columnCount: number = 2) {
               ))}
           </div>
         </div>
-      </div>,
+      </div>
     );
   }
   return pages;
