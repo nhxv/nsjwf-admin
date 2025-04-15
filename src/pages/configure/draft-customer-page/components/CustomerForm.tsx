@@ -27,7 +27,7 @@ export default function CustomerForm({
     page: 0,
   });
   const [selectedProducts, setSelectedProducts] = useState(
-    editedProducts ? editedProducts : [],
+    editedProducts ? editedProducts : []
   );
   const [search, setSearch] = useState({
     products: [],
@@ -119,7 +119,7 @@ export default function CustomerForm({
         }
       } catch (e) {
         const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e),
+          JSON.stringify(e.response ? e.response.data.error : e)
         );
         setFormState((prev) => ({
           ...prev,
@@ -148,7 +148,7 @@ export default function CustomerForm({
         product.name
           .toLowerCase()
           .replace(/\s+/g, "")
-          .includes(e.target.value.toLowerCase().replace(/\s+/g, "")),
+          .includes(e.target.value.toLowerCase().replace(/\s+/g, ""))
       );
       setSearch((prev) => ({
         ...prev,
@@ -175,7 +175,7 @@ export default function CustomerForm({
     customerForm.setFieldValue(`quantity${id}`, 0);
     customerForm.setFieldValue(`unit${id}`, "BOX");
     setSelectedProducts(
-      selectedProducts.filter((product) => product.id !== id),
+      selectedProducts.filter((product) => product.id !== id)
     );
   };
 
@@ -273,7 +273,7 @@ export default function CustomerForm({
               onChange={() =>
                 customerForm.setFieldValue(
                   "discontinued",
-                  !customerForm.values.discontinued,
+                  !customerForm.values.discontinued
                 )
               }
               checked={!customerForm.values.discontinued}
@@ -366,11 +366,11 @@ export default function CustomerForm({
                               setValue={(v) =>
                                 customerForm.setFieldValue(
                                   `unit${product.id}`,
-                                  v,
+                                  v
                                 )
                               }
                               options={product.units.map(
-                                (unit) => unit.code.split("_")[1],
+                                (unit) => unit.code.split("_")[1]
                               )}
                             ></SelectInput>
                           </div>

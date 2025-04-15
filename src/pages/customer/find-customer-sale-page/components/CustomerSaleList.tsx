@@ -118,10 +118,10 @@ export default function CustomerSaleList({
       reports
         .filter((report) => {
           return !pinnedSale.find(
-            (sale) => sale.orderCode === report.orderCode,
+            (sale) => sale.orderCode === report.orderCode
           );
         })
-        .map(transformReport),
+        .map(transformReport)
     );
 
     const saleFile = {
@@ -169,8 +169,8 @@ export default function CustomerSaleList({
         invoice.paymentStatus === "CASH"
           ? "Paid by Cash"
           : invoice.paymentStatus === "CHECK"
-            ? "Paid by Check"
-            : "";
+          ? "Paid by Check"
+          : "";
 
       return {
         invoice_no: `${
@@ -190,10 +190,10 @@ export default function CustomerSaleList({
       reports
         .filter((report) => {
           return !pinnedSale.find(
-            (sale) => sale.orderCode === report.orderCode,
+            (sale) => sale.orderCode === report.orderCode
           );
         })
-        .map(transformReport),
+        .map(transformReport)
     );
 
     const saleFile = {
@@ -253,8 +253,8 @@ export default function CustomerSaleList({
       JSON.stringify(
         paymentMethodMut.error.response
           ? paymentMethodMut.error.response.data.error
-          : paymentMethodMut.error,
-      ),
+          : paymentMethodMut.error
+      )
     );
     if (error.status === 401) {
       // This is just cursed.
@@ -263,7 +263,7 @@ export default function CustomerSaleList({
         (err) => {
           error = err;
         },
-        (msg) => ({ ...error, message: msg }),
+        (msg) => ({ ...error, message: msg })
       );
     } else {
       setTimeout(() => {
@@ -335,8 +335,8 @@ export default function CustomerSaleList({
             report.paymentStatus === PaymentStatus.CASH
               ? "border-primary bg-green-100 text-primary dark:border-primary dark:bg-transparent hover:dark:bg-emerald-900 hover:dark:bg-opacity-10"
               : report.paymentStatus === PaymentStatus.CHECK
-                ? "border-sky-700 bg-sky-100 text-sky-700 dark:bg-transparent hover:dark:bg-sky-900 hover:dark:bg-opacity-10"
-                : "border-yellow-700 bg-yellow-100 text-yellow-700 dark:border-yellow-700 dark:bg-transparent hover:dark:bg-yellow-900 hover:dark:bg-opacity-10"
+              ? "border-sky-700 bg-sky-100 text-sky-700 dark:bg-transparent hover:dark:bg-sky-900 hover:dark:bg-opacity-10"
+              : "border-yellow-700 bg-yellow-100 text-yellow-700 dark:border-yellow-700 dark:bg-transparent hover:dark:bg-yellow-900 hover:dark:bg-opacity-10"
           }`}
             onClick={() => {
               onSelectSale(report);
@@ -396,7 +396,7 @@ export default function CustomerSaleList({
         {reports
           .filter((report) => {
             return !pinnedSale.find(
-              (sale) => sale.orderCode === report.orderCode,
+              (sale) => sale.orderCode === report.orderCode
             );
           })
           .map((report) => (
@@ -407,8 +407,8 @@ export default function CustomerSaleList({
               report.paymentStatus === PaymentStatus.CASH
                 ? "border-primary bg-green-100 text-primary dark:border-primary dark:bg-transparent hover:dark:bg-emerald-900 hover:dark:bg-opacity-10"
                 : report.paymentStatus === PaymentStatus.CHECK
-                  ? "border-sky-700 bg-sky-100 text-sky-700 dark:bg-transparent hover:dark:bg-sky-900 hover:dark:bg-opacity-10"
-                  : "border-yellow-700 bg-yellow-100 text-yellow-700 dark:border-yellow-700 dark:bg-transparent hover:dark:bg-yellow-900 hover:dark:bg-opacity-10"
+                ? "border-sky-700 bg-sky-100 text-sky-700 dark:bg-transparent hover:dark:bg-sky-900 hover:dark:bg-opacity-10"
+                : "border-yellow-700 bg-yellow-100 text-yellow-700 dark:border-yellow-700 dark:bg-transparent hover:dark:bg-yellow-900 hover:dark:bg-opacity-10"
             }`}
               onClick={() => {
                 onSelectSale(report);
@@ -464,7 +464,7 @@ export default function CustomerSaleList({
                       e.stopPropagation();
                       onUpdatePayment(
                         PaymentStatus.RECEIVABLE,
-                        report.orderCode,
+                        report.orderCode
                       );
                     }}
                   >

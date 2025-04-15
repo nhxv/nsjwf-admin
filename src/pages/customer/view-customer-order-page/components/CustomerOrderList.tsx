@@ -29,10 +29,10 @@ export default function CustomerOrderList() {
           prev +
           curr.productCustomerOrders.reduce(
             (prev, curr) => prev + curr.quantity * curr.unit_price,
-            0,
+            0
           ),
-        0,
-      ),
+        0
+      )
     );
   }, [search.orders]);
 
@@ -53,7 +53,7 @@ export default function CustomerOrderList() {
   // Cursed. Have to attach this pretty much on every search.orders
   const filterByStatus = (orders, status) => {
     return orders.filter((order) =>
-      status === "ALL" ? true : order.status === status,
+      status === "ALL" ? true : order.status === status
     );
   };
 
@@ -82,7 +82,7 @@ export default function CustomerOrderList() {
                 .includes(e.target.value.toLowerCase().replace(/\s+/g, ""));
             }).length !== 0
           );
-        },
+        }
       );
 
       // Count how many boxes that match with this query.
@@ -191,9 +191,8 @@ export default function CustomerOrderList() {
               }}
               options={["ALL"].concat(
                 Object.values(OrderStatus).filter(
-                  (s) =>
-                    s != OrderStatus.CANCELED && s != OrderStatus.COMPLETED,
-                ),
+                  (s) => s != OrderStatus.CANCELED && s != OrderStatus.COMPLETED
+                )
               )}
             />
           </div>

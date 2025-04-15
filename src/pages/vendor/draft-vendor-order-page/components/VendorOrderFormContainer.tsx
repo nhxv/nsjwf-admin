@@ -28,8 +28,8 @@ export default function VendorOrderFormContainer() {
       return niceVisualDecimal(
         +fetchData.prices.reduce(
           (prev, current) => prev + current.quantity * current.price,
-          0,
-        ),
+          0
+        )
       );
     } else return 0;
   }, [fetchData.prices]);
@@ -78,7 +78,7 @@ export default function VendorOrderFormContainer() {
             const productOrders = orderRes.data.productVendorOrders;
             for (const product of allProductsRes) {
               const similarProductOrders = productOrders.filter(
-                (po) => po.product_name === product.name,
+                (po) => po.product_name === product.name
               );
               if (similarProductOrders.length > 0) {
                 for (let i = 0; i < similarProductOrders.length; i++) {
@@ -143,7 +143,7 @@ export default function VendorOrderFormContainer() {
                 {
                   // This wasted 1 real life day of debugging. I love you Javascript.
                   responseType: "blob",
-                },
+                }
               );
             }
             setInitialFields((prev) => ({
@@ -196,7 +196,7 @@ export default function VendorOrderFormContainer() {
         })
         .catch((e) => {
           const error = JSON.parse(
-            JSON.stringify(e.response ? e.response.data.error : e),
+            JSON.stringify(e.response ? e.response.data.error : e)
           );
           setFetchData((prev) => ({
             ...prev,
@@ -263,7 +263,7 @@ export default function VendorOrderFormContainer() {
         })
         .catch((e) => {
           const error = JSON.parse(
-            JSON.stringify(e.response ? e.response.data.error : e),
+            JSON.stringify(e.response ? e.response.data.error : e)
           );
           setFetchData((prev) => ({
             ...prev,
@@ -294,19 +294,19 @@ export default function VendorOrderFormContainer() {
     if (inputId.includes("quantity")) {
       const [id, appear] = inputId.replace("quantity", "").split("-");
       const index = updatedPrices.findIndex(
-        (p) => p.id === +id && p.appear === +appear,
+        (p) => p.id === +id && p.appear === +appear
       );
       updatedPrices[index].quantity = value;
     } else if (inputId.includes("price")) {
       const [id, appear] = inputId.replace("price", "").split("-");
       const index = updatedPrices.findIndex(
-        (p) => p.id === +id && p.appear === +appear,
+        (p) => p.id === +id && p.appear === +appear
       );
       updatedPrices[index].price = value;
     } else if (inputId.includes("remove")) {
       const [id, appear] = inputId.replace("remove", "").split("-");
       const index = updatedPrices.findIndex(
-        (p) => p.id === +id && p.appear === +appear,
+        (p) => p.id === +id && p.appear === +appear
       );
       updatedPrices[index].quantity = 0;
       updatedPrices[index].price = 0;
@@ -319,12 +319,12 @@ export default function VendorOrderFormContainer() {
       // load template when create
       try {
         const response = await api.get(
-          `/vendors/active/tendency/${encodeURIComponent(vendorName)}`,
+          `/vendors/active/tendency/${encodeURIComponent(vendorName)}`
         );
         return response.data.vendorProductTendencies;
       } catch (e) {
         const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e),
+          JSON.stringify(e.response ? e.response.data.error : e)
         );
         setFetchData((prev) => ({
           ...prev,

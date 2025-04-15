@@ -38,7 +38,7 @@ export default function EmployeeForm({ isOpen, onClose, employee, onReload }) {
         onClose();
       } catch (e) {
         const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e),
+          JSON.stringify(e.response ? e.response.data.error : e)
         );
         setFormState((prev) => ({
           ...prev,
@@ -129,7 +129,7 @@ export default function EmployeeForm({ isOpen, onClose, employee, onReload }) {
               onChange={() =>
                 employeeForm.setFieldValue(
                   "active",
-                  !employeeForm.values.active,
+                  !employeeForm.values.active
                 )
               }
               checked={employeeForm.values.active}

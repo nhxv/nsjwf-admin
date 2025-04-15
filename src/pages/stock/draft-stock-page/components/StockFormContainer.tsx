@@ -52,7 +52,7 @@ export default function StockFormContainer() {
       })
       .catch((e) => {
         const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e),
+          JSON.stringify(e.response ? e.response.data.error : e)
         );
         setFetchData((prev) => ({
           ...prev,

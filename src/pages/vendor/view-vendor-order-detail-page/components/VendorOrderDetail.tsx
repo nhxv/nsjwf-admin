@@ -162,8 +162,8 @@ export default function VendorOrderDetail() {
           {niceVisualDecimal(
             order.productVendorOrders.reduce(
               (prev, curr) => prev + curr.quantity * curr.unit_price,
-              0,
-            ),
+              0
+            )
           )}
         </span>
       </div>

@@ -19,7 +19,7 @@ export default function SelectSearch({
           option
             .toLowerCase()
             .replace(/\s+/g, "")
-            .includes(query.toLowerCase().replace(/\s+/g, "")),
+            .includes(query.toLowerCase().replace(/\s+/g, ""))
         );
 
   const onChangeValue = (v) => {

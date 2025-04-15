@@ -14,7 +14,7 @@ export default function CustomerSaleForm({ onFormSubmit, onFormClear }) {
   const searchForm = useFormik<FormFields>({
     initialValues: {
       start_date: convertTime(
-        new Date(today.getFullYear(), today.getMonth(), 1),
+        new Date(today.getFullYear(), today.getMonth(), 1)
       ),
       end_date: convertTime(today),
       product: "",
@@ -57,7 +57,7 @@ export default function CustomerSaleForm({ onFormSubmit, onFormClear }) {
             onChange={(e) => {
               searchForm.setFieldValue(
                 "product",
-                e.target.value ? e.target.value : "",
+                e.target.value ? e.target.value : ""
               );
             }}
             value={searchForm.values.product}

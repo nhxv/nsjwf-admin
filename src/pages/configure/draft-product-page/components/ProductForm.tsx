@@ -73,7 +73,7 @@ export default function ProductForm({ editedId, units, initialData, onClear }) {
         }
       } catch (e) {
         const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e),
+          JSON.stringify(e.response ? e.response.data.error : e)
         );
         setFormState((prev) => ({
           ...prev,
@@ -171,7 +171,7 @@ export default function ProductForm({ editedId, units, initialData, onClear }) {
             onChange={() =>
               productForm.setFieldValue(
                 "discontinued",
-                !productForm.values.discontinued,
+                !productForm.values.discontinued
               )
             }
             checked={!productForm.values.discontinued}

@@ -26,7 +26,7 @@ export default function EmployeeTaskList({ employeeTasks, reload }) {
       const items = reorder(
         employees[index].customerOrders,
         source.index,
-        destination.index,
+        destination.index
       );
       newEmployees[index].customerOrders = items;
     } else {
@@ -36,7 +36,7 @@ export default function EmployeeTaskList({ employeeTasks, reload }) {
         employees[sIndex].customerOrders,
         employees[dIndex].customerOrders,
         source,
-        destination,
+        destination
       );
       newEmployees[sIndex].customerOrders = result[sEmployee];
       newEmployees[dIndex].customerOrders = result[dEmployee];
@@ -53,7 +53,7 @@ export default function EmployeeTaskList({ employeeTasks, reload }) {
       const res = await api.put(`/customer-orders/tasks/priority`, reqData);
     } catch (e) {
       const error = JSON.parse(
-        JSON.stringify(e.response ? e.response.data.error : e),
+        JSON.stringify(e.response ? e.response.data.error : e)
       );
       setErrorMessage(error.message);
 

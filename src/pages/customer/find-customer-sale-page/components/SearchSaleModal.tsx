@@ -114,7 +114,7 @@ export default function SearchSaleModal({
                   // This can be null, and we don't want that.
                   searchForm.setFieldValue(
                     "customer",
-                    customer ? customer : "",
+                    customer ? customer : ""
                   );
                 }}
                 options={customers.map((v) => v.name)}
@@ -131,7 +131,7 @@ export default function SearchSaleModal({
                 onChange={(e) => {
                   searchForm.setFieldValue(
                     "product",
-                    e.target.value ? e.target.value : "",
+                    e.target.value ? e.target.value : ""
                   );
                 }}
                 value={searchForm.values.product}
