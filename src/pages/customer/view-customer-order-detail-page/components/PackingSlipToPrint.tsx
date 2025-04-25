@@ -1,6 +1,6 @@
 import { convertTimeToText } from "../../../../commons/utils/time.util";
 
-const MAX_LINES_PER_PAGE: number = 18;
+const MAX_LINES_PER_PAGE: number = 24;
 
 export default function PackingSlipToPrint({ printRef, order }) {
   const columnNumber =
