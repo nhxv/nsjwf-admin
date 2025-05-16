@@ -154,7 +154,7 @@ export default function VendorOrderList() {
                 Object.values(OrderStatus).filter(
                   (s) =>
                     s != OrderStatus.PICKING &&
-                    s != OrderStatus.CHECKING &&
+                    s != OrderStatus.SHIPPING &&
                     s != OrderStatus.COMPLETED &&
                     s != OrderStatus.CANCELED
                 )
@@ -180,7 +180,7 @@ export default function VendorOrderList() {
           <div
             key={order.code}
             className={`sticker col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3 xl:col-span-2
-            ${order.status === OrderStatus.SHIPPING ? "sticker-yellow" : ""}
+            ${order.status === OrderStatus.CHECKING ? "sticker-yellow" : ""}
             ${order.status === OrderStatus.DELIVERED ? "sticker-primary" : ""}`}
             onClick={() => onToDetails(order.code)}
           >
@@ -194,7 +194,7 @@ export default function VendorOrderList() {
             <button
               className={`btn btn-sm mt-3 w-full
               ${
-                order.status === OrderStatus.SHIPPING
+                order.status === OrderStatus.CHECKING
                   ? "btn-sticker-yellow"
                   : ""
               }
