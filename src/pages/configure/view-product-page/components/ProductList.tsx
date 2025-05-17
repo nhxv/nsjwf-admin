@@ -171,9 +171,11 @@ export default function ProductList() {
           onClear={onClearQuery}
           onFocus={null}
         ></SearchInput>
-        <label className="btn btn-square btn-accent">
-          <BiPrinter className="h-6 w-6" onClick={handlePrint}></BiPrinter>
-        </label>
+        {fetchData.products.length > 0 && (
+          <label className="btn btn-square btn-accent">
+            <BiPrinter className="h-6 w-6" onClick={handlePrint}></BiPrinter>
+          </label>
+        )}
       </div>
       <div className="grid grid-cols-12 gap-4 px-4">
         {search.products.map((product) => (
