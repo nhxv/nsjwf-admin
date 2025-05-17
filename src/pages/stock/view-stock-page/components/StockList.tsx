@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { useState, useMemo } from "react";
-import { BiEdit } from "react-icons/bi";
+import { useState, useMemo, useRef } from "react";
+import { BiEdit, BiPrinter } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import { Role } from "../../../../commons/enums/role.enum";
 import {
@@ -12,10 +12,13 @@ import Spinner from "../../../../components/Spinner";
 import SearchInput from "../../../../components/forms/SearchInput";
 import api from "../../../../stores/api";
 import { useAuthStore } from "../../../../stores/auth.store";
+import StockToPrint from "./StockToPrint";
+import { useReactToPrint } from "react-to-print";
 
 export default function StockList() {
   const navigate = useNavigate();
   const role = useAuthStore((state) => state.role);
+  const printRef = useRef(null);
   const [search, setSearch] = useState({
     products: [],
     query: "",
@@ -76,6 +79,10 @@ export default function StockList() {
     }));
   };
 
+  const handlePrint = useReactToPrint({
+    content: () => printRef.current,
+  });
+
   if (
     stockQuery.status === "loading" ||
     stockQuery.fetchStatus === "fetching"
@@ -109,6 +116,11 @@ export default function StockList() {
           </button>
         </div>
       )}
+      {search.products.length > 0 && (
+        <div className="hidden">
+          <StockToPrint printRef={printRef} stocks={search.products} />
+        </div>
+      )}
       <div className="m-4 flex flex-col items-center justify-between gap-3 xl:flex-row">
         <div className="flex items-center gap-2">
           <div className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content">
@@ -133,6 +145,14 @@ export default function StockList() {
               onClear={onClearQuery}
               onFocus={null}
             ></SearchInput>
+            {search.products.length > 0 && (
+              <label className="btn btn-square btn-accent">
+                <BiPrinter
+                  className="h-6 w-6"
+                  onClick={handlePrint}
+                ></BiPrinter>
+              </label>
+            )}
           </div>
         </div>
       </div>
