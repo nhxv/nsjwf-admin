@@ -441,8 +441,6 @@ export default function VendorOrderForm({
                         setModalOpen(true);
                       }}
                     >
-                      {/* BUG: For some reasons CLICKing outside the modal trigger the div onClick,
-                      which reopen the modal again. Esc and onClose() still works. */}
                       <ImageModal
                         isOpen={imageModalIsOpen}
                         onClose={() => setModalOpen(false)}

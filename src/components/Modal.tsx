@@ -23,7 +23,10 @@ export default function Modal({
         </Transition.Child>
 
         <div className="fixed inset-0 overflow-y-auto bg-black bg-opacity-50">
-          <div className="flex min-h-full items-center justify-center p-4 text-center">
+          <div
+            className="flex min-h-full items-center justify-center p-4 text-center"
+            onClick={(e) => e.stopPropagation()}
+          >
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-100"
