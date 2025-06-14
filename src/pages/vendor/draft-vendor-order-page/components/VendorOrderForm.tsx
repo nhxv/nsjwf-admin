@@ -477,7 +477,7 @@ export default function VendorOrderForm({
                               const compressedFile = await imageCompression(
                                 file,
                                 {
-                                  maxSizeMB: 0.5,
+                                  maxSizeMB: 0.1,
                                   signal: imageCompressAborter.current.signal,
                                   onProgress: (progress) => {
                                     if (progress < 100) {
