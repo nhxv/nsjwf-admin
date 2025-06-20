@@ -466,6 +466,10 @@ export default function VendorOrderForm({
                         <span>Click to view attachment</span>
                       </div>
                     </div>
+                  ) : vendorOrderForm.values.attachmentExists ? (
+                    <div className="custom-card sticker-primary relative w-full text-center dark:border-2">
+                      <Spinner />
+                    </div>
                   ) : (
                     <div className="w-full">
                       <FileInput
@@ -535,7 +539,8 @@ export default function VendorOrderForm({
                     disabled={
                       initialData.status === "COMPLETED" ||
                       formState.loading ||
-                      vendorOrderForm.isSubmitting
+                      vendorOrderForm.isSubmitting ||
+                      (vendorOrderForm.values.attachmentExists && !imageURL)
                     }
                   >
                     <span>{edit ? "Update" : "Create"}</span>

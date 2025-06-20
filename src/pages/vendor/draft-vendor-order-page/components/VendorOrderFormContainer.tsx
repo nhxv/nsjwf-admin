@@ -155,6 +155,7 @@ export default function VendorOrderFormContainer() {
               manualCode: orderRes.data.manual_code ?? "",
               expectedAt: convertTime(new Date(orderRes.data.expected_at)),
               attachment: null,
+              attachmentExists: !!attachmentPromise,
               ...productFieldData,
             }));
 
@@ -175,6 +176,7 @@ export default function VendorOrderFormContainer() {
                     setInitialFields((prev) => ({
                       ...prev,
                       attachment: file,
+                      attachmentAvailable: true,
                     }));
                   }
                 })
