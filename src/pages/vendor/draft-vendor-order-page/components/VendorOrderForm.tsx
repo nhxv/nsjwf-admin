@@ -453,6 +453,10 @@ export default function VendorOrderForm({
                           e.stopPropagation(); // Stop propagation to div
 
                           vendorOrderForm.setFieldValue("attachment", null);
+                          vendorOrderForm.setFieldValue(
+                            "attachmentExists",
+                            false
+                          );
                         }}
                       >
                         <span>
@@ -501,6 +505,10 @@ export default function VendorOrderForm({
                               vendorOrderForm.setFieldValue(
                                 "attachment",
                                 compressedFile
+                              );
+                              vendorOrderForm.setFieldValue(
+                                "attachmentExists",
+                                true
                               );
                             } catch (error) {
                               setFormState((prev) => ({
