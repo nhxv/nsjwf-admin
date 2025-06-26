@@ -1,5 +1,5 @@
 import { useFormik } from "formik";
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import {
   BiCloudUpload,
   BiImage,
@@ -25,36 +25,45 @@ import FileInput from "../../../../components/forms/FileInput";
 import ImageModal from "../../../../components/forms/ImageModal";
 import { useStateURL } from "../../../../commons/hooks/objecturl.hook";
 import imageCompression from "browser-image-compression";
+import { useQuery } from "@tanstack/react-query";
 
 export default function VendorOrderForm({
   edit,
   initialData,
+  fetchData,
   vendors,
   editedProducts,
   allProducts,
-  updatePrice,
-  resetPrice,
-  total,
-  loadTemplate,
   onClear,
 }) {
   const navigate = useNavigate();
   const [formState, setFormState] = useState({
     success: "",
     error: "",
-    loading: false,
-    page: 0,
   });
+  const [page, setPage] = useState(0);
+  // NOTE: This might not need to be a state. May change later.
   const [selectedProducts, setSelectedProducts] = useState(
     editedProducts ? editedProducts : []
   );
-  const [search, setSearch] = useState({
-    products: [],
-    query: "",
-  });
+
+  const [search, setSearch] = useState("");
+  const filteredProducts =
+    search === ""
+      ? allProducts
+      : allProducts.filter((product) =>
+          product.name
+            .toLowerCase()
+            .replace(/\s+/g, "")
+            .includes(search.toLowerCase().replace(/\s+/g, ""))
+        );
+
   const imageCompressAborter = useRef(new AbortController());
 
   const [imageModalIsOpen, setModalOpen] = useState(false);
+
+  // NOTE: This might not need to be a state. May change later.
+  const [fetchDataa, setFetchDataa] = useState(fetchData);
 
   const vendorOrderForm = useFormik({
     enableReinitialize: true,
@@ -115,6 +124,9 @@ export default function VendorOrderForm({
         }
         reqData["productVendorOrders"] = [...productOrders.values()];
         reqData["attachment"] = data["attachment"];
+        console.log(reqData);
+        return;
+
         if (edit) {
           reqData["code"] = data["code"];
           const res = await api.putForm(
@@ -149,7 +161,72 @@ export default function VendorOrderForm({
     },
   });
 
+  const templateQuery = useQuery({
+    queryKey: [
+      "vendors",
+      "active",
+      "tendency",
+      vendorOrderForm.values["vendorName"],
+    ],
+    queryFn: async () => {
+      // Non-critical function, return an empty array if it fails
+      // (like no tendency or initial load).
+      try {
+        const vendorName = vendorOrderForm.values["vendorName"];
+        const result = await api.get(
+          `/vendors/active/tendency/${encodeURIComponent(vendorName)}`
+        );
+        return result.data.vendorProductTendencies;
+      } catch {
+        return [];
+      }
+    },
+    // Suppress the warning when vendorName is not yet available.
+    enabled: !edit && !!vendorOrderForm.values["vendorName"],
+    refetchOnWindowFocus: false,
+  });
+
+  const [isCompressingImg, setIsCompressingImg] = useState(false);
+  const isFormLoading =
+    templateQuery.isFetching || vendorOrderForm.isSubmitting;
+
   const imageURL = useStateURL(vendorOrderForm.values.attachment);
+
+  const total = useMemo(() => {
+    if (fetchDataa.prices?.length > 0) {
+      return niceVisualDecimal(
+        +fetchDataa.prices.reduce(
+          (prev, current) => prev + current.quantity * current.price,
+          0
+        )
+      );
+    } else return 0;
+  }, [fetchDataa.prices]);
+
+  const updatePrice = (value: number, inputId: string) => {
+    let updatedPrices = [...fetchDataa.prices];
+    if (inputId.includes("quantity")) {
+      const [id, appear] = inputId.replace("quantity", "").split("-");
+      const index = updatedPrices.findIndex(
+        (p) => p.id === +id && p.appear === +appear
+      );
+      updatedPrices[index].quantity = value;
+    } else if (inputId.includes("price")) {
+      const [id, appear] = inputId.replace("price", "").split("-");
+      const index = updatedPrices.findIndex(
+        (p) => p.id === +id && p.appear === +appear
+      );
+      updatedPrices[index].price = value;
+    } else if (inputId.includes("remove")) {
+      const [id, appear] = inputId.replace("remove", "").split("-");
+      const index = updatedPrices.findIndex(
+        (p) => p.id === +id && p.appear === +appear
+      );
+      updatedPrices[index].quantity = 0;
+      updatedPrices[index].price = 0;
+    }
+    setFetchDataa((prev) => ({ ...prev, prices: updatedPrices }));
+  };
 
   const handlePriceChange = (e, inputId: string) => {
     vendorOrderForm.setFieldValue(inputId, e.target.value);
@@ -163,14 +240,8 @@ export default function VendorOrderForm({
 
   const onNextPage = async () => {
     if (!edit && selectedProducts.length === 0) {
-      setFormState((prev) => ({
-        ...prev,
-        error: "",
-        empty: "",
-        loading: true,
-      }));
-      const template = await loadTemplate(vendorOrderForm.values[`vendorName`]);
-      if (template) {
+      if (templateQuery.isSuccess && templateQuery.data.length > 0) {
+        const template = templateQuery.data;
         const selected = [];
         const updatedPrices = [];
         for (const product of allProducts) {
@@ -219,43 +290,23 @@ export default function VendorOrderForm({
             }
           }
         }
-        resetPrice(updatedPrices);
+        setFetchDataa((prev) => ({ ...prev, prices: updatedPrices }));
         setSelectedProducts(selected);
       }
-      setFormState((prev) => ({
-        ...prev,
-        error: "",
-        empty: "",
-        loading: false,
-      }));
     }
-    setFormState((prev) => ({ ...prev, page: 1 }));
+    setPage(1);
   };
 
   const onPreviousPage = () => {
-    setFormState((prev) => ({ ...prev, page: 0 }));
+    setPage(0);
   };
 
   const onChangeSearch = (e) => {
-    if (e.target.value) {
-      const searched = allProducts.filter((product) =>
-        product.name
-          .toLowerCase()
-          .replace(/\s+/g, "")
-          .includes(e.target.value.toLowerCase().replace(/\s+/g, ""))
-      );
-      setSearch((prev) => ({
-        ...prev,
-        products: searched,
-        query: e.target.value,
-      }));
-    } else {
-      setSearch((prev) => ({ ...prev, products: [], query: e.target.value }));
-    }
+    setSearch(e.target.value);
   };
 
   const onAddProduct = (product) => {
-    setSearch((prev) => ({ ...prev, products: [], query: "" }));
+    setSearch("");
     const found = selectedProducts.filter((p) => p.name === product.name);
     if (found.length >= product.units.length) {
       // cannot add more of this product, but we'll bump them up the list for searching purpose
@@ -298,7 +349,7 @@ export default function VendorOrderForm({
   };
 
   const onRemoveProduct = (id, appear) => {
-    setSearch((prev) => ({ ...prev, products: [], query: "" }));
+    setSearch("");
     vendorOrderForm.setFieldValue(`quantity${id}-${appear}`, 0);
     vendorOrderForm.setFieldValue(`unit${id}-${appear}`, "BOX");
     vendorOrderForm.setFieldValue(`price${id}-${appear}`, "0");
@@ -311,12 +362,12 @@ export default function VendorOrderForm({
   };
 
   const onClearQuery = () => {
-    setSearch((prev) => ({ ...prev, products: [], query: "" }));
+    setSearch("");
   };
 
   return (
     <form onSubmit={vendorOrderForm.handleSubmit}>
-      {formState.page === 0 ? (
+      {page === 0 ? (
         <div className="custom-card mx-auto grid grid-cols-12 gap-x-2 xl:w-7/12">
           {/* 1st page */}
           <div className="col-span-12 mb-5 xl:col-span-6">
@@ -387,7 +438,7 @@ export default function VendorOrderForm({
               type="button"
               className="btn btn-primary col-span-12 mt-3"
               onClick={onNextPage}
-              disabled={formState.loading || vendorOrderForm.isSubmitting}
+              disabled={isFormLoading}
             >
               <span>Set product</span>
               <span>
@@ -405,7 +456,7 @@ export default function VendorOrderForm({
         </div>
       ) : (
         <>
-          {formState.page === 1 && (
+          {page === 1 && (
             <div className="flex min-h-screen flex-col items-start gap-6 xl:flex-row-reverse">
               <div className="custom-card w-full xl:sticky xl:top-[84px] xl:w-5/12">
                 <div className="mb-4 flex items-center">
@@ -470,8 +521,27 @@ export default function VendorOrderForm({
                         <span>Click to view attachment</span>
                       </div>
                     </div>
-                  ) : vendorOrderForm.values.attachmentExists ? (
+                  ) : vendorOrderForm.values.attachmentExists ||
+                    isCompressingImg ? (
                     <div className="custom-card sticker-primary relative w-full text-center dark:border-2">
+                      {isCompressingImg && (
+                        <button
+                          type="button"
+                          className="btn btn-circle btn-accent btn-sm absolute -right-4 -top-4 shadow-md"
+                          onClick={(e) => {
+                            e.stopPropagation(); // Stop propagation to div
+
+                            imageCompressAborter.current.abort();
+                            imageCompressAborter.current =
+                              new AbortController();
+                            setIsCompressingImg(false);
+                          }}
+                        >
+                          <span>
+                            <BiX className="h-6 w-6"></BiX>
+                          </span>
+                        </button>
+                      )}
                       <Spinner />
                     </div>
                   ) : (
@@ -489,15 +559,9 @@ export default function VendorOrderForm({
                                   signal: imageCompressAborter.current.signal,
                                   onProgress: (progress) => {
                                     if (progress < 100) {
-                                      setFormState((prev) => ({
-                                        ...prev,
-                                        loading: true,
-                                      }));
+                                      setIsCompressingImg(true);
                                     } else {
-                                      setFormState((prev) => ({
-                                        ...prev,
-                                        loading: false,
-                                      }));
+                                      setIsCompressingImg(false);
                                     }
                                   },
                                 }
@@ -515,6 +579,17 @@ export default function VendorOrderForm({
                                 ...prev,
                                 error: error.message,
                               }));
+                              vendorOrderForm.setFieldValue("attachment", null);
+                              vendorOrderForm.setFieldValue(
+                                "attachmentExists",
+                                false
+                              );
+                              setTimeout(() => {
+                                setFormState((prev) => ({
+                                  ...prev,
+                                  error: "",
+                                }));
+                              }, 1500);
                             }
                           }
                         }}
@@ -534,7 +609,7 @@ export default function VendorOrderForm({
                     type="button"
                     className="btn-outline-primary btn col-span-6"
                     onClick={onPreviousPage}
-                    disabled={formState.loading || vendorOrderForm.isSubmitting}
+                    disabled={isFormLoading}
                   >
                     <span>
                       <BiLeftArrowAlt className="mr-1 h-7 w-7"></BiLeftArrowAlt>
@@ -546,8 +621,7 @@ export default function VendorOrderForm({
                     className="btn btn-primary col-span-6"
                     disabled={
                       initialData.status === "COMPLETED" ||
-                      formState.loading ||
-                      vendorOrderForm.isSubmitting ||
+                      isFormLoading ||
                       (vendorOrderForm.values.attachmentExists && !imageURL)
                     }
                   >
@@ -564,7 +638,7 @@ export default function VendorOrderForm({
                 </div>
 
                 <div>
-                  {formState.loading && (
+                  {isFormLoading && (
                     <div className="mt-5">
                       <Spinner></Spinner>
                     </div>
@@ -585,19 +659,12 @@ export default function VendorOrderForm({
               <div className="mb-5 w-full xl:w-7/12">
                 <div className="mb-6">
                   <SearchSuggest
-                    query={search.query}
-                    items={search.products}
+                    query={search}
+                    items={filteredProducts}
                     onChange={(e) => onChangeSearch(e)}
-                    onFocus={() =>
-                      setSearch((prev) => ({
-                        ...prev,
-                        products: allProducts,
-                        query: "",
-                      }))
-                    }
+                    onFocus={() => setSearch("")}
                     onSelect={onAddProduct}
                     onClear={onClearQuery}
-                    nonOverlapMargin="mb-80"
                   ></SearchSuggest>
                 </div>
 

@@ -167,6 +167,7 @@ export default function StockForm({ initialData, products, onClear }) {
             }
             onSelect={onAddProduct}
             onClear={onClearQuery}
+            allowOverlap
           ></SearchSuggest>
         </div>
 

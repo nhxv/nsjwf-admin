@@ -97,7 +97,7 @@ export default function VendorOrderList() {
     }));
   };
 
-  if (query.status === "loading") {
+  if (query.status === "pending") {
     return (
       <div className="mx-auto mt-4 w-11/12 md:w-10/12 lg:w-6/12">
         <Spinner></Spinner>
@@ -109,6 +109,13 @@ export default function VendorOrderList() {
     query.fetchStatus === "paused" ||
     (query.status === "error" && query.fetchStatus === "idle")
   ) {
+    if (query.fetchStatus === "paused") {
+      return (
+        <div className="mx-auto mt-4 w-11/12 md:w-10/12 lg:w-6/12">
+          <Alert type="error" message="Network Error" />
+        </div>
+      );
+    }
     return (
       <div className="mx-auto mt-4 w-11/12 md:w-10/12 lg:w-6/12">
         <AlertFromQueryError queryError={query.error} />

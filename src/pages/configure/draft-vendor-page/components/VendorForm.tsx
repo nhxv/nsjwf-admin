@@ -298,6 +298,7 @@ export default function VendorForm({
                   }
                   onSelect={onAddProduct}
                   onClear={onClearQuery}
+                  allowOverlap
                 ></SearchSuggest>
               </div>
 

@@ -65,7 +65,7 @@ export default function CustomerList() {
     navigate(`/configure/draft-customer/${id}`);
   };
 
-  if (query.fetchStatus === "fetching" || query.status === "loading") {
+  if (query.fetchStatus === "fetching" || query.status === "pending") {
     return <Spinner></Spinner>;
   }
 
@@ -76,6 +76,23 @@ export default function CustomerList() {
     query.fetchStatus === "paused" ||
     (query.status === "error" && query.fetchStatus === "idle")
   ) {
+    if (query.fetchStatus === "paused") {
+      return (
+        <>
+          <div className="fixed bottom-24 right-6 z-20 md:right-8">
+            <button className="btn btn-circle btn-primary" onClick={onAdd}>
+              <span>
+                <BiPlus className="h-8 w-8"></BiPlus>
+              </span>
+            </button>
+          </div>
+          <div className="mx-auto w-11/12 sm:w-8/12 xl:w-6/12">
+            <Alert type="error" message="Network Error" />
+          </div>
+        </>
+      );
+    }
+
     return (
       <>
         <div className="fixed bottom-24 right-6 z-20 md:right-8">
