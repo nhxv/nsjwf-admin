@@ -73,7 +73,6 @@ export default function VendorOrderForm({
         ...prev,
         error: "",
         success: "",
-        loading: true,
       }));
       try {
         let reqData = {};
@@ -124,8 +123,6 @@ export default function VendorOrderForm({
         }
         reqData["productVendorOrders"] = [...productOrders.values()];
         reqData["attachment"] = data["attachment"];
-        console.log(reqData);
-        return;
 
         if (edit) {
           reqData["code"] = data["code"];
@@ -151,7 +148,6 @@ export default function VendorOrderForm({
           ...prev,
           error: error.message,
           success: "",
-          loading: false,
         }));
 
         if (error.status === 401) {
