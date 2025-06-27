@@ -11,12 +11,16 @@ import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
 import { useNavigate } from "react-router-dom";
 import { handleTokenExpire } from "../../../../commons/utils/token.util";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQueryClient,
+  UseQueryResult,
+} from "@tanstack/react-query";
 import { niceVisualDecimal } from "../../../../commons/utils/fraction.util";
 
 interface CustomerSaleListProps {
   reports: Array<any>;
-  reportQuery;
+  reportQuery: UseQueryResult<any>;
   onSelectSale: (sale: any) => void;
 }
 
@@ -230,7 +234,7 @@ export default function CustomerSaleList({
   };
 
   if (
-    reportQuery.status === "loading" ||
+    reportQuery.status === "pending" ||
     reportQuery.fetchStatus === "fetching"
   ) {
     return <Spinner></Spinner>;
@@ -240,6 +244,14 @@ export default function CustomerSaleList({
     reportQuery.fetchStatus === "paused" ||
     (reportQuery.status === "error" && reportQuery.fetchStatus === "idle")
   ) {
+    if (reportQuery.fetchStatus === "paused") {
+      return (
+        <div className="mx-auto mt-4 w-11/12 md:w-10/12 lg:w-6/12">
+          <Alert type="error" message="Network Error" />
+        </div>
+      );
+    }
+
     return (
       <div className="mx-auto mt-4 w-11/12 md:w-10/12 lg:w-6/12">
         <AlertFromQueryError queryError={reportQuery.error} />

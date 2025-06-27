@@ -528,7 +528,6 @@ export default function CustomerOrderForm({
                     }
                     onSelect={onAddProduct}
                     onClear={onClearQuery}
-                    nonOverlapMargin="mb-80"
                   ></SearchSuggest>
                 </div>
 

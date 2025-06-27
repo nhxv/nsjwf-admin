@@ -2,6 +2,10 @@ import { BiError, BiBot, BiCheckDouble } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import { handleTokenExpire } from "../commons/utils/token.util";
 
+interface IAlertFromQueryErrorProps {
+  queryError: any;
+}
+
 export default function Alert({ message, type }) {
   if (type === "error") {
     return (
@@ -39,7 +43,7 @@ export default function Alert({ message, type }) {
   return null;
 }
 
-export function AlertFromQueryError({ queryError }) {
+export function AlertFromQueryError({ queryError }: IAlertFromQueryErrorProps) {
   // BUG: Revisit code that use this since it'll also check for a paused fetchStatus
   // and for networking issue, it's not clear whether query.error/queryError exist or not.
   const navigate = useNavigate();

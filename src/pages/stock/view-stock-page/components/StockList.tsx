@@ -7,7 +7,7 @@ import {
   niceVisualDecimal,
   parseFraction,
 } from "../../../../commons/utils/fraction.util";
-import { AlertFromQueryError } from "../../../../components/Alert";
+import Alert, { AlertFromQueryError } from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
 import SearchInput from "../../../../components/forms/SearchInput";
 import api from "../../../../stores/api";
@@ -84,7 +84,7 @@ export default function StockList() {
   });
 
   if (
-    stockQuery.status === "loading" ||
+    stockQuery.status === "pending" ||
     stockQuery.fetchStatus === "fetching"
   ) {
     return <Spinner></Spinner>;
@@ -94,6 +94,14 @@ export default function StockList() {
     stockQuery.fetchStatus === "paused" ||
     (stockQuery.status === "error" && stockQuery.fetchStatus === "idle")
   ) {
+    if (stockQuery.fetchStatus === "paused") {
+      return (
+        <div className="mx-auto w-11/12 md:w-10/12 lg:w-6/12">
+          <Alert type="error" message="Network Error" />
+        </div>
+      );
+    }
+
     return (
       <div className="mx-auto w-11/12 md:w-10/12 lg:w-6/12">
         <AlertFromQueryError queryError={stockQuery.error} />

@@ -150,7 +150,7 @@ export default function SaleDetailModal({ isOpen, onClose, report }) {
         </div>
 
         <div>
-          {saleRevertMut.status === "loading" && (
+          {saleRevertMut.status === "pending" && (
             <div className="mt-5">
               <Spinner></Spinner>
             </div>

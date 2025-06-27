@@ -1,4 +1,8 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQueryClient,
+  UseQueryResult,
+} from "@tanstack/react-query";
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { PaymentStatus } from "../../../../commons/enums/payment-status.enum";
@@ -11,7 +15,7 @@ import api from "../../../../stores/api";
 
 interface VendorSaleListProps {
   reports: Array<any>;
-  reportQuery;
+  reportQuery: UseQueryResult;
   onSelectSale: (sale: any) => void;
 }
 
@@ -65,7 +69,7 @@ export default function VendorSaleList({
   });
 
   if (
-    reportQuery.status === "loading" ||
+    reportQuery.status === "pending" ||
     reportQuery.fetchStatus === "fetching"
   ) {
     return <Spinner></Spinner>;
@@ -75,6 +79,14 @@ export default function VendorSaleList({
     reportQuery.fetchStatus === "paused" ||
     (reportQuery.status === "error" && reportQuery.fetchStatus === "idle")
   ) {
+    if (reportQuery.fetchStatus === "paused") {
+      return (
+        <div className="mx-auto mt-4 w-11/12 md:w-10/12 lg:w-6/12">
+          <Alert type="error" message="Network Error" />
+        </div>
+      );
+    }
+
     return (
       <div className="mx-auto mt-4 w-11/12 md:w-10/12 lg:w-6/12">
         <AlertFromQueryError queryError={reportQuery.error} />

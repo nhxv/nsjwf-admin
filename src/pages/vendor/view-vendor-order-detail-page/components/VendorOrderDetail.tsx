@@ -5,7 +5,7 @@ import { BiChevronDown, BiChevronUp } from "react-icons/bi";
 import { useNavigate, useParams } from "react-router-dom";
 import { niceVisualDecimal } from "../../../../commons/utils/fraction.util";
 import { convertTimeToText } from "../../../../commons/utils/time.util";
-import { AlertFromQueryError } from "../../../../components/Alert";
+import Alert, { AlertFromQueryError } from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
 import StatusTag from "../../../../components/StatusTag";
 import api from "../../../../stores/api";
@@ -45,7 +45,7 @@ export default function VendorOrderDetail() {
   };
 
   if (
-    orderQuery.status === "loading" ||
+    orderQuery.status === "pending" ||
     orderQuery.fetchStatus === "fetching"
   ) {
     return <Spinner></Spinner>;
@@ -55,6 +55,8 @@ export default function VendorOrderDetail() {
     orderQuery.fetchStatus === "paused" ||
     (orderQuery.status === "error" && orderQuery.fetchStatus === "idle")
   ) {
+    if (orderQuery.fetchStatus === "paused")
+      return <Alert type="error" message="Network Error" />;
     return <AlertFromQueryError queryError={orderQuery.error} />;
   }
 

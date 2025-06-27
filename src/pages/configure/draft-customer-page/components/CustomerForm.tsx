@@ -311,6 +311,7 @@ export default function CustomerForm({
                   }
                   onSelect={onAddProduct}
                   onClear={onClearQuery}
+                  allowOverlap
                 ></SearchSuggest>
               </div>
 
