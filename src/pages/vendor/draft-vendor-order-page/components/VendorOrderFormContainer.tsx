@@ -7,23 +7,15 @@ import api from "../../../../stores/api";
 import VendorOrderForm from "./VendorOrderForm";
 import { useQueries, useQueryClient } from "@tanstack/react-query";
 
-interface IFetchData {
-  editedProducts?: any;
-  allProducts: any;
-  vendors: any;
-  prices: any;
-}
-
 export default function VendorOrderFormContainer() {
   const params = useParams();
 
-  let fetchData: IFetchData = {
-    editedProducts: null,
-    allProducts: null,
-    vendors: null,
-    prices: null,
-  };
-  let initialField = {};
+  let allProducts = null;
+  let allVendors = null;
+
+  let initialData = {};
+  let existingProducts = [];
+
   let isEmpty = false;
   const queryClient = useQueryClient();
 
@@ -79,35 +71,17 @@ export default function VendorOrderFormContainer() {
       if (products.length === 0 || vendors.length === 0) {
         isEmpty = true;
       } else {
-        const updatedPrices = [];
-        const productFieldData = {};
-        for (const product of productQuery.data) {
-          for (let i = 1; i <= product.units.length; i++) {
-            productFieldData[`quantity${product.id}-${i}`] = 0;
-            productFieldData[`unit${product.id}-${i}`] = "BOX";
-            productFieldData[`price${product.id}-${i}`] = 0;
-            updatedPrices.push({
-              id: product.id,
-              appear: i,
-              quantity: productFieldData[`quantity${product.id}-${i}`],
-              price: productFieldData[`price${product.id}-${i}`],
-            });
-          }
-        }
         const today = new Date();
-        initialField = {
+
+        allVendors = vendorQuery.data;
+        allProducts = productQuery.data;
+        initialData = {
           vendorName: "",
           manualCode: "",
           status: OrderStatus.CHECKING,
           isTest: false,
           expectedAt: convertTime(today),
           attachment: null,
-          ...productFieldData,
-        };
-        fetchData = {
-          allProducts: productQuery.data,
-          vendors: vendorQuery.data,
-          prices: updatedPrices,
         };
       }
     }
@@ -126,78 +100,12 @@ export default function VendorOrderFormContainer() {
       if (products.length === 0 || vendors.length === 0 || !order) {
         isEmpty = true;
       } else {
-        // setup initial field values
-        const updatedPrices = [];
-        const editedProducts = [];
-        const allProductsRes = products;
-        const productFieldData = {};
         const productOrders = order.productVendorOrders;
-        for (const product of allProductsRes) {
-          const similarProductOrders = productOrders.filter(
-            (po) => po.product_name === product.name
-          );
-          if (similarProductOrders.length > 0) {
-            for (let i = 0; i < similarProductOrders.length; i++) {
-              // similar products in existing order
-              let appear = i + 1;
-              productFieldData[`quantity${product.id}-${appear}`] =
-                similarProductOrders[i].quantity;
-              productFieldData[`unit${product.id}-${appear}`] =
-                similarProductOrders[i].unit_code.split("_")[1];
-              productFieldData[`price${product.id}-${appear}`] =
-                similarProductOrders[i].unit_price;
-              editedProducts.push({
-                id: product.id,
-                appear: appear,
-                name: product.name,
-                units: product.units,
-                recent_cost: product.recent_cost,
-              });
-              updatedPrices.push({
-                id: product.id,
-                appear: appear,
-                quantity: productFieldData[`quantity${product.id}-${appear}`],
-                price: productFieldData[`price${product.id}-${appear}`],
-              });
-            }
 
-            for (
-              let i = similarProductOrders.length + 1;
-              i <= product.units.length;
-              i++
-            ) {
-              productFieldData[`quantity${product.id}-${i}`] = 0;
-              productFieldData[`unit${product.id}-${i}`] = "BOX";
-              productFieldData[`price${product.id}-${i}`] = 0;
-              updatedPrices.push({
-                id: product.id,
-                appear: i,
-                quantity: productFieldData[`quantity${product.id}-${i}`],
-                price: productFieldData[`price${product.id}-${i}`],
-              });
-            }
-          } else {
-            for (let i = 1; i <= product.units.length; i++) {
-              productFieldData[`quantity${product.id}-${i}`] = 0;
-              productFieldData[`unit${product.id}-${i}`] = "BOX";
-              productFieldData[`price${product.id}-${i}`] = 0;
-              updatedPrices.push({
-                id: product.id,
-                appear: i,
-                quantity: productFieldData[`quantity${product.id}-${i}`],
-                price: productFieldData[`price${product.id}-${i}`],
-              });
-            }
-          }
-        }
-
-        fetchData = {
-          editedProducts: editedProducts,
-          allProducts: allProductsRes,
-          vendors: vendors,
-          prices: updatedPrices,
-        };
-        initialField = {
+        allProducts = products;
+        allVendors = vendors;
+        existingProducts = productOrders;
+        initialData = {
           vendorName: order.vendor_name,
           status: order.status,
           isTest: order.is_test,
@@ -206,7 +114,6 @@ export default function VendorOrderFormContainer() {
           expectedAt: convertTime(new Date(order.expected_at)),
           attachment: attachmentQuery.isSuccess ? attachmentQuery.data : null,
           attachmentExists: !!order.attachment,
-          ...productFieldData,
         };
       }
     }
@@ -262,14 +169,11 @@ export default function VendorOrderFormContainer() {
     <div className="mb-12">
       <VendorOrderForm
         edit={!!params.code}
-        initialData={initialField}
-        fetchData={fetchData}
-        vendors={fetchData.vendors}
-        editedProducts={
-          fetchData.editedProducts?.length > 0 ? fetchData.editedProducts : null
-        }
-        allProducts={fetchData.allProducts}
         onClear={onClear}
+        vendors={allVendors}
+        allProducts={allProducts}
+        initialData={initialData}
+        existingProducts={existingProducts}
       />
     </div>
   );
