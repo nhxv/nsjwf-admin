@@ -4,25 +4,60 @@ import DateInput from "../../../../components/forms/DateInput";
 import SelectInput from "../../../../components/forms/SelectInput";
 import SelectSearch from "../../../../components/forms/SelectSearch";
 import TextInput from "../../../../components/forms/TextInput";
+import { FormikProps } from "formik";
+import { useQuery } from "@tanstack/react-query";
+import api from "../../../../stores/api";
+import { IFormState } from "./VendorOrderForm";
 
 interface IPage1Prop {
-  form;
+  form: FormikProps<any>;
+  formState: IFormState;
   vendors: Array<any>;
-  isFormLoading: boolean;
-  onNextPage: () => void;
   onClearForm: () => void;
+  onGoToPage2: () => void;
+  fillFormWithProducts: (products: Array<any>) => void;
 }
 
 export default function VendorOrderFormPage1({
   form,
+  formState,
   vendors,
-  isFormLoading,
-  onNextPage,
   onClearForm,
+  onGoToPage2,
+  fillFormWithProducts,
 }: IPage1Prop) {
+  const templateQuery = useQuery({
+    queryKey: ["vendors", "active", "tendency", form.values["vendorName"]],
+    queryFn: async () => {
+      // Non-critical function, return an empty array if it fails
+      // (like no tendency or initial load).
+      try {
+        const vendorName = form.values["vendorName"];
+        const result = await api.get(
+          `/vendors/active/tendency/${encodeURIComponent(vendorName)}`
+        );
+        return result.data.vendorProductTendencies;
+      } catch {
+        return [];
+      }
+    },
+    // Suppress the warning when vendorName is not yet available.
+    enabled: !!form.values["vendorName"] && !formState.isFilled,
+    refetchOnWindowFocus: false,
+  });
+
+  const onNextPage = () => {
+    if (!formState.isFilled) {
+      if (templateQuery.isSuccess && templateQuery.data.length > 0) {
+        const template = templateQuery.data;
+        fillFormWithProducts(template);
+      }
+    }
+    onGoToPage2();
+  };
+
   return (
     <div className="custom-card mx-auto grid grid-cols-12 gap-x-2 xl:w-7/12">
-      {/* 1st page */}
       <div className="col-span-12 mb-5 xl:col-span-6">
         <label className="custom-label mb-2 inline-block">
           <span>Order to vendor</span>
@@ -89,7 +124,7 @@ export default function VendorOrderFormPage1({
           type="button"
           className="btn btn-primary col-span-12 mt-3"
           onClick={onNextPage}
-          disabled={isFormLoading}
+          disabled={templateQuery.isFetching}
         >
           <span>Set product</span>
           <span>

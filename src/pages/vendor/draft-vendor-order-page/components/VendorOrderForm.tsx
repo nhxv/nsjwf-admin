@@ -1,16 +1,12 @@
 import { useFormik } from "formik";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { BiCloudUpload } from "react-icons/bi";
+import { useState } from "react";
 import api from "../../../../stores/api";
 import { handleTokenExpire } from "../../../../commons/utils/token.util";
 import { useNavigate } from "react-router-dom";
-import FileInput from "../../../../components/forms/FileInput";
 import { useStateURL } from "../../../../commons/hooks/objecturl.hook";
-import imageCompression from "browser-image-compression";
-import { useQuery } from "@tanstack/react-query";
+import VendorOrderFormPage0 from "./VendorOrderFormPage0";
 import VendorOrderFormPage1 from "./VendorOrderFormPage1";
 import VendorOrderFormPage2 from "./VendorOrderFormPage2";
-import { convertTime } from "../../../../commons/utils/time.util";
 
 export interface ISelectedProduct {
   id: string;
@@ -24,6 +20,12 @@ export interface ISelectedProduct {
   recent_cost?: any;
 }
 
+export interface IFormState {
+  isFilled: boolean;
+  success: string;
+  error: string;
+}
+
 function computeSelectedProducts(
   allProducts: Array<any>,
   existingProducts: Array<any>
@@ -31,6 +33,13 @@ function computeSelectedProducts(
   const selected: Array<ISelectedProduct> = [];
 
   if (existingProducts.length >= 0) {
+    // This function is used to load existing productVendorOrder and vendorTendency.
+    // ...the former has product_name and the latter is name, so we need to convert one to another.
+    existingProducts = existingProducts.map((po) => ({
+      ...po,
+      product_name: po.product_name ?? po.name,
+    }));
+
     for (const product of allProducts) {
       const similarProductOrders = existingProducts.filter(
         (po) => po.product_name === product.name
@@ -48,7 +57,7 @@ function computeSelectedProducts(
 
             quantity: similarProductOrders[i].quantity,
             unit: similarProductOrders[i].unit_code.split("_")[1],
-            price: similarProductOrders[i].unit_price,
+            price: similarProductOrders[i].unit_price ?? "0",
           });
         }
       }
@@ -59,31 +68,29 @@ function computeSelectedProducts(
 
 export default function VendorOrderForm({
   edit,
-  onClear,
   vendors,
   allProducts,
   initialData,
   existingProducts,
+  onClear,
 }) {
-  const selected = useMemo(
-    () => computeSelectedProducts(allProducts, existingProducts),
-    [allProducts, existingProducts]
-  );
-
   const navigate = useNavigate();
-  const [formState, setFormState] = useState({
-    untouched: !edit,
+  const [page, setPage] = useState(edit ? 1 : 0);
+  // The products we visually see in the form.
+  const [selectedProducts, setSelectedProducts] = useState(() =>
+    computeSelectedProducts(allProducts, existingProducts)
+  );
+  const [formState, setFormState] = useState<IFormState>({
+    // Did we autofilled or templated? If in edit mode, neither will be ran.
+    isFilled: edit,
+
     success: "",
     error: "",
   });
-  const [page, setPage] = useState(edit ? 1 : 0);
-  const [selectedProducts, setSelectedProducts] = useState(selected);
-
-  const imageCompressAborter = useRef(new AbortController());
 
   const vendorOrderForm = useFormik({
     enableReinitialize: true,
-    initialValues: { ...initialData },
+    initialValues: initialData,
     onSubmit: async (data) => {
       setFormState((prev) => ({
         ...prev,
@@ -106,14 +113,11 @@ export default function VendorOrderForm({
             productName: product.name,
             unitPrice: product.price,
             quantity: product.quantity,
-            unitCode: product.unit,
+            unitCode: `${product.id}_${product.unit}`,
           });
         }
         reqData["productVendorOrders"] = [...productOrders.values()];
         reqData["attachment"] = data["attachment"];
-
-        console.log(reqData);
-        return;
 
         if (edit) {
           reqData["code"] = data["code"];
@@ -148,252 +152,70 @@ export default function VendorOrderForm({
     },
   });
 
-  const isAutofillEnabled =
-    !edit && !!vendorOrderForm.values.attachment && formState.untouched;
-
-  const autofillQuery = useQuery({
-    queryKey: ["vendor-orders", "autofill"],
-    queryFn: async () => {
-      console.log("Requesting autofilling...");
-      try {
-        const result = await api.postForm(`/vendor-orders/autofill`, {
-          attachment: vendorOrderForm.values.attachment,
-        });
-        return result.data;
-      } catch (error) {
-        console.error(error);
-        return null;
-      }
-    },
-    // We only want autofill when it's a brand new order.
-    enabled: isAutofillEnabled,
-    refetchOnWindowFocus: false,
-  });
-
-  const templateQuery = useQuery({
-    queryKey: [
-      "vendors",
-      "active",
-      "tendency",
-      vendorOrderForm.values["vendorName"],
-    ],
-    queryFn: async () => {
-      // Non-critical function, return an empty array if it fails
-      // (like no tendency or initial load).
-      try {
-        const vendorName = vendorOrderForm.values["vendorName"];
-        const result = await api.get(
-          `/vendors/active/tendency/${encodeURIComponent(vendorName)}`
-        );
-        return result.data.vendorProductTendencies;
-      } catch {
-        return [];
-      }
-    },
-    // Suppress the warning when vendorName is not yet available.
-    enabled:
-      !isAutofillEnabled && !edit && !!vendorOrderForm.values["vendorName"],
-    refetchOnWindowFocus: false,
-  });
-
-  const [isCompressingImg, setIsCompressingImg] = useState(false);
-  const isFormLoading =
-    templateQuery.isFetching || vendorOrderForm.isSubmitting;
-
   const imageURL = useStateURL(vendorOrderForm.values.attachment);
 
-  // FIXME: Ew. Anyway we can get rid of this useEffect somehow?
-  useEffect(() => {
-    if (autofillQuery.data) {
-      console.log("Autofilling...");
-      const info = autofillQuery.data;
-      const vendor_name = info.vendor_name;
-      const date_received = info.date_received;
-      const products = info.products;
-
-      vendorOrderForm.setFieldValue("vendorName", vendor_name);
-      vendorOrderForm.setFieldValue(
-        "expectedAt",
-        convertTime(new Date(date_received))
-      );
-
-      const selected: Array<ISelectedProduct> = [];
-      for (const product of allProducts) {
-        const appear = 1;
-        const found = products.find((p) => p.name === product.name);
-        if (found) {
-          selected.push({
-            id: product.id,
-            appear: appear,
-            name: product.name,
-            recent_cost: product.recent_cost,
-            units: product.units,
-
-            quantity: found.quantity,
-            price: "0",
-            unit: found.unit_code.split("_")[1],
-          });
-        }
-      }
-      setPage(0);
-      setSelectedProducts(selected);
-      setFormTouched();
-    }
-  }, [autofillQuery.data]);
-
-  const onClearForm = () => {
-    onClear();
-    // setFormState((prev) => ({ ...prev, untouched: false }));
-    // imageCompressAborter.current.abort();
+  const markFormFilled = () => {
+    setFormState((prev) => ({ ...prev, isFilled: true }));
   };
 
-  const onGoToPage2 = async () => {
-    if (!edit && selectedProducts.length === 0) {
-      if (templateQuery.isSuccess && templateQuery.data.length > 0) {
-        const template = templateQuery.data;
-        const selected = [];
-        const updatedPrices = [];
-        for (const product of allProducts) {
-          const appear = 1;
-          const found = template.find((p) => p.name === product.name);
-          if (found) {
-            selected.push({
-              id: product.id,
-              appear: appear,
-              name: product.name,
-              recent_cost: product.recent_cost,
-              units: product.units,
-            });
-            vendorOrderForm.setFieldValue(
-              `quantity${product.id}-${appear}`,
-              found.quantity
-            );
-            vendorOrderForm.setFieldValue(
-              `unit${product.id}`,
-              found.unit_code.split("_")[1]
-            );
-            vendorOrderForm.setFieldValue(`price${product.id}-${appear}`, "0");
-            updatedPrices.push({
-              id: product.id,
-              appear: appear,
-              quantity: found.quantity,
-              price: 0,
-            });
+  const fillFormWithProducts = (products: Array<any>) => {
+    setSelectedProducts(computeSelectedProducts(allProducts, products));
+    markFormFilled();
+  };
 
-            for (let i = 2; i <= product.units.length; i++) {
-              updatedPrices.push({
-                id: product.id,
-                appear: i,
-                quantity: 0,
-                price: 0,
-              });
-            }
-          } else {
-            for (let i = 1; i <= product.units.length; i++) {
-              updatedPrices.push({
-                id: product.id,
-                appear: i,
-                quantity: 0,
-                price: 0,
-              });
-            }
-          }
-        }
-        setSelectedProducts(selected);
-        setFormState((prev) => ({ ...prev, untouched: false }));
-      }
+  const onClearForm = () => {
+    if (edit) {
+      onClear();
+    } else {
+      // Is there a better way to do this...
+      vendorOrderForm.resetForm();
+      setSelectedProducts([]);
+      setPage(0);
+      setFormState((prev) => ({ ...prev, isFilled: false }));
     }
-    setPage(1);
+  };
+
+  const onGoToPage2 = () => {
+    setPage(2);
   };
 
   const onGoToPage1 = () => {
-    setPage(0);
-  };
-
-  const setFormTouched = () => {
-    setFormState((prev) => ({ ...prev, untouched: false }));
+    setPage(1);
   };
 
   return (
     <form onSubmit={vendorOrderForm.handleSubmit}>
       {page === 0 ? (
-        <div className="w-full">
-          <FileInput
-            accept="image/*"
-            handleFiles={async (files) => {
-              const file = files[0];
-              if (file.type.startsWith("image/")) {
-                try {
-                  const compressedFile = await imageCompression(file, {
-                    maxSizeMB: 0.1,
-                    maxWidthOrHeight: 768,
-                    signal: imageCompressAborter.current.signal,
-                    onProgress: (progress) => {
-                      if (progress < 100) {
-                        setIsCompressingImg(true);
-                      } else {
-                        setIsCompressingImg(false);
-                      }
-                    },
-                  });
-                  vendorOrderForm.setFieldValue("attachment", compressedFile);
-                  vendorOrderForm.setFieldValue("attachmentExists", true);
-                } catch (error) {
-                  setFormState((prev) => ({
-                    ...prev,
-                    error: error.message,
-                  }));
-                  vendorOrderForm.setFieldValue("attachment", null);
-                  vendorOrderForm.setFieldValue("attachmentExists", false);
-                  setTimeout(() => {
-                    setFormState((prev) => ({
-                      ...prev,
-                      error: "",
-                    }));
-                  }, 1500);
-                }
-              }
-            }}
-          >
-            <span>
-              <BiCloudUpload className="h-8 w-8"></BiCloudUpload>
-            </span>
-            <div>Drag and drop image here</div>
-            <div>or click to browse</div>
-            <div>!! This is an experimental feature !!</div>
-          </FileInput>
-          <button onClick={() => setPage(0)}>Skip experimental feature</button>
-        </div>
+        <VendorOrderFormPage0
+          form={vendorOrderForm}
+          onGoToPage1={onGoToPage1}
+          fillFormWithProducts={fillFormWithProducts}
+          setFormState={setFormState}
+        />
       ) : page === 1 ? (
         <VendorOrderFormPage1
           form={vendorOrderForm}
+          formState={formState}
           vendors={vendors}
-          isFormLoading={isFormLoading}
-          onNextPage={onGoToPage2}
           onClearForm={onClearForm}
+          onGoToPage2={onGoToPage2}
+          fillFormWithProducts={fillFormWithProducts}
         />
       ) : (
-        <>
-          {page === 2 && (
-            <VendorOrderFormPage2
-              form={vendorOrderForm}
-              formState={formState}
-              newAllProducts={allProducts}
-              selectedProducts={selectedProducts}
-              isCompressingImg={isCompressingImg}
-              isFormLoading={isFormLoading}
-              edit={edit}
-              isCompleted={initialData.status === "COMPLETED"}
-              imageURL={imageURL}
-              setIsCompressingImg={setIsCompressingImg}
-              onClearForm={onClearForm}
-              onPreviousPage={onGoToPage1}
-              setFormState={setFormState}
-              setFormTouched={setFormTouched}
-              setSelectedProducts={setSelectedProducts}
-            />
-          )}
-        </>
+        <VendorOrderFormPage2
+          form={vendorOrderForm}
+          edit={edit}
+          formState={formState}
+          allProducts={allProducts}
+          selectedProducts={selectedProducts}
+          isInitiallyCompleted={initialData.status === "COMPLETED"}
+          imageURL={imageURL}
+          onClearForm={onClearForm}
+          onPreviousPage={onGoToPage1}
+          markFormFilled={markFormFilled}
+          setFormState={setFormState}
+          setSelectedProducts={setSelectedProducts}
+        />
       )}
     </form>
   );

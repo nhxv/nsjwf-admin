@@ -73,8 +73,8 @@ export default function VendorOrderFormContainer() {
       } else {
         const today = new Date();
 
-        allVendors = vendorQuery.data;
-        allProducts = productQuery.data;
+        allVendors = vendors;
+        allProducts = products;
         initialData = {
           vendorName: "",
           manualCode: "",
@@ -113,7 +113,7 @@ export default function VendorOrderFormContainer() {
           manualCode: order.manual_code ?? "",
           expectedAt: convertTime(new Date(order.expected_at)),
           attachment: attachmentQuery.isSuccess ? attachmentQuery.data : null,
-          attachmentExists: !!order.attachment,
+          isAttachmentExist: !!order.attachment,
         };
       }
     }
@@ -169,11 +169,11 @@ export default function VendorOrderFormContainer() {
     <div className="mb-12">
       <VendorOrderForm
         edit={!!params.code}
-        onClear={onClear}
         vendors={allVendors}
         allProducts={allProducts}
         initialData={initialData}
         existingProducts={existingProducts}
+        onClear={onClear}
       />
     </div>
   );

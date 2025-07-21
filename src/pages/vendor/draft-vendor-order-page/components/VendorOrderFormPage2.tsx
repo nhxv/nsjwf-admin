@@ -11,48 +11,43 @@ import TextInput from "../../../../components/forms/TextInput";
 import SelectInput from "../../../../components/forms/SelectInput";
 import { niceVisualDecimal } from "../../../../commons/utils/fraction.util";
 import { Dispatch, SetStateAction, useMemo, useRef, useState } from "react";
-import { ISelectedProduct } from "./VendorOrderForm";
+import { IFormState, ISelectedProduct } from "./VendorOrderForm";
+import { FormikProps } from "formik";
 
 interface IPage2Prop {
-  form;
-  formState;
-  newAllProducts: Array<any>;
+  form: FormikProps<any>;
+  formState: IFormState;
+  allProducts: Array<any>;
   selectedProducts: Array<ISelectedProduct>;
-  isCompressingImg: boolean;
-  isFormLoading: boolean;
   edit: boolean;
-  isCompleted: boolean;
+  isInitiallyCompleted: boolean;
   imageURL: string;
-  setIsCompressingImg;
   onClearForm: () => void;
   onPreviousPage: () => void;
-  setFormState;
-  setFormTouched: () => void;
+  markFormFilled: () => void;
+  setFormState: Dispatch<SetStateAction<IFormState>>;
   setSelectedProducts: Dispatch<SetStateAction<Array<ISelectedProduct>>>;
 }
 
 export default function VendorOrderFormPage2({
   form,
   formState,
-  newAllProducts,
+  allProducts,
   selectedProducts,
-  isCompressingImg,
-  isFormLoading,
   edit,
-  isCompleted,
+  isInitiallyCompleted,
   imageURL,
-  setIsCompressingImg,
   onClearForm,
   onPreviousPage,
   setFormState,
-  setFormTouched,
+  markFormFilled,
   setSelectedProducts,
 }: IPage2Prop) {
   const [search, setSearch] = useState("");
   const filteredProducts =
     search === ""
-      ? newAllProducts
-      : newAllProducts.filter((product) =>
+      ? allProducts
+      : allProducts.filter((product) =>
           product.name
             .toLowerCase()
             .replace(/\s+/g, "")
@@ -71,17 +66,18 @@ export default function VendorOrderFormPage2({
   }, [selectedProducts]);
 
   const [imageModalIsOpen, setModalOpen] = useState(false);
+  const [isProcessingImg, setIsProcessingImg] = useState(false);
   const imageCompressAborter = useRef(new AbortController());
 
   const onClear = () => {
     imageCompressAborter.current.abort();
     imageCompressAborter.current = new AbortController();
-    setIsCompressingImg(false);
+    setIsProcessingImg(false);
     onClearForm();
   };
 
   const onAddProduct = (product) => {
-    setFormTouched();
+    markFormFilled();
     setSearch("");
 
     const found = selectedProducts.filter((p) => p.name === product.name);
@@ -131,7 +127,7 @@ export default function VendorOrderFormPage2({
 
   const onRemoveProduct = (id, appear) => {
     setSearch("");
-    setFormTouched();
+    markFormFilled();
     setSelectedProducts(
       selectedProducts.filter(
         (product) => product.id !== id || product.appear !== appear
@@ -153,11 +149,12 @@ export default function VendorOrderFormPage2({
       clone[i].unit = "" + value;
     }
     setSelectedProducts(clone);
-    setFormTouched();
+    markFormFilled();
   };
 
   return (
     <div className="flex min-h-screen flex-col items-start gap-6 xl:flex-row-reverse">
+      {/* Submission box */}
       <div className="custom-card w-full xl:sticky xl:top-[84px] xl:w-5/12">
         <div className="mb-4 flex items-center">
           Total:
@@ -201,7 +198,7 @@ export default function VendorOrderFormPage2({
                   e.stopPropagation(); // Stop propagation to div
 
                   form.setFieldValue("attachment", null);
-                  form.setFieldValue("attachmentExists", false);
+                  form.setFieldValue("isAttachmentExist", false);
                 }}
               >
                 <span>
@@ -215,9 +212,9 @@ export default function VendorOrderFormPage2({
                 <span>Click to view attachment</span>
               </div>
             </div>
-          ) : form.values.attachmentExists || isCompressingImg ? (
+          ) : form.values.isAttachmentExist || isProcessingImg ? (
             <div className="custom-card sticker-primary relative w-full text-center dark:border-2">
-              {isCompressingImg && (
+              {isProcessingImg && (
                 <button
                   type="button"
                   className="btn btn-circle btn-accent btn-sm absolute -right-4 -top-4 shadow-md"
@@ -226,7 +223,7 @@ export default function VendorOrderFormPage2({
 
                     imageCompressAborter.current.abort();
                     imageCompressAborter.current = new AbortController();
-                    setIsCompressingImg(false);
+                    setIsProcessingImg(false);
                   }}
                 >
                   <span>
@@ -246,24 +243,25 @@ export default function VendorOrderFormPage2({
                     try {
                       const compressedFile = await imageCompression(file, {
                         maxSizeMB: 0.1,
+                        maxWidthOrHeight: 768,
                         signal: imageCompressAborter.current.signal,
                         onProgress: (progress) => {
                           if (progress < 100) {
-                            setIsCompressingImg(true);
+                            setIsProcessingImg(true);
                           } else {
-                            setIsCompressingImg(false);
+                            setIsProcessingImg(false);
                           }
                         },
                       });
                       form.setFieldValue("attachment", compressedFile);
-                      form.setFieldValue("attachmentExists", true);
+                      form.setFieldValue("isAttachmentExist", true);
                     } catch (error) {
                       setFormState((prev) => ({
                         ...prev,
                         error: error.message,
                       }));
                       form.setFieldValue("attachment", null);
-                      form.setFieldValue("attachmentExists", false);
+                      form.setFieldValue("isAttachmentExist", false);
                       setTimeout(() => {
                         setFormState((prev) => ({
                           ...prev,
@@ -289,7 +287,7 @@ export default function VendorOrderFormPage2({
             type="button"
             className="btn-outline-primary btn col-span-6"
             onClick={onPreviousPage}
-            disabled={isFormLoading}
+            disabled={form.isSubmitting}
           >
             <span>
               <BiLeftArrowAlt className="mr-1 h-7 w-7"></BiLeftArrowAlt>
@@ -300,9 +298,9 @@ export default function VendorOrderFormPage2({
             type="submit"
             className="btn btn-primary col-span-6"
             disabled={
-              isCompleted ||
-              isFormLoading ||
-              (form.values.attachmentExists && !imageURL)
+              isInitiallyCompleted ||
+              form.isSubmitting ||
+              (form.values.isAttachmentExist && !imageURL)
             }
           >
             <span>{edit ? "Update" : "Create"}</span>
@@ -318,7 +316,7 @@ export default function VendorOrderFormPage2({
         </div>
 
         <div>
-          {isFormLoading && (
+          {form.isSubmitting && (
             <div className="mt-5">
               <Spinner></Spinner>
             </div>
