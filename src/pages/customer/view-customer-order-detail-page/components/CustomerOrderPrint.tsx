@@ -5,6 +5,13 @@ import Modal from "../../../../components/Modal";
 import PackingSlipToPrint from "./PackingSlipToPrint";
 import NumberInput from "../../../../components/forms/NumberInput";
 import InvoiceToPrint from "./InvoiceToPrint";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import api from "../../../../stores/api";
+
+interface IOrderStatusMutation {
+  code: string;
+  newStatus: string;
+}
 
 export default function CustomerOrderPrint({ order }) {
   const [pallet, setPallet] = useState({ count: 1, list: [null] });
@@ -15,8 +22,40 @@ export default function CustomerOrderPrint({ order }) {
   const [isOpen, setIsOpen] = useState(false);
 
   const orderPrintAsPackingSlipRef = useRef<HTMLDivElement>(null);
+  const queryClient = useQueryClient();
+  const orderStatusMut = useMutation({
+    mutationFn: (data: IOrderStatusMutation) => {
+      return api.patch("customer-orders/status", null, {
+        params: {
+          code: data.code,
+          status: data.newStatus,
+        },
+      });
+    },
+    onSuccess: (response) => {
+      const newCustomerOrder = response.data;
+      queryClient.setQueryData(
+        ["customer-orders", order.code],
+        newCustomerOrder
+      );
+    },
+    onError: () => {
+      // Aside from param-related errors, there's also COMPLETED order
+      // and such so when that happens we reload the page.
+      // Return is kinda nice here because it'll wait for the invalidation to complete.
+      // ...or at least according to this https://tkdodo.eu/blog/mastering-mutations-in-react-query#awaited-promises
+      return queryClient.invalidateQueries({
+        queryKey: ["customer-orders", order.code],
+      });
+    },
+  });
   const handlePackingSlipPrint = useReactToPrint({
     content: () => orderPrintAsPackingSlipRef.current,
+    onAfterPrint: () => {
+      if (order.status === "PICKING") {
+        orderStatusMut.mutate({ code: order.code, newStatus: "CHECKING" });
+      }
+    },
   });
 
   const orderPrintAsInvoiceRef = useRef<HTMLDivElement>(null);
