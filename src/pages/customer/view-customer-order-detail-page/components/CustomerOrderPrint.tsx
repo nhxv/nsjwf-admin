@@ -19,7 +19,7 @@ export default function CustomerOrderPrint({ order }) {
   const handlePalletPrint = useReactToPrint({
     content: () => palletLabelToPrintRef.current,
   });
-  const [isOpen, setIsOpen] = useState(false);
+  const [isPalletModalOpen, setIsPalletModalOpen] = useState(false);
 
   const orderPrintAsPackingSlipRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
@@ -80,11 +80,11 @@ export default function CustomerOrderPrint({ order }) {
   };
 
   const onCloseModal = () => {
-    setIsOpen(false);
+    setIsPalletModalOpen(false);
   };
 
   const onOpenModal = () => {
-    setIsOpen(true);
+    setIsPalletModalOpen(true);
   };
 
   return (
@@ -98,7 +98,7 @@ export default function CustomerOrderPrint({ order }) {
       </div>
 
       {/* Pallet modal */}
-      <Modal isOpen={isOpen} onClose={onCloseModal}>
+      <Modal isOpen={isPalletModalOpen} onClose={onCloseModal}>
         <div className="custom-card text-left">
           <div className="flex justify-end">
             <button
