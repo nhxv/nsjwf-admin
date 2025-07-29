@@ -1,4 +1,10 @@
-import { BiCloudUpload, BiImage, BiLeftArrowAlt, BiX } from "react-icons/bi";
+import {
+  BiCloudUpload,
+  BiImage,
+  BiLeftArrowAlt,
+  BiTrash,
+  BiX,
+} from "react-icons/bi";
 import Checkbox from "../../../../components/forms/Checkbox";
 import ImageModal from "../../../../components/forms/ImageModal";
 import Spinner from "../../../../components/Spinner";
@@ -133,6 +139,12 @@ export default function VendorOrderFormPage2({
         (product) => product.id !== id || product.appear !== appear
       )
     );
+  };
+
+  const onRemoveAllProducts = () => {
+    setSearch("");
+    markFormFilled();
+    setSelectedProducts([]);
   };
 
   const onFieldChange = (
@@ -335,7 +347,7 @@ export default function VendorOrderFormPage2({
       </div>
 
       <div className="mb-5 w-full xl:w-7/12">
-        <div className="mb-6">
+        <div className="mb-6 flex gap-2">
           <SearchSuggest
             query={search}
             items={filteredProducts}
@@ -344,6 +356,15 @@ export default function VendorOrderFormPage2({
             onSelect={onAddProduct}
             onClear={() => setSearch("")}
           ></SearchSuggest>
+          <button
+            type="button"
+            className="btn btn-error col-span-12 md:col-span-6"
+            onClick={onRemoveAllProducts}
+          >
+            <span>
+              <BiTrash className="h-6 w-6"></BiTrash>
+            </span>
+          </button>
         </div>
 
         {selectedProducts && selectedProducts.length > 0 ? (
