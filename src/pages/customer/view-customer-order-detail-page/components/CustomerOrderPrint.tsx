@@ -7,10 +7,11 @@ import NumberInput from "../../../../components/forms/NumberInput";
 import InvoiceToPrint from "./InvoiceToPrint";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "../../../../stores/api";
+import { OrderStatus } from "../../../../commons/enums/order-status.enum";
 
 interface IOrderStatusMutation {
   code: string;
-  newStatus: string;
+  newStatus: OrderStatus;
 }
 
 export default function CustomerOrderPrint({ order }) {
@@ -52,8 +53,11 @@ export default function CustomerOrderPrint({ order }) {
   const handlePackingSlipPrint = useReactToPrint({
     content: () => orderPrintAsPackingSlipRef.current,
     onAfterPrint: () => {
-      if (order.status === "PICKING") {
-        orderStatusMut.mutate({ code: order.code, newStatus: "CHECKING" });
+      if (order.status === OrderStatus.PICKING) {
+        orderStatusMut.mutate({
+          code: order.code,
+          newStatus: OrderStatus.CHECKING,
+        });
       }
     },
   });
