@@ -216,9 +216,12 @@ export default function CustomerOrderList() {
             </span>
           </div>
           {showTotal ? (
-            <div className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content">
+            <button
+              className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content"
+              onClick={() => setShowTotal(false)}
+            >
               <span>Total: ${total}</span>
-            </div>
+            </button>
           ) : (
             <button
               className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content"
