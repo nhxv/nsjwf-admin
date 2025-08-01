@@ -18,6 +18,17 @@ export default function Alert({ message, type }) {
     );
   }
 
+  if (type === "warning" || type === "warn") {
+    return (
+      <div className="alert alert-warning justify-center text-warning-content">
+        <div>
+          <BiError className="h-6 w-6"></BiError>
+          <span>{message}</span>
+        </div>
+      </div>
+    );
+  }
+
   if (type === "empty") {
     return (
       <div className="alert justify-center bg-base-300">

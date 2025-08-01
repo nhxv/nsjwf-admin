@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useRef, useState } from "react";
 import { BiPrinter } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
@@ -13,18 +13,59 @@ import SelectInput from "../../../../components/forms/SelectInput";
 import api from "../../../../stores/api";
 import CustomerListPrint from "./CustomerListPrint";
 
+interface IOrderStatusMutation {
+  code: string;
+  newStatus: string;
+}
+
 export default function CustomerOrderList() {
   const printRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const [search, setSearch] = useState({
-    orders: [],
     query: "",
-    boxCount: 0,
     status: "ALL",
   });
+  const [showTotal, setShowTotal] = useState(false);
+
+  const dailyOrderQuery = useQuery<any[], any>({
+    queryKey: ["customer-orders", "daily"],
+    queryFn: async () => {
+      const res = await api.get("/customer-orders/daily");
+      return res.data;
+    },
+    refetchInterval: 60000,
+  });
+
+  const filterByStatus = (orders, status: string) => {
+    if (status === "ALL") {
+      return orders;
+    }
+
+    return orders.filter((order) => order.status === status);
+  };
+
+  const filteredOrders = dailyOrderQuery.data
+    ? search.query === ""
+      ? filterByStatus(dailyOrderQuery.data, search.status)
+      : filterByStatus(dailyOrderQuery.data, search.status).filter((order) => {
+          return (
+            order.customer_name
+              .toLowerCase()
+              .replace(/\s+/g, "")
+              .includes(search.query.toLowerCase().replace(/\s+/g, "")) ||
+            order.productCustomerOrders.filter((pOrder) => {
+              return pOrder.product_name
+                .toLowerCase()
+                .replace(/\s+/g, "")
+                .includes(search.query.toLowerCase().replace(/\s+/g, ""));
+            }).length !== 0
+          );
+        })
+    : [];
+
   const total = useMemo(() => {
     return niceVisualDecimal(
-      search.orders.reduce(
+      filteredOrders.reduce(
         (prev, curr) =>
           prev +
           curr.productCustomerOrders.reduce(
@@ -34,31 +75,68 @@ export default function CustomerOrderList() {
         0
       )
     );
-  }, [search.orders]);
+  }, [filteredOrders]);
 
-  const query = useQuery<any[], any>({
-    queryKey: ["customer-orders", "daily"],
-    queryFn: async () => {
-      const res = await api.get("/customer-orders/daily");
-      // NOTE: This is probably not the best way to handle transformation.
-      setSearch((prev) => ({
-        ...prev,
-        orders: filterByStatus(res.data, prev.status),
-      }));
-      return res.data;
+  const boxCount = useMemo(() => {
+    let qtyTotal = 0;
+    for (const order of filteredOrders) {
+      const matchedProducts = order.productCustomerOrders.filter((pOrder) => {
+        return pOrder.product_name
+          .toLowerCase()
+          .replace(/\s+/g, "")
+          .includes(search.query.toLowerCase().replace(/\s+/g, ""));
+      });
+      for (const product of matchedProducts) {
+        if (product.unit_code.endsWith("BOX")) {
+          qtyTotal += product.quantity;
+        }
+      }
+    }
+    return qtyTotal;
+  }, [filteredOrders]);
+
+  // This mutation is a modified one from CustomerOrderPrint.
+  const queryClient = useQueryClient();
+  const orderStatusMut = useMutation({
+    mutationFn: (data: IOrderStatusMutation) => {
+      return api.patch("customer-orders/status", null, {
+        params: {
+          code: data.code,
+          status: data.newStatus,
+        },
+      });
     },
-    refetchInterval: 60000,
+    onSuccess: (response, variables, _ctx) => {
+      const newCustomerOrder = response.data;
+      queryClient.setQueryData(
+        ["customer-orders", variables.code],
+        newCustomerOrder
+      );
+      return queryClient.invalidateQueries({
+        queryKey: ["customer-orders", "daily"],
+      });
+    },
+    onError: () => {
+      return queryClient.invalidateQueries({
+        queryKey: ["customer-orders", "daily"],
+      });
+    },
   });
-
-  // Cursed. Have to attach this pretty much on every search.orders
-  const filterByStatus = (orders, status) => {
-    return orders.filter((order) =>
-      status === "ALL" ? true : order.status === status
-    );
-  };
 
   const handlePrint = useReactToPrint({
     content: () => printRef.current,
+    onAfterPrint: () => {
+      for (const order of filteredOrders) {
+        // Just to be sure we don't turn a wall of DELIVERED into CHECKING...
+        if (order.status === OrderStatus.PICKING) {
+          // This is inefficient but it's kinda annoying to write a new route so...
+          orderStatusMut.mutate({
+            code: order.code,
+            newStatus: OrderStatus.CHECKING,
+          });
+        }
+      }
+    },
   });
 
   const onToDetails = (code: string) => {
@@ -67,52 +145,14 @@ export default function CustomerOrderList() {
 
   const onChangeQuery = (e) => {
     if (e.target.value) {
-      // Search based on customer name and product name.
-      const searched = filterByStatus(query.data, search.status).filter(
-        (order) => {
-          return (
-            order.customer_name
-              .toLowerCase()
-              .replace(/\s+/g, "")
-              .includes(e.target.value.toLowerCase().replace(/\s+/g, "")) ||
-            order.productCustomerOrders.filter((pOrder) => {
-              return pOrder.product_name
-                .toLowerCase()
-                .replace(/\s+/g, "")
-                .includes(e.target.value.toLowerCase().replace(/\s+/g, ""));
-            }).length !== 0
-          );
-        }
-      );
-
-      // Count how many boxes that match with this query.
-      let qtyTotal = 0;
-      for (const order of filterByStatus(query.data, search.status)) {
-        const matchedProducts = order.productCustomerOrders.filter((pOrder) => {
-          return pOrder.product_name
-            .toLowerCase()
-            .replace(/\s+/g, "")
-            .includes(e.target.value.toLowerCase().replace(/\s+/g, ""));
-        });
-        for (const product of matchedProducts) {
-          if (product.unit_code.endsWith("BOX")) {
-            qtyTotal += product.quantity;
-          }
-        }
-      }
-
       setSearch((prev) => ({
         ...prev,
-        orders: searched,
-        boxCount: qtyTotal,
         query: e.target.value,
       }));
     } else {
       setSearch((prev) => ({
         ...prev,
-        orders: filterByStatus(query.data, prev.status),
-        boxCount: 0,
-        query: e.target.value,
+        query: "",
       }));
     }
   };
@@ -120,13 +160,11 @@ export default function CustomerOrderList() {
   const onClearQuery = () => {
     setSearch((prev) => ({
       ...prev,
-      orders: filterByStatus(query.data, prev.status),
-      boxCount: 0,
       query: "",
     }));
   };
 
-  if (query.status === "pending") {
+  if (dailyOrderQuery.status === "pending") {
     return (
       <div className="mx-auto mt-4 w-11/12 md:w-10/12 lg:w-6/12">
         <Spinner></Spinner>
@@ -135,10 +173,11 @@ export default function CustomerOrderList() {
   }
 
   if (
-    query.fetchStatus === "paused" ||
-    (query.status === "error" && query.fetchStatus === "idle")
+    dailyOrderQuery.fetchStatus === "paused" ||
+    (dailyOrderQuery.status === "error" &&
+      dailyOrderQuery.fetchStatus === "idle")
   ) {
-    if (query.fetchStatus === "paused") {
+    if (dailyOrderQuery.fetchStatus === "paused") {
       return (
         <div className="mx-auto mt-4 w-11/12 md:w-10/12 lg:w-6/12">
           <Alert type="error" message="Network Error" />
@@ -148,12 +187,12 @@ export default function CustomerOrderList() {
 
     return (
       <div className="mx-auto mt-4 w-11/12 md:w-10/12 lg:w-6/12">
-        <AlertFromQueryError queryError={query.error} />
+        <AlertFromQueryError queryError={dailyOrderQuery.error} />
       </div>
     );
   }
 
-  if (query.data?.length === 0) {
+  if (dailyOrderQuery.data?.length === 0) {
     return (
       <div className="mx-auto mt-4 w-11/12 md:w-10/12 lg:w-6/12">
         <Alert type="empty" message={"Such empty, much hollow..."}></Alert>
@@ -165,23 +204,32 @@ export default function CustomerOrderList() {
     <>
       <div className="hidden">
         {/* Not sure why it has to be a component here for it to print. */}
-        <CustomerListPrint printRef={printRef} orders={search.orders} />
+        <CustomerListPrint printRef={printRef} orders={filteredOrders} />
       </div>
 
       <div className="m-4 flex flex-col items-center justify-between gap-3 xl:flex-row">
         <div className="flex items-center gap-2">
           <div className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content">
             <span>
-              {search.orders.length}{" "}
-              {search.orders.length > 1 ? "orders" : "order"}
+              {filteredOrders.length}{" "}
+              {filteredOrders.length > 1 ? "orders" : "order"}
             </span>
           </div>
-          <div className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content">
-            <span>${total} in total</span>
-          </div>
-          {search.boxCount > 0 && (
+          {showTotal ? (
             <div className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content">
-              <span>{search.boxCount} boxes</span>
+              <span>Total: ${total}</span>
+            </div>
+          ) : (
+            <button
+              className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content"
+              onClick={() => setShowTotal(true)}
+            >
+              <span>Click to show total</span>
+            </button>
+          )}
+          {boxCount > 0 && (
+            <div className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content">
+              <span>{boxCount} boxes</span>
             </div>
           )}
         </div>
@@ -194,7 +242,6 @@ export default function CustomerOrderList() {
                 setSearch((prev) => ({
                   ...prev,
                   status: v,
-                  orders: filterByStatus(query.data, v),
                 }));
               }}
               options={["ALL"].concat(
@@ -223,7 +270,7 @@ export default function CustomerOrderList() {
         </div>
       </div>
       <div className="mx-4 grid grid-cols-12 gap-2">
-        {search.orders.map((order) => (
+        {filteredOrders.map((order) => (
           <div
             key={order.code}
             className={`sticker col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3 xl:col-span-2
@@ -263,7 +310,7 @@ export default function CustomerOrderList() {
           </div>
         ))}
       </div>
-      {search.orders?.length < 1 && (
+      {filteredOrders?.length < 1 && (
         <div className="text-center">Not found.</div>
       )}
     </>
