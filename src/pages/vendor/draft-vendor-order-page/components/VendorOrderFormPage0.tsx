@@ -30,7 +30,6 @@ export default function VendorOrderFormPage0({
   const autofillQuery = useQuery({
     queryKey: ["vendor-orders", "autofill"],
     queryFn: async ({ signal }) => {
-      console.log("Requesting autofilling...");
       const result = await api.postForm(
         `/vendor-orders/autofill`,
         {
@@ -51,7 +50,6 @@ export default function VendorOrderFormPage0({
 
   useEffect(() => {
     if (autofillQuery.data) {
-      console.log("Autofilling...");
       const info = autofillQuery.data;
 
       const vendorName = info.vendor_name;
