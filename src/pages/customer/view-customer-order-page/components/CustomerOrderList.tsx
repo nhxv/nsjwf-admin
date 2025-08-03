@@ -77,23 +77,23 @@ export default function CustomerOrderList() {
     );
   }, [filteredOrders]);
 
-  const boxCount = useMemo(() => {
-    let qtyTotal = 0;
-    for (const order of filteredOrders) {
-      const matchedProducts = order.productCustomerOrders.filter((pOrder) => {
-        return pOrder.product_name
-          .toLowerCase()
-          .replace(/\s+/g, "")
-          .includes(search.query.toLowerCase().replace(/\s+/g, ""));
-      });
-      for (const product of matchedProducts) {
-        if (product.unit_code.endsWith("BOX")) {
-          qtyTotal += product.quantity;
-        }
-      }
-    }
-    return qtyTotal;
-  }, [filteredOrders]);
+  // const boxCount = useMemo(() => {
+  //   let qtyTotal = 0;
+  //   for (const order of filteredOrders) {
+  //     const matchedProducts = order.productCustomerOrders.filter((pOrder) => {
+  //       return pOrder.product_name
+  //         .toLowerCase()
+  //         .replace(/\s+/g, "")
+  //         .includes(search.query.toLowerCase().replace(/\s+/g, ""));
+  //     });
+  //     for (const product of matchedProducts) {
+  //       if (product.unit_code.endsWith("BOX")) {
+  //         qtyTotal += product.quantity;
+  //       }
+  //     }
+  //   }
+  //   return qtyTotal;
+  // }, [filteredOrders]);
 
   // This mutation is a modified one from CustomerOrderPrint.
   const queryClient = useQueryClient();
@@ -230,11 +230,11 @@ export default function CustomerOrderList() {
               <span>Click to show total</span>
             </button>
           )}
-          {boxCount > 0 && (
+          {/* {boxCount > 0 && (
             <div className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content">
               <span>{boxCount} boxes</span>
             </div>
-          )}
+          )} */}
         </div>
         <div className="flex w-full flex-col-reverse gap-2 md:flex-row xl:w-5/12 xl:flex-row">
           <div className="md:w-4/12 xl:w-5/12">
