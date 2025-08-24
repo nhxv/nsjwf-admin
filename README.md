@@ -1,4 +1,4 @@
-# SJWH Admin
+# NSJWF Admin
 
 Built with Typescript, React, Zustand, Vite
 
@@ -36,4 +36,4 @@ Add vercel.json to the root folder of the project:
 
 ## Related
 
-https://github.com/nhxv/sjwh-admin-api
+https://github.com/nhxv/nsjwf-admin-api
