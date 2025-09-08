@@ -75,7 +75,7 @@ export default function VendorOrderForm({
   onClear,
 }) {
   const navigate = useNavigate();
-  const [page, setPage] = useState(edit ? 1 : 1);
+  const [page, setPage] = useState(edit ? 1 : 0);
   // The products we visually see in the form.
   const [selectedProducts, setSelectedProducts] = useState(() =>
     computeSelectedProducts(allProducts, existingProducts)
