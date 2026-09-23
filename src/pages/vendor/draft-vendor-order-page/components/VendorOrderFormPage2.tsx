@@ -87,7 +87,9 @@ export default function VendorOrderFormPage2({
     onClearForm();
   };
 
-  const toRow = (f: ISelectedProduct & { rowKey?: string }): ISelectedProduct => ({
+  const toRow = (
+    f: ISelectedProduct & { rowKey?: string }
+  ): ISelectedProduct => ({
     id: f.id,
     appear: f.appear,
     name: f.name,
