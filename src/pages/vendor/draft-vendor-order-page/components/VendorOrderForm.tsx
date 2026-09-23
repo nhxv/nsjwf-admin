@@ -1,4 +1,4 @@
-import { useFormik } from "formik";
+import { useForm, useWatch } from "react-hook-form";
 import { useState } from "react";
 import api from "../../../../stores/api";
 import { handleTokenExpire } from "../../../../commons/utils/token.util";
@@ -88,71 +88,79 @@ export default function VendorOrderForm({
     error: "",
   });
 
-  const vendorOrderForm = useFormik({
-    enableReinitialize: true,
-    initialValues: initialData,
-    onSubmit: async (data) => {
-      setFormState((prev) => ({
-        ...prev,
-        error: "",
-        success: "",
-      }));
-      try {
-        let reqData = {};
-        let productOrders = new Map();
-        reqData["vendorName"] = data["vendorName"];
-        reqData["status"] = data["status"];
-        reqData["isTest"] = data["isTest"];
-        reqData["expectedAt"] = data["expectedAt"];
-        // Ensure this is either true-ish or null, no empty string allowed.
-        // Makes it easier to deal with later.
-        reqData["manualCode"] = data["manualCode"] ? data["manualCode"] : null;
-
-        for (const product of selectedProducts) {
-          productOrders.set(`${product.id}-${product.appear}`, {
-            productName: product.name,
-            unitPrice: product.price,
-            quantity: product.quantity,
-            unitCode: `${product.id}_${product.unit}`,
-          });
-        }
-        reqData["productVendorOrders"] = [...productOrders.values()];
-        reqData["attachment"] = data["attachment"];
-
-        if (edit) {
-          reqData["code"] = data["code"];
-          const res = await api.putForm(
-            `/vendor-orders/${reqData["code"]}`,
-            reqData
-          );
-          if (res) {
-            navigate(`/vendor/view-vendor-order`);
-          }
-        } else {
-          // create order
-          const res = await api.postForm(`/vendor-orders`, reqData);
-          if (res) {
-            navigate(`/vendor/view-vendor-order`);
-          }
-        }
-      } catch (e) {
-        const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e)
-        );
-        setFormState((prev) => ({
-          ...prev,
-          error: error.message,
-          success: "",
-        }));
-
-        if (error.status === 401) {
-          handleTokenExpire(navigate, setFormState);
-        }
-      }
-    },
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    reset,
+    formState: { isSubmitting },
+  } = useForm({
+    values: initialData,
   });
 
-  const imageURL = useStateURL(vendorOrderForm.values.attachment);
+  const attachment = useWatch({ control, name: "attachment" });
+
+  const onSubmit = async (data) => {
+    setFormState((prev) => ({
+      ...prev,
+      error: "",
+      success: "",
+    }));
+    try {
+      let reqData = {};
+      let productOrders = new Map();
+      reqData["vendorName"] = data["vendorName"];
+      reqData["status"] = data["status"];
+      reqData["isTest"] = data["isTest"];
+      reqData["expectedAt"] = data["expectedAt"];
+      // Ensure this is either true-ish or null, no empty string allowed.
+      // Makes it easier to deal with later.
+      reqData["manualCode"] = data["manualCode"] ? data["manualCode"] : null;
+
+      for (const product of selectedProducts) {
+        productOrders.set(`${product.id}-${product.appear}`, {
+          productName: product.name,
+          unitPrice: product.price,
+          quantity: product.quantity,
+          unitCode: `${product.id}_${product.unit}`,
+        });
+      }
+      reqData["productVendorOrders"] = [...productOrders.values()];
+      reqData["attachment"] = data["attachment"];
+
+      if (edit) {
+        reqData["code"] = data["code"];
+        const res = await api.putForm(
+          `/vendor-orders/${reqData["code"]}`,
+          reqData
+        );
+        if (res) {
+          navigate(`/vendor/view-vendor-order`);
+        }
+      } else {
+        // create order
+        const res = await api.postForm(`/vendor-orders`, reqData);
+        if (res) {
+          navigate(`/vendor/view-vendor-order`);
+        }
+      }
+    } catch (e) {
+      const error = JSON.parse(
+        JSON.stringify(e.response ? e.response.data.error : e)
+      );
+      setFormState((prev) => ({
+        ...prev,
+        error: error.message,
+        success: "",
+      }));
+
+      if (error.status === 401) {
+        handleTokenExpire(navigate, setFormState);
+      }
+    }
+  };
+
+  const imageURL = useStateURL(attachment);
 
   const markFormFilled = () => {
     setFormState((prev) => ({ ...prev, isFilled: true }));
@@ -168,7 +176,7 @@ export default function VendorOrderForm({
       onClear();
     } else {
       // Is there a better way to do this...
-      vendorOrderForm.resetForm();
+      reset();
       setSelectedProducts([]);
       setPage(0);
       setFormState((prev) => ({ ...prev, isFilled: false }));
@@ -184,17 +192,19 @@ export default function VendorOrderForm({
   };
 
   return (
-    <form onSubmit={vendorOrderForm.handleSubmit}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       {page === 0 ? (
         <VendorOrderFormPage0
-          form={vendorOrderForm}
+          control={control}
+          setValue={setValue}
           onGoToPage1={onGoToPage1}
           fillFormWithProducts={fillFormWithProducts}
           setFormState={setFormState}
         />
       ) : page === 1 ? (
         <VendorOrderFormPage1
-          form={vendorOrderForm}
+          control={control}
+          setValue={setValue}
           formState={formState}
           vendors={vendors}
           onClearForm={onClearForm}
@@ -203,7 +213,9 @@ export default function VendorOrderForm({
         />
       ) : (
         <VendorOrderFormPage2
-          form={vendorOrderForm}
+          control={control}
+          setValue={setValue}
+          isSubmitting={isSubmitting}
           edit={edit}
           formState={formState}
           allProducts={allProducts}

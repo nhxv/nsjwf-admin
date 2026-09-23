@@ -4,13 +4,14 @@ import DateInput from "../../../../components/forms/DateInput";
 import SelectInput from "../../../../components/forms/SelectInput";
 import SelectSearch from "../../../../components/forms/SelectSearch";
 import TextInput from "../../../../components/forms/TextInput";
-import { FormikProps } from "formik";
+import { Control, Controller, UseFormSetValue, useWatch } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 import api from "../../../../stores/api";
 import { IFormState } from "./VendorOrderForm";
 
 interface IPage1Prop {
-  form: FormikProps<any>;
+  control: Control<any>;
+  setValue: UseFormSetValue<any>;
   formState: IFormState;
   vendors: Array<any>;
   onClearForm: () => void;
@@ -19,20 +20,21 @@ interface IPage1Prop {
 }
 
 export default function VendorOrderFormPage1({
-  form,
+  control,
   formState,
   vendors,
   onClearForm,
   onGoToPage2,
   fillFormWithProducts,
 }: IPage1Prop) {
+  const vendorName = useWatch({ control, name: "vendorName" });
+
   const templateQuery = useQuery({
-    queryKey: ["vendors", "active", "tendency", form.values["vendorName"]],
+    queryKey: ["vendors", "active", "tendency", vendorName],
     queryFn: async () => {
       // Non-critical function, return an empty array if it fails
       // (like no tendency or initial load).
       try {
-        const vendorName = form.values["vendorName"];
         const result = await api.get(
           `/vendors/active/tendency/${encodeURIComponent(vendorName)}`
         );
@@ -42,7 +44,7 @@ export default function VendorOrderFormPage1({
       }
     },
     // Suppress the warning when vendorName is not yet available.
-    enabled: !!form.values["vendorName"] && !formState.isFilled,
+    enabled: !!vendorName && !formState.isFilled,
     refetchOnWindowFocus: false,
   });
 
@@ -63,11 +65,17 @@ export default function VendorOrderFormPage1({
           <span>Order to vendor</span>
           <span className="text-red-500">*</span>
         </label>
-        <SelectSearch
-          name="vendor"
-          value={form.values["vendorName"]}
-          setValue={(v) => form.setFieldValue("vendorName", v)}
-          options={vendors.map((vendor) => vendor.name)}
+        <Controller
+          name="vendorName"
+          control={control}
+          render={({ field }) => (
+            <SelectSearch
+              name="vendor"
+              value={field.value}
+              setValue={field.onChange}
+              options={vendors.map((vendor) => vendor.name)}
+            />
+          )}
         />
       </div>
 
@@ -75,51 +83,69 @@ export default function VendorOrderFormPage1({
         <label className="custom-label mb-2 inline-block">
           <span>Manual code</span>
         </label>
-        <TextInput
-          id="manual-code"
-          type="text"
-          placeholder={`Manual code`}
+        <Controller
           name="manualCode"
-          value={form.values.manualCode}
-          onChange={form.handleChange}
-        ></TextInput>
+          control={control}
+          render={({ field }) => (
+            <TextInput
+              id="manual-code"
+              type="text"
+              placeholder={`Manual code`}
+              name={field.name}
+              value={field.value}
+              onChange={field.onChange}
+            ></TextInput>
+          )}
+        />
       </div>
 
       <div className="col-span-12 mb-5 xl:col-span-6">
         <label htmlFor="expect" className="custom-label mb-2 inline-block">
           Expected delivery date
         </label>
-        <DateInput
-          id="expect"
-          min="2023-01-01"
-          max="2100-12-31"
-          placeholder="Expected Delivery Date"
+        <Controller
           name="expectedAt"
-          value={form.values[`expectedAt`]}
-          onChange={(e) => form.setFieldValue("expectedAt", e.target.value)}
-        ></DateInput>
+          control={control}
+          render={({ field }) => (
+            <DateInput
+              id="expect"
+              min="2023-01-01"
+              max="2100-12-31"
+              placeholder="Expected Delivery Date"
+              name={field.name}
+              value={field.value}
+              onChange={field.onChange}
+            ></DateInput>
+          )}
+        />
       </div>
 
       <div className="col-span-12 mb-5 xl:col-span-6">
         <label htmlFor="status" className="custom-label mb-2 inline-block">
           Status
         </label>
-        <SelectInput
+        <Controller
           name="status"
-          value={form.values["status"]}
-          setValue={(v) => form.setFieldValue("status", v)}
-          options={Object.values(OrderStatus).filter(
-            (status) =>
-              status !== OrderStatus.PICKING &&
-              status !== OrderStatus.SHIPPING &&
-              status !== OrderStatus.CANCELED &&
-              // status !== OrderStatus.COMPLETED
-              status !== OrderStatus.DELIVERED
+          control={control}
+          render={({ field }) => (
+            <SelectInput
+              name={field.name}
+              value={field.value}
+              setValue={field.onChange}
+              options={Object.values(OrderStatus).filter(
+                (status) =>
+                  status !== OrderStatus.PICKING &&
+                  status !== OrderStatus.SHIPPING &&
+                  status !== OrderStatus.CANCELED &&
+                  // status !== OrderStatus.COMPLETED
+                  status !== OrderStatus.DELIVERED
+              )}
+            ></SelectInput>
           )}
-        ></SelectInput>
+        />
       </div>
 
-      {form.values[`vendorName`] && (
+      {vendorName && (
         <button
           type="button"
           className="btn btn-primary col-span-12 mt-3"

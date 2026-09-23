@@ -5,26 +5,30 @@ import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import api from "../../../../stores/api";
 import { convertTime } from "../../../../commons/utils/time.util";
-import { FormikProps } from "formik";
+import { Control, UseFormSetValue, useWatch } from "react-hook-form";
 import { IFormState } from "./VendorOrderForm";
 import Spinner from "../../../../components/Spinner";
 import Alert from "../../../../components/Alert";
 
 interface IPage0Prop {
-  form: FormikProps<any>;
+  control: Control<any>;
+  setValue: UseFormSetValue<any>;
   onGoToPage1: () => void;
   fillFormWithProducts: (products: Array<any>) => void;
   setFormState: Dispatch<SetStateAction<IFormState>>;
 }
 
 export default function VendorOrderFormPage0({
-  form,
+  control,
+  setValue,
   onGoToPage1,
   setFormState,
   fillFormWithProducts,
 }: IPage0Prop) {
   const [isCompressingImg, setIsCompressingImg] = useState(false);
   const imageCompressAborter = useRef(new AbortController());
+
+  const attachment = useWatch({ control, name: "attachment" });
 
   const queryClient = useQueryClient();
   const autofillQuery = useQuery({
@@ -33,14 +37,14 @@ export default function VendorOrderFormPage0({
       const result = await api.postForm(
         `/vendor-orders/autofill`,
         {
-          attachment: form.values.attachment,
+          attachment: attachment,
         },
         { signal: signal }
       );
       return result.data;
     },
     // This page is only displayed when the form is in create mode, which also means it has no attachment.
-    enabled: !!form.values.attachment,
+    enabled: !!attachment,
     refetchOnWindowFocus: false,
     // By default, React Query will return cache data before doing API call.
     // This is not what we want, and this cache is not reusable by query anyway.
@@ -57,9 +61,9 @@ export default function VendorOrderFormPage0({
       const products = info.products;
       const manualCode = info.manualCode ?? "";
 
-      form.setFieldValue("vendorName", vendorName);
-      form.setFieldValue("expectedAt", convertTime(new Date(dateReceived)));
-      form.setFieldValue("manualCode", manualCode);
+      setValue("vendorName", vendorName);
+      setValue("expectedAt", convertTime(new Date(dateReceived)));
+      setValue("manualCode", manualCode);
 
       fillFormWithProducts(products);
       onGoToPage1();
@@ -116,15 +120,15 @@ export default function VendorOrderFormPage0({
                       }
                     },
                   });
-                  form.setFieldValue("attachment", compressedFile);
-                  form.setFieldValue("attachmentExists", true);
+                  setValue("attachment", compressedFile);
+                  setValue("attachmentExists", true);
                 } catch (error) {
                   setFormState((prev) => ({
                     ...prev,
                     error: error.message,
                   }));
-                  form.setFieldValue("attachment", null);
-                  form.setFieldValue("attachmentExists", false);
+                  setValue("attachment", null);
+                  setValue("attachmentExists", false);
                   setTimeout(() => {
                     setFormState((prev) => ({
                       ...prev,

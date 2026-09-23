@@ -18,10 +18,12 @@ import SelectInput from "../../../../components/forms/SelectInput";
 import { niceVisualDecimal } from "../../../../commons/utils/fraction.util";
 import { Dispatch, SetStateAction, useMemo, useRef, useState } from "react";
 import { IFormState, ISelectedProduct } from "./VendorOrderForm";
-import { FormikProps } from "formik";
+import { Control, Controller, UseFormSetValue, useWatch } from "react-hook-form";
 
 interface IPage2Prop {
-  form: FormikProps<any>;
+  control: Control<any>;
+  setValue: UseFormSetValue<any>;
+  isSubmitting: boolean;
   formState: IFormState;
   allProducts: Array<any>;
   selectedProducts: Array<ISelectedProduct>;
@@ -36,7 +38,9 @@ interface IPage2Prop {
 }
 
 export default function VendorOrderFormPage2({
-  form,
+  control,
+  setValue,
+  isSubmitting,
   formState,
   allProducts,
   selectedProducts,
@@ -70,6 +74,8 @@ export default function VendorOrderFormPage2({
     }
     return "0";
   }, [selectedProducts]);
+
+  const isAttachmentExist = useWatch({ control, name: "isAttachmentExist" });
 
   const [imageModalIsOpen, setModalOpen] = useState(false);
   const [isProcessingImg, setIsProcessingImg] = useState(false);
@@ -179,15 +185,19 @@ export default function VendorOrderFormPage2({
         </div>
 
         <div className="my-5 flex items-center">
-          <Checkbox
-            id="test"
-            name="test"
-            label="Test"
-            onChange={() =>
-              form.setFieldValue("isTest", !form.values["isTest"])
-            }
-            checked={form.values["isTest"]}
-          ></Checkbox>
+          <Controller
+            name="isTest"
+            control={control}
+            render={({ field }) => (
+              <Checkbox
+                id="test"
+                name={field.name}
+                label="Test"
+                onChange={() => field.onChange(!field.value)}
+                checked={field.value}
+              ></Checkbox>
+            )}
+          />
         </div>
 
         <div className="my-5 flex justify-between gap-2">
@@ -209,8 +219,8 @@ export default function VendorOrderFormPage2({
                 onClick={(e) => {
                   e.stopPropagation(); // Stop propagation to div
 
-                  form.setFieldValue("attachment", null);
-                  form.setFieldValue("isAttachmentExist", false);
+                  setValue("attachment", null);
+                  setValue("isAttachmentExist", false);
                 }}
               >
                 <span>
@@ -224,7 +234,7 @@ export default function VendorOrderFormPage2({
                 <span>Click to view attachment</span>
               </div>
             </div>
-          ) : form.values.isAttachmentExist || isProcessingImg ? (
+          ) : isAttachmentExist || isProcessingImg ? (
             <div className="custom-card sticker-primary relative w-full text-center dark:border-2">
               {isProcessingImg && (
                 <button
@@ -264,15 +274,15 @@ export default function VendorOrderFormPage2({
                           }
                         },
                       });
-                      form.setFieldValue("attachment", compressedFile);
-                      form.setFieldValue("isAttachmentExist", true);
+                      setValue("attachment", compressedFile);
+                      setValue("isAttachmentExist", true);
                     } catch (error) {
                       setFormState((prev) => ({
                         ...prev,
                         error: error.message,
                       }));
-                      form.setFieldValue("attachment", null);
-                      form.setFieldValue("isAttachmentExist", false);
+                      setValue("attachment", null);
+                      setValue("isAttachmentExist", false);
                       setTimeout(() => {
                         setFormState((prev) => ({
                           ...prev,
@@ -298,7 +308,7 @@ export default function VendorOrderFormPage2({
             type="button"
             className="btn-outline-primary btn col-span-6"
             onClick={onPreviousPage}
-            disabled={form.isSubmitting}
+            disabled={isSubmitting}
           >
             <span>
               <BiLeftArrowAlt className="mr-1 h-7 w-7"></BiLeftArrowAlt>
@@ -310,8 +320,8 @@ export default function VendorOrderFormPage2({
             className="btn btn-primary col-span-6"
             disabled={
               isInitiallyCompleted ||
-              form.isSubmitting ||
-              (form.values.isAttachmentExist && !imageURL)
+              isSubmitting ||
+              (isAttachmentExist && !imageURL)
             }
           >
             <span>{edit ? "Update" : "Create"}</span>
@@ -327,7 +337,7 @@ export default function VendorOrderFormPage2({
         </div>
 
         <div>
-          {form.isSubmitting && (
+          {isSubmitting && (
             <div className="mt-5">
               <Spinner></Spinner>
             </div>
@@ -441,10 +451,13 @@ export default function VendorOrderFormPage2({
                     <div className="custom-label mb-2">Amount</div>
                     <div className="rounded-box flex h-12 items-center bg-base-300 px-3">
                       {
-                        // Display amount to be more explicit for user.
-                        form.values[
-                          `products.price${product.id}-${product.appear}`
-                        ] === ""
+                        // This originally checked a Formik field
+                        // (`price${id}-${appear}`) that was never part of
+                        // this form's tracked values, so the condition was
+                        // always false and the "show 0" branch never ran.
+                        // Preserved as-is (not fixed) during the Formik ->
+                        // RHF port per product decision.
+                        false
                           ? 0
                           : niceVisualDecimal(
                               parseFloat(

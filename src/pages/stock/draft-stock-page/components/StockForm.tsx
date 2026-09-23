@@ -1,4 +1,4 @@
-import { useFormik } from "formik";
+import { Controller, useForm } from "react-hook-form";
 import { useState } from "react";
 import { BiX } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
@@ -25,71 +25,76 @@ export default function StockForm({ initialData, products, onClear }) {
     query: "",
   });
 
-  const stockForm = useFormik({
-    enableReinitialize: true,
-    initialValues: initialData,
-    onSubmit: async (data) => {
-      setFormState((prev) => ({
-        ...prev,
-        success: "",
-        error: "",
-        loading: true,
-      }));
-      try {
-        const reqData = {};
-        reqData["reason"] = data["reason"];
-        let stock = new Map();
-        const properties = Object.keys(data).sort();
-        for (const property of properties) {
-          if (property.includes("quantity")) {
-            const id = +property.replace("quantity", "");
-            const selected = selectedProducts.find((p) => p.id === id);
-            if (selected) {
-              stock.set(selected.id, {
-                productName: selected.name,
-                quantity: data[property],
-              });
-            }
-          } else if (property.includes("unit")) {
-            const id = +property.replace("unit", "");
-            const selected = selectedProducts.find((p) => p.id === id);
-            if (selected) {
-              stock.set(selected.id, {
-                ...stock.get(selected.id),
-                unitCode: `${selected.id}_${data[property]}`,
-              });
-            }
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    formState: { isSubmitting },
+  } = useForm({
+    values: initialData,
+  });
+
+  const onSubmit = async (data) => {
+    setFormState((prev) => ({
+      ...prev,
+      success: "",
+      error: "",
+      loading: true,
+    }));
+    try {
+      const reqData = {};
+      reqData["reason"] = data["reason"];
+      let stock = new Map();
+      const properties = Object.keys(data).sort();
+      for (const property of properties) {
+        if (property.includes("quantity")) {
+          const id = +property.replace("quantity", "");
+          const selected = selectedProducts.find((p) => p.id === id);
+          if (selected) {
+            stock.set(selected.id, {
+              productName: selected.name,
+              quantity: data[property],
+            });
+          }
+        } else if (property.includes("unit")) {
+          const id = +property.replace("unit", "");
+          const selected = selectedProducts.find((p) => p.id === id);
+          if (selected) {
+            stock.set(selected.id, {
+              ...stock.get(selected.id),
+              unitCode: `${selected.id}_${data[property]}`,
+            });
           }
         }
-        reqData["stock"] = [...stock.values()];
-        const res = await api.put(`/stock`, reqData);
-        setFormState((prev) => ({
-          ...prev,
-          success: "Update stock successfully.",
-          error: "",
-          loading: false,
-        }));
-        setTimeout(() => {
-          setFormState((prev) => ({ ...prev, success: "" }));
-          onClear();
-        }, 2000);
-      } catch (e) {
-        const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e)
-        );
-        setFormState((prev) => ({
-          ...prev,
-          error: error.message,
-          success: "",
-          loading: false,
-        }));
-
-        if (error.status === 401) {
-          handleTokenExpire(navigate, setFormState);
-        }
       }
-    },
-  });
+      reqData["stock"] = [...stock.values()];
+      const res = await api.put(`/stock`, reqData);
+      setFormState((prev) => ({
+        ...prev,
+        success: "Update stock successfully.",
+        error: "",
+        loading: false,
+      }));
+      setTimeout(() => {
+        setFormState((prev) => ({ ...prev, success: "" }));
+        onClear();
+      }, 2000);
+    } catch (e) {
+      const error = JSON.parse(
+        JSON.stringify(e.response ? e.response.data.error : e)
+      );
+      setFormState((prev) => ({
+        ...prev,
+        error: error.message,
+        success: "",
+        loading: false,
+      }));
+
+      if (error.status === 401) {
+        handleTokenExpire(navigate, setFormState);
+      }
+    }
+  };
 
   const onClearForm = () => {
     onClear();
@@ -117,15 +122,15 @@ export default function StockForm({ initialData, products, onClear }) {
     const found = selectedProducts.find((p) => p.name === product.name);
     if (!found) {
       setSelectedProducts([product, ...selectedProducts]);
-      stockForm.setFieldValue(`quantity${product.id}`, 0);
-      stockForm.setFieldValue(`unit${product.id}`, "BOX");
+      setValue(`quantity${product.id}`, 0);
+      setValue(`unit${product.id}`, "BOX");
     }
     setSearch((prev) => ({ ...prev, products: [], query: "" }));
   };
 
   const onRemoveProduct = (id) => {
     setSearch((prev) => ({ ...prev, products: [], query: "" }));
-    stockForm.setFieldValue(`quantity${id}`, 0);
+    setValue(`quantity${id}`, 0);
     setSelectedProducts(
       selectedProducts.filter((product) => product.id !== id)
     );
@@ -137,24 +142,30 @@ export default function StockForm({ initialData, products, onClear }) {
 
   return (
     <>
-      <form onSubmit={stockForm.handleSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div className="mb-5">
           <label htmlFor="reason" className="custom-label mb-2 inline-block">
             Reason
           </label>
-          <SelectInput
+          <Controller
             name="reason"
-            value={stockForm.values["reason"]}
-            setValue={(v) => stockForm.setFieldValue("reason", v)}
-            options={Object.values(StockChangeReason).filter(
-              (reason) =>
-                reason !== StockChangeReason.CUSTOMER_ORDER_COMPLETED &&
-                reason !== StockChangeReason.CUSTOMER_RETURN_RECEIVED &&
-                reason !== StockChangeReason.VENDOR_ORDER_COMPLETED &&
-                reason !== StockChangeReason.VENDOR_RETURN_RECEIVED &&
-                reason !== StockChangeReason.EMPLOYEE_BORROW
+            control={control}
+            render={({ field }) => (
+              <SelectInput
+                name={field.name}
+                value={field.value}
+                setValue={field.onChange}
+                options={Object.values(StockChangeReason).filter(
+                  (reason) =>
+                    reason !== StockChangeReason.CUSTOMER_ORDER_COMPLETED &&
+                    reason !== StockChangeReason.CUSTOMER_RETURN_RECEIVED &&
+                    reason !== StockChangeReason.VENDOR_ORDER_COMPLETED &&
+                    reason !== StockChangeReason.VENDOR_RETURN_RECEIVED &&
+                    reason !== StockChangeReason.EMPLOYEE_BORROW
+                )}
+              ></SelectInput>
             )}
-          ></SelectInput>
+          />
         </div>
 
         <div className="mb-5">
@@ -203,28 +214,38 @@ export default function StockForm({ initialData, products, onClear }) {
                       <label className="custom-label mb-2 inline-block">
                         Qty
                       </label>
-                      <NumberInput
-                        id={`quantity${product.id}`}
+                      <Controller
                         name={`quantity${product.id}`}
-                        placeholder="Qty"
-                        value={stockForm.values[`quantity${product.id}`]}
-                        onChange={stockForm.handleChange}
-                      ></NumberInput>
+                        control={control}
+                        render={({ field }) => (
+                          <NumberInput
+                            id={`quantity${product.id}`}
+                            name={field.name}
+                            placeholder="Qty"
+                            value={field.value}
+                            onChange={field.onChange}
+                          ></NumberInput>
+                        )}
+                      />
                     </div>
                     <div className="w-6/12">
                       <label className="custom-label mb-2 inline-block">
                         Unit
                       </label>
-                      <SelectInput
+                      <Controller
                         name={`unit${product.id}`}
-                        value={stockForm.values[`unit${product.id}`]}
-                        setValue={(v) =>
-                          stockForm.setFieldValue(`unit${product.id}`, v)
-                        }
-                        options={product.units.map(
-                          (unit) => unit.code.split("_")[1]
+                        control={control}
+                        render={({ field }) => (
+                          <SelectInput
+                            name={field.name}
+                            value={field.value}
+                            setValue={field.onChange}
+                            options={product.units.map(
+                              (unit) => unit.code.split("_")[1]
+                            )}
+                          ></SelectInput>
                         )}
-                      ></SelectInput>
+                      />
                     </div>
                   </div>
                 </div>
@@ -240,7 +261,7 @@ export default function StockForm({ initialData, products, onClear }) {
         <button
           type="submit"
           className="btn btn-primary my-3 w-full"
-          disabled={formState.loading || stockForm.isSubmitting}
+          disabled={formState.loading || isSubmitting}
         >
           Update Stock
         </button>
