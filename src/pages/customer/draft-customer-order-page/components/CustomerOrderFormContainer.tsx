@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { OrderStatus } from "../../../../commons/enums/order-status.enum";
 import { convertTime } from "../../../../commons/utils/time.util";
@@ -7,7 +7,6 @@ import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
 import CustomerOrderForm from "./CustomerOrderForm";
 import { handleTokenExpire } from "../../../../commons/utils/token.util";
-import { niceVisualDecimal } from "../../../../commons/utils/fraction.util";
 
 export default function CustomerOrderFormContainer() {
   const params = useParams();
@@ -18,22 +17,11 @@ export default function CustomerOrderFormContainer() {
     allProducts: [],
     customers: [],
     employees: [],
-    prices: [],
     error: "",
     empty: "",
     loading: true,
   });
   const [initialFields, setInitialFields] = useState({});
-  const total = useMemo(() => {
-    if (fetchData.prices.length > 0) {
-      return niceVisualDecimal(
-        +fetchData.prices.reduce(
-          (prev, current) => prev + current.quantity * current.price,
-          0
-        )
-      );
-    } else return 0;
-  }, [fetchData.prices]);
 
   useEffect(() => {
     setFetchData((prev) => ({
@@ -42,7 +30,6 @@ export default function CustomerOrderFormContainer() {
       allProducts: [],
       customers: [],
       employees: [],
-      prices: [],
       error: "",
       empty: "",
       loading: true,
@@ -79,73 +66,29 @@ export default function CustomerOrderFormContainer() {
             }));
           } else {
             // setup initial field values
-            const updatedPrices = [];
             const editedProducts = [];
             const allProductsRes = productRes.data;
-            const productFieldData = {};
             const productOrders = orderRes.data.productCustomerOrders;
             for (const product of allProductsRes) {
               const similarProductOrders = productOrders.filter(
                 (po) => po.product_name === product.name
               );
-              if (similarProductOrders.length > 0) {
-                for (let i = 0; i < similarProductOrders.length; i++) {
-                  // similar products in existing order
-                  let appear = i + 1;
-                  productFieldData[`quantity${product.id}-${appear}`] =
-                    similarProductOrders[i].quantity;
-                  productFieldData[`unit${product.id}-${appear}`] =
-                    similarProductOrders[i].unit_code.split("_")[1];
+              for (let i = 0; i < similarProductOrders.length; i++) {
+                // similar products in existing order
+                let appear = i + 1;
+                editedProducts.push({
+                  id: product.id,
+                  appear: appear,
+                  name: product.name,
+                  units: product.units,
+                  recent_cost: product.recent_cost,
+                  quantity: similarProductOrders[i].quantity,
+                  unit: similarProductOrders[i].unit_code.split("_")[1],
                   // Need to put this here so it doesn't give a warning about uncontrolled component or sth.
-                  productFieldData[`price${product.id}-${appear}`] =
-                    similarProductOrders[i].unit_price
-                      ? similarProductOrders[i].unit_price
-                      : "";
-                  editedProducts.push({
-                    id: product.id,
-                    appear: appear,
-                    name: product.name,
-                    units: product.units,
-                    recent_cost: product.recent_cost,
-                  });
-                  updatedPrices.push({
-                    id: product.id,
-                    appear: appear,
-                    quantity:
-                      productFieldData[`quantity${product.id}-${appear}`],
-                    price: productFieldData[`price${product.id}-${appear}`],
-                  });
-                }
-
-                for (
-                  let i = similarProductOrders.length + 1;
-                  i <= product.units.length;
-                  i++
-                ) {
-                  productFieldData[`quantity${product.id}-${i}`] = 0;
-                  productFieldData[`unit${product.id}-${i}`] = "BOX";
-                  productFieldData[`price${product.id}-${i}`] = 0;
-                  updatedPrices.push({
-                    id: product.id,
-                    appear: i,
-                    quantity: productFieldData[`quantity${product.id}-${i}`],
-                    price: productFieldData[`price${product.id}-${i}`],
-                  });
-                }
-              } else {
-                if (!product.discontinued) {
-                  for (let i = 1; i <= product.units.length; i++) {
-                    productFieldData[`quantity${product.id}-${i}`] = 0;
-                    productFieldData[`unit${product.id}-${i}`] = "BOX";
-                    productFieldData[`price${product.id}-${i}`] = 0;
-                    updatedPrices.push({
-                      id: product.id,
-                      appear: i,
-                      quantity: productFieldData[`quantity${product.id}-${i}`],
-                      price: productFieldData[`price${product.id}-${i}`],
-                    });
-                  }
-                }
+                  price: similarProductOrders[i].unit_price
+                    ? similarProductOrders[i].unit_price
+                    : "",
+                });
               }
             }
             setInitialFields((prev) => ({
@@ -160,7 +103,6 @@ export default function CustomerOrderFormContainer() {
                 : "",
               note: orderRes.data.note,
               expectedAt: convertTime(new Date(orderRes.data.expected_at)),
-              ...productFieldData,
             }));
             setFetchData((prev) => ({
               ...prev,
@@ -168,7 +110,6 @@ export default function CustomerOrderFormContainer() {
               allProducts: allProductsRes,
               customers: customerRes.data,
               employees: employeeRes.data,
-              prices: updatedPrices,
               error: "",
               empty: "",
               loading: false,
@@ -214,22 +155,6 @@ export default function CustomerOrderFormContainer() {
               loading: false,
             }));
           } else {
-            // setup initial field values
-            const updatedPrices = [];
-            const productFieldData = {};
-            for (const product of productRes.data) {
-              for (let i = 1; i <= product.units.length; i++) {
-                productFieldData[`quantity${product.id}-${i}`] = 0;
-                productFieldData[`unit${product.id}-${i}`] = "BOX";
-                productFieldData[`price${product.id}-${i}`] = 0;
-                updatedPrices.push({
-                  id: product.id,
-                  appear: i,
-                  quantity: productFieldData[`quantity${product.id}-${i}`],
-                  price: productFieldData[`price${product.id}-${i}`],
-                });
-              }
-            }
             const today = new Date();
             setInitialFields((prev) => ({
               ...prev,
@@ -240,14 +165,12 @@ export default function CustomerOrderFormContainer() {
               isTest: false,
               expectedAt: convertTime(today),
               note: "",
-              ...productFieldData,
             }));
             setFetchData((prev) => ({
               ...prev,
               allProducts: productRes.data,
               customers: customerRes.data,
               employees: employeeRes.data,
-              prices: updatedPrices,
               error: "",
               empty: "",
               loading: false,
@@ -279,36 +202,10 @@ export default function CustomerOrderFormContainer() {
       allProducts: [],
       customers: [],
       employees: [],
-      prices: [],
       error: "",
       empty: "",
       loading: true,
     }));
-  };
-
-  const updatePrice = (value: number, inputId: string) => {
-    let updatedPrices = [...fetchData.prices];
-    if (inputId.includes("quantity")) {
-      const [id, appear] = inputId.replace("quantity", "").split("-");
-      const index = updatedPrices.findIndex(
-        (p) => p.id === +id && p.appear === +appear
-      );
-      updatedPrices[index].quantity = value;
-    } else if (inputId.includes("price")) {
-      const [id, appear] = inputId.replace("price", "").split("-");
-      const index = updatedPrices.findIndex(
-        (p) => p.id === +id && p.appear === +appear
-      );
-      updatedPrices[index].price = value;
-    } else if (inputId.includes("remove")) {
-      const [id, appear] = inputId.replace("remove", "").split("-");
-      const index = updatedPrices.findIndex(
-        (p) => p.id === +id && p.appear === +appear
-      );
-      updatedPrices[index].quantity = 0;
-      updatedPrices[index].price = 0;
-    }
-    setFetchData((prev) => ({ ...prev, prices: updatedPrices }));
   };
 
   const loadTemplate = async (customerName: string) => {
@@ -337,10 +234,6 @@ export default function CustomerOrderFormContainer() {
     }
   };
 
-  const resetPrice = (newPrices) => {
-    setFetchData((prev) => ({ ...prev, prices: newPrices }));
-  };
-
   if (fetchData.loading) return <Spinner></Spinner>;
   if (fetchData.error)
     return <Alert message={fetchData.error} type="error"></Alert>;
@@ -358,9 +251,6 @@ export default function CustomerOrderFormContainer() {
         }
         allProducts={fetchData.allProducts}
         employees={fetchData.employees}
-        updatePrice={updatePrice}
-        resetPrice={resetPrice}
-        total={total}
         loadTemplate={loadTemplate}
         onClear={onClear}
       />

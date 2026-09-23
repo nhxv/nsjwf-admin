@@ -1,4 +1,4 @@
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { useState } from "react";
 import { BiX } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
@@ -11,6 +11,19 @@ import SearchSuggest from "../../../../components/forms/SearchSuggest";
 import SelectInput from "../../../../components/forms/SelectInput";
 import api from "../../../../stores/api";
 
+interface IStockRow {
+  productId: number;
+  name: string;
+  quantity: number;
+  unit: string;
+  units: Array<any>;
+}
+
+interface IStockFormFields {
+  reason: string;
+  stock: IStockRow[];
+}
+
 export default function StockForm({ initialData, products, onClear }) {
   const navigate = useNavigate();
   const [formState, setFormState] = useState({
@@ -19,7 +32,6 @@ export default function StockForm({ initialData, products, onClear }) {
     loading: false,
   });
 
-  const [selectedProducts, setSelectedProducts] = useState([]);
   const [search, setSearch] = useState({
     products: [],
     query: "",
@@ -28,10 +40,16 @@ export default function StockForm({ initialData, products, onClear }) {
   const {
     control,
     handleSubmit,
-    setValue,
     formState: { isSubmitting },
-  } = useForm({
+  } = useForm<IStockFormFields>({
     values: initialData,
+  });
+
+  // `productId` (not `id`) to avoid colliding with the internal `id` RHF
+  // assigns to each row for React keys.
+  const { fields, prepend, remove } = useFieldArray({
+    control,
+    name: "stock",
   });
 
   const onSubmit = async (data) => {
@@ -44,30 +62,11 @@ export default function StockForm({ initialData, products, onClear }) {
     try {
       const reqData = {};
       reqData["reason"] = data["reason"];
-      let stock = new Map();
-      const properties = Object.keys(data).sort();
-      for (const property of properties) {
-        if (property.includes("quantity")) {
-          const id = +property.replace("quantity", "");
-          const selected = selectedProducts.find((p) => p.id === id);
-          if (selected) {
-            stock.set(selected.id, {
-              productName: selected.name,
-              quantity: data[property],
-            });
-          }
-        } else if (property.includes("unit")) {
-          const id = +property.replace("unit", "");
-          const selected = selectedProducts.find((p) => p.id === id);
-          if (selected) {
-            stock.set(selected.id, {
-              ...stock.get(selected.id),
-              unitCode: `${selected.id}_${data[property]}`,
-            });
-          }
-        }
-      }
-      reqData["stock"] = [...stock.values()];
+      reqData["stock"] = data.stock.map((row) => ({
+        productName: row.name,
+        quantity: row.quantity,
+        unitCode: `${row.productId}_${row.unit}`,
+      }));
       const res = await api.put(`/stock`, reqData);
       setFormState((prev) => ({
         ...prev,
@@ -119,21 +118,17 @@ export default function StockForm({ initialData, products, onClear }) {
   };
 
   const onAddProduct = (product) => {
-    const found = selectedProducts.find((p) => p.name === product.name);
+    const found = fields.find((f) => f.productId === product.id);
     if (!found) {
-      setSelectedProducts([product, ...selectedProducts]);
-      setValue(`quantity${product.id}`, 0);
-      setValue(`unit${product.id}`, "BOX");
+      prepend({
+        productId: product.id,
+        name: product.name,
+        quantity: 0,
+        unit: "BOX",
+        units: product.units,
+      });
     }
     setSearch((prev) => ({ ...prev, products: [], query: "" }));
-  };
-
-  const onRemoveProduct = (id) => {
-    setSearch((prev) => ({ ...prev, products: [], query: "" }));
-    setValue(`quantity${id}`, 0);
-    setSelectedProducts(
-      selectedProducts.filter((product) => product.id !== id)
-    );
   };
 
   const onClearQuery = () => {
@@ -183,17 +178,17 @@ export default function StockForm({ initialData, products, onClear }) {
         </div>
 
         <div className="mb-5">
-          {selectedProducts && selectedProducts.length > 0 ? (
+          {fields && fields.length > 0 ? (
             <div className="grid grid-cols-12 gap-3">
-              {selectedProducts.map((product) => (
+              {fields.map((field, index) => (
                 <div
-                  key={product.id}
+                  key={field.id}
                   className="rounded-box col-span-12 flex flex-col border-2 border-base-300 p-3 md:col-span-6"
                 >
                   <div className="mb-3 flex justify-between">
                     <div>
                       <span className="text-lg font-semibold">
-                        {product.name}
+                        {field.name}
                       </span>
                       <span className="block text-sm text-neutral">
                         Product
@@ -202,7 +197,7 @@ export default function StockForm({ initialData, products, onClear }) {
                     <button
                       type="button"
                       className="btn btn-circle btn-accent btn-sm"
-                      onClick={() => onRemoveProduct(product.id)}
+                      onClick={() => remove(index)}
                     >
                       <span>
                         <BiX className="h-6 w-6"></BiX>
@@ -215,11 +210,11 @@ export default function StockForm({ initialData, products, onClear }) {
                         Qty
                       </label>
                       <Controller
-                        name={`quantity${product.id}`}
+                        name={`stock.${index}.quantity`}
                         control={control}
                         render={({ field }) => (
                           <NumberInput
-                            id={`quantity${product.id}`}
+                            id={`quantity${field.name}`}
                             name={field.name}
                             placeholder="Qty"
                             value={field.value}
@@ -233,14 +228,14 @@ export default function StockForm({ initialData, products, onClear }) {
                         Unit
                       </label>
                       <Controller
-                        name={`unit${product.id}`}
+                        name={`stock.${index}.unit`}
                         control={control}
-                        render={({ field }) => (
+                        render={({ field: unitField }) => (
                           <SelectInput
-                            name={field.name}
-                            value={field.value}
-                            setValue={field.onChange}
-                            options={product.units.map(
+                            name={unitField.name}
+                            value={unitField.value}
+                            setValue={unitField.onChange}
+                            options={field.units.map(
                               (unit) => unit.code.split("_")[1]
                             )}
                           ></SelectInput>

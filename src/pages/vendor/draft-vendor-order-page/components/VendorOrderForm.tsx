@@ -1,5 +1,5 @@
-import { useForm, useWatch } from "react-hook-form";
-import { useState } from "react";
+import { useFieldArray, useForm, useWatch } from "react-hook-form";
+import { useMemo, useState } from "react";
 import api from "../../../../stores/api";
 import { handleTokenExpire } from "../../../../commons/utils/token.util";
 import { useNavigate } from "react-router-dom";
@@ -24,6 +24,18 @@ export interface IFormState {
   isFilled: boolean;
   success: string;
   error: string;
+}
+
+interface IVendorOrderFormFields {
+  vendorName: string;
+  status: string;
+  isTest: boolean;
+  expectedAt: string;
+  manualCode: string;
+  code?: string;
+  attachment: any;
+  isAttachmentExist?: boolean;
+  products: Array<ISelectedProduct>;
 }
 
 function computeSelectedProducts(
@@ -76,10 +88,6 @@ export default function VendorOrderForm({
 }) {
   const navigate = useNavigate();
   const [page, setPage] = useState(edit ? 1 : 1);
-  // The products we visually see in the form.
-  const [selectedProducts, setSelectedProducts] = useState(() =>
-    computeSelectedProducts(allProducts, existingProducts)
-  );
   const [formState, setFormState] = useState<IFormState>({
     // Did we autofilled or templated? If in edit mode, neither will be ran.
     isFilled: edit,
@@ -88,19 +96,36 @@ export default function VendorOrderForm({
     error: "",
   });
 
+  // Only recomputed when the underlying query data actually changes, so this
+  // doesn't reset the form (and the field array) on every keystroke.
+  const formValues = useMemo(
+    () => ({
+      ...initialData,
+      products: computeSelectedProducts(allProducts, existingProducts),
+    }),
+    [initialData, allProducts, existingProducts]
+  );
+
   const {
     control,
     handleSubmit,
     setValue,
     reset,
     formState: { isSubmitting },
-  } = useForm({
-    values: initialData,
+  } = useForm<IVendorOrderFormFields>({
+    values: formValues,
+  });
+
+  // `rowKey` (not `id`) to avoid colliding with each product's own `id`.
+  const { fields, prepend, remove, replace } = useFieldArray({
+    control,
+    name: "products",
+    keyName: "rowKey",
   });
 
   const attachment = useWatch({ control, name: "attachment" });
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: IVendorOrderFormFields) => {
     setFormState((prev) => ({
       ...prev,
       error: "",
@@ -108,7 +133,6 @@ export default function VendorOrderForm({
     }));
     try {
       let reqData = {};
-      let productOrders = new Map();
       reqData["vendorName"] = data["vendorName"];
       reqData["status"] = data["status"];
       reqData["isTest"] = data["isTest"];
@@ -117,15 +141,12 @@ export default function VendorOrderForm({
       // Makes it easier to deal with later.
       reqData["manualCode"] = data["manualCode"] ? data["manualCode"] : null;
 
-      for (const product of selectedProducts) {
-        productOrders.set(`${product.id}-${product.appear}`, {
-          productName: product.name,
-          unitPrice: product.price,
-          quantity: product.quantity,
-          unitCode: `${product.id}_${product.unit}`,
-        });
-      }
-      reqData["productVendorOrders"] = [...productOrders.values()];
+      reqData["productVendorOrders"] = data.products.map((product) => ({
+        productName: product.name,
+        unitPrice: product.price,
+        quantity: product.quantity,
+        unitCode: `${product.id}_${product.unit}`,
+      }));
       reqData["attachment"] = data["attachment"];
 
       if (edit) {
@@ -167,7 +188,7 @@ export default function VendorOrderForm({
   };
 
   const fillFormWithProducts = (products: Array<any>) => {
-    setSelectedProducts(computeSelectedProducts(allProducts, products));
+    replace(computeSelectedProducts(allProducts, products));
     markFormFilled();
   };
 
@@ -177,7 +198,7 @@ export default function VendorOrderForm({
     } else {
       // Is there a better way to do this...
       reset();
-      setSelectedProducts([]);
+      replace([]);
       setPage(0);
       setFormState((prev) => ({ ...prev, isFilled: false }));
     }
@@ -219,14 +240,16 @@ export default function VendorOrderForm({
           edit={edit}
           formState={formState}
           allProducts={allProducts}
-          selectedProducts={selectedProducts}
+          fields={fields}
+          prepend={prepend}
+          remove={remove}
+          replace={replace}
           isInitiallyCompleted={initialData.status === "COMPLETED"}
           imageURL={imageURL}
           onClearForm={onClearForm}
           onPreviousPage={onGoToPage1}
           markFormFilled={markFormFilled}
           setFormState={setFormState}
-          setSelectedProducts={setSelectedProducts}
         />
       )}
     </form>
