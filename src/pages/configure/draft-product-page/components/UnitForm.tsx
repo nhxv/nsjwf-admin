@@ -1,4 +1,4 @@
-import { useFormik } from "formik";
+import { Controller, useForm } from "react-hook-form";
 import { useState } from "react";
 import { BiX } from "react-icons/bi";
 import Alert from "../../../../components/Alert";
@@ -17,49 +17,49 @@ export default function DraftUnitForm({ productId, unit, isOpen, onClose }) {
     loading: false,
   });
 
-  const unitForm = useFormik({
-    enableReinitialize: true,
-    initialValues: {
+  const { control, handleSubmit, reset } = useForm({
+    values: {
       name: unit ? unit.name : "",
       ratio: "1/2",
       discontinued: unit ? unit.discontinued : false,
     },
-    onSubmit: async (data) => {
-      setFormState((prev) => ({ ...prev, loading: true, error: "" }));
-      try {
-        let res = null;
-        if (unit?.id > 0) {
-          res = await api.put(`/units/${unit.id}`, data);
-          if (res) {
-            setFormState((prev) => ({ ...prev, loading: false, error: "" }));
-            onCloseForm();
-          }
-        } else {
-          res = await api.post(`/units/by-product/${productId}`, data);
-          if (res) {
-            setFormState((prev) => ({ ...prev, loading: false, error: "" }));
-            onCloseForm();
-          }
-        }
-      } catch (e) {
-        const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e)
-        );
-        setFormState((prev) => ({
-          ...prev,
-          error: error.message,
-          loading: false,
-        }));
-
-        if (error.status === 401) {
-          handleTokenExpire(navigate, setFormState);
-        }
-      }
-    },
   });
 
+  const onSubmit = async (data) => {
+    setFormState((prev) => ({ ...prev, loading: true, error: "" }));
+    try {
+      let res = null;
+      if (unit?.id > 0) {
+        res = await api.put(`/units/${unit.id}`, data);
+        if (res) {
+          setFormState((prev) => ({ ...prev, loading: false, error: "" }));
+          onCloseForm();
+        }
+      } else {
+        res = await api.post(`/units/by-product/${productId}`, data);
+        if (res) {
+          setFormState((prev) => ({ ...prev, loading: false, error: "" }));
+          onCloseForm();
+        }
+      }
+    } catch (e) {
+      const error = JSON.parse(
+        JSON.stringify(e.response ? e.response.data.error : e)
+      );
+      setFormState((prev) => ({
+        ...prev,
+        error: error.message,
+        loading: false,
+      }));
+
+      if (error.status === 401) {
+        handleTokenExpire(navigate, setFormState);
+      }
+    }
+  };
+
   const onCloseForm = () => {
-    unitForm.resetForm();
+    reset();
     onClose();
   };
 
@@ -77,20 +77,26 @@ export default function DraftUnitForm({ productId, unit, isOpen, onClose }) {
             </span>
           </button>
         </div>
-        <form onSubmit={unitForm.handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-5">
             <label htmlFor="name" className="custom-label mb-2 inline-block">
               <span>Name</span>
               <span className="text-red-500">*</span>
             </label>
-            <TextInput
-              id="name"
-              type="text"
-              placeholder={`Name`}
+            <Controller
               name="name"
-              value={unitForm.values.name}
-              onChange={unitForm.handleChange}
-            ></TextInput>
+              control={control}
+              render={({ field }) => (
+                <TextInput
+                  id="name"
+                  type="text"
+                  placeholder={`Name`}
+                  name={field.name}
+                  value={field.value}
+                  onChange={field.onChange}
+                ></TextInput>
+              )}
+            />
           </div>
 
           {!unit && (
@@ -99,30 +105,37 @@ export default function DraftUnitForm({ productId, unit, isOpen, onClose }) {
                 <span>Ratio to box</span>
                 <span className="text-red-500">*</span>
               </label>
-              <TextInput
-                id="ratio"
-                type="text"
-                placeholder={`1/4`}
+              <Controller
                 name="ratio"
-                value={unitForm.values.ratio}
-                onChange={unitForm.handleChange}
-              ></TextInput>
+                control={control}
+                render={({ field }) => (
+                  <TextInput
+                    id="ratio"
+                    type="text"
+                    placeholder={`1/4`}
+                    name={field.name}
+                    value={field.value}
+                    onChange={field.onChange}
+                  ></TextInput>
+                )}
+              />
             </div>
           )}
 
           <div className="mb-5 flex items-center">
-            <Checkbox
-              id="discontinued"
+            <Controller
               name="discontinued"
-              onChange={() =>
-                unitForm.setFieldValue(
-                  "discontinued",
-                  !unitForm.values.discontinued
-                )
-              }
-              checked={!unitForm.values.discontinued}
-              label="In use"
-            ></Checkbox>
+              control={control}
+              render={({ field }) => (
+                <Checkbox
+                  id="discontinued"
+                  name={field.name}
+                  onChange={() => field.onChange(!field.value)}
+                  checked={!field.value}
+                  label="In use"
+                ></Checkbox>
+              )}
+            />
           </div>
 
           <button

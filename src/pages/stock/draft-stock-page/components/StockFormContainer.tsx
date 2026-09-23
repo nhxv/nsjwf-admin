@@ -31,15 +31,10 @@ export default function StockFormContainer() {
             loading: false,
           }));
         } else {
-          const stockFieldData = {};
-          for (const product of res.data) {
-            stockFieldData[`quantity${product.id}`] = product.stock.quantity;
-            stockFieldData[`unit${product.id}`] = "BOX";
-          }
           setInitialFields((prev) => ({
             ...prev,
             reason: StockChangeReason.DAMAGED,
-            ...stockFieldData,
+            stock: [],
           }));
           setFetchData((prev) => ({
             ...prev,

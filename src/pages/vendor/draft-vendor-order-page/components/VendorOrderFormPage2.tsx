@@ -12,19 +12,30 @@ import FileInput from "../../../../components/forms/FileInput";
 import imageCompression from "browser-image-compression";
 import Alert from "../../../../components/Alert";
 import SearchSuggest from "../../../../components/forms/SearchSuggest";
-import NumberInput from "../../../../components/forms/NumberInput";
-import TextInput from "../../../../components/forms/TextInput";
-import SelectInput from "../../../../components/forms/SelectInput";
-import { niceVisualDecimal } from "../../../../commons/utils/fraction.util";
-import { Dispatch, SetStateAction, useMemo, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useRef, useState } from "react";
 import { IFormState, ISelectedProduct } from "./VendorOrderForm";
-import { FormikProps } from "formik";
+import {
+  Control,
+  Controller,
+  UseFieldArrayPrepend,
+  UseFieldArrayRemove,
+  UseFieldArrayReplace,
+  UseFormSetValue,
+  useWatch,
+} from "react-hook-form";
+import VendorOrderProductRow from "./VendorOrderProductRow";
+import VendorOrderTotal from "./VendorOrderTotal";
 
 interface IPage2Prop {
-  form: FormikProps<any>;
+  control: Control<any>;
+  setValue: UseFormSetValue<any>;
+  isSubmitting: boolean;
   formState: IFormState;
   allProducts: Array<any>;
-  selectedProducts: Array<ISelectedProduct>;
+  fields: Array<ISelectedProduct & { rowKey: string }>;
+  prepend: UseFieldArrayPrepend<any, "products">;
+  remove: UseFieldArrayRemove;
+  replace: UseFieldArrayReplace<any, "products">;
   edit: boolean;
   isInitiallyCompleted: boolean;
   imageURL: string;
@@ -32,14 +43,18 @@ interface IPage2Prop {
   onPreviousPage: () => void;
   markFormFilled: () => void;
   setFormState: Dispatch<SetStateAction<IFormState>>;
-  setSelectedProducts: Dispatch<SetStateAction<Array<ISelectedProduct>>>;
 }
 
 export default function VendorOrderFormPage2({
-  form,
+  control,
+  setValue,
+  isSubmitting,
   formState,
   allProducts,
-  selectedProducts,
+  fields,
+  prepend,
+  remove,
+  replace,
   edit,
   isInitiallyCompleted,
   imageURL,
@@ -47,7 +62,6 @@ export default function VendorOrderFormPage2({
   onPreviousPage,
   setFormState,
   markFormFilled,
-  setSelectedProducts,
 }: IPage2Prop) {
   const [search, setSearch] = useState("");
   const filteredProducts =
@@ -59,17 +73,8 @@ export default function VendorOrderFormPage2({
             .replace(/\s+/g, "")
             .includes(search.toLowerCase().replace(/\s+/g, ""))
         );
-  const total = useMemo(() => {
-    if (selectedProducts.length > 0) {
-      return niceVisualDecimal(
-        +selectedProducts.reduce(
-          (prev, current) => prev + current.quantity * +current.price,
-          0
-        )
-      );
-    }
-    return "0";
-  }, [selectedProducts]);
+
+  const isAttachmentExist = useWatch({ control, name: "isAttachmentExist" });
 
   const [imageModalIsOpen, setModalOpen] = useState(false);
   const [isProcessingImg, setIsProcessingImg] = useState(false);
@@ -82,16 +87,29 @@ export default function VendorOrderFormPage2({
     onClearForm();
   };
 
+  const toRow = (
+    f: ISelectedProduct & { rowKey?: string }
+  ): ISelectedProduct => ({
+    id: f.id,
+    appear: f.appear,
+    name: f.name,
+    units: f.units,
+    recent_cost: f.recent_cost,
+    quantity: f.quantity,
+    price: f.price,
+    unit: f.unit,
+  });
+
   const onAddProduct = (product) => {
     markFormFilled();
     setSearch("");
 
-    const found = selectedProducts.filter((p) => p.name === product.name);
+    const found = fields.filter((f) => f.name === product.name);
     if (found.length >= product.units.length) {
       // cannot add more of this product, but we'll bump them up the list for searching purpose
-      setSelectedProducts([
-        ...found,
-        ...selectedProducts.filter((p) => p.name !== product.name),
+      replace([
+        ...found.map(toRow),
+        ...fields.filter((f) => f.name !== product.name).map(toRow),
       ]);
       return;
     }
@@ -117,77 +135,50 @@ export default function VendorOrderFormPage2({
         }
       }
     }
-    const selectedProduct: ISelectedProduct = {
-      ...product,
+    prepend({
+      id: product.id,
       appear: appear,
+      name: product.name,
+      units: product.units,
+      recent_cost: product.recent_cost,
       price: "0",
       quantity: 0,
       unit: "BOX",
-    };
-    setSelectedProducts([
-      selectedProduct,
-      ...found,
-      ...selectedProducts.filter((p) => p.name !== product.name),
-    ]);
+    });
   };
 
-  const onRemoveProduct = (id, appear) => {
+  const onRemoveProduct = (index: number) => {
     setSearch("");
     markFormFilled();
-    setSelectedProducts(
-      selectedProducts.filter(
-        (product) => product.id !== id || product.appear !== appear
-      )
-    );
+    remove(index);
   };
 
   const onRemoveAllProducts = () => {
     setSearch("");
     markFormFilled();
-    setSelectedProducts([]);
-  };
-
-  const onFieldChange = (
-    value: number | string,
-    inputId: string,
-    i: number
-  ) => {
-    let clone = [...selectedProducts];
-    if (inputId.includes("quantity")) {
-      clone[i].quantity = +value;
-    } else if (inputId.includes("price")) {
-      clone[i].price = "" + value;
-    } else if (inputId.includes("unit")) {
-      clone[i].unit = "" + value;
-    }
-    setSelectedProducts(clone);
-    markFormFilled();
+    replace([]);
   };
 
   return (
     <div className="flex min-h-screen flex-col items-start gap-6 xl:flex-row-reverse">
       {/* Submission box */}
       <div className="custom-card w-full xl:sticky xl:top-[84px] xl:w-5/12">
-        <div className="mb-4 flex items-center">
-          Total:
-          <span className="mx-1 text-xl font-medium">${total}</span>
-          <span>
-            {`(${selectedProducts.length} ${
-              selectedProducts.length > 1 ? "items" : "item"
-            })`}
-          </span>
-        </div>
+        <VendorOrderTotal control={control} />
 
         <div className="my-5 flex items-center">
-          <Checkbox
-            id="test"
-            name="test"
-            label="Test"
-            onChange={() =>
-              form.setFieldValue("isTest", !form.values["isTest"])
-            }
-            checked={form.values["isTest"]}
-          ></Checkbox>
+          <Controller
+            name="isTest"
+            control={control}
+            render={({ field }) => (
+              <Checkbox
+                id="test"
+                name={field.name}
+                label="Test"
+                onChange={() => field.onChange(!field.value)}
+                checked={field.value}
+              ></Checkbox>
+            )}
+          />
         </div>
 
         <div className="my-5 flex justify-between gap-2">
@@ -209,8 +200,8 @@ export default function VendorOrderFormPage2({
                 onClick={(e) => {
                   e.stopPropagation(); // Stop propagation to div
 
-                  form.setFieldValue("attachment", null);
-                  form.setFieldValue("isAttachmentExist", false);
+                  setValue("attachment", null);
+                  setValue("isAttachmentExist", false);
                 }}
               >
                 <span>
@@ -224,7 +215,7 @@ export default function VendorOrderFormPage2({
                 <span>Click to view attachment</span>
               </div>
             </div>
-          ) : form.values.isAttachmentExist || isProcessingImg ? (
+          ) : isAttachmentExist || isProcessingImg ? (
             <div className="custom-card sticker-primary relative w-full text-center dark:border-2">
               {isProcessingImg && (
                 <button
@@ -264,15 +255,15 @@ export default function VendorOrderFormPage2({
                           }
                         },
                       });
-                      form.setFieldValue("attachment", compressedFile);
-                      form.setFieldValue("isAttachmentExist", true);
+                      setValue("attachment", compressedFile);
+                      setValue("isAttachmentExist", true);
                     } catch (error) {
                       setFormState((prev) => ({
                         ...prev,
                         error: error.message,
                       }));
-                      form.setFieldValue("attachment", null);
-                      form.setFieldValue("isAttachmentExist", false);
+                      setValue("attachment", null);
+                      setValue("isAttachmentExist", false);
                       setTimeout(() => {
                         setFormState((prev) => ({
                           ...prev,
@@ -298,7 +289,7 @@ export default function VendorOrderFormPage2({
             type="button"
             className="btn-outline-primary btn col-span-6"
             onClick={onPreviousPage}
-            disabled={form.isSubmitting}
+            disabled={isSubmitting}
           >
             <span>
               <BiLeftArrowAlt className="mr-1 h-7 w-7"></BiLeftArrowAlt>
@@ -310,8 +301,8 @@ export default function VendorOrderFormPage2({
             className="btn btn-primary col-span-6"
             disabled={
               isInitiallyCompleted ||
-              form.isSubmitting ||
-              (form.values.isAttachmentExist && !imageURL)
+              isSubmitting ||
+              (isAttachmentExist && !imageURL)
             }
           >
             <span>{edit ? "Update" : "Create"}</span>
@@ -327,7 +318,7 @@ export default function VendorOrderFormPage2({
         </div>
 
         <div>
-          {form.isSubmitting && (
+          {isSubmitting && (
             <div className="mt-5">
               <Spinner></Spinner>
             </div>
@@ -366,105 +357,18 @@ export default function VendorOrderFormPage2({
           </button>
         </div>
 
-        {selectedProducts && selectedProducts.length > 0 ? (
+        {fields && fields.length > 0 ? (
           <div className="flex flex-col gap-4">
-            {selectedProducts.map((product, i) => (
-              <div
-                key={`${product.id}-${product.appear}`}
-                className="custom-card relative w-full p-3"
-              >
-                <div className="mb-2 grid grid-cols-12 items-center gap-2">
-                  <div className="col-span-12 xl:col-span-4">
-                    <span className="text-lg font-semibold">
-                      {product.name}
-                    </span>
-                    <div className="custom-badge mt-1 bg-accent text-accent-content">
-                      <span>Product</span>
-                    </div>
-                  </div>
-                  <div className="col-span-6 xl:col-span-2">
-                    <label className="custom-label mb-2 inline-block">
-                      Qty
-                    </label>
-                    <NumberInput
-                      id={`quantity${product.id}-${product.appear}`}
-                      placeholder="Qty"
-                      name={`quantity${product.id}-${product.appear}`}
-                      value={product.quantity}
-                      onChange={(e) =>
-                        onFieldChange(
-                          +e.target.value,
-                          `products.quantity${product.id}-${product.appear}`,
-                          i
-                        )
-                      }
-                    ></NumberInput>
-                  </div>
-                  <div className="col-span-6 xl:col-span-2">
-                    <label className="custom-label mb-2 inline-block">
-                      Unit Price
-                    </label>
-                    <TextInput
-                      id={`price${product.id}-${product.appear}`}
-                      placeholder="Price"
-                      name={`price${product.id}-${product.appear}`}
-                      value={product.price}
-                      onChange={(e) =>
-                        onFieldChange(
-                          e.target.value,
-                          `products.price${product.id}-${product.appear}`,
-                          i
-                        )
-                      }
-                    ></TextInput>
-                  </div>
-                  <div className="col-span-6 xl:col-span-2">
-                    <label className="custom-label mb-2 inline-block">
-                      Unit
-                    </label>
-                    <SelectInput
-                      name={`unit${product.id}-${product.appear}`}
-                      value={product.unit}
-                      setValue={(v) =>
-                        onFieldChange(
-                          v,
-                          `unit${product.id}-${product.appear}`,
-                          i
-                        )
-                      }
-                      options={product.units.map(
-                        (unit) => unit.code.split("_")[1]
-                      )}
-                    ></SelectInput>
-                  </div>
-                  <div className="col-span-6 xl:col-span-2">
-                    <div className="custom-label mb-2">Amount</div>
-                    <div className="rounded-box flex h-12 items-center bg-base-300 px-3">
-                      {
-                        // Display amount to be more explicit for user.
-                        form.values[
-                          `products.price${product.id}-${product.appear}`
-                        ] === ""
-                          ? 0
-                          : niceVisualDecimal(
-                              parseFloat(
-                                (product.quantity * +product.price).toString() // Silent linter.
-                              )
-                            )
-                      }
-                    </div>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  className="btn btn-circle btn-accent btn-sm absolute -right-4 -top-4 shadow-md"
-                  onClick={() => onRemoveProduct(product.id, product.appear)}
-                >
-                  <span>
-                    <BiX className="h-6 w-6"></BiX>
-                  </span>
-                </button>
-              </div>
+            {fields.map((field, index) => (
+              <VendorOrderProductRow
+                key={field.rowKey}
+                control={control}
+                index={index}
+                name={field.name}
+                units={field.units}
+                onRemove={() => onRemoveProduct(index)}
+                markFormFilled={markFormFilled}
+              />
             ))}
           </div>
         ) : (

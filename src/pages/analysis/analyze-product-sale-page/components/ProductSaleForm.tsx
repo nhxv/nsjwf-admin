@@ -1,4 +1,4 @@
-import { useFormik } from "formik";
+import { Controller, useForm } from "react-hook-form";
 import { convertTime } from "../../../../commons/utils/time.util";
 import DateInput from "../../../../components/forms/DateInput";
 
@@ -9,62 +9,67 @@ interface FormFields {
 
 export default function ProductSaleForm({ onFormSubmit, onFormClear }) {
   const today = new Date();
-  const searchForm = useFormik<FormFields>({
-    initialValues: {
+  const { control, handleSubmit, reset } = useForm<FormFields>({
+    defaultValues: {
       start_date: convertTime(
         new Date(today.getFullYear(), today.getMonth(), 1)
       ),
       end_date: convertTime(today),
     },
-    onSubmit: (formData) => {
-      let url = "/analysis/analyze-product-sale?";
-      url += `start_date=${formData.start_date}&`;
-      url += `end_date=${formData.end_date}&`;
-      onFormSubmit(url);
-    },
-    validate: (values) => {
-      const errors = {};
-      if (!values.start_date) {
-        errors["start_date"] = "Required";
-      }
-      if (!values.end_date) {
-        errors["end_date"] = "Required";
-      }
-      return errors;
-    },
   });
 
+  const onSubmit = (formData: FormFields) => {
+    let url = "/analysis/analyze-product-sale?";
+    url += `start_date=${formData.start_date}&`;
+    url += `end_date=${formData.end_date}&`;
+    onFormSubmit(url);
+  };
+
   const onClear = () => {
-    searchForm.resetForm();
+    reset();
     onFormClear();
   };
 
   return (
-    <form onSubmit={searchForm.handleSubmit} className="custom-card mx-auto">
+    <form onSubmit={handleSubmit(onSubmit)} className="custom-card mx-auto">
       <div className="flex flex-col justify-between gap-2 sm:flex-row">
         <div className="w-full">
           <label className="custom-label mb-2 inline-block">From</label>
-          <DateInput
-            id="start_date"
-            min="2022-01-01"
-            max="2100-12-31"
-            placeholder="Date"
+          <Controller
             name="start_date"
-            value={searchForm.values.start_date}
-            onChange={searchForm.handleChange}
-          ></DateInput>
+            control={control}
+            rules={{ required: true }}
+            render={({ field }) => (
+              <DateInput
+                id="start_date"
+                min="2022-01-01"
+                max="2100-12-31"
+                placeholder="Date"
+                name={field.name}
+                value={field.value}
+                onChange={field.onChange}
+              ></DateInput>
+            )}
+          />
         </div>
         <div className="w-full">
           <label className="custom-label mb-2 inline-block">To</label>
-          <DateInput
-            id="end_date"
-            min="2022-01-01"
-            max="2100-12-31"
-            placeholder="Date"
+          <Controller
             name="end_date"
-            value={searchForm.values.end_date}
-            onChange={searchForm.handleChange}
-          ></DateInput>
+            control={control}
+            rules={{ required: true }}
+            render={({ field }) => (
+              <DateInput
+                id="end_date"
+                min="2022-01-01"
+                max="2100-12-31"
+                placeholder="Date"
+                name={field.name}
+                value={field.value}
+                onChange={field.onChange}
+              ></DateInput>
+            )}
+          />
         </div>
       </div>
 

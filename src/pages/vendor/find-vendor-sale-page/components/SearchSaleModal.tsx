@@ -1,6 +1,6 @@
 import { BiX } from "react-icons/bi";
 import Modal from "../../../../components/Modal";
-import { useFormik } from "formik";
+import { Controller, useForm } from "react-hook-form";
 import DateInput from "../../../../components/forms/DateInput";
 import SelectSearch from "../../../../components/forms/SelectSearch";
 import TextInput from "../../../../components/forms/TextInput";
@@ -21,35 +21,36 @@ export default function SearchSaleModal({
 }: SearchSaleModalProps) {
   const startOfMonth = new Date();
   startOfMonth.setDate(1);
-  const searchForm = useFormik({
-    initialValues: {
+  const { control, handleSubmit } = useForm({
+    defaultValues: {
       manualCode: "",
       vendor: "",
       product: "",
       start_date: convertTime(startOfMonth),
       end_date: convertTime(new Date()),
     },
-    onSubmit: (form_data) => {
-      let url = "";
-      if (form_data.manualCode) {
-        url += `code=${encodeURIComponent(form_data.manualCode)}&`;
-      }
-      if (form_data.start_date) {
-        url += `start_date=${form_data.start_date}&`;
-      }
-      if (form_data.end_date) {
-        url += `end_date=${form_data.end_date}&`;
-      }
-      if (Object.keys(form_data.vendor).length !== 0) {
-        url += `vendor=${encodeURIComponent(form_data.vendor)}&`;
-      }
-      if (Object.keys(form_data.product).length !== 0) {
-        url += `product=${encodeURIComponent(form_data.product)}&`;
-      }
-      onSearchSubmit(url);
-      onClose();
-    },
   });
+
+  const onSubmit = (form_data) => {
+    let url = "";
+    if (form_data.manualCode) {
+      url += `code=${encodeURIComponent(form_data.manualCode)}&`;
+    }
+    if (form_data.start_date) {
+      url += `start_date=${form_data.start_date}&`;
+    }
+    if (form_data.end_date) {
+      url += `end_date=${form_data.end_date}&`;
+    }
+    if (Object.keys(form_data.vendor).length !== 0) {
+      url += `vendor=${encodeURIComponent(form_data.vendor)}&`;
+    }
+    if (Object.keys(form_data.product).length !== 0) {
+      url += `product=${encodeURIComponent(form_data.product)}&`;
+    }
+    onSearchSubmit(url);
+    onClose();
+  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} hideOverflow={false}>
@@ -65,74 +66,99 @@ export default function SearchSaleModal({
             </span>
           </button>
         </div>
-        <form onSubmit={searchForm.handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-4 flex flex-col gap-4 sm:flex-row">
             <div className="grow-0 basis-1/4">
               <label className="custom-label mb-2 inline-block">Code</label>
-              <TextInput
-                id="by-code"
-                placeholder="Code"
-                name="by-code"
-                value={searchForm.values.manualCode}
-                onChange={(e) =>
-                  searchForm.setFieldValue("manualCode", e.target.value)
-                }
+              <Controller
+                name="manualCode"
+                control={control}
+                render={({ field }) => (
+                  <TextInput
+                    id="by-code"
+                    placeholder="Code"
+                    name="by-code"
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                )}
               />
             </div>
             <div className="grow">
               <label className="custom-label mb-2 inline-block">From</label>
-              <DateInput
-                id="start_date"
-                min="2022-01-01"
-                max="2100-12-31"
-                placeholder="Date"
+              <Controller
                 name="start_date"
-                value={searchForm.values.start_date}
-                onChange={searchForm.handleChange}
-              ></DateInput>
+                control={control}
+                render={({ field }) => (
+                  <DateInput
+                    id="start_date"
+                    min="2022-01-01"
+                    max="2100-12-31"
+                    placeholder="Date"
+                    name={field.name}
+                    value={field.value}
+                    onChange={field.onChange}
+                  ></DateInput>
+                )}
+              />
             </div>
             <div className="grow">
               <label className="custom-label mb-2 inline-block">To</label>
-              <DateInput
-                id="end_date"
-                min="2022-01-01"
-                max="2100-12-31"
-                placeholder="Date"
+              <Controller
                 name="end_date"
-                value={searchForm.values.end_date}
-                onChange={searchForm.handleChange}
-              ></DateInput>
+                control={control}
+                render={({ field }) => (
+                  <DateInput
+                    id="end_date"
+                    min="2022-01-01"
+                    max="2100-12-31"
+                    placeholder="Date"
+                    name={field.name}
+                    value={field.value}
+                    onChange={field.onChange}
+                  ></DateInput>
+                )}
+              />
             </div>
           </div>
 
           <div className="mb-6 flex flex-col gap-4 sm:flex-row">
             <div className="w-full">
               <label className="custom-label mb-2 inline-block">Vendor</label>
-              <SelectSearch
-                name="vendor-select"
-                value={searchForm.values.vendor}
-                setValue={(vendor) => {
-                  // This can be null, and we don't want that.
-                  searchForm.setFieldValue("vendor", vendor ? vendor : "");
-                }}
-                options={vendors.map((v) => v.name)}
-                nullable={true}
+              <Controller
+                name="vendor"
+                control={control}
+                render={({ field }) => (
+                  <SelectSearch
+                    name="vendor-select"
+                    value={field.value}
+                    setValue={(vendor) => {
+                      // This can be null, and we don't want that.
+                      field.onChange(vendor ? vendor : "");
+                    }}
+                    options={vendors.map((v) => v.name)}
+                    nullable={true}
+                  />
+                )}
               />
             </div>
 
             <div className="w-full">
               <label className="custom-label mb-2 inline-block">Product</label>
-              <TextInput
-                id="product-select"
-                name="product-select"
-                placeholder="Keywords"
-                onChange={(e) => {
-                  searchForm.setFieldValue(
-                    "product",
-                    e.target.value ? e.target.value : ""
-                  );
-                }}
-                value={searchForm.values.product}
+              <Controller
+                name="product"
+                control={control}
+                render={({ field }) => (
+                  <TextInput
+                    id="product-select"
+                    name="product-select"
+                    placeholder="Keywords"
+                    onChange={(e) =>
+                      field.onChange(e.target.value ? e.target.value : "")
+                    }
+                    value={field.value}
+                  />
+                )}
               />
             </div>
           </div>

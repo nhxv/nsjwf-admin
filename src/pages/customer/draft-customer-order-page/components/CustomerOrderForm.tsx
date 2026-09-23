@@ -1,12 +1,11 @@
-import { useFormik } from "formik";
-import { useState } from "react";
-import { BiLeftArrowAlt, BiRightArrowAlt, BiX } from "react-icons/bi";
+import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
+import { useMemo, useState } from "react";
+import { BiLeftArrowAlt, BiRightArrowAlt } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import { OrderStatus } from "../../../../commons/enums/order-status.enum";
 import Alert from "../../../../components/Alert";
 import Checkbox from "../../../../components/forms/Checkbox";
 import DateInput from "../../../../components/forms/DateInput";
-import NumberInput from "../../../../components/forms/NumberInput";
 import SearchSuggest from "../../../../components/forms/SearchSuggest";
 import SelectInput from "../../../../components/forms/SelectInput";
 import SelectSearch from "../../../../components/forms/SelectSearch";
@@ -14,7 +13,31 @@ import TextInput from "../../../../components/forms/TextInput";
 import Spinner from "../../../../components/Spinner";
 import api from "../../../../stores/api";
 import { handleTokenExpire } from "../../../../commons/utils/token.util";
-import { niceVisualDecimal } from "../../../../commons/utils/fraction.util";
+import CustomerOrderProductRow from "./CustomerOrderProductRow";
+import CustomerOrderTotal from "./CustomerOrderTotal";
+
+interface ICustomerOrderProduct {
+  id: number;
+  appear: number;
+  name: string;
+  units: Array<any>;
+  recent_cost?: any;
+  quantity: number;
+  price: string | number;
+  unit: string;
+}
+
+interface ICustomerOrderFormFields {
+  customerName: string;
+  employeeName: string;
+  status: string;
+  isTest: boolean;
+  code?: string;
+  manualCode: string;
+  note: string;
+  expectedAt: string;
+  products: Array<ICustomerOrderProduct>;
+}
 
 export default function CustomerOrderForm({
   edit,
@@ -23,9 +46,6 @@ export default function CustomerOrderForm({
   editedProducts,
   allProducts,
   employees,
-  updatePrice,
-  resetPrice,
-  total,
   loadTemplate,
   onClear,
 }) {
@@ -41,117 +61,100 @@ export default function CustomerOrderForm({
   const [availableProducts, _] = useState(
     allProducts.filter((product) => !product.discontinued)
   );
-  const [selectedProducts, setSelectedProducts] = useState(
-    editedProducts ? editedProducts : []
-  );
   const [search, setSearch] = useState({
     products: [],
     query: "",
   });
 
-  const customerOrderForm = useFormik({
-    enableReinitialize: true,
-    initialValues: initialData,
-    onSubmit: async (data) => {
+  // Only recomputed when the underlying fetched data actually changes, so
+  // this doesn't reset the form (and the field array) on every keystroke.
+  const formValues = useMemo(
+    () => ({
+      ...initialData,
+      products: editedProducts ?? [],
+    }),
+    [initialData, editedProducts]
+  );
+
+  const {
+    control,
+    handleSubmit,
+    getValues,
+    formState: { isSubmitting },
+  } = useForm<ICustomerOrderFormFields>({
+    values: formValues,
+  });
+
+  // `rowKey` (not `id`) to avoid colliding with each product's own `id`.
+  const { fields, prepend, remove, replace } = useFieldArray({
+    control,
+    name: "products",
+    keyName: "rowKey",
+  });
+
+  const customerName = useWatch({ control, name: "customerName" });
+
+  const onSubmit = async (data: ICustomerOrderFormFields) => {
+    setFormState((prev) => ({
+      ...prev,
+      error: "",
+      empty: "",
+      loading: true,
+    }));
+    try {
+      let reqData = {};
+      reqData["customerName"] = data["customerName"];
+      reqData["assignTo"] = data["employeeName"];
+      reqData["status"] = data["status"];
+      reqData["isTest"] = data["isTest"];
+      reqData["manualCode"] = data["manualCode"];
+      reqData["expectedAt"] = data["expectedAt"];
+      reqData["note"] = data["note"] ? data["note"] : ""; // Just to make sure it's str
+      reqData["productCustomerOrders"] = data.products.map((product) => ({
+        productName: product.name,
+        // Allow price to be empty.
+        unitPrice: product.price ? product.price : "",
+        quantity: product.quantity,
+        unitCode: `${product.id}_${product.unit}`,
+      }));
       setFormState((prev) => ({
         ...prev,
         error: "",
         empty: "",
-        loading: true,
+        loading: false,
       }));
-      try {
-        let reqData = {};
-        let productOrders = new Map();
-        reqData["customerName"] = data["customerName"];
-        reqData["assignTo"] = data["employeeName"];
-        reqData["status"] = data["status"];
-        reqData["isTest"] = data["isTest"];
-        reqData["manualCode"] = data["manualCode"];
-        reqData["expectedAt"] = data["expectedAt"];
-        reqData["note"] = data["note"] ? data["note"] : ""; // Just to make sure it's str
-        const properties = Object.keys(data).sort();
-        for (const property of properties) {
-          if (property.includes("price")) {
-            const [id, appear] = property.replace("price", "").split("-");
-            const selected = selectedProducts.find(
-              (p) => p.id === +id && p.appear === +appear
-            );
-            if (selected) {
-              productOrders.set(`${selected.id}-${selected.appear}`, {
-                productName: selected.name,
-                // Allow price to be empty.
-                unitPrice: data[property] ? data[property] : "",
-              });
-            }
-          } else if (property.includes("quantity")) {
-            const [id, appear] = property.replace("quantity", "").split("-");
-            const selected = selectedProducts.find(
-              (p) => p.id === +id && p.appear === +appear
-            );
-            if (selected) {
-              productOrders.set(`${selected.id}-${selected.appear}`, {
-                ...productOrders.get(`${selected.id}-${selected.appear}`),
-                quantity: data[property],
-              });
-            }
-          } else if (property.includes("unit")) {
-            const [id, appear] = property.replace("unit", "").split("-");
-            const selected = selectedProducts.find(
-              (p) => p.id === +id && p.appear === +appear
-            );
-            if (selected) {
-              productOrders.set(`${selected.id}-${selected.appear}`, {
-                ...productOrders.get(`${selected.id}-${selected.appear}`),
-                unitCode: `${selected.id}_${data[property]}`,
-              });
-            }
-          }
-        }
-        reqData["productCustomerOrders"] = [...productOrders.values()];
-        setFormState((prev) => ({
-          ...prev,
-          error: "",
-          empty: "",
-          loading: false,
-        }));
-        if (edit) {
-          // edit order
-          reqData["code"] = data["code"];
-          const res = await api.put(
-            `/customer-orders/${reqData["code"]}`,
-            reqData
-          );
-          if (res) {
-            navigate(`/customer/view-customer-order-detail/${reqData["code"]}`);
-          }
-        } else {
-          // create order
-          const res = await api.post(`/customer-orders`, reqData);
-          if (res) {
-            navigate(`/customer/view-customer-order-detail/${res.data.code}`);
-          }
-        }
-      } catch (e) {
-        const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e)
+      if (edit) {
+        // edit order
+        reqData["code"] = data["code"];
+        const res = await api.put(
+          `/customer-orders/${reqData["code"]}`,
+          reqData
         );
-        setFormState((prev) => ({
-          ...prev,
-          error: error.message,
-          success: "",
-          loading: false,
-        }));
-
-        if (error.status === 401) {
-          handleTokenExpire(navigate, setFormState);
+        if (res) {
+          navigate(`/customer/view-customer-order-detail/${reqData["code"]}`);
+        }
+      } else {
+        // create order
+        const res = await api.post(`/customer-orders`, reqData);
+        if (res) {
+          navigate(`/customer/view-customer-order-detail/${res.data.code}`);
         }
       }
-    },
-  });
+    } catch (e) {
+      const error = JSON.parse(
+        JSON.stringify(e.response ? e.response.data.error : e)
+      );
+      setFormState((prev) => ({
+        ...prev,
+        error: error.message,
+        success: "",
+        loading: false,
+      }));
 
-  const handlePriceChange = (e, inputId: string) => {
-    customerOrderForm.setFieldValue(inputId, e.target.value);
-    updatePrice(+e.target.value, inputId);
+      if (error.status === 401) {
+        handleTokenExpire(navigate, setFormState);
+      }
+    }
   };
 
   const onClearForm = () => {
@@ -159,68 +162,35 @@ export default function CustomerOrderForm({
   };
 
   const onNextPage = async () => {
-    if (!edit && selectedProducts.length === 0) {
+    if (!edit && fields.length === 0) {
       setFormState((prev) => ({
         ...prev,
         error: "",
         empty: "",
         loading: true,
       }));
-      const template = await loadTemplate(
-        customerOrderForm.values[`customerName`]
-      );
+      const template = await loadTemplate(getValues("customerName"));
       if (template) {
-        const selected = [];
-        const updatedPrices = [];
+        const newProducts: Array<ICustomerOrderProduct> = [];
         // NOTE: For now, we keep this at allProducts because updating discontinued product is a bit confusing right now.
         for (const product of allProducts) {
           const appear = 1;
           const found = template.find((p) => p.name === product.name);
           if (found) {
             // template only allows product to appear once -> if found, appear = 1
-            selected.push({
+            newProducts.push({
               id: product.id,
               appear: appear,
               name: product.name,
               recent_cost: product.recent_cost,
               units: product.units,
-            });
-            customerOrderForm.setFieldValue(
-              `quantity${product.id}-${appear}`,
-              found.quantity
-            );
-            customerOrderForm.setFieldValue(
-              `unit${product.id}-${appear}`,
-              found.unit_code.split("_")[1]
-            );
-            customerOrderForm.setFieldValue(`price${product.id}-${appear}`, 0);
-            updatedPrices.push({
-              id: product.id,
-              appear: appear,
               quantity: found.quantity,
+              unit: found.unit_code.split("_")[1],
               price: 0,
             });
-            for (let i = 2; i <= product.units.length; i++) {
-              updatedPrices.push({
-                id: product.id,
-                appear: i,
-                quantity: 0,
-                price: 0,
-              });
-            }
-          } else {
-            for (let i = 1; i <= product.units.length; i++) {
-              updatedPrices.push({
-                id: product.id,
-                appear: i,
-                quantity: 0,
-                price: 0,
-              });
-            }
           }
         }
-        resetPrice(updatedPrices);
-        setSelectedProducts(selected);
+        replace(newProducts);
       }
       setFormState((prev) => ({
         ...prev,
@@ -258,14 +228,27 @@ export default function CustomerOrderForm({
     }
   };
 
+  const toRow = (
+    f: ICustomerOrderProduct & { rowKey?: string }
+  ): ICustomerOrderProduct => ({
+    id: f.id,
+    appear: f.appear,
+    name: f.name,
+    units: f.units,
+    recent_cost: f.recent_cost,
+    quantity: f.quantity,
+    price: f.price,
+    unit: f.unit,
+  });
+
   const onAddProduct = (product) => {
     setSearch((prev) => ({ ...prev, products: [], query: "" }));
-    const found = selectedProducts.filter((p) => p.name === product.name);
+    const found = fields.filter((f) => f.name === product.name);
     if (found.length >= product.units.length) {
       // cannot add more of this product, but we'll bump them up the list for searching purpose
-      setSelectedProducts([
-        ...found,
-        ...selectedProducts.filter((p) => p.name !== product.name),
+      replace([
+        ...found.map(toRow),
+        ...fields.filter((f) => f.name !== product.name).map(toRow),
       ]);
       return;
     }
@@ -291,28 +274,22 @@ export default function CustomerOrderForm({
         }
       }
     }
-    const selectedProduct = { ...product, appear: appear };
-    setSelectedProducts([
-      selectedProduct,
-      ...found,
-      ...selectedProducts.filter((p) => p.name !== product.name),
-    ]);
-    customerOrderForm.setFieldValue(`quantity${product.id}-${appear}`, 0);
-    // Can't set to 0 to prevent user forgetting a field.
-    customerOrderForm.setFieldValue(`price${product.id}-${appear}`, "");
+    prepend({
+      id: product.id,
+      appear: appear,
+      name: product.name,
+      units: product.units,
+      recent_cost: product.recent_cost,
+      quantity: 0,
+      // Can't set to 0 to prevent user forgetting a field.
+      price: "",
+      unit: "BOX",
+    });
   };
 
-  const onRemoveProduct = (id, appear) => {
+  const onRemoveProduct = (index: number) => {
     setSearch((prev) => ({ ...prev, products: [], query: "" }));
-    customerOrderForm.setFieldValue(`quantity${id}-${appear}`, 0);
-    customerOrderForm.setFieldValue(`unit${id}-${appear}`, "BOX");
-    customerOrderForm.setFieldValue(`price${id}-${appear}`, 0);
-    updatePrice(0, `remove${id}-${appear}`);
-    setSelectedProducts(
-      selectedProducts.filter(
-        (product) => product.id !== id || product.appear !== appear
-      )
-    );
+    remove(index);
   };
 
   const onClearQuery = () => {
@@ -320,7 +297,7 @@ export default function CustomerOrderForm({
   };
 
   return (
-    <form onSubmit={customerOrderForm.handleSubmit}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       {formState.page === 0 ? (
         <div className="custom-card mx-auto grid grid-cols-12 gap-x-2 xl:w-7/12">
           {/* 1st page */}
@@ -329,13 +306,17 @@ export default function CustomerOrderForm({
               <span>Order from customer</span>
               <span className="text-red-500">*</span>
             </label>
-            <SelectSearch
-              name="customer"
-              value={customerOrderForm.values["customerName"]}
-              setValue={(v) =>
-                customerOrderForm.setFieldValue("customerName", v)
-              }
-              options={customers.map((customer) => customer.name)}
+            <Controller
+              name="customerName"
+              control={control}
+              render={({ field }) => (
+                <SelectSearch
+                  name="customer"
+                  value={field.value}
+                  setValue={field.onChange}
+                  options={customers.map((customer) => customer.name)}
+                />
+              )}
             />
           </div>
 
@@ -343,31 +324,41 @@ export default function CustomerOrderForm({
             <label className="custom-label mb-2 inline-block">
               <span>Manual code</span>
             </label>
-            <TextInput
-              id="manual-code"
-              type="text"
-              placeholder={`Manual code`}
+            <Controller
               name="manualCode"
-              value={customerOrderForm.values.manualCode}
-              onChange={customerOrderForm.handleChange}
-            ></TextInput>
+              control={control}
+              render={({ field }) => (
+                <TextInput
+                  id="manual-code"
+                  type="text"
+                  placeholder={`Manual code`}
+                  name={field.name}
+                  value={field.value}
+                  onChange={field.onChange}
+                ></TextInput>
+              )}
+            />
           </div>
 
           <div className="col-span-12 mb-5 xl:col-span-6">
             <label htmlFor="expect" className="custom-label mb-2 inline-block">
               Expected delivery date
             </label>
-            <DateInput
-              id="expect"
-              min="2023-01-01"
-              max="2100-12-31"
-              placeholder="Expected Delivery Date"
+            <Controller
               name="expectedAt"
-              value={customerOrderForm.values[`expectedAt`]}
-              onChange={(e) =>
-                customerOrderForm.setFieldValue("expectedAt", e.target.value)
-              }
-            ></DateInput>
+              control={control}
+              render={({ field }) => (
+                <DateInput
+                  id="expect"
+                  min="2023-01-01"
+                  max="2100-12-31"
+                  placeholder="Expected Delivery Date"
+                  name={field.name}
+                  value={field.value}
+                  onChange={field.onChange}
+                ></DateInput>
+              )}
+            />
           </div>
 
           <div className="col-span-12 mb-5 xl:col-span-3">
@@ -377,36 +368,46 @@ export default function CustomerOrderForm({
             >
               Assign to
             </label>
-            <SelectInput
+            <Controller
               name="employeeName"
-              value={customerOrderForm.values["employeeName"]}
-              setValue={(v) =>
-                customerOrderForm.setFieldValue("employeeName", v)
-              }
-              options={employees.map((employee) => employee.nickname)}
-            ></SelectInput>
+              control={control}
+              render={({ field }) => (
+                <SelectInput
+                  name={field.name}
+                  value={field.value}
+                  setValue={field.onChange}
+                  options={employees.map((employee) => employee.nickname)}
+                ></SelectInput>
+              )}
+            />
           </div>
 
           <div className="col-span-12 mb-5 xl:col-span-3">
             <label htmlFor="status" className="custom-label mb-2 inline-block">
               Status
             </label>
-            <SelectInput
+            <Controller
               name="status"
-              value={customerOrderForm.values["status"]}
-              setValue={(v) => customerOrderForm.setFieldValue("status", v)}
-              options={Object.values(OrderStatus).filter(
-                (status) => status !== OrderStatus.CANCELED
+              control={control}
+              render={({ field }) => (
+                <SelectInput
+                  name={field.name}
+                  value={field.value}
+                  setValue={field.onChange}
+                  options={Object.values(OrderStatus).filter(
+                    (status) => status !== OrderStatus.CANCELED
+                  )}
+                ></SelectInput>
               )}
-            ></SelectInput>
+            />
           </div>
 
-          {customerOrderForm.values[`customerName`] && (
+          {customerName && (
             <button
               type="button"
               className="btn btn-primary col-span-12 mt-3"
               onClick={onNextPage}
-              disabled={formState.loading || customerOrderForm.isSubmitting}
+              disabled={formState.loading || isSubmitting}
             >
               <span>Set product</span>
               <span>
@@ -427,39 +428,38 @@ export default function CustomerOrderForm({
           {formState.page === 1 && (
             <div className="flex min-h-screen flex-col items-start gap-6 xl:flex-row-reverse">
               <div className="custom-card w-full xl:sticky xl:top-[84px] xl:w-5/12">
-                <div className="mb-4 flex items-center">
-                  Total:
-                  <span className="mx-1 text-xl font-medium">${total}</span>
-                  <span>
-                    {`(${selectedProducts.length} ${
-                      selectedProducts.length > 1 ? "items" : "item"
-                    })`}
-                  </span>
-                </div>
+                <CustomerOrderTotal control={control} />
 
                 <div className="my-5">
-                  <TextInput
-                    id="note"
+                  <Controller
                     name="note"
-                    placeholder="Remarks"
-                    value={customerOrderForm.values.note}
-                    onChange={customerOrderForm.handleChange}
+                    control={control}
+                    render={({ field }) => (
+                      <TextInput
+                        id="note"
+                        name={field.name}
+                        placeholder="Remarks"
+                        value={field.value}
+                        onChange={field.onChange}
+                      />
+                    )}
                   />
                 </div>
 
                 <div className="my-5 flex items-center">
-                  <Checkbox
-                    id="test"
-                    name="test"
-                    label="Test"
-                    onChange={() =>
-                      customerOrderForm.setFieldValue(
-                        "isTest",
-                        !customerOrderForm.values["isTest"]
-                      )
-                    }
-                    checked={customerOrderForm.values["isTest"]}
-                  ></Checkbox>
+                  <Controller
+                    name="isTest"
+                    control={control}
+                    render={({ field }) => (
+                      <Checkbox
+                        id="test"
+                        name={field.name}
+                        label="Test"
+                        onChange={() => field.onChange(!field.value)}
+                        checked={field.value}
+                      ></Checkbox>
+                    )}
+                  />
                 </div>
 
                 <div className="grid grid-cols-12 gap-3">
@@ -479,7 +479,7 @@ export default function CustomerOrderForm({
                     disabled={
                       initialData.status === "COMPLETED" ||
                       formState.loading ||
-                      customerOrderForm.isSubmitting
+                      isSubmitting
                     }
                   >
                     <span>{edit ? "Update" : "Create"}</span>
@@ -531,138 +531,18 @@ export default function CustomerOrderForm({
                   ></SearchSuggest>
                 </div>
 
-                {selectedProducts && selectedProducts.length > 0 ? (
+                {fields && fields.length > 0 ? (
                   <div className="flex flex-col gap-4">
-                    {selectedProducts.map((product) => (
-                      <div
-                        key={`${product.id}-${product.appear}`}
-                        className="custom-card relative w-full p-3"
-                      >
-                        <div className="mb-2 grid grid-cols-12 items-center gap-2">
-                          <div className="col-span-12 xl:col-span-4">
-                            <span className="text-lg font-semibold">
-                              {product.name}
-                            </span>
-                            {product.recent_cost ? (
-                              <div className="custom-badge mt-1 bg-info text-info-content">
-                                <span className="hidden sm:inline">
-                                  Suggest:
-                                </span>
-                                <span>
-                                  {" > "}${product.recent_cost}
-                                </span>
-                              </div>
-                            ) : (
-                              <div className="custom-badge mt-1 bg-accent text-accent-content">
-                                <span>Product</span>
-                              </div>
-                            )}
-                          </div>
-                          <div className="col-span-6 xl:col-span-2">
-                            <label className="custom-label mb-2 inline-block">
-                              Qty
-                            </label>
-                            <NumberInput
-                              id={`quantity${product.id}-${product.appear}`}
-                              placeholder="Qty"
-                              name={`quantity${product.id}-${product.appear}`}
-                              value={
-                                customerOrderForm.values[
-                                  `quantity${product.id}-${product.appear}`
-                                ]
-                              }
-                              onChange={(e) =>
-                                handlePriceChange(
-                                  e,
-                                  `quantity${product.id}-${product.appear}`
-                                )
-                              }
-                            ></NumberInput>
-                          </div>
-                          <div className="col-span-6 xl:col-span-2">
-                            <label className="custom-label mb-2 inline-block">
-                              Unit Price
-                            </label>
-                            <TextInput
-                              id={`price${product.id}-${product.appear}`}
-                              placeholder="Price"
-                              name={`price${product.id}-${product.appear}`}
-                              value={
-                                customerOrderForm.values[
-                                  `price${product.id}-${product.appear}`
-                                ]
-                              }
-                              onChange={(e) =>
-                                handlePriceChange(
-                                  e,
-                                  `price${product.id}-${product.appear}`
-                                )
-                              }
-                            ></TextInput>
-                          </div>
-                          <div className="col-span-6 xl:col-span-2">
-                            <label className="custom-label mb-2 inline-block">
-                              Unit
-                            </label>
-                            <SelectInput
-                              name={`unit${product.id}-${product.appear}`}
-                              value={
-                                customerOrderForm.values[
-                                  `unit${product.id}-${product.appear}`
-                                ]
-                              }
-                              setValue={(v) =>
-                                customerOrderForm.setFieldValue(
-                                  `unit${product.id}-${product.appear}`,
-                                  v
-                                )
-                              }
-                              options={product.units.map(
-                                (unit) => unit.code.split("_")[1]
-                              )}
-                            ></SelectInput>
-                          </div>
-                          <div className="col-span-6 xl:col-span-2">
-                            <div className="custom-label mb-2">Amount</div>
-                            <div className="rounded-box flex h-12 items-center bg-base-300 px-3">
-                              {
-                                // Display amount to be more explicit for user.
-                                customerOrderForm.values[
-                                  `price${product.id}-${product.appear}`
-                                ] === ""
-                                  ? ""
-                                  : customerOrderForm.values[
-                                      `price${product.id}-${product.appear}`
-                                    ] === "0"
-                                  ? "N/C"
-                                  : niceVisualDecimal(
-                                      parseFloat(
-                                        (
-                                          customerOrderForm.values[
-                                            `quantity${product.id}-${product.appear}`
-                                          ] *
-                                          customerOrderForm.values[
-                                            `price${product.id}-${product.appear}`
-                                          ]
-                                        ).toString() // Silent linter.
-                                      )
-                                    )
-                              }
-                            </div>
-                          </div>
-                        </div>
-                        <button
-                          type="button"
-                          className="btn btn-circle btn-accent btn-sm absolute -right-4 -top-4 shadow-md"
-                          onClick={() =>
-                            onRemoveProduct(product.id, product.appear)
-                          }
-                        >
-                          <span>
-                            <BiX className="h-6 w-6"></BiX>
-                          </span>
-                        </button>
-                      </div>
+                    {fields.map((field, index) => (
+                      <CustomerOrderProductRow
+                        key={field.rowKey}
+                        control={control}
+                        index={index}
+                        name={field.name}
+                        units={field.units}
+                        recentCost={field.recent_cost}
+                        onRemove={() => onRemoveProduct(index)}
+                      />
                     ))}
                   </div>
                 ) : (

@@ -1,4 +1,4 @@
-import { useFormik } from "formik";
+import { Controller, useForm } from "react-hook-form";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Role } from "../commons/enums/role.enum";
@@ -17,43 +17,44 @@ export default function SignInPage() {
   });
   const signIn = useAuthStore((state) => state.signIn);
 
-  const signInForm = useFormik({
-    initialValues: {
+  const { control, handleSubmit, reset } = useForm({
+    defaultValues: {
       username: "",
       password: "",
     },
-    onSubmit: async (data) => {
-      setFormState((prev) => ({ ...prev, error: "", loading: true }));
-      await api
-        .post<SignInResponse>(`/auth/login`, data)
-        .then((res) => {
-          const resData: SignInResponse = res.data;
-          signIn(resData);
-          setFormState((prev) => ({ ...prev, error: "", loading: false }));
-          signInForm.resetForm();
-          if (resData.roleId === Role.MASTER || resData.roleId === Role.ADMIN) {
-            navigate("/customer/draft-customer-order");
-          } else if (resData.roleId === Role.OPERATOR) {
-            navigate("/task/view-task");
-          }
-        })
-        .catch((e) => {
-          const error = JSON.parse(
-            JSON.stringify(e.response ? e.response.data.error : e)
-          );
-          setFormState((prev) => ({
-            ...prev,
-            error: error.message,
-            loading: false,
-          }));
-          signInForm.resetForm();
-        });
-    },
   });
+
+  const onSubmit = async (data) => {
+    setFormState((prev) => ({ ...prev, error: "", loading: true }));
+    await api
+      .post<SignInResponse>(`/auth/login`, data)
+      .then((res) => {
+        const resData: SignInResponse = res.data;
+        signIn(resData);
+        setFormState((prev) => ({ ...prev, error: "", loading: false }));
+        reset();
+        if (resData.roleId === Role.MASTER || resData.roleId === Role.ADMIN) {
+          navigate("/customer/draft-customer-order");
+        } else if (resData.roleId === Role.OPERATOR) {
+          navigate("/task/view-task");
+        }
+      })
+      .catch((e) => {
+        const error = JSON.parse(
+          JSON.stringify(e.response ? e.response.data.error : e)
+        );
+        setFormState((prev) => ({
+          ...prev,
+          error: error.message,
+          loading: false,
+        }));
+        reset();
+      });
+  };
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-base-200 p-4 dark:bg-base-100">
-      <form onSubmit={signInForm.handleSubmit} className="custom-card">
+      <form onSubmit={handleSubmit(onSubmit)} className="custom-card">
         {formState.error && (
           <div className="mb-5">
             <Alert message={formState.error} type="error"></Alert>
@@ -63,27 +64,39 @@ export default function SignInPage() {
           <label htmlFor="username" className="custom-label mb-2 inline-block">
             Username
           </label>
-          <TextInput
-            id="username"
-            type="text"
-            placeholder={`Username`}
+          <Controller
             name="username"
-            value={signInForm.values.username}
-            onChange={signInForm.handleChange}
-          ></TextInput>
+            control={control}
+            render={({ field }) => (
+              <TextInput
+                id="username"
+                type="text"
+                placeholder={`Username`}
+                name={field.name}
+                value={field.value}
+                onChange={field.onChange}
+              ></TextInput>
+            )}
+          />
         </div>
         <div className="mb-5">
           <label htmlFor="password" className="custom-label mb-2 inline-block">
             Password
           </label>
-          <TextInput
-            id="password"
-            type="password"
-            placeholder={`Password`}
+          <Controller
             name="password"
-            value={signInForm.values.password}
-            onChange={signInForm.handleChange}
-          ></TextInput>
+            control={control}
+            render={({ field }) => (
+              <TextInput
+                id="password"
+                type="password"
+                placeholder={`Password`}
+                name={field.name}
+                value={field.value}
+                onChange={field.onChange}
+              ></TextInput>
+            )}
+          />
         </div>
         <button
           type="submit"

@@ -1,5 +1,5 @@
-import { useFormik } from "formik";
-import { useState } from "react";
+import { useFieldArray, useForm, useWatch } from "react-hook-form";
+import { useMemo, useState } from "react";
 import api from "../../../../stores/api";
 import { handleTokenExpire } from "../../../../commons/utils/token.util";
 import { useNavigate } from "react-router-dom";
@@ -24,6 +24,18 @@ export interface IFormState {
   isFilled: boolean;
   success: string;
   error: string;
+}
+
+interface IVendorOrderFormFields {
+  vendorName: string;
+  status: string;
+  isTest: boolean;
+  expectedAt: string;
+  manualCode: string;
+  code?: string;
+  attachment: any;
+  isAttachmentExist?: boolean;
+  products: Array<ISelectedProduct>;
 }
 
 function computeSelectedProducts(
@@ -76,10 +88,6 @@ export default function VendorOrderForm({
 }) {
   const navigate = useNavigate();
   const [page, setPage] = useState(edit ? 1 : 1);
-  // The products we visually see in the form.
-  const [selectedProducts, setSelectedProducts] = useState(() =>
-    computeSelectedProducts(allProducts, existingProducts)
-  );
   const [formState, setFormState] = useState<IFormState>({
     // Did we autofilled or templated? If in edit mode, neither will be ran.
     isFilled: edit,
@@ -88,78 +96,99 @@ export default function VendorOrderForm({
     error: "",
   });
 
-  const vendorOrderForm = useFormik({
-    enableReinitialize: true,
-    initialValues: initialData,
-    onSubmit: async (data) => {
-      setFormState((prev) => ({
-        ...prev,
-        error: "",
-        success: "",
-      }));
-      try {
-        let reqData = {};
-        let productOrders = new Map();
-        reqData["vendorName"] = data["vendorName"];
-        reqData["status"] = data["status"];
-        reqData["isTest"] = data["isTest"];
-        reqData["expectedAt"] = data["expectedAt"];
-        // Ensure this is either true-ish or null, no empty string allowed.
-        // Makes it easier to deal with later.
-        reqData["manualCode"] = data["manualCode"] ? data["manualCode"] : null;
+  // Only recomputed when the underlying query data actually changes, so this
+  // doesn't reset the form (and the field array) on every keystroke.
+  const formValues = useMemo(
+    () => ({
+      ...initialData,
+      products: computeSelectedProducts(allProducts, existingProducts),
+    }),
+    [initialData, allProducts, existingProducts]
+  );
 
-        for (const product of selectedProducts) {
-          productOrders.set(`${product.id}-${product.appear}`, {
-            productName: product.name,
-            unitPrice: product.price,
-            quantity: product.quantity,
-            unitCode: `${product.id}_${product.unit}`,
-          });
-        }
-        reqData["productVendorOrders"] = [...productOrders.values()];
-        reqData["attachment"] = data["attachment"];
-
-        if (edit) {
-          reqData["code"] = data["code"];
-          const res = await api.putForm(
-            `/vendor-orders/${reqData["code"]}`,
-            reqData
-          );
-          if (res) {
-            navigate(`/vendor/view-vendor-order`);
-          }
-        } else {
-          // create order
-          const res = await api.postForm(`/vendor-orders`, reqData);
-          if (res) {
-            navigate(`/vendor/view-vendor-order`);
-          }
-        }
-      } catch (e) {
-        const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e)
-        );
-        setFormState((prev) => ({
-          ...prev,
-          error: error.message,
-          success: "",
-        }));
-
-        if (error.status === 401) {
-          handleTokenExpire(navigate, setFormState);
-        }
-      }
-    },
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    reset,
+    formState: { isSubmitting },
+  } = useForm<IVendorOrderFormFields>({
+    values: formValues,
   });
 
-  const imageURL = useStateURL(vendorOrderForm.values.attachment);
+  // `rowKey` (not `id`) to avoid colliding with each product's own `id`.
+  const { fields, prepend, remove, replace } = useFieldArray({
+    control,
+    name: "products",
+    keyName: "rowKey",
+  });
+
+  const attachment = useWatch({ control, name: "attachment" });
+
+  const onSubmit = async (data: IVendorOrderFormFields) => {
+    setFormState((prev) => ({
+      ...prev,
+      error: "",
+      success: "",
+    }));
+    try {
+      let reqData = {};
+      reqData["vendorName"] = data["vendorName"];
+      reqData["status"] = data["status"];
+      reqData["isTest"] = data["isTest"];
+      reqData["expectedAt"] = data["expectedAt"];
+      // Ensure this is either true-ish or null, no empty string allowed.
+      // Makes it easier to deal with later.
+      reqData["manualCode"] = data["manualCode"] ? data["manualCode"] : null;
+
+      reqData["productVendorOrders"] = data.products.map((product) => ({
+        productName: product.name,
+        unitPrice: product.price,
+        quantity: product.quantity,
+        unitCode: `${product.id}_${product.unit}`,
+      }));
+      reqData["attachment"] = data["attachment"];
+
+      if (edit) {
+        reqData["code"] = data["code"];
+        const res = await api.putForm(
+          `/vendor-orders/${reqData["code"]}`,
+          reqData
+        );
+        if (res) {
+          navigate(`/vendor/view-vendor-order`);
+        }
+      } else {
+        // create order
+        const res = await api.postForm(`/vendor-orders`, reqData);
+        if (res) {
+          navigate(`/vendor/view-vendor-order`);
+        }
+      }
+    } catch (e) {
+      const error = JSON.parse(
+        JSON.stringify(e.response ? e.response.data.error : e)
+      );
+      setFormState((prev) => ({
+        ...prev,
+        error: error.message,
+        success: "",
+      }));
+
+      if (error.status === 401) {
+        handleTokenExpire(navigate, setFormState);
+      }
+    }
+  };
+
+  const imageURL = useStateURL(attachment);
 
   const markFormFilled = () => {
     setFormState((prev) => ({ ...prev, isFilled: true }));
   };
 
   const fillFormWithProducts = (products: Array<any>) => {
-    setSelectedProducts(computeSelectedProducts(allProducts, products));
+    replace(computeSelectedProducts(allProducts, products));
     markFormFilled();
   };
 
@@ -168,8 +197,8 @@ export default function VendorOrderForm({
       onClear();
     } else {
       // Is there a better way to do this...
-      vendorOrderForm.resetForm();
-      setSelectedProducts([]);
+      reset();
+      replace([]);
       setPage(0);
       setFormState((prev) => ({ ...prev, isFilled: false }));
     }
@@ -184,17 +213,19 @@ export default function VendorOrderForm({
   };
 
   return (
-    <form onSubmit={vendorOrderForm.handleSubmit}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       {page === 0 ? (
         <VendorOrderFormPage0
-          form={vendorOrderForm}
+          control={control}
+          setValue={setValue}
           onGoToPage1={onGoToPage1}
           fillFormWithProducts={fillFormWithProducts}
           setFormState={setFormState}
         />
       ) : page === 1 ? (
         <VendorOrderFormPage1
-          form={vendorOrderForm}
+          control={control}
+          setValue={setValue}
           formState={formState}
           vendors={vendors}
           onClearForm={onClearForm}
@@ -203,18 +234,22 @@ export default function VendorOrderForm({
         />
       ) : (
         <VendorOrderFormPage2
-          form={vendorOrderForm}
+          control={control}
+          setValue={setValue}
+          isSubmitting={isSubmitting}
           edit={edit}
           formState={formState}
           allProducts={allProducts}
-          selectedProducts={selectedProducts}
+          fields={fields}
+          prepend={prepend}
+          remove={remove}
+          replace={replace}
           isInitiallyCompleted={initialData.status === "COMPLETED"}
           imageURL={imageURL}
           onClearForm={onClearForm}
           onPreviousPage={onGoToPage1}
           markFormFilled={markFormFilled}
           setFormState={setFormState}
-          setSelectedProducts={setSelectedProducts}
         />
       )}
     </form>

@@ -1,7 +1,7 @@
 import { BiX } from "react-icons/bi";
 import Modal from "../../../../components/Modal";
 import TextInput from "../../../../components/forms/TextInput";
-import { useFormik } from "formik";
+import { Controller, useForm } from "react-hook-form";
 import Checkbox from "../../../../components/forms/Checkbox";
 import api from "../../../../stores/api";
 import { useState } from "react";
@@ -17,41 +17,41 @@ export default function EmployeeForm({ isOpen, onClose, employee, onReload }) {
     loading: false,
   });
 
-  const employeeForm = useFormik({
-    enableReinitialize: true,
-    initialValues: {
+  const { control, handleSubmit } = useForm({
+    values: {
       username: "",
       password: "",
       nickname: employee.nickname,
       active: employee.active,
     },
-    onSubmit: async (data) => {
+  });
+
+  const onSubmit = async (data) => {
+    setFormState((prev) => ({
+      ...prev,
+      error: "",
+      loading: true,
+    }));
+    try {
+      const res = await api.put(`/accounts/employees/${employee.id}`, data);
+      setFormState((prev) => ({ ...prev, error: "", loading: false }));
+      onReload();
+      onClose();
+    } catch (e) {
+      const error = JSON.parse(
+        JSON.stringify(e.response ? e.response.data.error : e)
+      );
       setFormState((prev) => ({
         ...prev,
-        error: "",
-        loading: true,
+        error: error.message,
+        loading: false,
       }));
-      try {
-        const res = await api.put(`/accounts/employees/${employee.id}`, data);
-        setFormState((prev) => ({ ...prev, error: "", loading: false }));
-        onReload();
-        onClose();
-      } catch (e) {
-        const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e)
-        );
-        setFormState((prev) => ({
-          ...prev,
-          error: error.message,
-          loading: false,
-        }));
 
-        if (error.status === 401) {
-          handleTokenExpire(navigate, setFormState);
-        }
+      if (error.status === 401) {
+        handleTokenExpire(navigate, setFormState);
       }
-    },
-  });
+    }
+  };
 
   const onCloseForm = () => {
     setFormState((prev) => ({ ...prev, error: "", loading: false }));
@@ -70,7 +70,7 @@ export default function EmployeeForm({ isOpen, onClose, employee, onReload }) {
             <BiX className="h-6 w-6"></BiX>
           </button>
         </div>
-        <form onSubmit={employeeForm.handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-5">
             <label
               htmlFor="username"
@@ -78,14 +78,20 @@ export default function EmployeeForm({ isOpen, onClose, employee, onReload }) {
             >
               <span>Username</span>
             </label>
-            <TextInput
-              id="username"
-              type="text"
-              placeholder={`Username`}
+            <Controller
               name="username"
-              value={employeeForm.values.username}
-              onChange={employeeForm.handleChange}
-            ></TextInput>
+              control={control}
+              render={({ field }) => (
+                <TextInput
+                  id="username"
+                  type="text"
+                  placeholder={`Username`}
+                  name={field.name}
+                  value={field.value}
+                  onChange={field.onChange}
+                ></TextInput>
+              )}
+            />
           </div>
 
           <div className="mb-5">
@@ -95,14 +101,20 @@ export default function EmployeeForm({ isOpen, onClose, employee, onReload }) {
             >
               <span>Password</span>
             </label>
-            <TextInput
-              id="password"
-              type="password"
-              placeholder={`Password`}
+            <Controller
               name="password"
-              value={employeeForm.values.password}
-              onChange={employeeForm.handleChange}
-            ></TextInput>
+              control={control}
+              render={({ field }) => (
+                <TextInput
+                  id="password"
+                  type="password"
+                  placeholder={`Password`}
+                  name={field.name}
+                  value={field.value}
+                  onChange={field.onChange}
+                ></TextInput>
+              )}
+            />
           </div>
 
           <div className="mb-5">
@@ -112,29 +124,36 @@ export default function EmployeeForm({ isOpen, onClose, employee, onReload }) {
             >
               <span>Nickname</span>
             </label>
-            <TextInput
-              id="nickname"
-              type="text"
-              placeholder={`Nickname`}
+            <Controller
               name="nickname"
-              value={employeeForm.values.nickname}
-              onChange={employeeForm.handleChange}
-            ></TextInput>
+              control={control}
+              render={({ field }) => (
+                <TextInput
+                  id="nickname"
+                  type="text"
+                  placeholder={`Nickname`}
+                  name={field.name}
+                  value={field.value}
+                  onChange={field.onChange}
+                ></TextInput>
+              )}
+            />
           </div>
 
           <div className="mb-5 flex items-center">
-            <Checkbox
-              id="active"
+            <Controller
               name="active"
-              onChange={() =>
-                employeeForm.setFieldValue(
-                  "active",
-                  !employeeForm.values.active
-                )
-              }
-              checked={employeeForm.values.active}
-              label="Available"
-            ></Checkbox>
+              control={control}
+              render={({ field }) => (
+                <Checkbox
+                  id="active"
+                  name={field.name}
+                  onChange={() => field.onChange(!field.value)}
+                  checked={field.value}
+                  label="Available"
+                ></Checkbox>
+              )}
+            />
           </div>
           <button
             type="submit"

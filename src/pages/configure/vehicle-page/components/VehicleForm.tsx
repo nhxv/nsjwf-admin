@@ -1,5 +1,5 @@
-import { useFormik } from "formik";
-import { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { useState } from "react";
 import { BiCheckDouble, BiError } from "react-icons/bi";
 import { VehicleResponse } from "../../../../models/vehicle-response.model";
 import api from "../../../../stores/api";
@@ -24,86 +24,78 @@ export default function VehicleForm() {
     (state) => state.clearVehicleConfig
   );
 
-  const vehicleForm = useFormik({
-    enableReinitialize: true,
-    initialValues: {
+  const { control, handleSubmit, reset } = useForm({
+    values: {
       licensePlate: formType === FormType.EDIT ? vehicle.licensePlate : "",
       available: formType === FormType.EDIT ? vehicle.available : true,
       discontinued: formType === FormType.EDIT ? vehicle.discontinued : false,
       nickname: formType === FormType.EDIT ? vehicle.nickname : "",
       volume: formType === FormType.EDIT ? vehicle.volume : 0,
     },
-    onSubmit: async (data) => {
-      setFormState((prev) => ({
-        ...prev,
-        error: "",
-        success: "",
-        loading: true,
-      }));
-      if (formType === FormType.EDIT) {
-        // edit mode
-        try {
-          const res = await api.put<VehicleResponse>(
-            `/vehicles/${vehicle.id}`,
-            data
-          );
-          setFormState((prev) => ({
-            ...prev,
-            success: "Updated successfully.",
-            error: "",
-            loading: false,
-          }));
-          setTimeout(() => {
-            setFormState((prev) => ({ ...prev, success: "" }));
-            clearVehicleConfig();
-          }, 2000);
-        } catch (e) {
-          const error = JSON.parse(
-            JSON.stringify(e.response ? e.response.data.error : e)
-          );
-          setFormState((prev) => ({
-            ...prev,
-            error: error.message,
-            success: "",
-            loading: false,
-          }));
-        }
-      } else if (formType === FormType.CREATE) {
-        // add mode
-        try {
-          const res = await api.post<VehicleResponse>(`/vehicles`, data);
-          setFormState((prev) => ({
-            ...prev,
-            success: "Added successfully.",
-            error: "",
-            loading: false,
-          }));
-          setTimeout(() => {
-            setFormState((prev) => ({ ...prev, success: "" }));
-          }, 2000);
-          vehicleForm.resetForm();
-        } catch (e) {
-          const error = JSON.parse(
-            JSON.stringify(e.response ? e.response.data.error : e)
-          );
-          setFormState((prev) => ({
-            ...prev,
-            error: error.message,
-            success: "",
-            loading: false,
-          }));
-        }
-      }
-    },
   });
 
-  useEffect(() => {
-    vehicleForm.values.licensePlate = vehicle.licensePlate;
-    vehicleForm.values.available = vehicle.available;
-    vehicleForm.values.discontinued = vehicle.discontinued;
-    vehicleForm.values.nickname = vehicle.nickname;
-    vehicleForm.values.volume = vehicle.volume;
-  }, [vehicle]);
+  const onSubmit = async (data) => {
+    setFormState((prev) => ({
+      ...prev,
+      error: "",
+      success: "",
+      loading: true,
+    }));
+    if (formType === FormType.EDIT) {
+      // edit mode
+      try {
+        const res = await api.put<VehicleResponse>(
+          `/vehicles/${vehicle.id}`,
+          data
+        );
+        setFormState((prev) => ({
+          ...prev,
+          success: "Updated successfully.",
+          error: "",
+          loading: false,
+        }));
+        setTimeout(() => {
+          setFormState((prev) => ({ ...prev, success: "" }));
+          clearVehicleConfig();
+        }, 2000);
+      } catch (e) {
+        const error = JSON.parse(
+          JSON.stringify(e.response ? e.response.data.error : e)
+        );
+        setFormState((prev) => ({
+          ...prev,
+          error: error.message,
+          success: "",
+          loading: false,
+        }));
+      }
+    } else if (formType === FormType.CREATE) {
+      // add mode
+      try {
+        const res = await api.post<VehicleResponse>(`/vehicles`, data);
+        setFormState((prev) => ({
+          ...prev,
+          success: "Added successfully.",
+          error: "",
+          loading: false,
+        }));
+        setTimeout(() => {
+          setFormState((prev) => ({ ...prev, success: "" }));
+        }, 2000);
+        reset();
+      } catch (e) {
+        const error = JSON.parse(
+          JSON.stringify(e.response ? e.response.data.error : e)
+        );
+        setFormState((prev) => ({
+          ...prev,
+          error: error.message,
+          success: "",
+          loading: false,
+        }));
+      }
+    }
+  };
 
   const onClear = () => {
     clearVehicleConfig();
@@ -113,12 +105,12 @@ export default function VehicleForm() {
       error: "",
       loading: false,
     }));
-    vehicleForm.resetForm();
+    reset();
   };
 
   return (
     <>
-      <form onSubmit={vehicleForm.handleSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div className="mb-5">
           <label
             htmlFor="license-plate"
@@ -127,71 +119,91 @@ export default function VehicleForm() {
             <span>License Plate</span>
             <span className="text-red-500">*</span>
           </label>
-          <TextInput
-            id="license-plate"
-            type="text"
+          <Controller
             name="licensePlate"
-            placeholder={`License Plate`}
-            value={vehicleForm.values.licensePlate}
-            onChange={vehicleForm.handleChange}
-          ></TextInput>
+            control={control}
+            render={({ field }) => (
+              <TextInput
+                id="license-plate"
+                type="text"
+                name={field.name}
+                placeholder={`License Plate`}
+                value={field.value}
+                onChange={field.onChange}
+              ></TextInput>
+            )}
+          />
         </div>
 
         <div className="mb-5">
           <label htmlFor="nickname" className="custom-label mb-2 inline-block">
             Nickname
           </label>
-          <TextInput
-            id="nickname"
-            type="text"
+          <Controller
             name="nickname"
-            placeholder={`Nickname`}
-            value={vehicleForm.values.nickname}
-            onChange={vehicleForm.handleChange}
-          ></TextInput>
+            control={control}
+            render={({ field }) => (
+              <TextInput
+                id="nickname"
+                type="text"
+                name={field.name}
+                placeholder={`Nickname`}
+                value={field.value}
+                onChange={field.onChange}
+              ></TextInput>
+            )}
+          />
         </div>
 
         <div className="mb-5">
           <label htmlFor="volume" className="custom-label mb-2 inline-block">
             Volume
           </label>
-          <NumberInput
-            id="volume"
+          <Controller
             name="volume"
-            placeholder={`Volume`}
-            value={vehicleForm.values.volume}
-            onChange={vehicleForm.handleChange}
-          ></NumberInput>
+            control={control}
+            render={({ field }) => (
+              <NumberInput
+                id="volume"
+                name={field.name}
+                placeholder={`Volume`}
+                value={field.value}
+                onChange={field.onChange}
+              ></NumberInput>
+            )}
+          />
         </div>
 
         <div className="mb-5 flex items-center">
-          <Checkbox
-            id="available"
+          <Controller
             name="available"
-            onChange={() =>
-              vehicleForm.setFieldValue(
-                "available",
-                !vehicleForm.values.available
-              )
-            }
-            checked={vehicleForm.values.available}
-            label="Available"
-          ></Checkbox>
+            control={control}
+            render={({ field }) => (
+              <Checkbox
+                id="available"
+                name={field.name}
+                onChange={() => field.onChange(!field.value)}
+                checked={field.value}
+                label="Available"
+              ></Checkbox>
+            )}
+          />
         </div>
 
         <div className="mb-5 flex items-center">
-          <Checkbox
-            id="discontinued"
+          <Controller
             name="discontinued"
-            onChange={() =>
-              vehicleForm.setFieldValue(
-                "discontinued",
-                !vehicleForm.values.discontinued
-              )
-            }
-            checked={!vehicleForm.values.discontinued}
-            label="In use"
-          ></Checkbox>
+            control={control}
+            render={({ field }) => (
+              <Checkbox
+                id="discontinued"
+                name={field.name}
+                onChange={() => field.onChange(!field.value)}
+                checked={!field.value}
+                label="In use"
+              ></Checkbox>
+            )}
+          />
         </div>
 
         <button
