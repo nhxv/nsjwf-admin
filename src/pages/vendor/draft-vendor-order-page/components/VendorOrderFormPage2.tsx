@@ -18,7 +18,12 @@ import SelectInput from "../../../../components/forms/SelectInput";
 import { niceVisualDecimal } from "../../../../commons/utils/fraction.util";
 import { Dispatch, SetStateAction, useMemo, useRef, useState } from "react";
 import { IFormState, ISelectedProduct } from "./VendorOrderForm";
-import { Control, Controller, UseFormSetValue, useWatch } from "react-hook-form";
+import {
+  Control,
+  Controller,
+  UseFormSetValue,
+  useWatch,
+} from "react-hook-form";
 
 interface IPage2Prop {
   control: Control<any>;
