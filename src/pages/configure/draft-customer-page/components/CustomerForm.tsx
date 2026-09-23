@@ -1,4 +1,4 @@
-import { useFormik } from "formik";
+import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { BiLeftArrowAlt, BiRightArrowAlt, BiX } from "react-icons/bi";
@@ -34,105 +34,110 @@ export default function CustomerForm({
     query: "",
   });
 
-  const customerForm = useFormik({
-    enableReinitialize: true,
-    initialValues: initialData,
-    onSubmit: async (data) => {
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    formState: { isSubmitting },
+  } = useForm({
+    values: initialData,
+  });
+
+  const onSubmit = async (data) => {
+    setFormState((prev) => ({
+      ...prev,
+      loading: true,
+      error: "",
+      success: "",
+    }));
+    const reqData = {};
+    reqData["name"] = data["name"];
+    reqData["address"] = data["address"];
+    reqData["phone"] = data["phone"];
+    reqData["email"] = data["email"];
+    reqData["presentative"] = data["presentative"];
+    reqData["discontinued"] = data["discontinued"];
+    let productTendencies = new Map();
+    const properties = Object.keys(data).sort();
+    for (const property of properties) {
+      if (property.includes("quantity")) {
+        const id = +property.replace("quantity", "");
+        const selected = selectedProducts.find((p) => p.id === id);
+        if (selected) {
+          productTendencies.set(selected.id, {
+            customerName: data["name"],
+            productName: selected.name,
+            quantity: data[property],
+          });
+        }
+      } else if (property.includes("unit")) {
+        const id = +property.replace("unit", "");
+        const selected = selectedProducts.find((p) => p.id === id);
+        if (selected) {
+          productTendencies.set(selected.id, {
+            ...productTendencies.get(selected.id),
+            unitCode: `${selected.id}_${data[property]}`,
+          });
+        }
+      }
+    }
+    reqData["customerProductTendencies"] = [...productTendencies.values()];
+    try {
+      let res = null;
+      if (editedId) {
+        res = await api.put(`/customers/${editedId}`, reqData);
+        if (res) {
+          setFormState((prev) => ({
+            ...prev,
+            error: "",
+            loading: false,
+            success: "Update customer successfully.",
+          }));
+          setTimeout(() => {
+            setFormState((prev) => ({
+              ...prev,
+              success: "",
+              error: "",
+              loading: false,
+            }));
+            navigate("/configure/view-customer");
+          }, 2000);
+        }
+      } else {
+        res = await api.post(`/customers`, reqData);
+        if (res) {
+          setFormState((prev) => ({
+            ...prev,
+            error: "",
+            loading: false,
+            success: "Create customer successfully.",
+          }));
+          setTimeout(() => {
+            setFormState((prev) => ({
+              ...prev,
+              success: "",
+              error: "",
+              loading: false,
+            }));
+            navigate("/configure/view-customer");
+          }, 2000);
+        }
+      }
+    } catch (e) {
+      const error = JSON.parse(
+        JSON.stringify(e.response ? e.response.data.error : e)
+      );
       setFormState((prev) => ({
         ...prev,
-        loading: true,
-        error: "",
-        success: "",
+        error: error.message,
+        loading: false,
       }));
-      const reqData = {};
-      reqData["name"] = data["name"];
-      reqData["address"] = data["address"];
-      reqData["phone"] = data["phone"];
-      reqData["email"] = data["email"];
-      reqData["presentative"] = data["presentative"];
-      reqData["discontinued"] = data["discontinued"];
-      let productTendencies = new Map();
-      const properties = Object.keys(data).sort();
-      for (const property of properties) {
-        if (property.includes("quantity")) {
-          const id = +property.replace("quantity", "");
-          const selected = selectedProducts.find((p) => p.id === id);
-          if (selected) {
-            productTendencies.set(selected.id, {
-              customerName: data["name"],
-              productName: selected.name,
-              quantity: data[property],
-            });
-          }
-        } else if (property.includes("unit")) {
-          const id = +property.replace("unit", "");
-          const selected = selectedProducts.find((p) => p.id === id);
-          if (selected) {
-            productTendencies.set(selected.id, {
-              ...productTendencies.get(selected.id),
-              unitCode: `${selected.id}_${data[property]}`,
-            });
-          }
-        }
-      }
-      reqData["customerProductTendencies"] = [...productTendencies.values()];
-      try {
-        let res = null;
-        if (editedId) {
-          res = await api.put(`/customers/${editedId}`, reqData);
-          if (res) {
-            setFormState((prev) => ({
-              ...prev,
-              error: "",
-              loading: false,
-              success: "Update customer successfully.",
-            }));
-            setTimeout(() => {
-              setFormState((prev) => ({
-                ...prev,
-                success: "",
-                error: "",
-                loading: false,
-              }));
-              navigate("/configure/view-customer");
-            }, 2000);
-          }
-        } else {
-          res = await api.post(`/customers`, reqData);
-          if (res) {
-            setFormState((prev) => ({
-              ...prev,
-              error: "",
-              loading: false,
-              success: "Create customer successfully.",
-            }));
-            setTimeout(() => {
-              setFormState((prev) => ({
-                ...prev,
-                success: "",
-                error: "",
-                loading: false,
-              }));
-              navigate("/configure/view-customer");
-            }, 2000);
-          }
-        }
-      } catch (e) {
-        const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e)
-        );
-        setFormState((prev) => ({
-          ...prev,
-          error: error.message,
-          loading: false,
-        }));
 
-        if (error.status === 401) {
-          handleTokenExpire(navigate, setFormState);
-        }
+      if (error.status === 401) {
+        handleTokenExpire(navigate, setFormState);
       }
-    },
-  });
+    }
+  };
 
   const onNextPage = () => {
     setFormState((prev) => ({ ...prev, page: 1 }));
@@ -164,16 +169,16 @@ export default function CustomerForm({
     const found = selectedProducts.find((p) => p.name === product.name);
     if (!found) {
       setSelectedProducts([product, ...selectedProducts]);
-      customerForm.setFieldValue(`quantity${product.id}`, 0);
-      customerForm.setFieldValue(`unit${product.id}`, "BOX");
+      setValue(`quantity${product.id}`, 0);
+      setValue(`unit${product.id}`, "BOX");
     }
     setSearch((prev) => ({ ...prev, products: [], query: "" }));
   };
 
   const onRemoveProduct = (id) => {
     setSearch((prev) => ({ ...prev, products: [], query: "" }));
-    customerForm.setFieldValue(`quantity${id}`, 0);
-    customerForm.setFieldValue(`unit${id}`, "BOX");
+    setValue(`quantity${id}`, 0);
+    setValue(`unit${id}`, "BOX");
     setSelectedProducts(
       selectedProducts.filter((product) => product.id !== id)
     );
@@ -183,12 +188,8 @@ export default function CustomerForm({
     setSearch((prev) => ({ ...prev, products: [], query: "" }));
   };
 
-  const onChangeUnit = (field: string, v) => {
-    customerForm.setFieldValue(field, v);
-  };
-
   return (
-    <form onSubmit={customerForm.handleSubmit}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       {formState.page === 0 ? (
         <>
           {/* 1st Page */}
@@ -197,56 +198,80 @@ export default function CustomerForm({
               <span>Name</span>
               <span className="text-red-500">*</span>
             </label>
-            <TextInput
-              id="name"
-              type="text"
-              placeholder={`Name`}
+            <Controller
               name="name"
-              value={customerForm.values.name}
-              onChange={customerForm.handleChange}
-            ></TextInput>
+              control={control}
+              render={({ field }) => (
+                <TextInput
+                  id="name"
+                  type="text"
+                  placeholder={`Name`}
+                  name={field.name}
+                  value={field.value}
+                  onChange={field.onChange}
+                ></TextInput>
+              )}
+            />
           </div>
 
           <div className="mb-5">
             <label htmlFor="address" className="custom-label mb-2 inline-block">
               Address
             </label>
-            <TextInput
-              id="address"
-              type="text"
-              placeholder={`Address`}
+            <Controller
               name="address"
-              value={customerForm.values.address}
-              onChange={customerForm.handleChange}
-            ></TextInput>
+              control={control}
+              render={({ field }) => (
+                <TextInput
+                  id="address"
+                  type="text"
+                  placeholder={`Address`}
+                  name={field.name}
+                  value={field.value}
+                  onChange={field.onChange}
+                ></TextInput>
+              )}
+            />
           </div>
 
           <div className="mb-5">
             <label htmlFor="phone" className="custom-label mb-2 inline-block">
               Phone
             </label>
-            <TextInput
-              id="phone"
-              type="text"
+            <Controller
               name="phone"
-              placeholder={`Phone`}
-              value={customerForm.values.phone}
-              onChange={customerForm.handleChange}
-            ></TextInput>
+              control={control}
+              render={({ field }) => (
+                <TextInput
+                  id="phone"
+                  type="text"
+                  name={field.name}
+                  placeholder={`Phone`}
+                  value={field.value}
+                  onChange={field.onChange}
+                ></TextInput>
+              )}
+            />
           </div>
 
           <div className="mb-5">
             <label htmlFor="email" className="custom-label mb-2 inline-block">
               Email
             </label>
-            <TextInput
-              id="email"
-              type="email"
+            <Controller
               name="email"
-              placeholder={`Email`}
-              value={customerForm.values.email}
-              onChange={customerForm.handleChange}
-            ></TextInput>
+              control={control}
+              render={({ field }) => (
+                <TextInput
+                  id="email"
+                  type="email"
+                  name={field.name}
+                  placeholder={`Email`}
+                  value={field.value}
+                  onChange={field.onChange}
+                ></TextInput>
+              )}
+            />
           </div>
 
           <div className="mb-5">
@@ -256,35 +281,42 @@ export default function CustomerForm({
             >
               Presentative
             </label>
-            <TextInput
-              id="presentative"
-              type="presentative"
+            <Controller
               name="presentative"
-              placeholder={`Presentative`}
-              value={customerForm.values.presentative}
-              onChange={customerForm.handleChange}
-            ></TextInput>
+              control={control}
+              render={({ field }) => (
+                <TextInput
+                  id="presentative"
+                  type="presentative"
+                  name={field.name}
+                  placeholder={`Presentative`}
+                  value={field.value}
+                  onChange={field.onChange}
+                ></TextInput>
+              )}
+            />
           </div>
 
           <div className="mb-5 flex items-center">
-            <Checkbox
-              id="discontinued"
+            <Controller
               name="discontinued"
-              onChange={() =>
-                customerForm.setFieldValue(
-                  "discontinued",
-                  !customerForm.values.discontinued
-                )
-              }
-              checked={!customerForm.values.discontinued}
-              label="In use"
-            ></Checkbox>
+              control={control}
+              render={({ field }) => (
+                <Checkbox
+                  id="discontinued"
+                  name={field.name}
+                  onChange={() => field.onChange(!field.value)}
+                  checked={!field.value}
+                  label="In use"
+                ></Checkbox>
+              )}
+            />
           </div>
           <button
             type="button"
             className="btn btn-primary mt-3 w-full"
             onClick={onNextPage}
-            disabled={formState.loading || customerForm.isSubmitting}
+            disabled={formState.loading || isSubmitting}
           >
             <span>Product template</span>
             <span>
@@ -347,33 +379,38 @@ export default function CustomerForm({
                             <label className="custom-label mb-2 inline-block">
                               Qty
                             </label>
-                            <NumberInput
-                              id={`quantity${product.id}`}
+                            <Controller
                               name={`quantity${product.id}`}
-                              placeholder="Qty"
-                              value={
-                                customerForm.values[`quantity${product.id}`]
-                              }
-                              onChange={customerForm.handleChange}
-                            ></NumberInput>
+                              control={control}
+                              render={({ field }) => (
+                                <NumberInput
+                                  id={`quantity${product.id}`}
+                                  name={field.name}
+                                  placeholder="Qty"
+                                  value={field.value}
+                                  onChange={field.onChange}
+                                ></NumberInput>
+                              )}
+                            />
                           </div>
                           <div className="w-6/12">
                             <label className="custom-label mb-2 inline-block">
                               Unit
                             </label>
-                            <SelectInput
+                            <Controller
                               name={`unit${product.id}`}
-                              value={customerForm.values[`unit${product.id}`]}
-                              setValue={(v) =>
-                                customerForm.setFieldValue(
-                                  `unit${product.id}`,
-                                  v
-                                )
-                              }
-                              options={product.units.map(
-                                (unit) => unit.code.split("_")[1]
+                              control={control}
+                              render={({ field }) => (
+                                <SelectInput
+                                  name={field.name}
+                                  value={field.value}
+                                  setValue={field.onChange}
+                                  options={product.units.map(
+                                    (unit) => unit.code.split("_")[1]
+                                  )}
+                                ></SelectInput>
                               )}
-                            ></SelectInput>
+                            />
                           </div>
                         </div>
                       </div>
@@ -399,7 +436,7 @@ export default function CustomerForm({
                 <button
                   type="submit"
                   className="btn btn-primary col-span-6"
-                  disabled={formState.loading || customerForm.isSubmitting}
+                  disabled={formState.loading || isSubmitting}
                 >
                   <span>{editedId ? "Update" : "Create"}</span>
                 </button>

@@ -1,4 +1,4 @@
-import { useFormik } from "formik";
+import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { BiEditAlt, BiPlus } from "react-icons/bi";
@@ -25,69 +25,73 @@ export default function ProductForm({ editedId, units, initialData, onClear }) {
     isOpen: false,
   });
 
-  const productForm = useFormik({
-    enableReinitialize: true,
-    initialValues: initialData,
-    onSubmit: async (data) => {
+  const {
+    control,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm({
+    values: initialData,
+  });
+
+  const onSubmit = async (data) => {
+    setFormState((prev) => ({
+      ...prev,
+      success: "",
+      error: "",
+      loading: true,
+    }));
+    try {
+      if (!editedId) {
+        const res = await api.post(`/products`, data);
+        setFormState((prev) => ({
+          ...prev,
+          success: "Create product successfully.",
+          error: "",
+          loading: false,
+        }));
+        setTimeout(() => {
+          setFormState((prev) => ({
+            ...prev,
+            success: "",
+            error: "",
+            loading: false,
+          }));
+          navigate("/configure/view-product");
+        }, 2000);
+      } else {
+        const res = await api.put(`/products/${editedId}`, data);
+        setFormState((prev) => ({
+          ...prev,
+          success: "Update product successfully.",
+          error: "",
+          loading: false,
+        }));
+        setTimeout(() => {
+          setFormState((prev) => ({
+            ...prev,
+            success: "",
+            error: "",
+            loading: false,
+          }));
+          navigate("/configure/view-product");
+        }, 2000);
+      }
+    } catch (e) {
+      const error = JSON.parse(
+        JSON.stringify(e.response ? e.response.data.error : e)
+      );
       setFormState((prev) => ({
         ...prev,
         success: "",
-        error: "",
-        loading: true,
+        error: error.message,
+        loading: false,
       }));
-      try {
-        if (!editedId) {
-          const res = await api.post(`/products`, data);
-          setFormState((prev) => ({
-            ...prev,
-            success: "Create product successfully.",
-            error: "",
-            loading: false,
-          }));
-          setTimeout(() => {
-            setFormState((prev) => ({
-              ...prev,
-              success: "",
-              error: "",
-              loading: false,
-            }));
-            navigate("/configure/view-product");
-          }, 2000);
-        } else {
-          const res = await api.put(`/products/${editedId}`, data);
-          setFormState((prev) => ({
-            ...prev,
-            success: "Update product successfully.",
-            error: "",
-            loading: false,
-          }));
-          setTimeout(() => {
-            setFormState((prev) => ({
-              ...prev,
-              success: "",
-              error: "",
-              loading: false,
-            }));
-            navigate("/configure/view-product");
-          }, 2000);
-        }
-      } catch (e) {
-        const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e)
-        );
-        setFormState((prev) => ({
-          ...prev,
-          success: "",
-          error: error.message,
-          loading: false,
-        }));
 
-        if (error.status === 401) {
-          handleTokenExpire(navigate, setFormState);
-        }
+      if (error.status === 401) {
+        handleTokenExpire(navigate, setFormState);
       }
-    },
-  });
+    }
+  };
 
   const onAddUnit = () => {
     setModal((prev) => ({ ...prev, productId: editedId, isOpen: true }));
@@ -104,29 +108,41 @@ export default function ProductForm({ editedId, units, initialData, onClear }) {
 
   return (
     <>
-      <form onSubmit={productForm.handleSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div className="mb-5">
           <label htmlFor="name" className="custom-label mb-2 inline-block">
             <span>Name</span>
             <span className="text-red-500">*</span>
           </label>
-          <TextInput
-            id="name"
-            type="text"
-            placeholder={`Name`}
+          <Controller
             name="name"
-            value={productForm.values.name}
-            onChange={productForm.handleChange}
-          ></TextInput>
+            control={control}
+            render={({ field }) => (
+              <TextInput
+                id="name"
+                type="text"
+                placeholder={`Name`}
+                name={field.name}
+                value={field.value}
+                onChange={field.onChange}
+              ></TextInput>
+            )}
+          />
         </div>
         <div className="mb-5">
           <label className="custom-label mb-2 inline-block">Location</label>
-          <SelectInput
-            name={`location`}
-            value={productForm.values[`location`]}
-            setValue={(v) => productForm.setFieldValue(`location`, v)}
-            options={Object.values(Location)}
-          ></SelectInput>
+          <Controller
+            name="location"
+            control={control}
+            render={({ field }) => (
+              <SelectInput
+                name={field.name}
+                value={field.value}
+                setValue={field.onChange}
+                options={Object.values(Location)}
+              ></SelectInput>
+            )}
+          />
         </div>
 
         {editedId && (
@@ -165,23 +181,24 @@ export default function ProductForm({ editedId, units, initialData, onClear }) {
         )}
 
         <div className="mb-5 flex items-center">
-          <Checkbox
-            id="discontinued"
+          <Controller
             name="discontinued"
-            onChange={() =>
-              productForm.setFieldValue(
-                "discontinued",
-                !productForm.values.discontinued
-              )
-            }
-            checked={!productForm.values.discontinued}
-            label="In use"
-          ></Checkbox>
+            control={control}
+            render={({ field }) => (
+              <Checkbox
+                id="discontinued"
+                name={field.name}
+                onChange={() => field.onChange(!field.value)}
+                checked={!field.value}
+                label="In use"
+              ></Checkbox>
+            )}
+          />
         </div>
         <button
           type="submit"
           className="btn btn-primary mt-1 w-full"
-          disabled={formState.loading || productForm.isSubmitting}
+          disabled={formState.loading || isSubmitting}
         >
           <span>{editedId ? "Edit" : "Create"} product</span>
         </button>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useFormik } from "formik";
+import { Controller, useForm } from "react-hook-form";
 import api from "../../../../stores/api";
 import SearchInput from "../../../../components/forms/SearchInput";
 import Spinner from "../../../../components/Spinner";
@@ -19,45 +19,46 @@ export default function VehicleSearch() {
     (state) => state.editVehicleConfig
   );
 
-  const searchForm = useFormik({
-    initialValues: {
+  const { control, handleSubmit, reset, setValue } = useForm({
+    defaultValues: {
       keyword: "",
     },
-    onSubmit: async (data) => {
-      setSearchState((prev) => ({ ...prev, found: [], loading: true }));
-      try {
-        const res = await api.get(
-          `/vehicles/basic-search?keyword=${data.keyword}`
-        );
-        const resData: VehicleResponse[] = res.data;
-        if (resData.length < 1) {
-          setSearchState((prev) => ({
-            ...prev,
-            greet: "",
-            empty: "No result found.",
-            loading: false,
-          }));
-        }
-        setSearchState((prev) => ({ ...prev, loading: false, found: resData }));
-      } catch (e) {
-        const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e)
-        );
+  });
+
+  const onSubmit = async (data) => {
+    setSearchState((prev) => ({ ...prev, found: [], loading: true }));
+    try {
+      const res = await api.get(
+        `/vehicles/basic-search?keyword=${data.keyword}`
+      );
+      const resData: VehicleResponse[] = res.data;
+      if (resData.length < 1) {
         setSearchState((prev) => ({
           ...prev,
           greet: "",
-          error: error.message,
+          empty: "No result found.",
           loading: false,
         }));
-        searchForm.resetForm();
       }
-    },
-  });
+      setSearchState((prev) => ({ ...prev, loading: false, found: resData }));
+    } catch (e) {
+      const error = JSON.parse(
+        JSON.stringify(e.response ? e.response.data.error : e)
+      );
+      setSearchState((prev) => ({
+        ...prev,
+        greet: "",
+        error: error.message,
+        loading: false,
+      }));
+      reset();
+    }
+  };
 
   const onEdit = (vehicle) => {
     editVehicleConfig(vehicle);
     setSearchState((prev) => ({ ...prev, found: [] }));
-    searchForm.resetForm();
+    reset();
   };
 
   const onClearAll = () => {
@@ -69,25 +70,31 @@ export default function VehicleSearch() {
       loading: false,
       found: [],
     }));
-    searchForm.resetForm();
+    reset();
   };
 
   return (
     <>
       <div className="mt-12 w-11/12 sm:w-6/12 md:w-5/12">
         <form
-          onSubmit={searchForm.handleSubmit}
+          onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col justify-center"
         >
           <div className="mb-5 flex">
-            <SearchInput
-              id="vehicle-search"
+            <Controller
               name="keyword"
-              placeholder="Search by license plate"
-              value={searchForm.values.keyword}
-              onChange={searchForm.handleChange}
-              onFocus={null}
-              onClear={() => searchForm.setFieldValue("keyword", "")}
+              control={control}
+              render={({ field }) => (
+                <SearchInput
+                  id="vehicle-search"
+                  name={field.name}
+                  placeholder="Search by license plate"
+                  value={field.value}
+                  onChange={field.onChange}
+                  onFocus={null}
+                  onClear={() => setValue("keyword", "")}
+                />
+              )}
             />
             <button type="submit" className="btn btn-circle btn-accent ml-2">
               <BiSearch className="h-6 w-6"></BiSearch>
@@ -108,7 +115,7 @@ export default function VehicleSearch() {
                   {searchState.found.map((vehicle) => (
                     <div key={vehicle.id} className="w-full">
                       <div
-                        className="rounded-box mb-4 flex w-full 
+                        className="rounded-box mb-4 flex w-full
               flex-col bg-base-100 p-6 shadow-md md:flex-row md:justify-between"
                       >
                         <div>

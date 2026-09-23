@@ -1,4 +1,4 @@
-import { useFormik } from "formik";
+import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { BiLeftArrowAlt, BiRightArrowAlt, BiX } from "react-icons/bi";
@@ -34,96 +34,101 @@ export default function VendorForm({
     query: "",
   });
 
-  const vendorForm = useFormik({
-    enableReinitialize: true,
-    initialValues: initialData,
-    onSubmit: async (data) => {
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    formState: { isSubmitting },
+  } = useForm({
+    values: initialData,
+  });
+
+  const onSubmit = async (data) => {
+    setFormState((prev) => ({
+      ...prev,
+      loading: true,
+      error: "",
+      success: "",
+    }));
+    const reqData = {};
+    reqData["id"] = data["id"];
+    reqData["name"] = data["name"];
+    reqData["address"] = data["address"];
+    reqData["phone"] = data["phone"];
+    reqData["email"] = data["email"];
+    reqData["presentative"] = data["presentative"];
+    reqData["discontinued"] = data["discontinued"];
+    let productTendencies = new Map();
+    const properties = Object.keys(data).sort();
+    for (const property of properties) {
+      if (property.includes("quantity")) {
+        const id = +property.replace("quantity", "");
+        const selected = selectedProducts.find((p) => p.id === id);
+        if (selected) {
+          productTendencies.set(selected.id, {
+            vendorName: data["name"],
+            productName: selected.name,
+            quantity: data[property],
+          });
+        }
+      } else if (property.includes("unit")) {
+        const id = +property.replace("unit", "");
+        const selected = selectedProducts.find((p) => p.id === id);
+        if (selected) {
+          productTendencies.set(selected.id, {
+            ...productTendencies.get(selected.id),
+            unitCode: `${selected.id}_${data[property]}`,
+          });
+        }
+      }
+    }
+    reqData["vendorProductTendencies"] = [...productTendencies.values()];
+    try {
+      let res = null;
+      if (editedId) {
+        res = await api.put(`/vendors/${reqData["id"]}`, reqData);
+        if (res) {
+          setFormState((prev) => ({
+            ...prev,
+            error: "",
+            loading: false,
+            success: "Update vendor successfully.",
+          }));
+          setTimeout(() => {
+            setFormState((prev) => ({ ...prev, success: "" }));
+            navigate("/configure/view-vendor");
+          }, 2000);
+        }
+      } else {
+        res = await api.post(`/vendors`, reqData);
+        if (res) {
+          setFormState((prev) => ({
+            ...prev,
+            error: "",
+            loading: false,
+            success: "Create vendor successfully.",
+          }));
+          setTimeout(() => {
+            setFormState((prev) => ({ ...prev, success: "" }));
+            navigate("/configure/view-vendor");
+          }, 2000);
+        }
+      }
+    } catch (e) {
+      const error = JSON.parse(
+        JSON.stringify(e.response ? e.response.data.error : e)
+      );
       setFormState((prev) => ({
         ...prev,
-        loading: true,
-        error: "",
-        success: "",
+        error: error.message,
+        loading: false,
       }));
-      const reqData = {};
-      reqData["id"] = data["id"];
-      reqData["name"] = data["name"];
-      reqData["address"] = data["address"];
-      reqData["phone"] = data["phone"];
-      reqData["email"] = data["email"];
-      reqData["presentative"] = data["presentative"];
-      reqData["discontinued"] = data["discontinued"];
-      let productTendencies = new Map();
-      const properties = Object.keys(data).sort();
-      for (const property of properties) {
-        if (property.includes("quantity")) {
-          const id = +property.replace("quantity", "");
-          const selected = selectedProducts.find((p) => p.id === id);
-          if (selected) {
-            productTendencies.set(selected.id, {
-              vendorName: data["name"],
-              productName: selected.name,
-              quantity: data[property],
-            });
-          }
-        } else if (property.includes("unit")) {
-          const id = +property.replace("unit", "");
-          const selected = selectedProducts.find((p) => p.id === id);
-          if (selected) {
-            productTendencies.set(selected.id, {
-              ...productTendencies.get(selected.id),
-              unitCode: `${selected.id}_${data[property]}`,
-            });
-          }
-        }
-      }
-      reqData["vendorProductTendencies"] = [...productTendencies.values()];
-      try {
-        let res = null;
-        if (editedId) {
-          res = await api.put(`/vendors/${reqData["id"]}`, reqData);
-          if (res) {
-            setFormState((prev) => ({
-              ...prev,
-              error: "",
-              loading: false,
-              success: "Update vendor successfully.",
-            }));
-            setTimeout(() => {
-              setFormState((prev) => ({ ...prev, success: "" }));
-              navigate("/configure/view-vendor");
-            }, 2000);
-          }
-        } else {
-          res = await api.post(`/vendors`, reqData);
-          if (res) {
-            setFormState((prev) => ({
-              ...prev,
-              error: "",
-              loading: false,
-              success: "Create vendor successfully.",
-            }));
-            setTimeout(() => {
-              setFormState((prev) => ({ ...prev, success: "" }));
-              navigate("/configure/view-vendor");
-            }, 2000);
-          }
-        }
-      } catch (e) {
-        const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e)
-        );
-        setFormState((prev) => ({
-          ...prev,
-          error: error.message,
-          loading: false,
-        }));
 
-        if (error.status === 401) {
-          handleTokenExpire(navigate, setFormState);
-        }
+      if (error.status === 401) {
+        handleTokenExpire(navigate, setFormState);
       }
-    },
-  });
+    }
+  };
 
   const onNextPage = () => {
     setFormState((prev) => ({ ...prev, page: 1 }));
@@ -155,16 +160,16 @@ export default function VendorForm({
     const found = selectedProducts.find((p) => p.name === product.name);
     if (!found) {
       setSelectedProducts([product, ...selectedProducts]);
-      vendorForm.setFieldValue(`quantity${product.id}`, 0);
-      vendorForm.setFieldValue(`unit${product.id}`, "BOX");
+      setValue(`quantity${product.id}`, 0);
+      setValue(`unit${product.id}`, "BOX");
     }
     setSearch((prev) => ({ ...prev, products: [], query: "" }));
   };
 
   const onRemoveProduct = (id) => {
     setSearch((prev) => ({ ...prev, products: [], query: "" }));
-    vendorForm.setFieldValue(`quantity${id}`, 0);
-    vendorForm.setFieldValue(`unit${id}`, "BOX");
+    setValue(`quantity${id}`, 0);
+    setValue(`unit${id}`, "BOX");
     setSelectedProducts(
       selectedProducts.filter((product) => product.id !== id)
     );
@@ -175,7 +180,7 @@ export default function VendorForm({
   };
 
   return (
-    <form onSubmit={vendorForm.handleSubmit}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       {formState.page === 0 ? (
         <>
           {/* 1st Page */}
@@ -184,56 +189,80 @@ export default function VendorForm({
               <span>Name</span>
               <span className="text-red-500">*</span>
             </label>
-            <TextInput
-              id="name"
-              type="text"
+            <Controller
               name="name"
-              placeholder={`Name`}
-              value={vendorForm.values.name}
-              onChange={vendorForm.handleChange}
-            ></TextInput>
+              control={control}
+              render={({ field }) => (
+                <TextInput
+                  id="name"
+                  type="text"
+                  name={field.name}
+                  placeholder={`Name`}
+                  value={field.value}
+                  onChange={field.onChange}
+                ></TextInput>
+              )}
+            />
           </div>
 
           <div className="mb-5">
             <label htmlFor="address" className="custom-label mb-2 inline-block">
               Address
             </label>
-            <TextInput
-              id="address"
-              type="text"
+            <Controller
               name="address"
-              placeholder={`Address`}
-              value={vendorForm.values.address}
-              onChange={vendorForm.handleChange}
-            ></TextInput>
+              control={control}
+              render={({ field }) => (
+                <TextInput
+                  id="address"
+                  type="text"
+                  name={field.name}
+                  placeholder={`Address`}
+                  value={field.value}
+                  onChange={field.onChange}
+                ></TextInput>
+              )}
+            />
           </div>
 
           <div className="mb-5">
             <label htmlFor="phone" className="custom-label mb-2 inline-block">
               Phone
             </label>
-            <TextInput
-              id="phone"
-              type="text"
+            <Controller
               name="phone"
-              placeholder={`Phone`}
-              value={vendorForm.values.phone}
-              onChange={vendorForm.handleChange}
-            ></TextInput>
+              control={control}
+              render={({ field }) => (
+                <TextInput
+                  id="phone"
+                  type="text"
+                  name={field.name}
+                  placeholder={`Phone`}
+                  value={field.value}
+                  onChange={field.onChange}
+                ></TextInput>
+              )}
+            />
           </div>
 
           <div className="mb-5">
             <label htmlFor="email" className="custom-label mb-2 inline-block">
               Email
             </label>
-            <TextInput
-              id="email"
-              type="email"
+            <Controller
               name="email"
-              placeholder={`Email`}
-              value={vendorForm.values.email}
-              onChange={vendorForm.handleChange}
-            ></TextInput>
+              control={control}
+              render={({ field }) => (
+                <TextInput
+                  id="email"
+                  type="email"
+                  name={field.name}
+                  placeholder={`Email`}
+                  value={field.value}
+                  onChange={field.onChange}
+                ></TextInput>
+              )}
+            />
           </div>
 
           <div className="mb-5">
@@ -243,35 +272,42 @@ export default function VendorForm({
             >
               Presentative
             </label>
-            <TextInput
-              id="presentative"
-              type="presentative"
+            <Controller
               name="presentative"
-              placeholder={`Presentative`}
-              value={vendorForm.values.presentative}
-              onChange={vendorForm.handleChange}
-            ></TextInput>
+              control={control}
+              render={({ field }) => (
+                <TextInput
+                  id="presentative"
+                  type="presentative"
+                  name={field.name}
+                  placeholder={`Presentative`}
+                  value={field.value}
+                  onChange={field.onChange}
+                ></TextInput>
+              )}
+            />
           </div>
 
           <div className="mb-5 flex items-center">
-            <Checkbox
-              id="discontinued"
+            <Controller
               name="discontinued"
-              onChange={() =>
-                vendorForm.setFieldValue(
-                  "discontinued",
-                  !vendorForm.values.discontinued
-                )
-              }
-              checked={!vendorForm.values.discontinued}
-              label="In use"
-            ></Checkbox>
+              control={control}
+              render={({ field }) => (
+                <Checkbox
+                  id="discontinued"
+                  name={field.name}
+                  onChange={() => field.onChange(!field.value)}
+                  checked={!field.value}
+                  label="In use"
+                ></Checkbox>
+              )}
+            />
           </div>
           <button
             type="button"
             className="btn btn-primary mt-3 w-full"
             onClick={onNextPage}
-            disabled={formState.loading || vendorForm.isSubmitting}
+            disabled={formState.loading || isSubmitting}
           >
             <span>Product template</span>
             <span>
@@ -334,28 +370,38 @@ export default function VendorForm({
                             <label className="custom-label mb-2 inline-block">
                               Qty
                             </label>
-                            <NumberInput
-                              id={`quantity${product.id}`}
+                            <Controller
                               name={`quantity${product.id}`}
-                              placeholder="Qty"
-                              value={vendorForm.values[`quantity${product.id}`]}
-                              onChange={vendorForm.handleChange}
-                            ></NumberInput>
+                              control={control}
+                              render={({ field }) => (
+                                <NumberInput
+                                  id={`quantity${product.id}`}
+                                  name={field.name}
+                                  placeholder="Qty"
+                                  value={field.value}
+                                  onChange={field.onChange}
+                                ></NumberInput>
+                              )}
+                            />
                           </div>
                           <div className="w-6/12">
                             <label className="custom-label mb-2 inline-block">
                               Unit
                             </label>
-                            <SelectInput
+                            <Controller
                               name={`unit${product.id}`}
-                              value={vendorForm.values[`unit${product.id}`]}
-                              setValue={(v) =>
-                                vendorForm.setFieldValue(`unit${product.id}`, v)
-                              }
-                              options={product.units.map(
-                                (unit) => unit.code.split("_")[1]
+                              control={control}
+                              render={({ field }) => (
+                                <SelectInput
+                                  name={field.name}
+                                  value={field.value}
+                                  setValue={field.onChange}
+                                  options={product.units.map(
+                                    (unit) => unit.code.split("_")[1]
+                                  )}
+                                ></SelectInput>
                               )}
-                            ></SelectInput>
+                            />
                           </div>
                         </div>
                       </div>
@@ -381,7 +427,7 @@ export default function VendorForm({
                 <button
                   type="submit"
                   className="btn btn-primary col-span-6"
-                  disabled={formState.loading || vendorForm.isSubmitting}
+                  disabled={formState.loading || isSubmitting}
                 >
                   <span>{editedId ? "Update" : "Create"}</span>
                 </button>
