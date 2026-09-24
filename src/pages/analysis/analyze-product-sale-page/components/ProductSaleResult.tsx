@@ -1,19 +1,12 @@
 import csvDownload from "json-to-csv-export";
 import { useMemo, useState } from "react";
-import {
-  BiDownload,
-  BiExpandVertical,
-  BiSortDown,
-  BiSortUp,
-} from "react-icons/bi";
+import { BiDownload, BiExpandVertical, BiSortDown, BiSortUp } from "react-icons/bi";
 import { convertTime } from "../../../../commons/utils/time.util";
 import Alert from "../../../../components/Alert";
 import { niceVisualDecimal } from "../../../../commons/utils/fraction.util";
 
 export default function ProductSaleResult({ data }) {
-  const [productSales, setProductSales] = useState(
-    data.sort((a, b) => b.boxCount - a.boxCount)
-  );
+  const [productSales, setProductSales] = useState(data.sort((a, b) => b.boxCount - a.boxCount));
 
   const [sortBy, setSortBy] = useState({
     type: "Box",
@@ -99,16 +92,9 @@ export default function ProductSaleResult({ data }) {
   return (
     <>
       <div className="my-4 flex items-center justify-end gap-3">
-        <div className="rounded-btn bg-info p-2 text-sm font-semibold text-info-content">
-          {boxTotal} boxes
-        </div>
-        <div className="rounded-btn hidden bg-info p-2 text-sm font-semibold text-info-content md:block">
-          ${priceTotal} in total
-        </div>
-        <button
-          className="rounded-btn flex bg-accent p-2 text-sm font-semibold"
-          onClick={onExportToCSV}
-        >
+        <div className="rounded-btn bg-info p-2 text-sm font-semibold text-info-content">{boxTotal} boxes</div>
+        <div className="rounded-btn hidden bg-info p-2 text-sm font-semibold text-info-content md:block">${priceTotal} in total</div>
+        <button className="rounded-btn flex bg-accent p-2 text-sm font-semibold" onClick={onExportToCSV}>
           <span className="mr-2">Download CSV</span>
           <BiDownload className="h-5 w-5"></BiDownload>
         </button>
@@ -129,15 +115,10 @@ export default function ProductSaleResult({ data }) {
           </div>
         </div>
         {productSales.map((productSale) => (
-          <div
-            key={productSale.productName}
-            className="my-2 flex w-full justify-between rounded-lg bg-base-200 p-3 dark:bg-base-300"
-          >
+          <div key={productSale.productName} className="my-2 flex w-full justify-between rounded-lg bg-base-200 p-3 dark:bg-base-300">
             <div className="md:w-6/12">{productSale.productName}</div>
             <div className="md:w-5/12">{productSale.boxCount}</div>
-            <div className="hidden md:flex md:w-1/12">
-              ${productSale.avgPrice}
-            </div>
+            <div className="hidden md:flex md:w-1/12">${productSale.avgPrice}</div>
           </div>
         ))}
       </div>

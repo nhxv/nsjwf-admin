@@ -19,15 +19,7 @@ export default function VendorOrderList() {
   });
   const total = useMemo(() => {
     return niceVisualDecimal(
-      search.orders.reduce(
-        (prev, curr) =>
-          prev +
-          curr.productVendorOrders.reduce(
-            (prev, curr) => prev + curr.quantity * curr.unit_price,
-            0
-          ),
-        0
-      )
+      search.orders.reduce((prev, curr) => prev + curr.productVendorOrders.reduce((prev, curr) => prev + curr.quantity * curr.unit_price, 0), 0),
     );
   }, [search.orders]);
 
@@ -47,9 +39,7 @@ export default function VendorOrderList() {
 
   // Cursed. Have to attach this pretty much on every search.orders
   const filterByStatus = (orders, status) => {
-    return orders.filter((order) =>
-      status === "ALL" ? true : order.status === status
-    );
+    return orders.filter((order) => (status === "ALL" ? true : order.status === status));
   };
 
   const onToDetails = (code: string) => {
@@ -59,22 +49,14 @@ export default function VendorOrderList() {
   const onChangeQuery = (e) => {
     if (e.target.value) {
       // Search based on vendor name and product name
-      const searched = filterByStatus(query.data, search.status).filter(
-        (order) => {
-          return (
-            order.vendor_name
-              .toLowerCase()
-              .replace(/\s+/g, "")
-              .includes(e.target.value.toLowerCase().replace(/\s+/g, "")) ||
-            order.productVendorOrders.filter((pOrder) => {
-              return pOrder.product_name
-                .toLowerCase()
-                .replace(/\s+/g, "")
-                .includes(e.target.value.toLowerCase().replace(/\s+/g, ""));
-            }).length !== 0
-          );
-        }
-      );
+      const searched = filterByStatus(query.data, search.status).filter((order) => {
+        return (
+          order.vendor_name.toLowerCase().replace(/\s+/g, "").includes(e.target.value.toLowerCase().replace(/\s+/g, "")) ||
+          order.productVendorOrders.filter((pOrder) => {
+            return pOrder.product_name.toLowerCase().replace(/\s+/g, "").includes(e.target.value.toLowerCase().replace(/\s+/g, ""));
+          }).length !== 0
+        );
+      });
       setSearch((prev) => ({
         ...prev,
         orders: searched,
@@ -105,10 +87,7 @@ export default function VendorOrderList() {
     );
   }
 
-  if (
-    query.fetchStatus === "paused" ||
-    (query.status === "error" && query.fetchStatus === "idle")
-  ) {
+  if (query.fetchStatus === "paused" || (query.status === "error" && query.fetchStatus === "idle")) {
     if (query.fetchStatus === "paused") {
       return (
         <div className="mx-auto mt-4 w-11/12 md:w-10/12 lg:w-6/12">
@@ -137,8 +116,7 @@ export default function VendorOrderList() {
         <div className="flex items-center gap-2">
           <div className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content">
             <span>
-              {search.orders.length}{" "}
-              {search.orders.length > 1 ? "orders" : "order"}
+              {search.orders.length} {search.orders.length > 1 ? "orders" : "order"}
             </span>
           </div>
           <div className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content">
@@ -159,12 +137,8 @@ export default function VendorOrderList() {
               }}
               options={["ALL"].concat(
                 Object.values(OrderStatus).filter(
-                  (s) =>
-                    s != OrderStatus.PICKING &&
-                    s != OrderStatus.SHIPPING &&
-                    s != OrderStatus.COMPLETED &&
-                    s != OrderStatus.CANCELED
-                )
+                  (s) => s != OrderStatus.PICKING && s != OrderStatus.SHIPPING && s != OrderStatus.COMPLETED && s != OrderStatus.CANCELED,
+                ),
               )}
             />
           </div>
@@ -177,8 +151,7 @@ export default function VendorOrderList() {
               value={search.query}
               onChange={(e) => onChangeQuery(e)}
               onClear={onClearQuery}
-              onFocus={null}
-            ></SearchInput>
+              onFocus={null}></SearchInput>
           </div>
         </div>
       </div>
@@ -186,40 +159,22 @@ export default function VendorOrderList() {
         {search.orders.map((order) => (
           <div
             key={order.code}
-            className={`sticker col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3 xl:col-span-2
-            ${order.status === OrderStatus.CHECKING ? "sticker-yellow" : ""}
-            ${order.status === OrderStatus.DELIVERED ? "sticker-primary" : ""}`}
-            onClick={() => onToDetails(order.code)}
-          >
+            className={`sticker col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3 xl:col-span-2 ${order.status === OrderStatus.CHECKING ? "sticker-yellow" : ""} ${order.status === OrderStatus.DELIVERED ? "sticker-primary" : ""}`}
+            onClick={() => onToDetails(order.code)}>
             <div>#{order.manual_code ?? order.code}</div>
-            <div className="overflow-hidden text-ellipsis text-nowrap font-semibold">
-              {order.vendor_name}
-            </div>
-            <div className="text-sm">
-              {convertTimeToText(new Date(order.expected_at))}
-            </div>
+            <div className="overflow-hidden text-ellipsis text-nowrap font-semibold">{order.vendor_name}</div>
+            <div className="text-sm">{convertTimeToText(new Date(order.expected_at))}</div>
             <button
-              className={`btn btn-sm mt-3 w-full
-              ${
-                order.status === OrderStatus.CHECKING
-                  ? "btn-sticker-yellow"
-                  : ""
-              }
-              ${
-                order.status === OrderStatus.DELIVERED
-                  ? "btn-sticker-primary"
-                  : ""
+              className={`btn btn-sm mt-3 w-full ${order.status === OrderStatus.CHECKING ? "btn-sticker-yellow" : ""} ${
+                order.status === OrderStatus.DELIVERED ? "btn-sticker-primary" : ""
               }`}
-              onClick={() => onToDetails(order.code)}
-            >
+              onClick={() => onToDetails(order.code)}>
               Details
             </button>
           </div>
         ))}
       </div>
-      {search.orders?.length < 1 && (
-        <div className="text-center">Not found.</div>
-      )}
+      {search.orders?.length < 1 && <div className="text-center">Not found.</div>}
     </>
   );
 }

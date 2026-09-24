@@ -3,13 +3,10 @@ import { BiCube } from "react-icons/bi";
 import { HiOutlineTruck } from "react-icons/hi";
 import Alert from "../../../components/Alert";
 import Spinner from "../../../components/Spinner";
-import api from "../../../stores/api";
+import api, { getApiError } from "../../../stores/api";
 import { useAuthStore } from "../../../stores/auth.store";
-import { useNavigate } from "react-router-dom";
-import { handleTokenExpire } from "../../../commons/utils/token.util";
 
 export default function ReportTaskPage() {
-  const navigate = useNavigate();
   const [dataState, setDataState] = useState({
     report: [],
     error: "",
@@ -57,18 +54,12 @@ export default function ReportTaskPage() {
         }));
       })
       .catch((e) => {
-        const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e)
-        );
+        const error = getApiError(e);
         setDataState((prev) => ({
           ...prev,
           error: error.message,
           loading: false,
         }));
-
-        if (error.status === 401) {
-          handleTokenExpire(navigate, setDataState);
-        }
       });
   }, []);
 
@@ -97,9 +88,7 @@ export default function ReportTaskPage() {
                       <>
                         {dataState.report.map((stat) => (
                           <div key={stat.label}>
-                            <h1 className="my-4 text-center text-xl font-bold">
-                              {stat.label}
-                            </h1>
+                            <h1 className="my-4 text-center text-xl font-bold">{stat.label}</h1>
                             <div className="flex flex-col justify-between md:flex-row">
                               <div className="rounded-box mb-4 flex w-full items-center bg-yellow-500 p-5 text-black shadow-md md:w-[49%]">
                                 <span className="mr-4 rounded-full bg-yellow-600 p-2">
@@ -109,9 +98,7 @@ export default function ReportTaskPage() {
                                   <span className="text-2xl font-bold">
                                     {stat.employeePicking}/{stat.totalPicking}
                                   </span>
-                                  <span className="text-sm font-medium">
-                                    Order picked
-                                  </span>
+                                  <span className="text-sm font-medium">Order picked</span>
                                 </div>
                               </div>
 
@@ -123,9 +110,7 @@ export default function ReportTaskPage() {
                                   <span className="text-2xl font-bold">
                                     {stat.employeeShipping}/{stat.totalShipping}
                                   </span>
-                                  <span className="text-sm font-medium">
-                                    Order shipped
-                                  </span>
+                                  <span className="text-sm font-medium">Order shipped</span>
                                 </div>
                               </div>
                             </div>

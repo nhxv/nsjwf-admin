@@ -4,19 +4,16 @@ import { convertTimeToText } from "../../../../commons/utils/time.util";
 import Modal from "../../../../components/Modal";
 import StatusTag from "../../../../components/StatusTag";
 import { useAuthStore } from "../../../../stores/auth.store";
-import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
-import api from "../../../../stores/api";
+import api, { getApiError } from "../../../../stores/api";
 import { Menu } from "@headlessui/react";
-import { handleTokenExpire } from "../../../../commons/utils/token.util";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { niceVisualDecimal } from "../../../../commons/utils/fraction.util";
 
 export default function SaleDetailModal({ isOpen, onClose, report }) {
   const role = useAuthStore((state) => state.role);
-  const navigate = useNavigate();
   const [error, setError] = useState("");
 
   const queryClient = useQueryClient();
@@ -38,13 +35,9 @@ export default function SaleDetailModal({ isOpen, onClose, report }) {
       onClose();
     },
     onError: (err: any) => {
-      let _error = JSON.parse(
-        JSON.stringify(err.response ? err.response.data.error : err)
-      );
-      if (_error.status === 401) {
-        handleTokenExpire(navigate, setError, (msg) => msg);
-      } else {
-        setError(_error.message);
+      const _error = getApiError(err);
+      setError(_error.message);
+      if (_error.status !== 401) {
         setTimeout(() => {
           setError("");
         }, 2000);
@@ -68,9 +61,7 @@ export default function SaleDetailModal({ isOpen, onClose, report }) {
           <div>
             <p>#{report.manualCode ? report.manualCode : report.orderCode}</p>
             <p className="text-xl font-semibold">{report.customerName}</p>
-            <p className="text-sm text-neutral">
-              Delivered on {convertTimeToText(new Date(report.invoiceDate))}
-            </p>
+            <p className="text-sm text-neutral">Delivered on {convertTimeToText(new Date(report.invoiceDate))}</p>
             <div className="mt-5">
               <StatusTag status={report.paymentStatus}></StatusTag>
             </div>
@@ -89,15 +80,11 @@ export default function SaleDetailModal({ isOpen, onClose, report }) {
               <Menu.Items
                 as="div"
                 // Magik
-                className="menu rounded-box absolute right-6 w-40 origin-top-right border-2 border-base-300 bg-base-100 p-2 shadow-md dark:bg-base-200"
-              >
+                className="menu rounded-box absolute right-6 w-40 origin-top-right border-2 border-base-300 bg-base-100 p-2 shadow-md dark:bg-base-200">
                 <Menu.Item>
                   <button
-                    className={
-                      "flex justify-center rounded-md p-3 text-base-content ui-active:bg-base-200 ui-active:dark:bg-base-300"
-                    }
-                    onClick={() => onRevert(report.orderCode)}
-                  >
+                    className={"flex justify-center rounded-md p-3 text-base-content ui-active:bg-base-200 ui-active:dark:bg-base-300"}
+                    onClick={() => onRevert(report.orderCode)}>
                     Revert Order
                   </button>
                 </Menu.Item>
@@ -123,15 +110,11 @@ export default function SaleDetailModal({ isOpen, onClose, report }) {
             return (
               <div
                 key={`${productOrder.productName}_${productOrder.unitCode}`}
-                className="rounded-btn mb-2 flex items-center justify-center bg-base-200 py-3 dark:bg-base-300"
-              >
+                className="rounded-btn mb-2 flex items-center justify-center bg-base-200 py-3 dark:bg-base-300">
                 <div className="ml-3 w-6/12">{productOrder.productName}</div>
                 <div className="w-3/12 text-center">
                   <span>
-                    {productOrder.quantity}{" "}
-                    {productOrder.unitCode === "box"
-                      ? ``
-                      : `(${productOrder.unitCode})`}
+                    {productOrder.quantity} {productOrder.unitCode === "box" ? `` : `(${productOrder.unitCode})`}
                   </span>
                 </div>
                 <div className="w-3/12 text-center">
@@ -144,9 +127,7 @@ export default function SaleDetailModal({ isOpen, onClose, report }) {
         <div className="divider"></div>
         <div className="mt-2 flex items-center">
           <span className="mr-2">Total:</span>
-          <span className="mr-2 text-xl font-medium">
-            ${niceVisualDecimal(report.sale)}
-          </span>
+          <span className="mr-2 text-xl font-medium">${niceVisualDecimal(report.sale)}</span>
         </div>
 
         <div>

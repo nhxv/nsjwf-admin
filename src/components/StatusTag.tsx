@@ -9,26 +9,10 @@ export default function StatusTag({ status }) {
     status === OrderStatus.DELIVERED ||
     status === PaymentStatus.RECEIVABLE
   ) {
-    return (
-      <span
-        className={`rounded-full bg-warning p-2.5 text-sm font-medium text-warning-content`}
-      >
-        {status}
-      </span>
-    );
+    return <span className={`rounded-full bg-warning p-2.5 text-sm font-medium text-warning-content`}>{status}</span>;
   }
-  if (
-    status === OrderStatus.COMPLETED ||
-    status === PaymentStatus.CASH ||
-    status === PaymentStatus.CHECK
-  ) {
-    return (
-      <span
-        className={`rounded-full bg-success p-2.5 text-sm font-medium text-success-content`}
-      >
-        {status}
-      </span>
-    );
+  if (status === OrderStatus.COMPLETED || status === PaymentStatus.CASH || status === PaymentStatus.CHECK) {
+    return <span className={`rounded-full bg-success p-2.5 text-sm font-medium text-success-content`}>{status}</span>;
   }
   return null;
 }

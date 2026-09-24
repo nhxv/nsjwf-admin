@@ -6,7 +6,7 @@ import Alert from "../components/Alert";
 import Spinner from "../components/Spinner";
 import TextInput from "../components/forms/TextInput";
 import { SignInResponse } from "../models/sign-in-response.model";
-import api from "../stores/api";
+import api, { getApiError } from "../stores/api";
 import { useAuthStore } from "../stores/auth.store";
 
 export default function SignInPage() {
@@ -40,9 +40,7 @@ export default function SignInPage() {
         }
       })
       .catch((e) => {
-        const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e)
-        );
+        const error = getApiError(e);
         setFormState((prev) => ({
           ...prev,
           error: error.message,
@@ -68,14 +66,7 @@ export default function SignInPage() {
             name="username"
             control={control}
             render={({ field }) => (
-              <TextInput
-                id="username"
-                type="text"
-                placeholder={`Username`}
-                name={field.name}
-                value={field.value}
-                onChange={field.onChange}
-              ></TextInput>
+              <TextInput id="username" type="text" placeholder={`Username`} name={field.name} value={field.value} onChange={field.onChange}></TextInput>
             )}
           />
         </div>
@@ -87,22 +78,11 @@ export default function SignInPage() {
             name="password"
             control={control}
             render={({ field }) => (
-              <TextInput
-                id="password"
-                type="password"
-                placeholder={`Password`}
-                name={field.name}
-                value={field.value}
-                onChange={field.onChange}
-              ></TextInput>
+              <TextInput id="password" type="password" placeholder={`Password`} name={field.name} value={field.value} onChange={field.onChange}></TextInput>
             )}
           />
         </div>
-        <button
-          type="submit"
-          className="btn btn-primary mt-3 w-full"
-          disabled={!!formState.loading}
-        >
+        <button type="submit" className="btn btn-primary mt-3 w-full" disabled={!!formState.loading}>
           Sign in
         </button>
       </form>

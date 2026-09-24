@@ -1,7 +1,6 @@
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { useMemo, useState } from "react";
-import api from "../../../../stores/api";
-import { handleTokenExpire } from "../../../../commons/utils/token.util";
+import api, { getApiError } from "../../../../stores/api";
 import { useNavigate } from "react-router-dom";
 import { useStateURL } from "../../../../commons/hooks/objecturl.hook";
 import VendorOrderFormPage0 from "./VendorOrderFormPage0";
@@ -38,10 +37,7 @@ interface IVendorOrderFormFields {
   products: Array<ISelectedProduct>;
 }
 
-function computeSelectedProducts(
-  allProducts: Array<any>,
-  existingProducts: Array<any>
-) {
+function computeSelectedProducts(allProducts: Array<any>, existingProducts: Array<any>) {
   const selected: Array<ISelectedProduct> = [];
 
   if (existingProducts.length >= 0) {
@@ -53,9 +49,7 @@ function computeSelectedProducts(
     }));
 
     for (const product of allProducts) {
-      const similarProductOrders = existingProducts.filter(
-        (po) => po.product_name === product.name
-      );
+      const similarProductOrders = existingProducts.filter((po) => po.product_name === product.name);
       if (similarProductOrders.length > 0) {
         for (let i = 0; i < similarProductOrders.length; i++) {
           // similar products in existing order
@@ -78,14 +72,7 @@ function computeSelectedProducts(
   return selected;
 }
 
-export default function VendorOrderForm({
-  edit,
-  vendors,
-  allProducts,
-  initialData,
-  existingProducts,
-  onClear,
-}) {
+export default function VendorOrderForm({ edit, vendors, allProducts, initialData, existingProducts, onClear }) {
   const navigate = useNavigate();
   const [page, setPage] = useState(edit ? 1 : 1);
   const [formState, setFormState] = useState<IFormState>({
@@ -103,7 +90,7 @@ export default function VendorOrderForm({
       ...initialData,
       products: computeSelectedProducts(allProducts, existingProducts),
     }),
-    [initialData, allProducts, existingProducts]
+    [initialData, allProducts, existingProducts],
   );
 
   const {
@@ -151,10 +138,7 @@ export default function VendorOrderForm({
 
       if (edit) {
         reqData["code"] = data["code"];
-        const res = await api.putForm(
-          `/vendor-orders/${reqData["code"]}`,
-          reqData
-        );
+        const res = await api.putForm(`/vendor-orders/${reqData["code"]}`, reqData);
         if (res) {
           navigate(`/vendor/view-vendor-order`);
         }
@@ -166,18 +150,12 @@ export default function VendorOrderForm({
         }
       }
     } catch (e) {
-      const error = JSON.parse(
-        JSON.stringify(e.response ? e.response.data.error : e)
-      );
+      const error = getApiError(e);
       setFormState((prev) => ({
         ...prev,
         error: error.message,
         success: "",
       }));
-
-      if (error.status === 401) {
-        handleTokenExpire(navigate, setFormState);
-      }
     }
   };
 

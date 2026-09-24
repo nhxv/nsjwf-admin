@@ -1,10 +1,4 @@
-import {
-  BiCloudUpload,
-  BiImage,
-  BiLeftArrowAlt,
-  BiTrash,
-  BiX,
-} from "react-icons/bi";
+import { BiCloudUpload, BiImage, BiLeftArrowAlt, BiTrash, BiX } from "react-icons/bi";
 import Checkbox from "../../../../components/forms/Checkbox";
 import ImageModal from "../../../../components/forms/ImageModal";
 import Spinner from "../../../../components/Spinner";
@@ -14,15 +8,7 @@ import Alert from "../../../../components/Alert";
 import SearchSuggest from "../../../../components/forms/SearchSuggest";
 import { Dispatch, SetStateAction, useRef, useState } from "react";
 import { IFormState, ISelectedProduct } from "./VendorOrderForm";
-import {
-  Control,
-  Controller,
-  UseFieldArrayPrepend,
-  UseFieldArrayRemove,
-  UseFieldArrayReplace,
-  UseFormSetValue,
-  useWatch,
-} from "react-hook-form";
+import { Control, Controller, UseFieldArrayPrepend, UseFieldArrayRemove, UseFieldArrayReplace, UseFormSetValue, useWatch } from "react-hook-form";
 import VendorOrderProductRow from "./VendorOrderProductRow";
 import VendorOrderTotal from "./VendorOrderTotal";
 
@@ -67,12 +53,7 @@ export default function VendorOrderFormPage2({
   const filteredProducts =
     search === ""
       ? allProducts
-      : allProducts.filter((product) =>
-          product.name
-            .toLowerCase()
-            .replace(/\s+/g, "")
-            .includes(search.toLowerCase().replace(/\s+/g, ""))
-        );
+      : allProducts.filter((product) => product.name.toLowerCase().replace(/\s+/g, "").includes(search.toLowerCase().replace(/\s+/g, "")));
 
   const isAttachmentExist = useWatch({ control, name: "isAttachmentExist" });
 
@@ -87,9 +68,7 @@ export default function VendorOrderFormPage2({
     onClearForm();
   };
 
-  const toRow = (
-    f: ISelectedProduct & { rowKey?: string }
-  ): ISelectedProduct => ({
+  const toRow = (f: ISelectedProduct & { rowKey?: string }): ISelectedProduct => ({
     id: f.id,
     appear: f.appear,
     name: f.name,
@@ -107,10 +86,7 @@ export default function VendorOrderFormPage2({
     const found = fields.filter((f) => f.name === product.name);
     if (found.length >= product.units.length) {
       // cannot add more of this product, but we'll bump them up the list for searching purpose
-      replace([
-        ...found.map(toRow),
-        ...fields.filter((f) => f.name !== product.name).map(toRow),
-      ]);
+      replace([...found.map(toRow), ...fields.filter((f) => f.name !== product.name).map(toRow)]);
       return;
     }
 
@@ -170,13 +146,7 @@ export default function VendorOrderFormPage2({
             name="isTest"
             control={control}
             render={({ field }) => (
-              <Checkbox
-                id="test"
-                name={field.name}
-                label="Test"
-                onChange={() => field.onChange(!field.value)}
-                checked={field.value}
-              ></Checkbox>
+              <Checkbox id="test" name={field.name} label="Test" onChange={() => field.onChange(!field.value)} checked={field.value}></Checkbox>
             )}
           />
         </div>
@@ -187,13 +157,8 @@ export default function VendorOrderFormPage2({
               className="custom-card sticker-primary relative w-full text-center hover:cursor-pointer dark:border-2"
               onClick={() => {
                 setModalOpen(true);
-              }}
-            >
-              <ImageModal
-                isOpen={imageModalIsOpen}
-                onClose={() => setModalOpen(false)}
-                imageSrc={imageURL}
-              />
+              }}>
+              <ImageModal isOpen={imageModalIsOpen} onClose={() => setModalOpen(false)} imageSrc={imageURL} />
               <button
                 type="button"
                 className="btn btn-circle btn-accent btn-sm absolute -right-4 -top-4 shadow-md"
@@ -202,8 +167,7 @@ export default function VendorOrderFormPage2({
 
                   setValue("attachment", null);
                   setValue("isAttachmentExist", false);
-                }}
-              >
+                }}>
                 <span>
                   <BiX className="h-6 w-6"></BiX>
                 </span>
@@ -227,8 +191,7 @@ export default function VendorOrderFormPage2({
                     imageCompressAborter.current.abort();
                     imageCompressAborter.current = new AbortController();
                     setIsProcessingImg(false);
-                  }}
-                >
+                  }}>
                   <span>
                     <BiX className="h-6 w-6"></BiX>
                   </span>
@@ -272,8 +235,7 @@ export default function VendorOrderFormPage2({
                       }, 1500);
                     }
                   }
-                }}
-              >
+                }}>
                 <span>
                   <BiCloudUpload className="h-8 w-8"></BiCloudUpload>
                 </span>
@@ -285,34 +247,17 @@ export default function VendorOrderFormPage2({
         </div>
 
         <div className="grid grid-cols-12 gap-3">
-          <button
-            type="button"
-            className="btn-outline-primary btn col-span-6"
-            onClick={onPreviousPage}
-            disabled={isSubmitting}
-          >
+          <button type="button" className="btn-outline-primary btn col-span-6" onClick={onPreviousPage} disabled={isSubmitting}>
             <span>
               <BiLeftArrowAlt className="mr-1 h-7 w-7"></BiLeftArrowAlt>
             </span>
             <span>Go back</span>
           </button>
-          <button
-            type="submit"
-            className="btn btn-primary col-span-6"
-            disabled={
-              isInitiallyCompleted ||
-              isSubmitting ||
-              (isAttachmentExist && !imageURL)
-            }
-          >
+          <button type="submit" className="btn btn-primary col-span-6" disabled={isInitiallyCompleted || isSubmitting || (isAttachmentExist && !imageURL)}>
             <span>{edit ? "Update" : "Create"}</span>
           </button>
 
-          <button
-            type="button"
-            className="btn btn-accent col-span-12"
-            onClick={onClear}
-          >
+          <button type="button" className="btn btn-accent col-span-12" onClick={onClear}>
             <span>Revert change(s)</span>
           </button>
         </div>
@@ -344,13 +289,8 @@ export default function VendorOrderFormPage2({
             onChange={(e) => setSearch(e.target.value)}
             onFocus={() => setSearch("")}
             onSelect={onAddProduct}
-            onClear={() => setSearch("")}
-          ></SearchSuggest>
-          <button
-            type="button"
-            className="btn btn-error col-span-12 md:col-span-6"
-            onClick={onRemoveAllProducts}
-          >
+            onClear={() => setSearch("")}></SearchSuggest>
+          <button type="button" className="btn btn-error col-span-12 md:col-span-6" onClick={onRemoveAllProducts}>
             <span>
               <BiTrash className="h-6 w-6"></BiTrash>
             </span>

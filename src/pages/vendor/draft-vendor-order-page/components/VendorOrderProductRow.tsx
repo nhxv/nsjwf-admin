@@ -16,14 +16,7 @@ interface IVendorOrderProductRowProps {
 
 // Reads and writes only its own `products.${index}` slice, so a keystroke
 // here re-renders this row alone, not the whole product list.
-export default function VendorOrderProductRow({
-  control,
-  index,
-  name,
-  units,
-  onRemove,
-  markFormFilled,
-}: IVendorOrderProductRowProps) {
+export default function VendorOrderProductRow({ control, index, name, units, onRemove, markFormFilled }: IVendorOrderProductRowProps) {
   const quantity = useWatch({ control, name: `products.${index}.quantity` });
   const price = useWatch({ control, name: `products.${index}.price` });
 
@@ -50,8 +43,7 @@ export default function VendorOrderProductRow({
                 onChange={(e) => {
                   field.onChange(+e.target.value);
                   markFormFilled();
-                }}
-              ></NumberInput>
+                }}></NumberInput>
             )}
           />
         </div>
@@ -69,8 +61,7 @@ export default function VendorOrderProductRow({
                 onChange={(e) => {
                   field.onChange(e.target.value);
                   markFormFilled();
-                }}
-              ></TextInput>
+                }}></TextInput>
             )}
           />
         </div>
@@ -87,25 +78,18 @@ export default function VendorOrderProductRow({
                   field.onChange(v);
                   markFormFilled();
                 }}
-                options={units.map((unit) => unit.code.split("_")[1])}
-              ></SelectInput>
+                options={units.map((unit) => unit.code.split("_")[1])}></SelectInput>
             )}
           />
         </div>
         <div className="col-span-6 xl:col-span-2">
           <div className="custom-label mb-2">Amount</div>
           <div className="rounded-box flex h-12 items-center bg-base-300 px-3">
-            {price === ""
-              ? 0
-              : niceVisualDecimal(parseFloat((quantity * +price).toString()))}
+            {price === "" ? 0 : niceVisualDecimal(parseFloat((quantity * +price).toString()))}
           </div>
         </div>
       </div>
-      <button
-        type="button"
-        className="btn btn-circle btn-accent btn-sm absolute -right-4 -top-4 shadow-md"
-        onClick={onRemove}
-      >
+      <button type="button" className="btn btn-circle btn-accent btn-sm absolute -right-4 -top-4 shadow-md" onClick={onRemove}>
         <span>
           <BiX className="h-6 w-6"></BiX>
         </span>

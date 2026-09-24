@@ -88,11 +88,7 @@ export default function VendorOrderFormContainer() {
   }
   // edit mode
   else {
-    if (
-      productQuery.isSuccess &&
-      vendorQuery.isSuccess &&
-      orderQuery.isSuccess
-    ) {
+    if (productQuery.isSuccess && vendorQuery.isSuccess && orderQuery.isSuccess) {
       const products = productQuery.data;
       const vendors = vendorQuery.data;
       const order = orderQuery.data;
@@ -122,10 +118,7 @@ export default function VendorOrderFormContainer() {
   const onClear = () => {
     queryClient.invalidateQueries({
       predicate: (query) => {
-        return (
-          query.queryKey[0] === "vendor-orders" ||
-          query.queryKey[0] === "images"
-        );
+        return query.queryKey[0] === "vendor-orders" || query.queryKey[0] === "images";
       },
     });
   };
@@ -152,11 +145,7 @@ export default function VendorOrderFormContainer() {
     (productQuery.isError && productQuery.fetchStatus === "idle") ||
     (orderQuery.isError && orderQuery.fetchStatus === "idle")
   ) {
-    const error = vendorQuery.isError
-      ? vendorQuery.error
-      : productQuery.isError
-      ? productQuery.error
-      : orderQuery.error;
+    const error = vendorQuery.isError ? vendorQuery.error : productQuery.isError ? productQuery.error : orderQuery.error;
 
     return <AlertFromQueryError queryError={error} />;
   }

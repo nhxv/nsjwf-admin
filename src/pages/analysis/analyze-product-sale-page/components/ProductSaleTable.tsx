@@ -10,10 +10,7 @@ type AnalysisResultProps = {
   data: Array<Array<any>>;
 };
 
-export default function ProductSaleTable({
-  columns,
-  data,
-}: AnalysisResultProps) {
+export default function ProductSaleTable({ columns, data }: AnalysisResultProps) {
   /**
    * Structure:
    * Column 0 is reserved for selecting row (to print or whatever).
@@ -77,7 +74,7 @@ export default function ProductSaleTable({
         if (rowIndex !== index) return row;
 
         return [!row[0], ...row.slice(1)];
-      })
+      }),
     );
   };
   const onSelectAll = () => {
@@ -121,13 +118,8 @@ export default function ProductSaleTable({
   return (
     <>
       <div className="my-4 flex items-center justify-end gap-3">
-        <div className="rounded-btn bg-warning p-2 text-sm font-semibold text-warning-content">
-          {total} boxes
-        </div>
-        <button
-          className="rounded-btn flex bg-accent p-2 text-sm font-semibold"
-          onClick={onExportToCSV}
-        >
+        <div className="rounded-btn bg-warning p-2 text-sm font-semibold text-warning-content">{total} boxes</div>
+        <button className="rounded-btn flex bg-accent p-2 text-sm font-semibold" onClick={onExportToCSV}>
           <span className="mr-2">Download CSV</span>
           <BiDownload className="h-5 w-5"></BiDownload>
         </button>
@@ -165,11 +157,7 @@ export default function ProductSaleTable({
                 }
 
                 return (
-                  <th
-                    className="select-none hover:cursor-pointer"
-                    scope="col"
-                    onClick={() => onColumnSort(col)}
-                  >
+                  <th className="select-none hover:cursor-pointer" scope="col" onClick={() => onColumnSort(col)}>
                     {col}
                   </th>
                 );
@@ -186,11 +174,8 @@ export default function ProductSaleTable({
                       return (
                         <td
                           className={`flex w-full justify-center rounded-l-lg py-2 ${
-                            row[0]
-                              ? "bg-success text-primary dark:bg-primary dark:text-white"
-                              : "bg-base-200 dark:bg-base-300"
-                          }`}
-                        >
+                            row[0] ? "bg-success text-primary dark:bg-primary dark:text-white" : "bg-base-200 dark:bg-base-300"
+                          }`}>
                           <input
                             className="checkbox checkbox-primary border-2 border-base-300 dark:border-base-content"
                             type="checkbox"
@@ -203,11 +188,8 @@ export default function ProductSaleTable({
                       return (
                         <td
                           className={`rounded-r-lg p-2 text-center ${
-                            row[0]
-                              ? "bg-success text-primary dark:bg-primary dark:text-white"
-                              : "bg-base-200 dark:bg-base-300"
-                          }`}
-                        >
+                            row[0] ? "bg-success text-primary dark:bg-primary dark:text-white" : "bg-base-200 dark:bg-base-300"
+                          }`}>
                           {data}
                         </td>
                       );
@@ -215,11 +197,8 @@ export default function ProductSaleTable({
                       return (
                         <td
                           className={`p-2 text-center ${
-                            row[0]
-                              ? "bg-success text-primary dark:bg-primary dark:text-secondary"
-                              : "bg-base-200 dark:bg-base-300"
-                          }`}
-                        >
+                            row[0] ? "bg-success text-primary dark:bg-primary dark:text-secondary" : "bg-base-200 dark:bg-base-300"
+                          }`}>
                           {data}
                         </td>
                       );

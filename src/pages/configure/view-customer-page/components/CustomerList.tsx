@@ -5,7 +5,6 @@ import { BiEdit, BiPlus } from "react-icons/bi";
 import SearchInput from "../../../../components/forms/SearchInput";
 import Spinner from "../../../../components/Spinner";
 import Alert, { AlertFromQueryError } from "../../../../components/Alert";
-import { handleTokenExpire } from "../../../../commons/utils/token.util";
 import { useQuery } from "@tanstack/react-query";
 
 export default function CustomerList() {
@@ -30,10 +29,7 @@ export default function CustomerList() {
   const onChangeSearch = (e) => {
     if (e.target.value) {
       const searched = query.data.filter((customer) =>
-        customer.name
-          .toLowerCase()
-          .replace(/\s+/g, "")
-          .includes(e.target.value.toLowerCase().replace(/\s+/g, ""))
+        customer.name.toLowerCase().replace(/\s+/g, "").includes(e.target.value.toLowerCase().replace(/\s+/g, "")),
       );
       setSearch((prev) => ({
         ...prev,
@@ -72,10 +68,7 @@ export default function CustomerList() {
   // When there's an error, React Query will update the query to have error in there.
   // However, when we refetch it, this old obj with the error will be returned first, then the new query object
   // will be returned later, so we need this extra idle check here.
-  if (
-    query.fetchStatus === "paused" ||
-    (query.status === "error" && query.fetchStatus === "idle")
-  ) {
+  if (query.fetchStatus === "paused" || (query.status === "error" && query.fetchStatus === "idle")) {
     if (query.fetchStatus === "paused") {
       return (
         <>
@@ -144,35 +137,24 @@ export default function CustomerList() {
           value={search.query}
           onChange={(e) => onChangeSearch(e)}
           onClear={onClearQuery}
-          onFocus={null}
-        ></SearchInput>
+          onFocus={null}></SearchInput>
       </div>
       <div className="grid grid-cols-12 items-center gap-4 px-4">
         {search.customers.map((customer) => (
-          <div
-            key={customer.id}
-            className="custom-card col-span-12 flex items-center sm:col-span-6 xl:col-span-3"
-          >
-            <button
-              className="btn btn-circle btn-accent mr-4"
-              onClick={() => onEdit(customer.id)}
-            >
+          <div key={customer.id} className="custom-card col-span-12 flex items-center sm:col-span-6 xl:col-span-3">
+            <button className="btn btn-circle btn-accent mr-4" onClick={() => onEdit(customer.id)}>
               <span>
                 <BiEdit className="h-6 w-6"></BiEdit>
               </span>
             </button>
             <div className="flex flex-col">
               <span className="font-medium">{customer.name}</span>
-              <span className="text-sm text-neutral">
-                {customer.discontinued ? "Not available" : "Available"}
-              </span>
+              <span className="text-sm text-neutral">{customer.discontinued ? "Not available" : "Available"}</span>
             </div>
           </div>
         ))}
       </div>
-      {search.customers?.length < 1 && (
-        <div className="text-center">Not found.</div>
-      )}
+      {search.customers?.length < 1 && <div className="text-center">Not found.</div>}
     </>
   );
 }

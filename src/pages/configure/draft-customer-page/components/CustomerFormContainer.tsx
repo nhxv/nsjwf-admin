@@ -1,14 +1,12 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router";
+import { useParams } from "react-router-dom";
 import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
-import api from "../../../../stores/api";
+import api, { getApiError } from "../../../../stores/api";
 import CustomerForm from "./CustomerForm";
-import { handleTokenExpire } from "../../../../commons/utils/token.util";
 
 export default function CustomerFormContainer() {
   const params = useParams();
-  const navigate = useNavigate();
   const [reload, setReload] = useState(false);
   const [fetchData, setFetchData] = useState({
     allProducts: [],
@@ -30,13 +28,10 @@ export default function CustomerFormContainer() {
           const allProductsRes = res[1].data;
           const productFieldData = {};
           for (const product of allProductsRes) {
-            const found = customerRes.customerProductTendencies.find(
-              (p) => p.name === product.name
-            );
+            const found = customerRes.customerProductTendencies.find((p) => p.name === product.name);
             if (found) {
               productFieldData[`quantity${product.id}`] = found.quantity;
-              productFieldData[`unit${product.id}`] =
-                found.unit_code.split("_")[1];
+              productFieldData[`unit${product.id}`] = found.unit_code.split("_")[1];
               editedProductsRes.push({
                 id: product.id,
                 name: product.name,
@@ -64,9 +59,7 @@ export default function CustomerFormContainer() {
           }));
         })
         .catch((e) => {
-          const error = JSON.parse(
-            JSON.stringify(e.response ? e.response.data.error : e)
-          );
+          const error = getApiError(e);
           setFetchData((prev) => ({
             ...prev,
             allProducts: [],
@@ -75,10 +68,6 @@ export default function CustomerFormContainer() {
             error: error.message,
             loading: false,
           }));
-
-          if (error.status === 401) {
-            handleTokenExpire(navigate, setFetchData);
-          }
         });
     } else {
       // create customer
@@ -110,9 +99,7 @@ export default function CustomerFormContainer() {
           }));
         })
         .catch((e) => {
-          const error = JSON.parse(
-            JSON.stringify(e.response ? e.response.data.error : e)
-          );
+          const error = getApiError(e);
           setFetchData((prev) => ({
             ...prev,
             allProducts: [],
@@ -121,10 +108,6 @@ export default function CustomerFormContainer() {
             empty: "",
             loading: false,
           }));
-
-          if (error.status === 401) {
-            handleTokenExpire(navigate, setFetchData);
-          }
         });
     }
   }, [reload, params]);
@@ -142,18 +125,14 @@ export default function CustomerFormContainer() {
   };
 
   if (fetchData.loading) return <Spinner></Spinner>;
-  if (fetchData.error)
-    return <Alert message={fetchData.error} type="error"></Alert>;
-  if (fetchData.empty)
-    return <Alert message={fetchData.empty} type="empty"></Alert>;
+  if (fetchData.error) return <Alert message={fetchData.error} type="error"></Alert>;
+  if (fetchData.empty) return <Alert message={fetchData.empty} type="empty"></Alert>;
 
   return (
     <div className="custom-card mb-12">
       <CustomerForm
         editedId={params?.id ? params.id : null}
-        editedProducts={
-          fetchData.editedProducts?.length > 0 ? fetchData.editedProducts : null
-        }
+        editedProducts={fetchData.editedProducts?.length > 0 ? fetchData.editedProducts : null}
         initialData={initialFields}
         allProducts={fetchData.allProducts}
         onClear={onClear}

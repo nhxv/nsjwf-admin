@@ -4,11 +4,7 @@ interface FileInputProps {
   children?: React.ReactNode;
 }
 
-export default function FileInput({
-  accept,
-  handleFiles,
-  children,
-}: FileInputProps) {
+export default function FileInput({ accept, handleFiles, children }: FileInputProps) {
   return (
     <div
       className="rounded-md border-2 border-dashed border-accent hover:border-primary hover:text-primary"
@@ -28,8 +24,7 @@ export default function FileInput({
         const files = dt.files;
 
         handleFiles(files);
-      }}
-    >
+      }}>
       <label className="flex h-36 flex-col items-center justify-center text-center hover:cursor-pointer">
         {children}
 

@@ -48,70 +48,34 @@ export default function App() {
 
         {/* Customer routes */}
         <Route element={<AdminOutlet />}>
-          <Route
-            path="/customer/draft-customer-order"
-            element={<DraftCustomerOrderPage />}
-          >
+          <Route path="/customer/draft-customer-order" element={<DraftCustomerOrderPage />}>
             <Route path=":code" element={<DraftCustomerOrderPage />}></Route>
           </Route>
-          <Route
-            path="/customer/update-order-priority"
-            element={<UpdateOrderPriorityPage />}
-          ></Route>
-          <Route
-            path="/customer/find-sale"
-            element={<FindCustomerSalePage />}
-          ></Route>
-          <Route
-            path="/customer/view-customer-order"
-            element={<ViewCustomerOrderPage />}
-          ></Route>
-          <Route
-            path="/customer/view-customer-order-detail/:code"
-            element={<CustomerOrderDetailPage />}
-          ></Route>
+          <Route path="/customer/update-order-priority" element={<UpdateOrderPriorityPage />}></Route>
+          <Route path="/customer/find-sale" element={<FindCustomerSalePage />}></Route>
+          <Route path="/customer/view-customer-order" element={<ViewCustomerOrderPage />}></Route>
+          <Route path="/customer/view-customer-order-detail/:code" element={<CustomerOrderDetailPage />}></Route>
         </Route>
 
         {/* Vendor routes */}
         <Route element={<AdminOutlet />}>
-          <Route
-            path="/vendor/draft-vendor-order"
-            element={<DraftVendorOrderPage />}
-          >
+          <Route path="/vendor/draft-vendor-order" element={<DraftVendorOrderPage />}>
             <Route path=":code" element={<DraftVendorOrderPage />}></Route>
           </Route>
-          <Route
-            path="/vendor/find-purchase"
-            element={<FindVendorSalePage />}
-          ></Route>
-          <Route
-            path="/vendor/view-vendor-order"
-            element={<ViewVendorOrderPage />}
-          ></Route>
-          <Route
-            path="/vendor/view-vendor-order-detail/:code"
-            element={<VendorOrderDetailPage />}
-          ></Route>
+          <Route path="/vendor/find-purchase" element={<FindVendorSalePage />}></Route>
+          <Route path="/vendor/view-vendor-order" element={<ViewVendorOrderPage />}></Route>
+          <Route path="/vendor/view-vendor-order-detail/:code" element={<VendorOrderDetailPage />}></Route>
         </Route>
 
         {/* Analysis routes */}
         <Route element={<AdminOutlet />}>
-          <Route
-            path="/analysis/analyze-customer-sale"
-            element={<AnalyzeCustomerSalePage />}
-          ></Route>
-          <Route
-            path="/analysis/analyze-product-sale"
-            element={<AnalyzeProductSalePage />}
-          ></Route>
+          <Route path="/analysis/analyze-customer-sale" element={<AnalyzeCustomerSalePage />}></Route>
+          <Route path="/analysis/analyze-product-sale" element={<AnalyzeProductSalePage />}></Route>
         </Route>
 
         {/* Stock routes */}
         <Route element={<AdminOutlet />}>
-          <Route
-            path="/stock/change-stock"
-            element={<DraftStockPage />}
-          ></Route>
+          <Route path="/stock/change-stock" element={<DraftStockPage />}></Route>
         </Route>
         <Route path="/stock/view-stock" element={<ViewStockPage />}></Route>
 
@@ -125,27 +89,15 @@ export default function App() {
           <Route path="/configure/draft-product" element={<DraftProductPage />}>
             <Route path=":id" element={<DraftProductPage />}></Route>
           </Route>
-          <Route
-            path="/configure/view-product"
-            element={<ViewProductPage />}
-          ></Route>
-          <Route
-            path="/configure/draft-customer"
-            element={<DraftCustomerPage />}
-          >
+          <Route path="/configure/view-product" element={<ViewProductPage />}></Route>
+          <Route path="/configure/draft-customer" element={<DraftCustomerPage />}>
             <Route path=":id" element={<DraftCustomerPage />}></Route>
           </Route>
-          <Route
-            path="/configure/view-customer"
-            element={<ViewCustomerPage />}
-          ></Route>
+          <Route path="/configure/view-customer" element={<ViewCustomerPage />}></Route>
           <Route path="/configure/draft-vendor" element={<DraftVendorPage />}>
             <Route path=":id" element={<DraftVendorPage />}></Route>
           </Route>
-          <Route
-            path="/configure/view-vendor"
-            element={<ViewVendorPage />}
-          ></Route>
+          <Route path="/configure/view-vendor" element={<ViewVendorPage />}></Route>
           {/* <Route path="/configure/vehicle" element={<VehiclePage />}></Route> */}
           <Route path="/configure/employee" element={<EmployeePage />}></Route>
         </Route>

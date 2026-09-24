@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import api from "../../../stores/api";
+import api, { getApiError } from "../../../stores/api";
 import { OrderStatus } from "../../../commons/enums/order-status.enum";
 import SelectInput from "../../../components/forms/SelectInput";
 import Spinner from "../../../components/Spinner";
@@ -8,11 +8,8 @@ import TaskList from "./components/TaskList";
 import { useAuthStore } from "../../../stores/auth.store";
 import Alert from "../../../components/Alert";
 import Stepper from "../../../components/Stepper";
-import { useNavigate } from "react-router-dom";
-import { handleTokenExpire } from "../../../commons/utils/token.util";
 
 export default function ViewTaskPage() {
-  const navigate = useNavigate();
   const [fetchData, setFetchData] = useState({
     tasks: [],
     toast: "",
@@ -39,9 +36,7 @@ export default function ViewTaskPage() {
   const getOrderList = () => {
     let orderPromise = null;
     if (status === OrderStatus.PICKING || status === OrderStatus.SHIPPING) {
-      orderPromise = api.get(
-        `/customer-orders/tasks/search?nickname=${nickname}&status=${status}`
-      );
+      orderPromise = api.get(`/customer-orders/tasks/search?nickname=${nickname}&status=${status}`);
     } else if (status === OrderStatus.CHECKING || OrderStatus.DELIVERED) {
       orderPromise = api.get(`/customer-orders/basic-list/${status}`);
     }
@@ -113,9 +108,7 @@ export default function ViewTaskPage() {
         }
       })
       .catch((e) => {
-        const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e)
-        );
+        const error = getApiError(e);
         setFetchData((prev) => ({
           ...prev,
           tasks: [],
@@ -123,10 +116,6 @@ export default function ViewTaskPage() {
           empty: "",
           loading: false,
         }));
-
-        if (error.status === 401) {
-          handleTokenExpire(navigate, setFetchData);
-        }
       });
   };
 
@@ -175,13 +164,10 @@ export default function ViewTaskPage() {
         <div className="w-11/12 md:w-8/12 lg:w-6/12 xl:w-5/12">
           <div className="mb-6">
             <Stepper
-              steps={Object.values(OrderStatus).filter(
-                (s) => s !== OrderStatus.CANCELED && s !== OrderStatus.COMPLETED
-              )}
+              steps={Object.values(OrderStatus).filter((s) => s !== OrderStatus.CANCELED && s !== OrderStatus.COMPLETED)}
               selected={status}
               onSelect={setStep}
-              display={capitalizeFirst}
-            ></Stepper>
+              display={capitalizeFirst}></Stepper>
           </div>
 
           {fetchData.loading ? (
@@ -198,11 +184,7 @@ export default function ViewTaskPage() {
                     <Alert message={fetchData.empty} type="empty"></Alert>
                   ) : (
                     <>
-                      <TaskList
-                        orders={fetchData.tasks}
-                        reload={forceReload}
-                        status={status}
-                      />
+                      <TaskList orders={fetchData.tasks} reload={forceReload} status={status} />
 
                       {/* {dataState.toast ? (              
               <div className="toast toast-center bottom-20 w-11/12 md:w-6/12 lg:w-3/12">

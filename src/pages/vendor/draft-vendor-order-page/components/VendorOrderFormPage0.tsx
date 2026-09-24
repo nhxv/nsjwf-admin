@@ -18,13 +18,7 @@ interface IPage0Prop {
   setFormState: Dispatch<SetStateAction<IFormState>>;
 }
 
-export default function VendorOrderFormPage0({
-  control,
-  setValue,
-  onGoToPage1,
-  setFormState,
-  fillFormWithProducts,
-}: IPage0Prop) {
+export default function VendorOrderFormPage0({ control, setValue, onGoToPage1, setFormState, fillFormWithProducts }: IPage0Prop) {
   const [isCompressingImg, setIsCompressingImg] = useState(false);
   const imageCompressAborter = useRef(new AbortController());
 
@@ -39,7 +33,7 @@ export default function VendorOrderFormPage0({
         {
           attachment: attachment,
         },
-        { signal: signal }
+        { signal: signal },
       );
       return result.data;
     },
@@ -83,10 +77,7 @@ export default function VendorOrderFormPage0({
   return (
     <div className="custom-card mx-auto grid grid-cols-12 gap-x-2 xl:w-7/12">
       <div className="col-span-12 mb-5">
-        <Alert
-          message="Autofill is an experimental feature. It may not be accurate."
-          type="warning"
-        />
+        <Alert message="Autofill is an experimental feature. It may not be accurate." type="warning" />
       </div>
 
       {isCompressingImg ? (
@@ -137,8 +128,7 @@ export default function VendorOrderFormPage0({
                   }, 1500);
                 }
               }
-            }}
-          >
+            }}>
             <span>
               <BiCloudUpload className="h-8 w-8"></BiCloudUpload>
             </span>
@@ -156,8 +146,7 @@ export default function VendorOrderFormPage0({
           className="btn btn-accent col-span-12 mb-5"
           onClick={() => {
             onCancelCompression();
-          }}
-        >
+          }}>
           Cancel compression
         </button>
       ) : (
@@ -168,8 +157,7 @@ export default function VendorOrderFormPage0({
             e.preventDefault();
             if (autofillQuery.isFetching) onCancelAutofilling();
             onGoToPage1();
-          }}
-        >
+          }}>
           Skip to filling manually
         </button>
       )}

@@ -3,11 +3,7 @@ import { Fragment } from "react";
 export default function InventoryToPrint({ printRef, products }) {
   let locationMapping = {};
   for (const product of products) {
-    if (
-      !product.discontinued &&
-      product.name !== "Credit" &&
-      !product.name.startsWith("--")
-    ) {
+    if (!product.discontinued && product.name !== "Credit" && !product.name.startsWith("--")) {
       if (!locationMapping.hasOwnProperty(product.location_name)) {
         locationMapping[product.location_name] = [];
       }
@@ -23,10 +19,7 @@ export default function InventoryToPrint({ printRef, products }) {
           <Fragment key={`${coolerName}`}>
             <div className="text-sm font-bold">{coolerName}</div>
             {locationMapping[coolerName].map((product) => (
-              <div
-                className="border-b-[1px] border-solid border-black py-[1px]"
-                key={`${product.name}`}
-              >
+              <div className="border-b-[1px] border-solid border-black py-[1px]" key={`${product.name}`}>
                 {product.name}
               </div>
             ))}

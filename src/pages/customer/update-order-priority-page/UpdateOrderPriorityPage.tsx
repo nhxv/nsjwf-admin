@@ -3,13 +3,10 @@ import { OrderStatus } from "../../../commons/enums/order-status.enum";
 import Alert from "../../../components/Alert";
 import Spinner from "../../../components/Spinner";
 import TabGroup from "../../../components/TabGroup";
-import api from "../../../stores/api";
+import api, { getApiError } from "../../../stores/api";
 import EmployeeTaskList from "./components/EmployeeTaskList";
-import { useNavigate } from "react-router-dom";
-import { handleTokenExpire } from "../../../commons/utils/token.util";
 
 export default function UpdateOrderPriorityPage() {
-  const navigate = useNavigate();
   const [status, setStatus] = useState(OrderStatus.PICKING);
   const [fetchData, setFetchData] = useState({
     tasks: [],
@@ -60,9 +57,7 @@ export default function UpdateOrderPriorityPage() {
         }));
       })
       .catch((e) => {
-        const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e)
-        );
+        const error = getApiError(e);
         setFetchData((prev) => ({
           ...prev,
           tasks: [],
@@ -70,10 +65,6 @@ export default function UpdateOrderPriorityPage() {
           empty: "",
           loading: false,
         }));
-
-        if (error.status === 401) {
-          handleTokenExpire(navigate, setFetchData);
-        }
       });
   };
 
@@ -97,16 +88,11 @@ export default function UpdateOrderPriorityPage() {
       <div className="my-8 flex justify-center">
         <TabGroup
           group={Object.values(OrderStatus).filter(
-            (s) =>
-              s !== OrderStatus.CANCELED &&
-              s !== OrderStatus.CHECKING &&
-              s !== OrderStatus.DELIVERED &&
-              s !== OrderStatus.COMPLETED
+            (s) => s !== OrderStatus.CANCELED && s !== OrderStatus.CHECKING && s !== OrderStatus.DELIVERED && s !== OrderStatus.COMPLETED,
           )}
           selected={status}
           onSelect={setStatus}
-          display={capitalizeFirst}
-        ></TabGroup>
+          display={capitalizeFirst}></TabGroup>
       </div>
 
       <div className="w-full">
@@ -123,10 +109,7 @@ export default function UpdateOrderPriorityPage() {
                 {fetchData.empty ? (
                   <Alert message={fetchData.empty} type="empty"></Alert>
                 ) : (
-                  <EmployeeTaskList
-                    employeeTasks={fetchData.tasks}
-                    reload={onClear}
-                  />
+                  <EmployeeTaskList employeeTasks={fetchData.tasks} reload={onClear} />
                 )}
               </>
             )}

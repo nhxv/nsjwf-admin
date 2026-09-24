@@ -13,9 +13,7 @@ export default function CustomerSaleForm({ onFormSubmit, onFormClear }) {
   const today = new Date();
   const { control, handleSubmit, reset } = useForm<FormFields>({
     defaultValues: {
-      start_date: convertTime(
-        new Date(today.getFullYear(), today.getMonth(), 1)
-      ),
+      start_date: convertTime(new Date(today.getFullYear(), today.getMonth(), 1)),
       end_date: convertTime(today),
       product: "",
     },
@@ -49,9 +47,7 @@ export default function CustomerSaleForm({ onFormSubmit, onFormClear }) {
                 id="product-select"
                 name="product-select"
                 placeholder="Name of product"
-                onChange={(e) =>
-                  field.onChange(e.target.value ? e.target.value : "")
-                }
+                onChange={(e) => field.onChange(e.target.value ? e.target.value : "")}
                 value={field.value}
               />
             )}
@@ -71,8 +67,7 @@ export default function CustomerSaleForm({ onFormSubmit, onFormClear }) {
                 placeholder="Date"
                 name={field.name}
                 value={field.value}
-                onChange={field.onChange}
-              ></DateInput>
+                onChange={field.onChange}></DateInput>
             )}
           />
         </div>
@@ -90,8 +85,7 @@ export default function CustomerSaleForm({ onFormSubmit, onFormClear }) {
                 placeholder="Date"
                 name={field.name}
                 value={field.value}
-                onChange={field.onChange}
-              ></DateInput>
+                onChange={field.onChange}></DateInput>
             )}
           />
         </div>
@@ -101,11 +95,7 @@ export default function CustomerSaleForm({ onFormSubmit, onFormClear }) {
         <button className="btn btn-primary w-full" type="submit">
           Submit
         </button>
-        <button
-          className="btn btn-accent w-full"
-          type="button"
-          onClick={onClear}
-        >
+        <button className="btn btn-accent w-full" type="button" onClick={onClear}>
           Clear all
         </button>
       </div>

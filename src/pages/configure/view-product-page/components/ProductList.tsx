@@ -4,8 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Alert from "../../../../components/Alert";
 import SearchInput from "../../../../components/forms/SearchInput";
 import Spinner from "../../../../components/Spinner";
-import api from "../../../../stores/api";
-import { handleTokenExpire } from "../../../../commons/utils/token.util";
+import api, { getApiError } from "../../../../stores/api";
 import InventoryToPrint from "./InventoryToPrint";
 import { useReactToPrint } from "react-to-print";
 
@@ -51,19 +50,13 @@ export default function ProductList() {
         }
       })
       .catch((e) => {
-        const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e)
-        );
+        const error = getApiError(e);
         setFetchData((prev) => ({
           ...prev,
           error: error.message,
           empty: "",
           loading: false,
         }));
-
-        if (error.status === 401) {
-          handleTokenExpire(navigate, setFetchData);
-        }
       });
   }, []);
 
@@ -78,10 +71,7 @@ export default function ProductList() {
   const onChangeSearch = (e) => {
     if (e.target.value) {
       const searched = fetchData.products.filter((product) =>
-        product.name
-          .toLowerCase()
-          .replace(/\s+/g, "")
-          .includes(e.target.value.toLowerCase().replace(/\s+/g, ""))
+        product.name.toLowerCase().replace(/\s+/g, "").includes(e.target.value.toLowerCase().replace(/\s+/g, "")),
       );
       setSearch((prev) => ({
         ...prev,
@@ -169,8 +159,7 @@ export default function ProductList() {
           value={search.query}
           onChange={(e) => onChangeSearch(e)}
           onClear={onClearQuery}
-          onFocus={null}
-        ></SearchInput>
+          onFocus={null}></SearchInput>
         {fetchData.products.length > 0 && (
           <label className="btn btn-square btn-accent">
             <BiPrinter className="h-6 w-6" onClick={handlePrint}></BiPrinter>
@@ -179,30 +168,20 @@ export default function ProductList() {
       </div>
       <div className="grid grid-cols-12 gap-4 px-4">
         {search.products.map((product) => (
-          <div
-            key={product.id}
-            className="custom-card col-span-12 flex items-center md:col-span-6 lg:col-span-3"
-          >
-            <button
-              className="btn btn-circle btn-accent mr-4"
-              onClick={() => onEdit(product.id)}
-            >
+          <div key={product.id} className="custom-card col-span-12 flex items-center md:col-span-6 lg:col-span-3">
+            <button className="btn btn-circle btn-accent mr-4" onClick={() => onEdit(product.id)}>
               <span>
                 <BiEdit className="h-6 w-6"></BiEdit>
               </span>
             </button>
             <div className="flex flex-col">
               <span className="font-medium">{product.name}</span>
-              <span className="text-sm text-neutral">
-                {product.discontinued ? "Not available" : "Available"}
-              </span>
+              <span className="text-sm text-neutral">{product.discontinued ? "Not available" : "Available"}</span>
             </div>
           </div>
         ))}
       </div>
-      {search.products?.length < 1 && (
-        <div className="text-center">Not found.</div>
-      )}
+      {search.products?.length < 1 && <div className="text-center">Not found.</div>}
     </>
   );
 }

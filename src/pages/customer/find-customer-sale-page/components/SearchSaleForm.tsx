@@ -10,10 +10,7 @@ interface SearchSaleFormProps {
   onSearchSubmit: (urlParams: string) => void;
 }
 
-export default function SearchSaleForm({
-  customers,
-  onSearchSubmit,
-}: SearchSaleFormProps) {
+export default function SearchSaleForm({ customers, onSearchSubmit }: SearchSaleFormProps) {
   const startOfMonth = new Date();
   startOfMonth.setDate(1);
   const { control, handleSubmit } = useForm({
@@ -54,15 +51,7 @@ export default function SearchSaleForm({
           <Controller
             name="manualCode"
             control={control}
-            render={({ field }) => (
-              <TextInput
-                id="by-code"
-                placeholder="Code"
-                name="by-code"
-                value={field.value}
-                onChange={field.onChange}
-              />
-            )}
+            render={({ field }) => <TextInput id="by-code" placeholder="Code" name="by-code" value={field.value} onChange={field.onChange} />}
           />
         </div>
         <div className="shrink-0 basis-1/12">
@@ -78,8 +67,7 @@ export default function SearchSaleForm({
                 placeholder="Date"
                 name={field.name}
                 value={field.value}
-                onChange={field.onChange}
-              ></DateInput>
+                onChange={field.onChange}></DateInput>
             )}
           />
         </div>
@@ -96,8 +84,7 @@ export default function SearchSaleForm({
                 placeholder="Date"
                 name={field.name}
                 value={field.value}
-                onChange={field.onChange}
-              ></DateInput>
+                onChange={field.onChange}></DateInput>
             )}
           />
         </div>
@@ -130,9 +117,7 @@ export default function SearchSaleForm({
                 id="product-select"
                 name="product-select"
                 placeholder="Keywords"
-                onChange={(e) =>
-                  field.onChange(e.target.value ? e.target.value : "")
-                }
+                onChange={(e) => field.onChange(e.target.value ? e.target.value : "")}
                 value={field.value}
               />
             )}

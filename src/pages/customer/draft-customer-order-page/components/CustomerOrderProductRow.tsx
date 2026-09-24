@@ -16,14 +16,7 @@ interface ICustomerOrderProductRowProps {
 
 // Reads and writes only its own `products.${index}` slice, so a keystroke
 // here re-renders this row alone, not the whole product list.
-export default function CustomerOrderProductRow({
-  control,
-  index,
-  name,
-  units,
-  recentCost,
-  onRemove,
-}: ICustomerOrderProductRowProps) {
+export default function CustomerOrderProductRow({ control, index, name, units, recentCost, onRemove }: ICustomerOrderProductRowProps) {
   const quantity = useWatch({ control, name: `products.${index}.quantity` });
   const price = useWatch({ control, name: `products.${index}.price` });
 
@@ -51,13 +44,7 @@ export default function CustomerOrderProductRow({
             name={`products.${index}.quantity`}
             control={control}
             render={({ field }) => (
-              <NumberInput
-                id={`quantity-${index}`}
-                placeholder="Qty"
-                name={field.name}
-                value={field.value}
-                onChange={field.onChange}
-              ></NumberInput>
+              <NumberInput id={`quantity-${index}`} placeholder="Qty" name={field.name} value={field.value} onChange={field.onChange}></NumberInput>
             )}
           />
         </div>
@@ -67,13 +54,7 @@ export default function CustomerOrderProductRow({
             name={`products.${index}.price`}
             control={control}
             render={({ field }) => (
-              <TextInput
-                id={`price-${index}`}
-                placeholder="Price"
-                name={field.name}
-                value={field.value}
-                onChange={field.onChange}
-              ></TextInput>
+              <TextInput id={`price-${index}`} placeholder="Price" name={field.name} value={field.value} onChange={field.onChange}></TextInput>
             )}
           />
         </div>
@@ -83,12 +64,7 @@ export default function CustomerOrderProductRow({
             name={`products.${index}.unit`}
             control={control}
             render={({ field }) => (
-              <SelectInput
-                name={field.name}
-                value={field.value}
-                setValue={field.onChange}
-                options={units.map((unit) => unit.code.split("_")[1])}
-              ></SelectInput>
+              <SelectInput name={field.name} value={field.value} setValue={field.onChange} options={units.map((unit) => unit.code.split("_")[1])}></SelectInput>
             )}
           />
         </div>
@@ -97,20 +73,12 @@ export default function CustomerOrderProductRow({
           <div className="rounded-box flex h-12 items-center bg-base-300 px-3">
             {
               // Display amount to be more explicit for user.
-              price === ""
-                ? ""
-                : price === "0"
-                ? "N/C"
-                : niceVisualDecimal(parseFloat((quantity * +price).toString()))
+              price === "" ? "" : price === "0" ? "N/C" : niceVisualDecimal(parseFloat((quantity * +price).toString()))
             }
           </div>
         </div>
       </div>
-      <button
-        type="button"
-        className="btn btn-circle btn-accent btn-sm absolute -right-4 -top-4 shadow-md"
-        onClick={onRemove}
-      >
+      <button type="button" className="btn btn-circle btn-accent btn-sm absolute -right-4 -top-4 shadow-md" onClick={onRemove}>
         <span>
           <BiX className="h-6 w-6"></BiX>
         </span>

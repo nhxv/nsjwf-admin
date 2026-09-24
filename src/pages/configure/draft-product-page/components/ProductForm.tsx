@@ -8,9 +8,8 @@ import Checkbox from "../../../../components/forms/Checkbox";
 import SelectInput from "../../../../components/forms/SelectInput";
 import TextInput from "../../../../components/forms/TextInput";
 import Spinner from "../../../../components/Spinner";
-import api from "../../../../stores/api";
+import api, { getApiError } from "../../../../stores/api";
 import UnitForm from "./UnitForm";
-import { handleTokenExpire } from "../../../../commons/utils/token.util";
 
 export default function ProductForm({ editedId, units, initialData, onClear }) {
   const navigate = useNavigate();
@@ -77,19 +76,13 @@ export default function ProductForm({ editedId, units, initialData, onClear }) {
         }, 2000);
       }
     } catch (e) {
-      const error = JSON.parse(
-        JSON.stringify(e.response ? e.response.data.error : e)
-      );
+      const error = getApiError(e);
       setFormState((prev) => ({
         ...prev,
         success: "",
         error: error.message,
         loading: false,
       }));
-
-      if (error.status === 401) {
-        handleTokenExpire(navigate, setFormState);
-      }
     }
   };
 
@@ -118,14 +111,7 @@ export default function ProductForm({ editedId, units, initialData, onClear }) {
             name="name"
             control={control}
             render={({ field }) => (
-              <TextInput
-                id="name"
-                type="text"
-                placeholder={`Name`}
-                name={field.name}
-                value={field.value}
-                onChange={field.onChange}
-              ></TextInput>
+              <TextInput id="name" type="text" placeholder={`Name`} name={field.name} value={field.value} onChange={field.onChange}></TextInput>
             )}
           />
         </div>
@@ -135,12 +121,7 @@ export default function ProductForm({ editedId, units, initialData, onClear }) {
             name="location"
             control={control}
             render={({ field }) => (
-              <SelectInput
-                name={field.name}
-                value={field.value}
-                setValue={field.onChange}
-                options={Object.values(Location)}
-              ></SelectInput>
+              <SelectInput name={field.name} value={field.value} setValue={field.onChange} options={Object.values(Location)}></SelectInput>
             )}
           />
         </div>
@@ -149,11 +130,7 @@ export default function ProductForm({ editedId, units, initialData, onClear }) {
           <>
             <div className="mb-5">
               <p className="custom-label mb-2">Custom unit</p>
-              <button
-                type="button"
-                className="btn-outline-accent btn w-full justify-start p-3 font-normal"
-                onClick={onAddUnit}
-              >
+              <button type="button" className="btn-outline-accent btn w-full justify-start p-3 font-normal" onClick={onAddUnit}>
                 <span>
                   <BiPlus className="mr-2 h-6 w-6"></BiPlus>
                 </span>
@@ -167,8 +144,7 @@ export default function ProductForm({ editedId, units, initialData, onClear }) {
                   type="button"
                   key={unit.id}
                   className="btn-outline-accent btn mb-5 w-full justify-start p-3 font-normal"
-                  onClick={() => onEditUnit(unit)}
-                >
+                  onClick={() => onEditUnit(unit)}>
                   <span>
                     <BiEditAlt className="mr-2 h-6 w-6"></BiEditAlt>
                   </span>
@@ -185,21 +161,11 @@ export default function ProductForm({ editedId, units, initialData, onClear }) {
             name="discontinued"
             control={control}
             render={({ field }) => (
-              <Checkbox
-                id="discontinued"
-                name={field.name}
-                onChange={() => field.onChange(!field.value)}
-                checked={!field.value}
-                label="In use"
-              ></Checkbox>
+              <Checkbox id="discontinued" name={field.name} onChange={() => field.onChange(!field.value)} checked={!field.value} label="In use"></Checkbox>
             )}
           />
         </div>
-        <button
-          type="submit"
-          className="btn btn-primary mt-1 w-full"
-          disabled={formState.loading || isSubmitting}
-        >
+        <button type="submit" className="btn btn-primary mt-1 w-full" disabled={formState.loading || isSubmitting}>
           <span>{editedId ? "Edit" : "Create"} product</span>
         </button>
         <div>
@@ -220,12 +186,7 @@ export default function ProductForm({ editedId, units, initialData, onClear }) {
           )}
         </div>
       </form>
-      <UnitForm
-        productId={modal.productId}
-        unit={modal.unit}
-        isOpen={modal.isOpen}
-        onClose={onCloseUnitForm}
-      ></UnitForm>
+      <UnitForm productId={modal.productId} unit={modal.unit} isOpen={modal.isOpen} onClose={onCloseUnitForm}></UnitForm>
     </>
   );
 }

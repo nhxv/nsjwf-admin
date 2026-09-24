@@ -2,25 +2,12 @@ import { useState } from "react";
 import { Combobox } from "@headlessui/react";
 import { BiChevronDown } from "react-icons/bi";
 
-export default function SelectSearch({
-  name,
-  value,
-  setValue,
-  options,
-  nullable = false,
-}) {
+export default function SelectSearch({ name, value, setValue, options, nullable = false }) {
   const [selected, setSelected] = useState(value);
   const [query, setQuery] = useState("");
 
   const filteredOption =
-    query === ""
-      ? options
-      : options.filter((option) =>
-          option
-            .toLowerCase()
-            .replace(/\s+/g, "")
-            .includes(query.toLowerCase().replace(/\s+/g, ""))
-        );
+    query === "" ? options : options.filter((option) => option.toLowerCase().replace(/\s+/g, "").includes(query.toLowerCase().replace(/\s+/g, "")));
 
   const onChangeValue = (v) => {
     setValue(v);
@@ -30,12 +17,7 @@ export default function SelectSearch({
 
   return (
     <div className="w-full">
-      <Combobox
-        name={name}
-        value={selected}
-        onChange={(v) => onChangeValue(v)}
-        nullable
-      >
+      <Combobox name={name} value={selected} onChange={(v) => onChangeValue(v)} nullable>
         <div className="relative">
           <div className="rounded-btn relative w-full cursor-default overflow-hidden bg-base-100 text-left">
             <Combobox.Input
@@ -49,20 +31,14 @@ export default function SelectSearch({
           </div>
           <Combobox.Options className="rounded-btn absolute z-10 mt-1 max-h-72 w-full overflow-auto border-2 border-base-300 bg-base-100 py-2 shadow-md focus:outline-none dark:bg-base-200">
             {filteredOption.length === 0 && query !== "" ? (
-              <div className="relative cursor-default select-none px-4 py-3">
-                Nothing found.
-              </div>
+              <div className="relative cursor-default select-none px-4 py-3">Nothing found.</div>
             ) : (
               filteredOption.map((option) => (
                 <Combobox.Option
                   key={option}
-                  className="rounded-btn relative mx-2 cursor-default select-none px-4 py-3 text-base-content 
-                  ui-active:bg-info ui-active:text-info-content"
-                  value={option}
-                >
-                  <span className="block truncate ui-selected:font-semibold ui-selected:text-info-content">
-                    {option}
-                  </span>
+                  className="rounded-btn relative mx-2 cursor-default select-none px-4 py-3 text-base-content ui-active:bg-info ui-active:text-info-content"
+                  value={option}>
+                  <span className="block truncate ui-selected:font-semibold ui-selected:text-info-content">{option}</span>
                 </Combobox.Option>
               ))
             )}

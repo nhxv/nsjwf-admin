@@ -5,14 +5,7 @@ export default function ProfilePage() {
 
   const calcDayOfYear = (date: Date) => {
     // https://stackoverflow.com/a/40975730
-    return (
-      (Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) -
-        Date.UTC(date.getFullYear(), 0, 0)) /
-      24 /
-      60 /
-      60 /
-      1000
-    );
+    return (Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) - Date.UTC(date.getFullYear(), 0, 0)) / 24 / 60 / 60 / 1000;
   };
 
   return (

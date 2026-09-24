@@ -11,9 +11,7 @@ export default function ProductSaleForm({ onFormSubmit, onFormClear }) {
   const today = new Date();
   const { control, handleSubmit, reset } = useForm<FormFields>({
     defaultValues: {
-      start_date: convertTime(
-        new Date(today.getFullYear(), today.getMonth(), 1)
-      ),
+      start_date: convertTime(new Date(today.getFullYear(), today.getMonth(), 1)),
       end_date: convertTime(today),
     },
   });
@@ -47,8 +45,7 @@ export default function ProductSaleForm({ onFormSubmit, onFormClear }) {
                 placeholder="Date"
                 name={field.name}
                 value={field.value}
-                onChange={field.onChange}
-              ></DateInput>
+                onChange={field.onChange}></DateInput>
             )}
           />
         </div>
@@ -66,8 +63,7 @@ export default function ProductSaleForm({ onFormSubmit, onFormClear }) {
                 placeholder="Date"
                 name={field.name}
                 value={field.value}
-                onChange={field.onChange}
-              ></DateInput>
+                onChange={field.onChange}></DateInput>
             )}
           />
         </div>
@@ -77,11 +73,7 @@ export default function ProductSaleForm({ onFormSubmit, onFormClear }) {
         <button className="btn btn-primary w-full" type="submit">
           Submit
         </button>
-        <button
-          className="btn btn-accent w-full"
-          type="button"
-          onClick={onClear}
-        >
+        <button className="btn btn-accent w-full" type="button" onClick={onClear}>
           Clear all
         </button>
       </div>

@@ -1,14 +1,11 @@
 import { useEffect, useState } from "react";
 import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
-import api from "../../../../stores/api";
+import api, { getApiError } from "../../../../stores/api";
 import { BiEdit } from "react-icons/bi";
 import EmployeeForm from "./EmployeeForm";
-import { useNavigate } from "react-router-dom";
-import { handleTokenExpire } from "../../../../commons/utils/token.util";
 
 export default function EmployeeList() {
-  const navigate = useNavigate();
   const [fetchData, setFetchData] = useState({
     employees: [],
     error: "",
@@ -36,18 +33,12 @@ export default function EmployeeList() {
         }));
       })
       .catch((e) => {
-        const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e)
-        );
+        const error = getApiError(e);
         setFetchData((prev) => ({
           ...prev,
           error: error.message,
           loading: false,
         }));
-
-        if (error.status === 401) {
-          handleTokenExpire(navigate, setFetchData);
-        }
       });
   }, [reload]);
 
@@ -88,33 +79,20 @@ export default function EmployeeList() {
     <>
       <div className="grid grid-cols-12 gap-4 px-4">
         {fetchData.employees.map((employee) => (
-          <div
-            key={employee.nickname}
-            className="custom-card col-span-12 flex items-center sm:col-span-6 xl:col-span-4"
-          >
-            <button
-              className="btn btn-circle btn-accent mr-4"
-              onClick={() => onOpenForm(employee)}
-            >
+          <div key={employee.nickname} className="custom-card col-span-12 flex items-center sm:col-span-6 xl:col-span-4">
+            <button className="btn btn-circle btn-accent mr-4" onClick={() => onOpenForm(employee)}>
               <span>
                 <BiEdit className="h-6 w-6"></BiEdit>
               </span>
             </button>
             <div className="flex flex-col">
               <span className="font-medium">{employee.nickname}</span>
-              <span className="text-sm text-neutral">
-                {employee.active ? "Available" : "Not available"}
-              </span>
+              <span className="text-sm text-neutral">{employee.active ? "Available" : "Not available"}</span>
             </div>
           </div>
         ))}
       </div>
-      <EmployeeForm
-        isOpen={modal.isOpen}
-        onClose={onCloseForm}
-        employee={modal.employee}
-        onReload={onReload}
-      ></EmployeeForm>
+      <EmployeeForm isOpen={modal.isOpen} onClose={onCloseForm} employee={modal.employee} onReload={onReload}></EmployeeForm>
     </>
   );
 }

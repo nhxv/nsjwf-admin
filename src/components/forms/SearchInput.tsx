@@ -1,15 +1,7 @@
 import { BiSearch, BiX } from "react-icons/bi";
 import { useRef } from "react";
 
-export default function SearchInput({
-  id,
-  placeholder,
-  name,
-  value,
-  onChange,
-  onClear,
-  onFocus,
-}) {
+export default function SearchInput({ id, placeholder, name, value, onChange, onClear, onFocus }) {
   const searchRef = useRef(null);
 
   return (
@@ -21,10 +13,7 @@ export default function SearchInput({
         </div>
 
         {document.activeElement === searchRef.current && (
-          <div
-            className="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3"
-            onClick={onClear}
-          >
+          <div className="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3" onClick={onClear}>
             <BiX className="h-6 w-6 text-neutral" />
           </div>
         )}

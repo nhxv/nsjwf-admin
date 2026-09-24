@@ -2,13 +2,10 @@ import { useEffect, useState } from "react";
 import { StockChangeReason } from "../../../../commons/enums/stock-change-reason.enum";
 import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
-import api from "../../../../stores/api";
+import api, { getApiError } from "../../../../stores/api";
 import ProductStockForm from "./StockForm";
-import { handleTokenExpire } from "../../../../commons/utils/token.util";
-import { useNavigate } from "react-router-dom";
 
 export default function StockFormContainer() {
-  const navigate = useNavigate();
   const [reload, setReload] = useState(false);
   const [fetchData, setFetchData] = useState({
     products: [],
@@ -46,9 +43,7 @@ export default function StockFormContainer() {
         }
       })
       .catch((e) => {
-        const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e)
-        );
+        const error = getApiError(e);
         setFetchData((prev) => ({
           ...prev,
           products: [],
@@ -56,10 +51,6 @@ export default function StockFormContainer() {
           error: error.message,
           loading: false,
         }));
-
-        if (error.status === 401) {
-          handleTokenExpire(navigate, setFetchData);
-        }
       });
   }, [reload]);
 
@@ -75,18 +66,12 @@ export default function StockFormContainer() {
   };
 
   if (fetchData.loading) return <Spinner></Spinner>;
-  if (fetchData.error)
-    return <Alert message={fetchData.error} type="error"></Alert>;
-  if (fetchData.empty)
-    return <Alert message={fetchData.empty} type="empty"></Alert>;
+  if (fetchData.error) return <Alert message={fetchData.error} type="error"></Alert>;
+  if (fetchData.empty) return <Alert message={fetchData.empty} type="empty"></Alert>;
 
   return (
     <div className="custom-card mb-12">
-      <ProductStockForm
-        initialData={initialFields}
-        products={fetchData.products}
-        onClear={onClear}
-      />
+      <ProductStockForm initialData={initialFields} products={fetchData.products} onClear={onClear} />
     </div>
   );
 }

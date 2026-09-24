@@ -15,11 +15,7 @@ export default function FindVendorSalePage() {
   const [detailModal, setDetailModal] = useState({
     isOpen: false,
   });
-  const [queryURL, setQueryURL] = useState(
-    `/vendor-orders/sold/search?start_date=${convertTime(
-      new Date()
-    )}&end_date=${convertTime(new Date())}`
-  );
+  const [queryURL, setQueryURL] = useState(`/vendor-orders/sold/search?start_date=${convertTime(new Date())}&end_date=${convertTime(new Date())}`);
   const [focus, setFocus] = useState({ report: null });
   const [latestFirst, setLatestFirst] = useState(true);
 
@@ -58,11 +54,7 @@ export default function FindVendorSalePage() {
     setQueryURL(`/vendor-orders/sold/search?${url}`);
   };
 
-  const reports = reportQuery?.data
-    ? latestFirst
-      ? reportQuery.data
-      : reportQuery.data.toReversed()
-    : [];
+  const reports = reportQuery?.data ? (latestFirst ? reportQuery.data : reportQuery.data.toReversed()) : [];
 
   return (
     <section className="min-h-screen">
@@ -90,31 +82,17 @@ export default function FindVendorSalePage() {
       <div className="">
         <div className="fixed bottom-24 right-6 z-20 flex gap-2 md:right-8">
           <button className="btn btn-circle btn-accent" onClick={onToggleSort}>
-            {latestFirst ? (
-              <BiSortDown className="h-6 w-6"></BiSortDown>
-            ) : (
-              <BiSortUp className="h-6 w-6"></BiSortUp>
-            )}
+            {latestFirst ? <BiSortDown className="h-6 w-6"></BiSortDown> : <BiSortUp className="h-6 w-6"></BiSortUp>}
           </button>
-          <button
-            className="btn btn-circle btn-accent lg:hidden"
-            onClick={onSearch}
-          >
+          <button className="btn btn-circle btn-accent lg:hidden" onClick={onSearch}>
             <BiSearch className="h-6 w-6"></BiSearch>
           </button>
         </div>
         <div className="mx-4">
           <div className="hidden lg:block">
-            <SearchSaleForm
-              vendors={vendorQuery?.data ? vendorQuery.data : []}
-              onSearchSubmit={onSearchSubmit}
-            />
+            <SearchSaleForm vendors={vendorQuery?.data ? vendorQuery.data : []} onSearchSubmit={onSearchSubmit} />
           </div>
-          <VendorSaleList
-            reports={reports}
-            reportQuery={reportQuery}
-            onSelectSale={onSelectSale}
-          />
+          <VendorSaleList reports={reports} reportQuery={reportQuery} onSelectSale={onSelectSale} />
         </div>
       </div>
     </section>

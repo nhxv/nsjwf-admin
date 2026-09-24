@@ -9,16 +9,9 @@ import NumberInput from "../../../../components/forms/NumberInput";
 import SearchSuggest from "../../../../components/forms/SearchSuggest";
 import TextInput from "../../../../components/forms/TextInput";
 import SelectInput from "../../../../components/forms/SelectInput";
-import api from "../../../../stores/api";
-import { handleTokenExpire } from "../../../../commons/utils/token.util";
+import api, { getApiError } from "../../../../stores/api";
 
-export default function CustomerForm({
-  editedId,
-  editedProducts,
-  initialData,
-  allProducts,
-  onClear,
-}) {
+export default function CustomerForm({ editedId, editedProducts, initialData, allProducts, onClear }) {
   const navigate = useNavigate();
   const [formState, setFormState] = useState({
     success: "",
@@ -26,9 +19,7 @@ export default function CustomerForm({
     loading: false,
     page: 0,
   });
-  const [selectedProducts, setSelectedProducts] = useState(
-    editedProducts ? editedProducts : []
-  );
+  const [selectedProducts, setSelectedProducts] = useState(editedProducts ? editedProducts : []);
   const [search, setSearch] = useState({
     products: [],
     query: "",
@@ -124,18 +115,12 @@ export default function CustomerForm({
         }
       }
     } catch (e) {
-      const error = JSON.parse(
-        JSON.stringify(e.response ? e.response.data.error : e)
-      );
+      const error = getApiError(e);
       setFormState((prev) => ({
         ...prev,
         error: error.message,
         loading: false,
       }));
-
-      if (error.status === 401) {
-        handleTokenExpire(navigate, setFormState);
-      }
     }
   };
 
@@ -150,10 +135,7 @@ export default function CustomerForm({
   const onChangeSearch = (e) => {
     if (e.target.value) {
       const searched = allProducts.filter((product) =>
-        product.name
-          .toLowerCase()
-          .replace(/\s+/g, "")
-          .includes(e.target.value.toLowerCase().replace(/\s+/g, ""))
+        product.name.toLowerCase().replace(/\s+/g, "").includes(e.target.value.toLowerCase().replace(/\s+/g, "")),
       );
       setSearch((prev) => ({
         ...prev,
@@ -179,9 +161,7 @@ export default function CustomerForm({
     setSearch((prev) => ({ ...prev, products: [], query: "" }));
     setValue(`quantity${id}`, 0);
     setValue(`unit${id}`, "BOX");
-    setSelectedProducts(
-      selectedProducts.filter((product) => product.id !== id)
-    );
+    setSelectedProducts(selectedProducts.filter((product) => product.id !== id));
   };
 
   const onClearQuery = () => {
@@ -202,14 +182,7 @@ export default function CustomerForm({
               name="name"
               control={control}
               render={({ field }) => (
-                <TextInput
-                  id="name"
-                  type="text"
-                  placeholder={`Name`}
-                  name={field.name}
-                  value={field.value}
-                  onChange={field.onChange}
-                ></TextInput>
+                <TextInput id="name" type="text" placeholder={`Name`} name={field.name} value={field.value} onChange={field.onChange}></TextInput>
               )}
             />
           </div>
@@ -222,14 +195,7 @@ export default function CustomerForm({
               name="address"
               control={control}
               render={({ field }) => (
-                <TextInput
-                  id="address"
-                  type="text"
-                  placeholder={`Address`}
-                  name={field.name}
-                  value={field.value}
-                  onChange={field.onChange}
-                ></TextInput>
+                <TextInput id="address" type="text" placeholder={`Address`} name={field.name} value={field.value} onChange={field.onChange}></TextInput>
               )}
             />
           </div>
@@ -242,14 +208,7 @@ export default function CustomerForm({
               name="phone"
               control={control}
               render={({ field }) => (
-                <TextInput
-                  id="phone"
-                  type="text"
-                  name={field.name}
-                  placeholder={`Phone`}
-                  value={field.value}
-                  onChange={field.onChange}
-                ></TextInput>
+                <TextInput id="phone" type="text" name={field.name} placeholder={`Phone`} value={field.value} onChange={field.onChange}></TextInput>
               )}
             />
           </div>
@@ -262,23 +221,13 @@ export default function CustomerForm({
               name="email"
               control={control}
               render={({ field }) => (
-                <TextInput
-                  id="email"
-                  type="email"
-                  name={field.name}
-                  placeholder={`Email`}
-                  value={field.value}
-                  onChange={field.onChange}
-                ></TextInput>
+                <TextInput id="email" type="email" name={field.name} placeholder={`Email`} value={field.value} onChange={field.onChange}></TextInput>
               )}
             />
           </div>
 
           <div className="mb-5">
-            <label
-              htmlFor="presentative"
-              className="custom-label mb-2 inline-block"
-            >
+            <label htmlFor="presentative" className="custom-label mb-2 inline-block">
               Presentative
             </label>
             <Controller
@@ -291,8 +240,7 @@ export default function CustomerForm({
                   name={field.name}
                   placeholder={`Presentative`}
                   value={field.value}
-                  onChange={field.onChange}
-                ></TextInput>
+                  onChange={field.onChange}></TextInput>
               )}
             />
           </div>
@@ -302,22 +250,11 @@ export default function CustomerForm({
               name="discontinued"
               control={control}
               render={({ field }) => (
-                <Checkbox
-                  id="discontinued"
-                  name={field.name}
-                  onChange={() => field.onChange(!field.value)}
-                  checked={!field.value}
-                  label="In use"
-                ></Checkbox>
+                <Checkbox id="discontinued" name={field.name} onChange={() => field.onChange(!field.value)} checked={!field.value} label="In use"></Checkbox>
               )}
             />
           </div>
-          <button
-            type="button"
-            className="btn btn-primary mt-3 w-full"
-            onClick={onNextPage}
-            disabled={formState.loading || isSubmitting}
-          >
+          <button type="button" className="btn btn-primary mt-3 w-full" onClick={onNextPage} disabled={formState.loading || isSubmitting}>
             <span>Product template</span>
             <span>
               <BiRightArrowAlt className="ml-1 h-7 w-7"></BiRightArrowAlt>
@@ -343,32 +280,20 @@ export default function CustomerForm({
                   }
                   onSelect={onAddProduct}
                   onClear={onClearQuery}
-                  allowOverlap
-                ></SearchSuggest>
+                  allowOverlap></SearchSuggest>
               </div>
 
               <div className="mb-5">
                 {selectedProducts && selectedProducts.length > 0 ? (
                   <div className="grid grid-cols-12 gap-3">
                     {selectedProducts.map((product) => (
-                      <div
-                        key={product.id}
-                        className="rounded-box col-span-12 flex flex-col border-2 border-base-300 p-3 md:col-span-6"
-                      >
+                      <div key={product.id} className="rounded-box col-span-12 flex flex-col border-2 border-base-300 p-3 md:col-span-6">
                         <div className="mb-3 flex justify-between">
                           <div>
-                            <span className="text-lg font-semibold">
-                              {product.name}
-                            </span>
-                            <span className="block text-sm text-neutral">
-                              Product
-                            </span>
+                            <span className="text-lg font-semibold">{product.name}</span>
+                            <span className="block text-sm text-neutral">Product</span>
                           </div>
-                          <button
-                            type="button"
-                            className="btn btn-circle btn-accent btn-sm"
-                            onClick={() => onRemoveProduct(product.id)}
-                          >
+                          <button type="button" className="btn btn-circle btn-accent btn-sm" onClick={() => onRemoveProduct(product.id)}>
                             <span>
                               <BiX className="h-6 w-6"></BiX>
                             </span>
@@ -376,9 +301,7 @@ export default function CustomerForm({
                         </div>
                         <div className="mb-2 flex gap-2">
                           <div className="w-6/12">
-                            <label className="custom-label mb-2 inline-block">
-                              Qty
-                            </label>
+                            <label className="custom-label mb-2 inline-block">Qty</label>
                             <Controller
                               name={`quantity${product.id}`}
                               control={control}
@@ -388,15 +311,12 @@ export default function CustomerForm({
                                   name={field.name}
                                   placeholder="Qty"
                                   value={field.value}
-                                  onChange={field.onChange}
-                                ></NumberInput>
+                                  onChange={field.onChange}></NumberInput>
                               )}
                             />
                           </div>
                           <div className="w-6/12">
-                            <label className="custom-label mb-2 inline-block">
-                              Unit
-                            </label>
+                            <label className="custom-label mb-2 inline-block">Unit</label>
                             <Controller
                               name={`unit${product.id}`}
                               control={control}
@@ -405,10 +325,7 @@ export default function CustomerForm({
                                   name={field.name}
                                   value={field.value}
                                   setValue={field.onChange}
-                                  options={product.units.map(
-                                    (unit) => unit.code.split("_")[1]
-                                  )}
-                                ></SelectInput>
+                                  options={product.units.map((unit) => unit.code.split("_")[1])}></SelectInput>
                               )}
                             />
                           </div>
@@ -423,21 +340,13 @@ export default function CustomerForm({
                 )}
               </div>
               <div className="grid grid-cols-12 gap-3">
-                <button
-                  type="button"
-                  className="btn-outline-primary btn col-span-6"
-                  onClick={onPreviousPage}
-                >
+                <button type="button" className="btn-outline-primary btn col-span-6" onClick={onPreviousPage}>
                   <span>
                     <BiLeftArrowAlt className="mr-1 h-7 w-7"></BiLeftArrowAlt>
                   </span>
                   <span>Go back</span>
                 </button>
-                <button
-                  type="submit"
-                  className="btn btn-primary col-span-6"
-                  disabled={formState.loading || isSubmitting}
-                >
+                <button type="submit" className="btn btn-primary col-span-6" disabled={formState.loading || isSubmitting}>
                   <span>{editedId ? "Update" : "Create"}</span>
                 </button>
               </div>
@@ -445,11 +354,7 @@ export default function CustomerForm({
           )}
         </>
       )}
-      <button
-        type="button"
-        className="btn btn-accent mt-3 w-full"
-        onClick={onClear}
-      >
+      <button type="button" className="btn btn-accent mt-3 w-full" onClick={onClear}>
         <span>Clear change(s)</span>
       </button>
       <div>

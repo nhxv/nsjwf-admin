@@ -30,17 +30,11 @@ export default function CustomerOrderDetail() {
     navigate(`/customer/draft-customer-order/${code}`);
   };
 
-  if (
-    orderQuery.status === "pending" ||
-    orderQuery.fetchStatus === "fetching"
-  ) {
+  if (orderQuery.status === "pending" || orderQuery.fetchStatus === "fetching") {
     return <Spinner></Spinner>;
   }
 
-  if (
-    orderQuery.fetchStatus === "paused" ||
-    (orderQuery.status === "error" && orderQuery.fetchStatus === "idle")
-  ) {
+  if (orderQuery.fetchStatus === "paused" || (orderQuery.status === "error" && orderQuery.fetchStatus === "idle")) {
     if (orderQuery.fetchStatus === "paused") {
       return <Alert type="error" message="Network Error" />;
     }
@@ -55,15 +49,9 @@ export default function CustomerOrderDetail() {
       {/* basic order info */}
       <div className="flex justify-between">
         <div>
-          <span className="block">
-            #{order.manual_code ? order.manual_code : order.code}
-          </span>
-          <span className="block text-xl font-semibold">
-            {order.customer_name}
-          </span>
-          <span className="block text-sm text-neutral">
-            {convertTimeToText(new Date(order.expected_at))}
-          </span>
+          <span className="block">#{order.manual_code ? order.manual_code : order.code}</span>
+          <span className="block text-xl font-semibold">{order.customer_name}</span>
+          <span className="block text-sm text-neutral">{convertTimeToText(new Date(order.expected_at))}</span>
           <div className="mb-6">
             <span className="text-sm text-neutral">by {order.assign_to}</span>
           </div>
@@ -79,8 +67,7 @@ export default function CustomerOrderDetail() {
           <>
             <Disclosure.Button
               className="divider w-full py-6 hover:text-primary hover:before:bg-primary hover:after:bg-primary"
-              onClick={(e) => e.stopPropagation()}
-            >
+              onClick={(e) => e.stopPropagation()}>
               {open ? (
                 <>
                   Hide
@@ -115,28 +102,17 @@ export default function CustomerOrderDetail() {
                 {/* products in order */}
                 {order.productCustomerOrders.map((productOrder) => {
                   return (
-                    <div
-                      key={productOrder.unit_code}
-                      className="rounded-btn mb-2 flex items-center justify-center bg-base-200 py-3 dark:bg-base-300"
-                    >
+                    <div key={productOrder.unit_code} className="rounded-btn mb-2 flex items-center justify-center bg-base-200 py-3 dark:bg-base-300">
                       <div className="ml-3 w-6/12">
                         <span>{productOrder.product_name}</span>
                       </div>
                       <div className="w-3/12 text-center">
                         <span>
                           {productOrder.quantity}{" "}
-                          {productOrder.unit_code
-                            .split("_")[1]
-                            .toLowerCase() === "box"
-                            ? ``
-                            : `(${productOrder.unit_code
-                                .split("_")[1]
-                                .toLowerCase()})`}
+                          {productOrder.unit_code.split("_")[1].toLowerCase() === "box" ? `` : `(${productOrder.unit_code.split("_")[1].toLowerCase()})`}
                         </span>
                       </div>
-                      <div className="w-3/12 text-center">
-                        {niceVisualDecimal(productOrder.unit_price)}
-                      </div>
+                      <div className="w-3/12 text-center">{niceVisualDecimal(productOrder.unit_price)}</div>
                     </div>
                   );
                 })}
@@ -150,19 +126,10 @@ export default function CustomerOrderDetail() {
       <div className="mt-2 flex items-center">
         <span className="mr-2">Total:</span>
         <span className="text-xl font-medium">
-          $
-          {niceVisualDecimal(
-            order.productCustomerOrders.reduce(
-              (prev, curr) => prev + curr.quantity * curr.unit_price,
-              0
-            )
-          )}
+          ${niceVisualDecimal(order.productCustomerOrders.reduce((prev, curr) => prev + curr.quantity * curr.unit_price, 0))}
         </span>
       </div>
-      <button
-        className="btn btn-primary mt-5 w-full"
-        onClick={() => onUpdateOrder(order.code)}
-      >
+      <button className="btn btn-primary mt-5 w-full" onClick={() => onUpdateOrder(order.code)}>
         Update order
       </button>
     </div>
