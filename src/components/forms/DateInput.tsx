@@ -1,12 +1,4 @@
-export default function DateInput({
-  id,
-  placeholder,
-  name,
-  value,
-  onChange,
-  min,
-  max,
-}) {
+export default function DateInput({ id, placeholder, name, value, onChange, min, max }) {
   return (
     <>
       <input

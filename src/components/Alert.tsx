@@ -58,11 +58,7 @@ export function AlertFromQueryError({ queryError }: IAlertFromQueryErrorProps) {
   // BUG: Revisit code that use this since it'll also check for a paused fetchStatus
   // and for networking issue, it's not clear whether query.error/queryError exist or not.
   const navigate = useNavigate();
-  let error = JSON.parse(
-    JSON.stringify(
-      queryError.response ? queryError.response.data.error : queryError
-    )
-  );
+  let error = JSON.parse(JSON.stringify(queryError.response ? queryError.response.data.error : queryError));
 
   if (error.status === 401) {
     // Do the dark magic thing here.
@@ -71,7 +67,7 @@ export function AlertFromQueryError({ queryError }: IAlertFromQueryErrorProps) {
       (err) => {
         error = err;
       },
-      (msg) => ({ ...error, message: msg })
+      (msg) => ({ ...error, message: msg }),
     );
   }
 

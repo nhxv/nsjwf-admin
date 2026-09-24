@@ -16,11 +16,7 @@ export default function FindCustomerSalePage() {
     isOpen: false,
   });
   const [queryURL, setQueryURL] = useState(
-    `/customer-orders/sold/search?start_date=${convertTime(
-      new Date()
-    )}&end_date=${convertTime(new Date())}&date_type=${encodeURIComponent(
-      "updated_at"
-    )}`
+    `/customer-orders/sold/search?start_date=${convertTime(new Date())}&end_date=${convertTime(new Date())}&date_type=${encodeURIComponent("updated_at")}`,
   );
   const [focus, setFocus] = useState({ report: null });
   const [latestFirst, setLatestFirst] = useState(true);
@@ -61,11 +57,7 @@ export default function FindCustomerSalePage() {
     setQueryURL(`/customer-orders/sold/search?${url}`);
   };
 
-  const reports = reportQuery?.data?.sales
-    ? latestFirst
-      ? reportQuery.data.sales
-      : reportQuery.data.sales.toReversed()
-    : [];
+  const reports = reportQuery?.data?.sales ? (latestFirst ? reportQuery.data.sales : reportQuery.data.sales.toReversed()) : [];
 
   return (
     <section className="min-h-screen">
@@ -88,31 +80,17 @@ export default function FindCustomerSalePage() {
       <div className="">
         <div className="fixed bottom-24 right-6 z-20 flex gap-2 md:right-8">
           <button className="btn btn-circle btn-accent" onClick={onToggleSort}>
-            {latestFirst ? (
-              <BiSortDown className="h-6 w-6"></BiSortDown>
-            ) : (
-              <BiSortUp className="h-6 w-6"></BiSortUp>
-            )}
+            {latestFirst ? <BiSortDown className="h-6 w-6"></BiSortDown> : <BiSortUp className="h-6 w-6"></BiSortUp>}
           </button>
-          <button
-            className="btn btn-circle btn-accent lg:hidden"
-            onClick={onSearch}
-          >
+          <button className="btn btn-circle btn-accent lg:hidden" onClick={onSearch}>
             <BiSearch className="h-6 w-6"></BiSearch>
           </button>
         </div>
         <div className="mx-4">
           <div className="hidden lg:block">
-            <SearchSaleForm
-              customers={customerQuery?.data ? customerQuery.data : []}
-              onSearchSubmit={onSearchSubmit}
-            />
+            <SearchSaleForm customers={customerQuery?.data ? customerQuery.data : []} onSearchSubmit={onSearchSubmit} />
           </div>
-          <CustomerSaleList
-            reports={reports}
-            reportQuery={reportQuery}
-            onSelectSale={onSelectSale}
-          />
+          <CustomerSaleList reports={reports} reportQuery={reportQuery} onSelectSale={onSelectSale} />
         </div>
       </div>
     </section>

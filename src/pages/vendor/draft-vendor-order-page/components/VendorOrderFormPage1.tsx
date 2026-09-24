@@ -4,12 +4,7 @@ import DateInput from "../../../../components/forms/DateInput";
 import SelectInput from "../../../../components/forms/SelectInput";
 import SelectSearch from "../../../../components/forms/SelectSearch";
 import TextInput from "../../../../components/forms/TextInput";
-import {
-  Control,
-  Controller,
-  UseFormSetValue,
-  useWatch,
-} from "react-hook-form";
+import { Control, Controller, UseFormSetValue, useWatch } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 import api from "../../../../stores/api";
 import { IFormState } from "./VendorOrderForm";
@@ -24,14 +19,7 @@ interface IPage1Prop {
   fillFormWithProducts: (products: Array<any>) => void;
 }
 
-export default function VendorOrderFormPage1({
-  control,
-  formState,
-  vendors,
-  onClearForm,
-  onGoToPage2,
-  fillFormWithProducts,
-}: IPage1Prop) {
+export default function VendorOrderFormPage1({ control, formState, vendors, onClearForm, onGoToPage2, fillFormWithProducts }: IPage1Prop) {
   const vendorName = useWatch({ control, name: "vendorName" });
 
   const templateQuery = useQuery({
@@ -40,9 +28,7 @@ export default function VendorOrderFormPage1({
       // Non-critical function, return an empty array if it fails
       // (like no tendency or initial load).
       try {
-        const result = await api.get(
-          `/vendors/active/tendency/${encodeURIComponent(vendorName)}`
-        );
+        const result = await api.get(`/vendors/active/tendency/${encodeURIComponent(vendorName)}`);
         return result.data.vendorProductTendencies;
       } catch {
         return [];
@@ -73,14 +59,7 @@ export default function VendorOrderFormPage1({
         <Controller
           name="vendorName"
           control={control}
-          render={({ field }) => (
-            <SelectSearch
-              name="vendor"
-              value={field.value}
-              setValue={field.onChange}
-              options={vendors.map((vendor) => vendor.name)}
-            />
-          )}
+          render={({ field }) => <SelectSearch name="vendor" value={field.value} setValue={field.onChange} options={vendors.map((vendor) => vendor.name)} />}
         />
       </div>
 
@@ -92,14 +71,7 @@ export default function VendorOrderFormPage1({
           name="manualCode"
           control={control}
           render={({ field }) => (
-            <TextInput
-              id="manual-code"
-              type="text"
-              placeholder={`Manual code`}
-              name={field.name}
-              value={field.value}
-              onChange={field.onChange}
-            ></TextInput>
+            <TextInput id="manual-code" type="text" placeholder={`Manual code`} name={field.name} value={field.value} onChange={field.onChange}></TextInput>
           )}
         />
       </div>
@@ -119,8 +91,7 @@ export default function VendorOrderFormPage1({
               placeholder="Expected Delivery Date"
               name={field.name}
               value={field.value}
-              onChange={field.onChange}
-            ></DateInput>
+              onChange={field.onChange}></DateInput>
           )}
         />
       </div>
@@ -143,31 +114,21 @@ export default function VendorOrderFormPage1({
                   status !== OrderStatus.SHIPPING &&
                   status !== OrderStatus.CANCELED &&
                   // status !== OrderStatus.COMPLETED
-                  status !== OrderStatus.DELIVERED
-              )}
-            ></SelectInput>
+                  status !== OrderStatus.DELIVERED,
+              )}></SelectInput>
           )}
         />
       </div>
 
       {vendorName && (
-        <button
-          type="button"
-          className="btn btn-primary col-span-12 mt-3"
-          onClick={onNextPage}
-          disabled={templateQuery.isFetching}
-        >
+        <button type="button" className="btn btn-primary col-span-12 mt-3" onClick={onNextPage} disabled={templateQuery.isFetching}>
           <span>Set product</span>
           <span>
             <BiRightArrowAlt className="ml-1 h-7 w-7"></BiRightArrowAlt>
           </span>
         </button>
       )}
-      <button
-        type="button"
-        className="btn btn-accent col-span-12 mt-3"
-        onClick={onClearForm}
-      >
+      <button type="button" className="btn btn-accent col-span-12 mt-3" onClick={onClearForm}>
         <span>Clear change(s)</span>
       </button>
     </div>

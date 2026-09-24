@@ -38,11 +38,7 @@ export class ApiError<T = any> extends Error {
 const isAbsoluteURL = (url: string) => /^([a-z][a-z\d+\-.]*:)?\/\//i.test(url);
 
 const buildURL = (url: string, params?: QueryParams) => {
-  let fullURL = isAbsoluteURL(url)
-    ? url
-    : url
-    ? `${API_URL.replace(/\/+$/, "")}/${url.replace(/^\/+/, "")}`
-    : API_URL;
+  let fullURL = isAbsoluteURL(url) ? url : url ? `${API_URL.replace(/\/+$/, "")}/${url.replace(/^\/+/, "")}` : API_URL;
 
   if (params) {
     const search = new URLSearchParams();
@@ -60,10 +56,7 @@ const buildURL = (url: string, params?: QueryParams) => {
 };
 
 const isVisitable = (value: unknown) =>
-  Array.isArray(value) ||
-  (value !== null &&
-    typeof value === "object" &&
-    Object.getPrototypeOf(value) === Object.prototype);
+  Array.isArray(value) || (value !== null && typeof value === "object" && Object.getPrototypeOf(value) === Object.prototype);
 
 /**
  * Same encoding as axios' `postForm`: nested keys use brackets (`items[0][name]`),
@@ -80,9 +73,7 @@ export const toFormData = (obj: object, formData = new FormData()) => {
     Object.entries(value).forEach(([key, el]) => {
       if (el === null || el === undefined) return;
       const keyPath = [...path, key];
-      const name = keyPath
-        .map((token, i) => (i ? `[${token}]` : token))
-        .join("");
+      const name = keyPath.map((token, i) => (i ? `[${token}]` : token)).join("");
 
       if (path.length === 0 && Array.isArray(el) && !el.some(isVisitable)) {
         el.forEach((item) => {
@@ -102,10 +93,7 @@ export const toFormData = (obj: object, formData = new FormData()) => {
   return formData;
 };
 
-const parseBody = async (
-  res: Response,
-  responseType: RequestConfig["responseType"]
-) => {
+const parseBody = async (res: Response, responseType: RequestConfig["responseType"]) => {
   if (responseType === "blob") {
     return res.blob();
   }
@@ -118,12 +106,7 @@ const parseBody = async (
   }
 };
 
-const request = async <T = any>(
-  method: string,
-  url: string,
-  data?: unknown,
-  config: RequestConfig = {}
-): Promise<ApiResponse<T>> => {
+const request = async <T = any>(method: string, url: string, data?: unknown, config: RequestConfig = {}): Promise<ApiResponse<T>> => {
   const headers = new Headers({ Accept: "application/json, text/plain, */*" });
   const token = localStorage.getItem("token");
   if (token) {
@@ -139,9 +122,7 @@ const request = async <T = any>(
     body = JSON.stringify(data);
   }
 
-  Object.entries(config.headers ?? {}).forEach(([key, value]) =>
-    headers.set(key, value)
-  );
+  Object.entries(config.headers ?? {}).forEach(([key, value]) => headers.set(key, value));
 
   let res: Response;
   try {
@@ -165,29 +146,19 @@ const request = async <T = any>(
   };
 
   if (!res.ok) {
-    throw new ApiError(
-      `Request failed with status code ${res.status}`,
-      response
-    );
+    throw new ApiError(`Request failed with status code ${res.status}`, response);
   }
   return response;
 };
 
 const api = {
-  get: <T = any>(url: string, config?: RequestConfig) =>
-    request<T>("GET", url, undefined, config),
-  delete: <T = any>(url: string, config?: RequestConfig) =>
-    request<T>("DELETE", url, undefined, config),
-  post: <T = any>(url: string, data?: unknown, config?: RequestConfig) =>
-    request<T>("POST", url, data, config),
-  put: <T = any>(url: string, data?: unknown, config?: RequestConfig) =>
-    request<T>("PUT", url, data, config),
-  patch: <T = any>(url: string, data?: unknown, config?: RequestConfig) =>
-    request<T>("PATCH", url, data, config),
-  postForm: <T = any>(url: string, data: object, config?: RequestConfig) =>
-    request<T>("POST", url, toFormData(data), config),
-  putForm: <T = any>(url: string, data: object, config?: RequestConfig) =>
-    request<T>("PUT", url, toFormData(data), config),
+  get: <T = any>(url: string, config?: RequestConfig) => request<T>("GET", url, undefined, config),
+  delete: <T = any>(url: string, config?: RequestConfig) => request<T>("DELETE", url, undefined, config),
+  post: <T = any>(url: string, data?: unknown, config?: RequestConfig) => request<T>("POST", url, data, config),
+  put: <T = any>(url: string, data?: unknown, config?: RequestConfig) => request<T>("PUT", url, data, config),
+  patch: <T = any>(url: string, data?: unknown, config?: RequestConfig) => request<T>("PATCH", url, data, config),
+  postForm: <T = any>(url: string, data: object, config?: RequestConfig) => request<T>("POST", url, toFormData(data), config),
+  putForm: <T = any>(url: string, data: object, config?: RequestConfig) => request<T>("PUT", url, toFormData(data), config),
 };
 
 export default api;

@@ -3,10 +3,7 @@ import { useState, useMemo, useRef } from "react";
 import { BiEdit, BiPrinter } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import { Role } from "../../../../commons/enums/role.enum";
-import {
-  niceVisualDecimal,
-  parseFraction,
-} from "../../../../commons/utils/fraction.util";
+import { niceVisualDecimal, parseFraction } from "../../../../commons/utils/fraction.util";
 import Alert, { AlertFromQueryError } from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
 import SearchInput from "../../../../components/forms/SearchInput";
@@ -24,16 +21,7 @@ export default function StockList() {
     query: "",
   });
   const total = useMemo(() => {
-    return niceVisualDecimal(
-      search.products.reduce(
-        (prev, curr) =>
-          prev +
-          (!curr.recent_cost
-            ? 0
-            : curr.recent_cost * parseFraction(curr.stock.quantity)),
-        0
-      )
-    );
+    return niceVisualDecimal(search.products.reduce((prev, curr) => prev + (!curr.recent_cost ? 0 : curr.recent_cost * parseFraction(curr.stock.quantity)), 0));
   }, [search.products]);
 
   const stockQuery = useQuery<any, any>({
@@ -52,10 +40,7 @@ export default function StockList() {
   const onChangeSearch = (e) => {
     if (e.target.value) {
       const searched = stockQuery.data.filter((product) =>
-        product.name
-          .toLowerCase()
-          .replace(/\s+/g, "")
-          .includes(e.target.value.toLowerCase().replace(/\s+/g, ""))
+        product.name.toLowerCase().replace(/\s+/g, "").includes(e.target.value.toLowerCase().replace(/\s+/g, "")),
       );
       setSearch((prev) => ({
         ...prev,
@@ -83,17 +68,11 @@ export default function StockList() {
     content: () => printRef.current,
   });
 
-  if (
-    stockQuery.status === "pending" ||
-    stockQuery.fetchStatus === "fetching"
-  ) {
+  if (stockQuery.status === "pending" || stockQuery.fetchStatus === "fetching") {
     return <Spinner></Spinner>;
   }
 
-  if (
-    stockQuery.fetchStatus === "paused" ||
-    (stockQuery.status === "error" && stockQuery.fetchStatus === "idle")
-  ) {
+  if (stockQuery.fetchStatus === "paused" || (stockQuery.status === "error" && stockQuery.fetchStatus === "idle")) {
     if (stockQuery.fetchStatus === "paused") {
       return (
         <div className="mx-auto w-11/12 md:w-10/12 lg:w-6/12">
@@ -113,11 +92,7 @@ export default function StockList() {
     <>
       {(role === Role.MASTER || role === Role.ADMIN) && (
         <div className="fixed bottom-24 right-6 z-20 md:right-8">
-          <button
-            type="button"
-            className="btn btn-circle btn-primary"
-            onClick={onChangeStock}
-          >
+          <button type="button" className="btn btn-circle btn-primary" onClick={onChangeStock}>
             <span>
               <BiEdit className="h-6 w-6"></BiEdit>
             </span>
@@ -133,8 +108,7 @@ export default function StockList() {
         <div className="flex items-center gap-2">
           <div className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content">
             <span>
-              {search.products.length}{" "}
-              {search.products.length > 1 ? "products" : "product"}
+              {search.products.length} {search.products.length > 1 ? "products" : "product"}
             </span>
           </div>
           <div className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content">
@@ -151,14 +125,10 @@ export default function StockList() {
               value={search.query}
               onChange={(e) => onChangeSearch(e)}
               onClear={onClearQuery}
-              onFocus={null}
-            ></SearchInput>
+              onFocus={null}></SearchInput>
             {search.products.length > 0 && (
               <label className="btn btn-square btn-accent">
-                <BiPrinter
-                  className="h-6 w-6"
-                  onClick={handlePrint}
-                ></BiPrinter>
+                <BiPrinter className="h-6 w-6" onClick={handlePrint}></BiPrinter>
               </label>
             )}
           </div>
@@ -169,8 +139,7 @@ export default function StockList() {
         {search.products.map((p) => (
           <div
             key={p.name}
-            className="rounded-btn col-span-12 flex items-center justify-between bg-base-100 p-3 shadow-md md:col-span-6 lg:col-span-3 dark:bg-base-200"
-          >
+            className="rounded-btn col-span-12 flex items-center justify-between bg-base-100 p-3 shadow-md md:col-span-6 lg:col-span-3 dark:bg-base-200">
             <div>
               <span>{p.name}</span>
             </div>
@@ -180,9 +149,7 @@ export default function StockList() {
           </div>
         ))}
       </div>
-      {search.products?.length < 1 && (
-        <div className="text-center">Not found.</div>
-      )}
+      {search.products?.length < 1 && <div className="text-center">Not found.</div>}
     </>
   );
 }

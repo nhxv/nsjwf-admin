@@ -20,9 +20,7 @@ export default function VehicleForm() {
   const { vehicle, formType } = useVehicleConfigStore((state) => {
     return state;
   });
-  const clearVehicleConfig = useVehicleConfigStore(
-    (state) => state.clearVehicleConfig
-  );
+  const clearVehicleConfig = useVehicleConfigStore((state) => state.clearVehicleConfig);
 
   const { control, handleSubmit, reset } = useForm({
     values: {
@@ -44,10 +42,7 @@ export default function VehicleForm() {
     if (formType === FormType.EDIT) {
       // edit mode
       try {
-        const res = await api.put<VehicleResponse>(
-          `/vehicles/${vehicle.id}`,
-          data
-        );
+        const res = await api.put<VehicleResponse>(`/vehicles/${vehicle.id}`, data);
         setFormState((prev) => ({
           ...prev,
           success: "Updated successfully.",
@@ -59,9 +54,7 @@ export default function VehicleForm() {
           clearVehicleConfig();
         }, 2000);
       } catch (e) {
-        const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e)
-        );
+        const error = JSON.parse(JSON.stringify(e.response ? e.response.data.error : e));
         setFormState((prev) => ({
           ...prev,
           error: error.message,
@@ -84,9 +77,7 @@ export default function VehicleForm() {
         }, 2000);
         reset();
       } catch (e) {
-        const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e)
-        );
+        const error = JSON.parse(JSON.stringify(e.response ? e.response.data.error : e));
         setFormState((prev) => ({
           ...prev,
           error: error.message,
@@ -112,10 +103,7 @@ export default function VehicleForm() {
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="mb-5">
-          <label
-            htmlFor="license-plate"
-            className="custom-label mb-2 inline-block"
-          >
+          <label htmlFor="license-plate" className="custom-label mb-2 inline-block">
             <span>License Plate</span>
             <span className="text-red-500">*</span>
           </label>
@@ -129,8 +117,7 @@ export default function VehicleForm() {
                 name={field.name}
                 placeholder={`License Plate`}
                 value={field.value}
-                onChange={field.onChange}
-              ></TextInput>
+                onChange={field.onChange}></TextInput>
             )}
           />
         </div>
@@ -143,14 +130,7 @@ export default function VehicleForm() {
             name="nickname"
             control={control}
             render={({ field }) => (
-              <TextInput
-                id="nickname"
-                type="text"
-                name={field.name}
-                placeholder={`Nickname`}
-                value={field.value}
-                onChange={field.onChange}
-              ></TextInput>
+              <TextInput id="nickname" type="text" name={field.name} placeholder={`Nickname`} value={field.value} onChange={field.onChange}></TextInput>
             )}
           />
         </div>
@@ -163,13 +143,7 @@ export default function VehicleForm() {
             name="volume"
             control={control}
             render={({ field }) => (
-              <NumberInput
-                id="volume"
-                name={field.name}
-                placeholder={`Volume`}
-                value={field.value}
-                onChange={field.onChange}
-              ></NumberInput>
+              <NumberInput id="volume" name={field.name} placeholder={`Volume`} value={field.value} onChange={field.onChange}></NumberInput>
             )}
           />
         </div>
@@ -179,13 +153,7 @@ export default function VehicleForm() {
             name="available"
             control={control}
             render={({ field }) => (
-              <Checkbox
-                id="available"
-                name={field.name}
-                onChange={() => field.onChange(!field.value)}
-                checked={field.value}
-                label="Available"
-              ></Checkbox>
+              <Checkbox id="available" name={field.name} onChange={() => field.onChange(!field.value)} checked={field.value} label="Available"></Checkbox>
             )}
           />
         </div>
@@ -195,30 +163,16 @@ export default function VehicleForm() {
             name="discontinued"
             control={control}
             render={({ field }) => (
-              <Checkbox
-                id="discontinued"
-                name={field.name}
-                onChange={() => field.onChange(!field.value)}
-                checked={!field.value}
-                label="In use"
-              ></Checkbox>
+              <Checkbox id="discontinued" name={field.name} onChange={() => field.onChange(!field.value)} checked={!field.value} label="In use"></Checkbox>
             )}
           />
         </div>
 
-        <button
-          type="submit"
-          className="btn btn-primary mt-1 w-full"
-          disabled={formState.loading}
-        >
+        <button type="submit" className="btn btn-primary mt-1 w-full" disabled={formState.loading}>
           <span>{formType} vehicle</span>
         </button>
 
-        <button
-          type="button"
-          className="btn btn-accent mt-3 w-full"
-          onClick={onClear}
-        >
+        <button type="button" className="btn btn-accent mt-3 w-full" onClick={onClear}>
           <span>Clear change(s)</span>
         </button>
 

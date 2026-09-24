@@ -13,12 +13,7 @@ interface SearchSaleModalProps {
   onClose: () => any;
 }
 
-export default function SearchSaleModal({
-  isOpen,
-  customers,
-  onSearchSubmit,
-  onClose,
-}: SearchSaleModalProps) {
+export default function SearchSaleModal({ isOpen, customers, onSearchSubmit, onClose }: SearchSaleModalProps) {
   const startOfMonth = new Date();
   startOfMonth.setDate(1);
   const { control, handleSubmit } = useForm({
@@ -56,11 +51,7 @@ export default function SearchSaleModal({
     <Modal isOpen={isOpen} onClose={onClose} hideOverflow={false}>
       <div className="custom-card text-left">
         <div className="flex justify-end">
-          <button
-            type="button"
-            className="btn btn-circle btn-accent btn-sm"
-            onClick={onClose}
-          >
+          <button type="button" className="btn btn-circle btn-accent btn-sm" onClick={onClose}>
             <span>
               <BiX className="h-6 w-6"></BiX>
             </span>
@@ -73,15 +64,7 @@ export default function SearchSaleModal({
               <Controller
                 name="manualCode"
                 control={control}
-                render={({ field }) => (
-                  <TextInput
-                    id="by-code"
-                    placeholder="Code"
-                    name="by-code"
-                    value={field.value}
-                    onChange={field.onChange}
-                  />
-                )}
+                render={({ field }) => <TextInput id="by-code" placeholder="Code" name="by-code" value={field.value} onChange={field.onChange} />}
               />
             </div>
             <div className="grow">
@@ -97,8 +80,7 @@ export default function SearchSaleModal({
                     placeholder="Date"
                     name={field.name}
                     value={field.value}
-                    onChange={field.onChange}
-                  ></DateInput>
+                    onChange={field.onChange}></DateInput>
                 )}
               />
             </div>
@@ -115,8 +97,7 @@ export default function SearchSaleModal({
                     placeholder="Date"
                     name={field.name}
                     value={field.value}
-                    onChange={field.onChange}
-                  ></DateInput>
+                    onChange={field.onChange}></DateInput>
                 )}
               />
             </div>
@@ -152,9 +133,7 @@ export default function SearchSaleModal({
                     id="product-select"
                     name="product-select"
                     placeholder="Keywords"
-                    onChange={(e) =>
-                      field.onChange(e.target.value ? e.target.value : "")
-                    }
+                    onChange={(e) => field.onChange(e.target.value ? e.target.value : "")}
                     value={field.value}
                   />
                 )}

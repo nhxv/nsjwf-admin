@@ -60,9 +60,7 @@ export default function UpdateOrderPriorityPage() {
         }));
       })
       .catch((e) => {
-        const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e)
-        );
+        const error = JSON.parse(JSON.stringify(e.response ? e.response.data.error : e));
         setFetchData((prev) => ({
           ...prev,
           tasks: [],
@@ -97,16 +95,11 @@ export default function UpdateOrderPriorityPage() {
       <div className="my-8 flex justify-center">
         <TabGroup
           group={Object.values(OrderStatus).filter(
-            (s) =>
-              s !== OrderStatus.CANCELED &&
-              s !== OrderStatus.CHECKING &&
-              s !== OrderStatus.DELIVERED &&
-              s !== OrderStatus.COMPLETED
+            (s) => s !== OrderStatus.CANCELED && s !== OrderStatus.CHECKING && s !== OrderStatus.DELIVERED && s !== OrderStatus.COMPLETED,
           )}
           selected={status}
           onSelect={setStatus}
-          display={capitalizeFirst}
-        ></TabGroup>
+          display={capitalizeFirst}></TabGroup>
       </div>
 
       <div className="w-full">
@@ -123,10 +116,7 @@ export default function UpdateOrderPriorityPage() {
                 {fetchData.empty ? (
                   <Alert message={fetchData.empty} type="empty"></Alert>
                 ) : (
-                  <EmployeeTaskList
-                    employeeTasks={fetchData.tasks}
-                    reload={onClear}
-                  />
+                  <EmployeeTaskList employeeTasks={fetchData.tasks} reload={onClear} />
                 )}
               </>
             )}

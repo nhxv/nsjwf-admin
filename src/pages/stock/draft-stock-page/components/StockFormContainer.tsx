@@ -46,9 +46,7 @@ export default function StockFormContainer() {
         }
       })
       .catch((e) => {
-        const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e)
-        );
+        const error = JSON.parse(JSON.stringify(e.response ? e.response.data.error : e));
         setFetchData((prev) => ({
           ...prev,
           products: [],
@@ -75,18 +73,12 @@ export default function StockFormContainer() {
   };
 
   if (fetchData.loading) return <Spinner></Spinner>;
-  if (fetchData.error)
-    return <Alert message={fetchData.error} type="error"></Alert>;
-  if (fetchData.empty)
-    return <Alert message={fetchData.empty} type="empty"></Alert>;
+  if (fetchData.error) return <Alert message={fetchData.error} type="error"></Alert>;
+  if (fetchData.empty) return <Alert message={fetchData.empty} type="empty"></Alert>;
 
   return (
     <div className="custom-card mb-12">
-      <ProductStockForm
-        initialData={initialFields}
-        products={fetchData.products}
-        onClear={onClear}
-      />
+      <ProductStockForm initialData={initialFields} products={fetchData.products} onClear={onClear} />
     </div>
   );
 }

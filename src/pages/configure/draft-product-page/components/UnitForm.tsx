@@ -43,9 +43,7 @@ export default function DraftUnitForm({ productId, unit, isOpen, onClose }) {
         }
       }
     } catch (e) {
-      const error = JSON.parse(
-        JSON.stringify(e.response ? e.response.data.error : e)
-      );
+      const error = JSON.parse(JSON.stringify(e.response ? e.response.data.error : e));
       setFormState((prev) => ({
         ...prev,
         error: error.message,
@@ -67,11 +65,7 @@ export default function DraftUnitForm({ productId, unit, isOpen, onClose }) {
     <Modal isOpen={isOpen} onClose={onCloseForm}>
       <div className="custom-card text-left">
         <div className="flex justify-end">
-          <button
-            type="button"
-            className="btn btn-circle btn-accent btn-sm"
-            onClick={onCloseForm}
-          >
+          <button type="button" className="btn btn-circle btn-accent btn-sm" onClick={onCloseForm}>
             <span>
               <BiX className="h-6 w-6"></BiX>
             </span>
@@ -87,14 +81,7 @@ export default function DraftUnitForm({ productId, unit, isOpen, onClose }) {
               name="name"
               control={control}
               render={({ field }) => (
-                <TextInput
-                  id="name"
-                  type="text"
-                  placeholder={`Name`}
-                  name={field.name}
-                  value={field.value}
-                  onChange={field.onChange}
-                ></TextInput>
+                <TextInput id="name" type="text" placeholder={`Name`} name={field.name} value={field.value} onChange={field.onChange}></TextInput>
               )}
             />
           </div>
@@ -109,14 +96,7 @@ export default function DraftUnitForm({ productId, unit, isOpen, onClose }) {
                 name="ratio"
                 control={control}
                 render={({ field }) => (
-                  <TextInput
-                    id="ratio"
-                    type="text"
-                    placeholder={`1/4`}
-                    name={field.name}
-                    value={field.value}
-                    onChange={field.onChange}
-                  ></TextInput>
+                  <TextInput id="ratio" type="text" placeholder={`1/4`} name={field.name} value={field.value} onChange={field.onChange}></TextInput>
                 )}
               />
             </div>
@@ -127,22 +107,12 @@ export default function DraftUnitForm({ productId, unit, isOpen, onClose }) {
               name="discontinued"
               control={control}
               render={({ field }) => (
-                <Checkbox
-                  id="discontinued"
-                  name={field.name}
-                  onChange={() => field.onChange(!field.value)}
-                  checked={!field.value}
-                  label="In use"
-                ></Checkbox>
+                <Checkbox id="discontinued" name={field.name} onChange={() => field.onChange(!field.value)} checked={!field.value} label="In use"></Checkbox>
               )}
             />
           </div>
 
-          <button
-            type="submit"
-            className="btn btn-primary mt-3 w-full"
-            disabled={formState.loading}
-          >
+          <button type="submit" className="btn btn-primary mt-3 w-full" disabled={formState.loading}>
             <span>{unit ? "Edit" : "Add"} unit</span>
           </button>
           <div>

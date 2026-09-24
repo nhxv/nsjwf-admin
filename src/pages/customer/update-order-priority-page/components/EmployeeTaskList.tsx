@@ -23,21 +23,12 @@ export default function EmployeeTaskList({ employeeTasks, reload }) {
     let newEmployees = [...employees];
     if (sEmployee === dEmployee) {
       const index = employees.findIndex((em) => em.nickname === sEmployee);
-      const items = reorder(
-        employees[index].customerOrders,
-        source.index,
-        destination.index
-      );
+      const items = reorder(employees[index].customerOrders, source.index, destination.index);
       newEmployees[index].customerOrders = items;
     } else {
       const sIndex = employees.findIndex((em) => em.nickname === sEmployee);
       const dIndex = employees.findIndex((em) => em.nickname === dEmployee);
-      const result = move(
-        employees[sIndex].customerOrders,
-        employees[dIndex].customerOrders,
-        source,
-        destination
-      );
+      const result = move(employees[sIndex].customerOrders, employees[dIndex].customerOrders, source, destination);
       newEmployees[sIndex].customerOrders = result[sEmployee];
       newEmployees[dIndex].customerOrders = result[dEmployee];
     }
@@ -52,9 +43,7 @@ export default function EmployeeTaskList({ employeeTasks, reload }) {
     try {
       const res = await api.put(`/customer-orders/tasks/priority`, reqData);
     } catch (e) {
-      const error = JSON.parse(
-        JSON.stringify(e.response ? e.response.data.error : e)
-      );
+      const error = JSON.parse(JSON.stringify(e.response ? e.response.data.error : e));
       setErrorMessage(error.message);
 
       if (error.status === 401) {
@@ -104,53 +93,28 @@ export default function EmployeeTaskList({ employeeTasks, reload }) {
       <div className="grid grid-cols-1 items-start gap-4 px-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
         <DragDropContext onDragEnd={onDragEnd}>
           {employees.map((employee) => (
-            <div
-              className={`rounded-box w-full self-start border-2 border-base-100 bg-base-100 p-2 shadow-md dark:bg-base-200`}
-            >
+            <div className={`rounded-box w-full self-start border-2 border-base-100 bg-base-100 p-2 shadow-md dark:bg-base-200`}>
               <p className="m-2 font-medium">{employee.nickname}</p>
-              <Droppable
-                key={employee.nickname}
-                droppableId={employee.nickname}
-              >
+              <Droppable key={employee.nickname} droppableId={employee.nickname}>
                 {(provided) => (
                   <div
                     ref={provided.innerRef}
                     {...provided.droppableProps}
                     // For some reasons, flex-col will fix snapping issue when there are margins so :shrug:
-                    className={`rounded-box flex w-full flex-col self-start bg-base-100 p-2 dark:bg-base-200`}
-                  >
+                    className={`rounded-box flex w-full flex-col self-start bg-base-100 p-2 dark:bg-base-200`}>
                     {employee.customerOrders.map((order, index) => {
                       return (
-                        <Draggable
-                          key={order.code}
-                          draggableId={order.code}
-                          index={index}
-                          isDragDisabled={order.is_doing}
-                        >
+                        <Draggable key={order.code} draggableId={order.code} index={index} isDragDisabled={order.is_doing}>
                           {(provided, snapshot) => (
                             <div
                               ref={provided.innerRef}
                               {...provided.draggableProps}
                               {...provided.dragHandleProps}
-                              className={`rounded-box my-2 p-3
-                          ${
-                            order.is_doing
-                              ? "bg-red-900 text-white"
-                              : "bg-base-200 dark:bg-base-300"
-                          }
-                          ${
-                            snapshot.isDragging
-                              ? "bg-primary text-primary-content dark:bg-primary"
-                              : ""
-                          }`}
-                            >
+                              className={`rounded-box my-2 p-3 ${order.is_doing ? "bg-red-900 text-white" : "bg-base-200 dark:bg-base-300"} ${
+                                snapshot.isDragging ? "bg-primary text-primary-content dark:bg-primary" : ""
+                              }`}>
                               <div className="flex flex-col">
-                                <p>
-                                  #
-                                  {order.manual_code
-                                    ? order.manual_code
-                                    : order.code}
-                                </p>
+                                <p>#{order.manual_code ? order.manual_code : order.code}</p>
                                 <p>{order.customer_name}</p>
                               </div>
                             </div>

@@ -59,9 +59,7 @@ export default function SaleDetailModal({ isOpen, onClose, report }) {
       onClose();
     },
     onError: (err: any) => {
-      let _error = JSON.parse(
-        JSON.stringify(err.response ? err.response.data.error : err)
-      );
+      let _error = JSON.parse(JSON.stringify(err.response ? err.response.data.error : err));
       if (_error.status === 401) {
         handleTokenExpire(navigate, setError, (msg) => msg);
       } else {
@@ -91,9 +89,7 @@ export default function SaleDetailModal({ isOpen, onClose, report }) {
       onClose();
     },
     onError: (err: any) => {
-      let _error = JSON.parse(
-        JSON.stringify(err.response ? err.response.data.error : err)
-      );
+      let _error = JSON.parse(JSON.stringify(err.response ? err.response.data.error : err));
       if (_error.status === 401) {
         handleTokenExpire(navigate, setError, (msg) => msg);
       } else {
@@ -125,9 +121,7 @@ export default function SaleDetailModal({ isOpen, onClose, report }) {
           <div>
             <p>#{report.manualCode ?? report.orderCode}</p>
             <p className="text-xl font-semibold">{report.vendorName}</p>
-            <p className="text-sm text-neutral">
-              Delivered at {convertTimeToText(new Date(report.expectedAt))}
-            </p>
+            <p className="text-sm text-neutral">Delivered at {convertTimeToText(new Date(report.expectedAt))}</p>
             <div className="mt-5">
               <StatusTag status={report.paymentStatus}></StatusTag>
             </div>
@@ -146,15 +140,11 @@ export default function SaleDetailModal({ isOpen, onClose, report }) {
               <Menu.Items
                 as="div"
                 // Magik
-                className="menu rounded-box absolute right-6 w-40 origin-top-right border-2 border-base-300 bg-base-100 p-2 shadow-md dark:bg-base-200"
-              >
+                className="menu rounded-box absolute right-6 w-40 origin-top-right border-2 border-base-300 bg-base-100 p-2 shadow-md dark:bg-base-200">
                 <Menu.Item>
                   <button
-                    className={
-                      "flex justify-center rounded-md p-3 text-base-content ui-active:bg-base-200 ui-active:dark:bg-base-300"
-                    }
-                    onClick={() => onRevert(report.orderCode)}
-                  >
+                    className={"flex justify-center rounded-md p-3 text-base-content ui-active:bg-base-200 ui-active:dark:bg-base-300"}
+                    onClick={() => onRevert(report.orderCode)}>
                     Revert Order
                   </button>
                 </Menu.Item>
@@ -180,15 +170,11 @@ export default function SaleDetailModal({ isOpen, onClose, report }) {
             return (
               <div
                 key={`${productOrder.productName}_${productOrder.unitCode}`}
-                className="rounded-btn mb-2 flex items-center justify-center bg-base-200 py-3 dark:bg-base-300"
-              >
+                className="rounded-btn mb-2 flex items-center justify-center bg-base-200 py-3 dark:bg-base-300">
                 <div className="ml-3 w-6/12">{productOrder.productName}</div>
                 <div className="w-3/12 text-center">
                   <span>
-                    {productOrder.quantity}{" "}
-                    {productOrder.unitCode === "box"
-                      ? ``
-                      : `(${productOrder.unitCode})`}
+                    {productOrder.quantity} {productOrder.unitCode === "box" ? `` : `(${productOrder.unitCode})`}
                   </span>
                 </div>
                 <div className="w-3/12 text-center">
@@ -197,9 +183,7 @@ export default function SaleDetailModal({ isOpen, onClose, report }) {
                       id={productOrderID(productOrder)}
                       name={productOrderID(productOrder)}
                       placeholder={null}
-                      value={
-                        changeBuffer[productOrderID(productOrder)].unitPrice
-                      }
+                      value={changeBuffer[productOrderID(productOrder)].unitPrice}
                       onChange={(e) => {
                         const k = productOrderID(productOrder);
                         setChangeBuffer((prev) => ({
@@ -213,11 +197,7 @@ export default function SaleDetailModal({ isOpen, onClose, report }) {
                       }}
                     />
                   ) : (
-                    <span>
-                      {productOrder.unitPrice
-                        ? "$" + niceVisualDecimal(productOrder.unitPrice)
-                        : ""}
-                    </span>
+                    <span>{productOrder.unitPrice ? "$" + niceVisualDecimal(productOrder.unitPrice) : ""}</span>
                   )}
                 </div>
               </div>
@@ -227,17 +207,10 @@ export default function SaleDetailModal({ isOpen, onClose, report }) {
         <div className="divider"></div>
         <div className="my-2 flex items-center">
           <span className="mr-2">Total:</span>
-          <span className="mr-2 text-xl font-medium">
-            ${niceVisualDecimal(report.sale)}
-          </span>
+          <span className="mr-2 text-xl font-medium">${niceVisualDecimal(report.sale)}</span>
         </div>
 
-        <button
-          className="btn btn-primary w-full"
-          onClick={() =>
-            navigate(`/vendor/view-vendor-order-detail/${report.orderCode}`)
-          }
-        >
+        <button className="btn btn-primary w-full" onClick={() => navigate(`/vendor/view-vendor-order-detail/${report.orderCode}`)}>
           View Detail
         </button>
 

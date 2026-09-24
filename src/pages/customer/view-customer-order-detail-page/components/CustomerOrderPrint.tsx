@@ -35,10 +35,7 @@ export default function CustomerOrderPrint({ order }) {
     },
     onSuccess: (response) => {
       const newCustomerOrder = response.data;
-      queryClient.setQueryData(
-        ["customer-orders", order.code],
-        newCustomerOrder
-      );
+      queryClient.setQueryData(["customer-orders", order.code], newCustomerOrder);
     },
     onError: () => {
       // Aside from param-related errors, there's also COMPLETED order
@@ -94,10 +91,7 @@ export default function CustomerOrderPrint({ order }) {
   return (
     <>
       <div className="hidden">
-        <PackingSlipToPrint
-          printRef={orderPrintAsPackingSlipRef}
-          order={order}
-        />
+        <PackingSlipToPrint printRef={orderPrintAsPackingSlipRef} order={order} />
         <InvoiceToPrint printRef={orderPrintAsInvoiceRef} order={order} />
       </div>
 
@@ -105,10 +99,7 @@ export default function CustomerOrderPrint({ order }) {
       <Modal isOpen={isPalletModalOpen} onClose={onCloseModal}>
         <div className="custom-card text-left">
           <div className="flex justify-end">
-            <button
-              className="btn btn-circle btn-accent btn-sm"
-              onClick={onCloseModal}
-            >
+            <button className="btn btn-circle btn-accent btn-sm" onClick={onCloseModal}>
               <BiX className="h-6 w-6"></BiX>
             </button>
           </div>
@@ -117,15 +108,7 @@ export default function CustomerOrderPrint({ order }) {
               <span>Number of pallet</span>
               <span className="text-red-500">*</span>
             </label>
-            <NumberInput
-              id="pallet"
-              placeholder={`Number of Pallet`}
-              min={1}
-              max={100}
-              name="pallet"
-              value={pallet.count}
-              onChange={onChange}
-            ></NumberInput>
+            <NumberInput id="pallet" placeholder={`Number of Pallet`} min={1} max={100} name="pallet" value={pallet.count} onChange={onChange}></NumberInput>
           </div>
           <button className="btn btn-primary w-full" onClick={onPalletPrint}>
             Print label
@@ -140,23 +123,18 @@ export default function CustomerOrderPrint({ order }) {
           className="btn btn-circle btn-ghost bg-base-200 text-neutral dark:bg-base-300 dark:text-neutral-content"
           onClick={(e) => {
             e.stopPropagation();
-          }}
-        >
+          }}>
           <BiPrinter className="h-6 w-6"></BiPrinter>
         </label>
 
-        <ul
-          tabIndex={0}
-          className="dropdown-content menu rounded-box w-36 border-2 border-base-300 bg-base-100 p-2 shadow-md dark:bg-base-200"
-        >
+        <ul tabIndex={0} className="dropdown-content menu rounded-box w-36 border-2 border-base-300 bg-base-100 p-2 shadow-md dark:bg-base-200">
           <li>
             <a
               onClick={(e) => {
                 e.stopPropagation();
                 handlePackingSlipPrint();
               }}
-              className="text-base-content hover:bg-base-200 focus:bg-base-200 dark:hover:bg-base-300 dark:focus:bg-base-300"
-            >
+              className="text-base-content hover:bg-base-200 focus:bg-base-200 dark:hover:bg-base-300 dark:focus:bg-base-300">
               <span>Packing Slip</span>
             </a>
           </li>
@@ -166,8 +144,7 @@ export default function CustomerOrderPrint({ order }) {
                 e.stopPropagation();
                 handleInvoicePrint();
               }}
-              className="text-base-content hover:bg-base-200 focus:bg-base-200 dark:hover:bg-base-300 dark:focus:bg-base-300"
-            >
+              className="text-base-content hover:bg-base-200 focus:bg-base-200 dark:hover:bg-base-300 dark:focus:bg-base-300">
               <span>Invoice</span>
             </a>
             {/* <a

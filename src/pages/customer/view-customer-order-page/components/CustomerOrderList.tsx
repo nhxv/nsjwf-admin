@@ -49,15 +49,9 @@ export default function CustomerOrderList() {
       ? filterByStatus(dailyOrderQuery.data, search.status)
       : filterByStatus(dailyOrderQuery.data, search.status).filter((order) => {
           return (
-            order.customer_name
-              .toLowerCase()
-              .replace(/\s+/g, "")
-              .includes(search.query.toLowerCase().replace(/\s+/g, "")) ||
+            order.customer_name.toLowerCase().replace(/\s+/g, "").includes(search.query.toLowerCase().replace(/\s+/g, "")) ||
             order.productCustomerOrders.filter((pOrder) => {
-              return pOrder.product_name
-                .toLowerCase()
-                .replace(/\s+/g, "")
-                .includes(search.query.toLowerCase().replace(/\s+/g, ""));
+              return pOrder.product_name.toLowerCase().replace(/\s+/g, "").includes(search.query.toLowerCase().replace(/\s+/g, ""));
             }).length !== 0
           );
         })
@@ -65,15 +59,7 @@ export default function CustomerOrderList() {
 
   const total = useMemo(() => {
     return niceVisualDecimal(
-      filteredOrders.reduce(
-        (prev, curr) =>
-          prev +
-          curr.productCustomerOrders.reduce(
-            (prev, curr) => prev + curr.quantity * curr.unit_price,
-            0
-          ),
-        0
-      )
+      filteredOrders.reduce((prev, curr) => prev + curr.productCustomerOrders.reduce((prev, curr) => prev + curr.quantity * curr.unit_price, 0), 0),
     );
   }, [filteredOrders]);
 
@@ -108,10 +94,7 @@ export default function CustomerOrderList() {
     },
     onSuccess: (response, variables, _ctx) => {
       const newCustomerOrder = response.data;
-      queryClient.setQueryData(
-        ["customer-orders", variables.code],
-        newCustomerOrder
-      );
+      queryClient.setQueryData(["customer-orders", variables.code], newCustomerOrder);
       return queryClient.invalidateQueries({
         queryKey: ["customer-orders", "daily"],
       });
@@ -172,11 +155,7 @@ export default function CustomerOrderList() {
     );
   }
 
-  if (
-    dailyOrderQuery.fetchStatus === "paused" ||
-    (dailyOrderQuery.status === "error" &&
-      dailyOrderQuery.fetchStatus === "idle")
-  ) {
+  if (dailyOrderQuery.fetchStatus === "paused" || (dailyOrderQuery.status === "error" && dailyOrderQuery.fetchStatus === "idle")) {
     if (dailyOrderQuery.fetchStatus === "paused") {
       return (
         <div className="mx-auto mt-4 w-11/12 md:w-10/12 lg:w-6/12">
@@ -211,22 +190,15 @@ export default function CustomerOrderList() {
         <div className="flex items-center gap-2">
           <div className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content">
             <span>
-              {filteredOrders.length}{" "}
-              {filteredOrders.length > 1 ? "orders" : "order"}
+              {filteredOrders.length} {filteredOrders.length > 1 ? "orders" : "order"}
             </span>
           </div>
           {showTotal ? (
-            <button
-              className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content"
-              onClick={() => setShowTotal(false)}
-            >
+            <button className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content" onClick={() => setShowTotal(false)}>
               <span>Total: ${total}</span>
             </button>
           ) : (
-            <button
-              className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content"
-              onClick={() => setShowTotal(true)}
-            >
+            <button className="rounded-btn flex items-center bg-info p-2 text-sm font-semibold text-info-content" onClick={() => setShowTotal(true)}>
               <span>Click to show total</span>
             </button>
           )}
@@ -247,11 +219,7 @@ export default function CustomerOrderList() {
                   status: v,
                 }));
               }}
-              options={["ALL"].concat(
-                Object.values(OrderStatus).filter(
-                  (s) => s != OrderStatus.CANCELED && s != OrderStatus.COMPLETED
-                )
-              )}
+              options={["ALL"].concat(Object.values(OrderStatus).filter((s) => s != OrderStatus.CANCELED && s != OrderStatus.COMPLETED))}
             />
           </div>
 
@@ -263,8 +231,7 @@ export default function CustomerOrderList() {
               value={search.query}
               onChange={(e) => onChangeQuery(e)}
               onClear={onClearQuery}
-              onFocus={null}
-            ></SearchInput>
+              onFocus={null}></SearchInput>
 
             <label className="btn btn-square btn-accent">
               <BiPrinter className="h-6 w-6" onClick={handlePrint}></BiPrinter>
@@ -276,46 +243,24 @@ export default function CustomerOrderList() {
         {filteredOrders.map((order) => (
           <div
             key={order.code}
-            className={`sticker col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3 xl:col-span-2
-            ${order.status === OrderStatus.PICKING ? "sticker-yellow" : ""}
-            ${order.status === OrderStatus.CHECKING ? "sticker-sky" : ""}
-            ${order.status === OrderStatus.SHIPPING ? "sticker-purple" : ""}
-            ${order.status === OrderStatus.DELIVERED ? "sticker-primary" : ""}`}
-            onClick={() => onToDetails(order.code)}
-          >
+            className={`sticker col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3 xl:col-span-2 ${order.status === OrderStatus.PICKING ? "sticker-yellow" : ""} ${order.status === OrderStatus.CHECKING ? "sticker-sky" : ""} ${order.status === OrderStatus.SHIPPING ? "sticker-purple" : ""} ${order.status === OrderStatus.DELIVERED ? "sticker-primary" : ""}`}
+            onClick={() => onToDetails(order.code)}>
             <div>#{order.manual_code ? order.manual_code : order.code}</div>
-            <div className="overflow-hidden text-ellipsis text-nowrap font-semibold">
-              {order.customer_name}
-            </div>
-            <div className="text-sm">
-              {convertTimeToText(new Date(order.expected_at))}
-            </div>
+            <div className="overflow-hidden text-ellipsis text-nowrap font-semibold">{order.customer_name}</div>
+            <div className="text-sm">{convertTimeToText(new Date(order.expected_at))}</div>
             <button
-              className={`btn btn-sm mt-3 w-full
-              ${
+              className={`btn btn-sm mt-3 w-full ${
                 order.status === OrderStatus.PICKING ? "btn-sticker-yellow" : ""
-              }
-              ${order.status === OrderStatus.CHECKING ? "btn-sticker-sky" : ""}
-              ${
-                order.status === OrderStatus.SHIPPING
-                  ? "btn-sticker-purple"
-                  : ""
-              }
-              ${
-                order.status === OrderStatus.DELIVERED
-                  ? "btn-sticker-primary"
-                  : ""
+              } ${order.status === OrderStatus.CHECKING ? "btn-sticker-sky" : ""} ${order.status === OrderStatus.SHIPPING ? "btn-sticker-purple" : ""} ${
+                order.status === OrderStatus.DELIVERED ? "btn-sticker-primary" : ""
               }`}
-              onClick={() => onToDetails(order.code)}
-            >
+              onClick={() => onToDetails(order.code)}>
               Details
             </button>
           </div>
         ))}
       </div>
-      {filteredOrders?.length < 1 && (
-        <div className="text-center">Not found.</div>
-      )}
+      {filteredOrders?.length < 1 && <div className="text-center">Not found.</div>}
     </>
   );
 }

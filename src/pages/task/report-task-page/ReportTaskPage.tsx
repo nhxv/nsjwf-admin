@@ -57,9 +57,7 @@ export default function ReportTaskPage() {
         }));
       })
       .catch((e) => {
-        const error = JSON.parse(
-          JSON.stringify(e.response ? e.response.data.error : e)
-        );
+        const error = JSON.parse(JSON.stringify(e.response ? e.response.data.error : e));
         setDataState((prev) => ({
           ...prev,
           error: error.message,
@@ -97,9 +95,7 @@ export default function ReportTaskPage() {
                       <>
                         {dataState.report.map((stat) => (
                           <div key={stat.label}>
-                            <h1 className="my-4 text-center text-xl font-bold">
-                              {stat.label}
-                            </h1>
+                            <h1 className="my-4 text-center text-xl font-bold">{stat.label}</h1>
                             <div className="flex flex-col justify-between md:flex-row">
                               <div className="rounded-box mb-4 flex w-full items-center bg-yellow-500 p-5 text-black shadow-md md:w-[49%]">
                                 <span className="mr-4 rounded-full bg-yellow-600 p-2">
@@ -109,9 +105,7 @@ export default function ReportTaskPage() {
                                   <span className="text-2xl font-bold">
                                     {stat.employeePicking}/{stat.totalPicking}
                                   </span>
-                                  <span className="text-sm font-medium">
-                                    Order picked
-                                  </span>
+                                  <span className="text-sm font-medium">Order picked</span>
                                 </div>
                               </div>
 
@@ -123,9 +117,7 @@ export default function ReportTaskPage() {
                                   <span className="text-2xl font-bold">
                                     {stat.employeeShipping}/{stat.totalShipping}
                                   </span>
-                                  <span className="text-sm font-medium">
-                                    Order shipped
-                                  </span>
+                                  <span className="text-sm font-medium">Order shipped</span>
                                 </div>
                               </div>
                             </div>

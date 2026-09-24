@@ -30,18 +30,14 @@ export default function ProductSaleFormContainer() {
 
   return (
     <>
-      <ProductSaleForm
-        onFormSubmit={onFormSubmit}
-        onFormClear={onFormClear}
-      ></ProductSaleForm>
+      <ProductSaleForm onFormSubmit={onFormSubmit} onFormClear={onFormClear}></ProductSaleForm>
 
       {/* TODO: Add more strict status check here later. */}
       {/* Since query is disabled at the beginning,
       query is NOT fetching, but the status is loading. We want to make sure to only show spinner on actual network call. */}
       {!analysisQuery.isFetching && analysisQuery.status === "pending" ? (
         <></>
-      ) : analysisQuery.status === "pending" ||
-        analysisQuery.fetchStatus === "fetching" ? (
+      ) : analysisQuery.status === "pending" || analysisQuery.fetchStatus === "fetching" ? (
         // The fetchStatus check is necessary because when user request the same data,
         // query will return data (cuz it's in cache) without triggering the .status change, which cause Result to not render correctly.
         // Therefore, we want to make sure the queryFn is actually running as well.

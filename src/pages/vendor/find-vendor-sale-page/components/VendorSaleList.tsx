@@ -1,8 +1,4 @@
-import {
-  useMutation,
-  useQueryClient,
-  UseQueryResult,
-} from "@tanstack/react-query";
+import { useMutation, useQueryClient, UseQueryResult } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { PaymentStatus } from "../../../../commons/enums/payment-status.enum";
@@ -25,11 +21,7 @@ interface PaymentMethodMutationParam {
   status: string;
 }
 
-export default function VendorSaleList({
-  reports,
-  reportQuery,
-  onSelectSale,
-}: VendorSaleListProps) {
+export default function VendorSaleList({ reports, reportQuery, onSelectSale }: VendorSaleListProps) {
   const navigate = useNavigate();
   const total = useMemo(() => {
     let cash = 0;
@@ -68,17 +60,11 @@ export default function VendorSaleList({
     },
   });
 
-  if (
-    reportQuery.status === "pending" ||
-    reportQuery.fetchStatus === "fetching"
-  ) {
+  if (reportQuery.status === "pending" || reportQuery.fetchStatus === "fetching") {
     return <Spinner></Spinner>;
   }
 
-  if (
-    reportQuery.fetchStatus === "paused" ||
-    (reportQuery.status === "error" && reportQuery.fetchStatus === "idle")
-  ) {
+  if (reportQuery.fetchStatus === "paused" || (reportQuery.status === "error" && reportQuery.fetchStatus === "idle")) {
     if (reportQuery.fetchStatus === "paused") {
       return (
         <div className="mx-auto mt-4 w-11/12 md:w-10/12 lg:w-6/12">
@@ -96,13 +82,7 @@ export default function VendorSaleList({
 
   if (paymentMethodMut.status === "error") {
     // TODO: Convert this to AlertFromQueryError later.
-    let error = JSON.parse(
-      JSON.stringify(
-        paymentMethodMut.error.response
-          ? paymentMethodMut.error.response.data.error
-          : paymentMethodMut.error
-      )
-    );
+    let error = JSON.parse(JSON.stringify(paymentMethodMut.error.response ? paymentMethodMut.error.response.data.error : paymentMethodMut.error));
     if (error.status === 401) {
       // This is just cursed.
       handleTokenExpire(
@@ -110,7 +90,7 @@ export default function VendorSaleList({
         (err) => {
           error = err;
         },
-        (msg) => ({ ...error, message: msg })
+        (msg) => ({ ...error, message: msg }),
       );
     } else {
       setTimeout(() => {
@@ -142,9 +122,7 @@ export default function VendorSaleList({
   return (
     <>
       <div className="mb-6 flex flex-col items-center justify-between gap-3 xl:flex-row">
-        <div className="rounded-btn flex items-center bg-warning p-2 text-sm font-semibold text-warning-content">
-          ${total.receivable} in total
-        </div>
+        <div className="rounded-btn flex items-center bg-warning p-2 text-sm font-semibold text-warning-content">${total.receivable} in total</div>
       </div>
       <div className="grid grid-cols-12 gap-2">
         {reports.map((report) => (
@@ -155,17 +133,14 @@ export default function VendorSaleList({
             }
             onClick={() => {
               onSelectSale(report);
-            }}
-          >
+            }}>
             {/* Make it look a bit better when the name is too long and wrap into newline. */}
             <div>
               <div>#{report.manualCode ?? report.orderCode}</div>
               <div className="font-semibold">{report.vendorName}</div>
             </div>
             <div>
-              <div className="text-sm">
-                {convertTimeToText(new Date(report.expectedAt))}
-              </div>
+              <div className="text-sm">{convertTimeToText(new Date(report.expectedAt))}</div>
               <div className="">${niceVisualDecimal(report.sale)}</div>
             </div>
           </div>

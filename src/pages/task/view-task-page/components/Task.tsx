@@ -33,9 +33,7 @@ export default function Task({ order, reload, status }) {
         reload();
       }
     } catch (e) {
-      const error = JSON.parse(
-        JSON.stringify(e.response ? e.response.data.error : e)
-      );
+      const error = JSON.parse(JSON.stringify(e.response ? e.response.data.error : e));
       setFormState((prev) => ({
         ...prev,
         error: error.message,
@@ -51,17 +49,13 @@ export default function Task({ order, reload, status }) {
   const onStartTask = async (code: string) => {
     setFormState((prev) => ({ ...prev, error: "", loading: true }));
     try {
-      const res = await api.put(
-        `/customer-orders/tasks/start-doing?code=${code}&nickname=${nickname}`
-      );
+      const res = await api.put(`/customer-orders/tasks/start-doing?code=${code}&nickname=${nickname}`);
       if (res) {
         setFormState((prev) => ({ ...prev, error: "", loading: false }));
         reload();
       }
     } catch (e) {
-      const error = JSON.parse(
-        JSON.stringify(e.response ? e.response.data.error : e)
-      );
+      const error = JSON.parse(JSON.stringify(e.response ? e.response.data.error : e));
       setFormState((prev) => ({
         ...prev,
         error: error.message,
@@ -88,9 +82,7 @@ export default function Task({ order, reload, status }) {
         reload();
       }
     } catch (e) {
-      const error = JSON.parse(
-        JSON.stringify(e.response ? e.response.data.error : e)
-      );
+      const error = JSON.parse(JSON.stringify(e.response ? e.response.data.error : e));
       setFormState((prev) => ({
         ...prev,
         error: error.message,
@@ -114,25 +106,18 @@ export default function Task({ order, reload, status }) {
           <div>
             <span className="text-xl font-semibold">{order.customerName}</span>
           </div>
-          {status === OrderStatus.CHECKING ||
-          status === OrderStatus.DELIVERED ? (
+          {status === OrderStatus.CHECKING || status === OrderStatus.DELIVERED ? (
             <>
               <div>
-                <span className="text-sm text-neutral">
-                  Expected at {convertTime(new Date(order.expectedAt))}
-                </span>
+                <span className="text-sm text-neutral">Expected at {convertTime(new Date(order.expectedAt))}</span>
               </div>
               <div className="mb-6">
-                <span className="text-sm text-neutral">
-                  by {order.assignTo}
-                </span>
+                <span className="text-sm text-neutral">by {order.assignTo}</span>
               </div>
             </>
           ) : (
             <div className="mb-6">
-              <span className="text-sm text-neutral">
-                Expected at {convertTime(new Date(order.expectedAt))}
-              </span>
+              <span className="text-sm text-neutral">Expected at {convertTime(new Date(order.expectedAt))}</span>
             </div>
           )}
           <div className="mb-2">
@@ -152,19 +137,13 @@ export default function Task({ order, reload, status }) {
       </div>
       {order.productCustomerOrders.map((productOrder) => {
         return (
-          <div
-            key={productOrder.productName}
-            className="rounded-btn mb-2 flex items-center justify-center bg-base-200 py-3 dark:bg-base-300"
-          >
+          <div key={productOrder.productName} className="rounded-btn mb-2 flex items-center justify-center bg-base-200 py-3 dark:bg-base-300">
             <div className="ml-3 w-9/12">
               <span>{productOrder.productName}</span>
             </div>
             <div className="w-3/12 text-center">
               <span>
-                {productOrder.quantity}{" "}
-                {productOrder.unitCode === "box"
-                  ? ``
-                  : `(${productOrder.unitCode})`}
+                {productOrder.quantity} {productOrder.unitCode === "box" ? `` : `(${productOrder.unitCode})`}
               </span>
             </div>
           </div>
@@ -175,27 +154,15 @@ export default function Task({ order, reload, status }) {
           <div className="divider"></div>
           {order.isDoing ? (
             <>
-              <button
-                className="btn btn-primary w-full"
-                onClick={() => onFinishTask(order.code)}
-                disabled={formState.loading}
-              >
+              <button className="btn btn-primary w-full" onClick={() => onFinishTask(order.code)} disabled={formState.loading}>
                 Done {order.status.toLowerCase()}
               </button>
-              <button
-                className="btn-outline-primary btn mt-3 w-full"
-                onClick={() => onStopTask(order.code)}
-                disabled={formState.loading}
-              >
+              <button className="btn-outline-primary btn mt-3 w-full" onClick={() => onStopTask(order.code)} disabled={formState.loading}>
                 Stop doing
               </button>
             </>
           ) : (
-            <button
-              className="btn btn-primary w-full"
-              onClick={() => onStartTask(order.code)}
-              disabled={formState.loading}
-            >
+            <button className="btn btn-primary w-full" onClick={() => onStartTask(order.code)} disabled={formState.loading}>
               Start doing
             </button>
           )}

@@ -27,9 +27,7 @@ export default function ProductFormContainer() {
           setInitialFields((prev) => ({
             ...prev,
             name: res.data.name,
-            location: res.data.location_name
-              ? res.data.location_name
-              : Location.COOLER_1,
+            location: res.data.location_name ? res.data.location_name : Location.COOLER_1,
             discontinued: res.data.discontinued,
           }));
           setFetchData((prev) => ({
@@ -41,9 +39,7 @@ export default function ProductFormContainer() {
           }));
         })
         .catch((e) => {
-          const error = JSON.parse(
-            JSON.stringify(e.response ? e.response.data.error : e)
-          );
+          const error = JSON.parse(JSON.stringify(e.response ? e.response.data.error : e));
           setFetchData((prev) => ({
             ...prev,
             empty: "",
@@ -84,10 +80,8 @@ export default function ProductFormContainer() {
   };
 
   if (fetchData.loading) return <Spinner></Spinner>;
-  if (fetchData.error)
-    return <Alert message={fetchData.error} type="error"></Alert>;
-  if (fetchData.empty)
-    return <Alert message={fetchData.empty} type="empty"></Alert>;
+  if (fetchData.error) return <Alert message={fetchData.error} type="error"></Alert>;
+  if (fetchData.empty) return <Alert message={fetchData.empty} type="empty"></Alert>;
 
   return (
     <div className="custom-card mb-12">

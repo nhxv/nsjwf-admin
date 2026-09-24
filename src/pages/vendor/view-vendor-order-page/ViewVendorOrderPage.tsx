@@ -17,8 +17,7 @@ export default function ViewVendorOrderPage() {
             className="btn btn-circle btn-primary"
             onClick={() => {
               navigate("/vendor/draft-vendor-order");
-            }}
-          >
+            }}>
             <span>
               <BiPlus className="h-8 w-8"></BiPlus>
             </span>

@@ -1,13 +1,5 @@
 // accept input type due to email & password
-export default function TextInput({
-  id,
-  type = "text",
-  placeholder,
-  name,
-  value,
-  onChange,
-  disabled = false,
-}) {
+export default function TextInput({ id, type = "text", placeholder, name, value, onChange, disabled = false }) {
   const onSelectAll = (e) => {
     setTimeout(() => e.target.select(), 0);
   };

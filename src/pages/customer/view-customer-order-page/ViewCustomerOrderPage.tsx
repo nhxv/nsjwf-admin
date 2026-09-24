@@ -17,8 +17,7 @@ export default function ViewCustomerOrderPage() {
             className="btn btn-circle btn-primary"
             onClick={() => {
               navigate("/customer/draft-customer-order");
-            }}
-          >
+            }}>
             <span>
               <BiPlus className="h-8 w-8"></BiPlus>
             </span>

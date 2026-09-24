@@ -5,12 +5,9 @@ export default function Stepper({ steps, selected, onSelect, display }) {
         <li
           key={s}
           className={`step cursor-pointer text-sm font-medium sm:text-base ${
-            index <= steps.findIndex((step) => step === selected)
-              ? "step-primary text-primary"
-              : ""
+            index <= steps.findIndex((step) => step === selected) ? "step-primary text-primary" : ""
           }`}
-          onClick={() => onSelect(s)}
-        >
+          onClick={() => onSelect(s)}>
           {display(s.toLowerCase())}
         </li>
       ))}

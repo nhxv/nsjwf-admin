@@ -9,8 +9,7 @@ export default function TabGroup({ group, selected, onSelect, display }) {
               ? "bg-base-100 text-primary shadow-md dark:bg-base-300 dark:text-white"
               : "hover:bg-base-200 focus:bg-base-200 dark:hover:bg-base-300 dark:focus:bg-base-300"
           }`}
-          onClick={() => onSelect(item)}
-        >
+          onClick={() => onSelect(item)}>
           {display ? display(item.toLowerCase()) : item}
         </div>
       ))}

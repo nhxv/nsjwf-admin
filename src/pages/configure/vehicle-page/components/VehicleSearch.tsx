@@ -15,9 +15,7 @@ export default function VehicleSearch() {
     loading: false,
     found: [],
   });
-  const editVehicleConfig = useVehicleConfigStore(
-    (state) => state.editVehicleConfig
-  );
+  const editVehicleConfig = useVehicleConfigStore((state) => state.editVehicleConfig);
 
   const { control, handleSubmit, reset, setValue } = useForm({
     defaultValues: {
@@ -28,9 +26,7 @@ export default function VehicleSearch() {
   const onSubmit = async (data) => {
     setSearchState((prev) => ({ ...prev, found: [], loading: true }));
     try {
-      const res = await api.get(
-        `/vehicles/basic-search?keyword=${data.keyword}`
-      );
+      const res = await api.get(`/vehicles/basic-search?keyword=${data.keyword}`);
       const resData: VehicleResponse[] = res.data;
       if (resData.length < 1) {
         setSearchState((prev) => ({
@@ -42,9 +38,7 @@ export default function VehicleSearch() {
       }
       setSearchState((prev) => ({ ...prev, loading: false, found: resData }));
     } catch (e) {
-      const error = JSON.parse(
-        JSON.stringify(e.response ? e.response.data.error : e)
-      );
+      const error = JSON.parse(JSON.stringify(e.response ? e.response.data.error : e));
       setSearchState((prev) => ({
         ...prev,
         greet: "",
@@ -76,10 +70,7 @@ export default function VehicleSearch() {
   return (
     <>
       <div className="mt-12 w-11/12 sm:w-6/12 md:w-5/12">
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="flex flex-col justify-center"
-        >
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col justify-center">
           <div className="mb-5 flex">
             <Controller
               name="keyword"
@@ -114,40 +105,20 @@ export default function VehicleSearch() {
                 <>
                   {searchState.found.map((vehicle) => (
                     <div key={vehicle.id} className="w-full">
-                      <div
-                        className="rounded-box mb-4 flex w-full
-              flex-col bg-base-100 p-6 shadow-md md:flex-row md:justify-between"
-                      >
+                      <div className="rounded-box mb-4 flex w-full flex-col bg-base-100 p-6 shadow-md md:flex-row md:justify-between">
                         <div>
                           <p className="font-medium">{vehicle.licensePlate}</p>
-                          <small className="text-sm text-gray-400">
-                            Nickname:
-                          </small>
-                          <p>
-                            {vehicle.nickname ? vehicle.nickname : "Unknown"}
-                          </p>
-                          <small className="text-sm text-gray-400">
-                            Volume:
-                          </small>
+                          <small className="text-sm text-gray-400">Nickname:</small>
+                          <p>{vehicle.nickname ? vehicle.nickname : "Unknown"}</p>
+                          <small className="text-sm text-gray-400">Volume:</small>
                           <p>{vehicle.volume ? vehicle.volume : "Unknown"}</p>
-                          <small className="text-sm text-gray-400">
-                            Availability:
-                          </small>
-                          <p>
-                            {vehicle.available ? "Available" : "Not available"}
-                          </p>
-                          <small className="text-sm text-gray-400">
-                            Status:
-                          </small>
-                          <p>
-                            {vehicle.discontinued ? "Discontinued" : "In use"}
-                          </p>
+                          <small className="text-sm text-gray-400">Availability:</small>
+                          <p>{vehicle.available ? "Available" : "Not available"}</p>
+                          <small className="text-sm text-gray-400">Status:</small>
+                          <p>{vehicle.discontinued ? "Discontinued" : "In use"}</p>
                         </div>
 
-                        <button
-                          className="btn btn-info mt-4 w-full text-primary md:mt-0 md:w-fit"
-                          onClick={() => onEdit(vehicle)}
-                        >
+                        <button className="btn btn-info mt-4 w-full text-primary md:mt-0 md:w-fit" onClick={() => onEdit(vehicle)}>
                           <BiEdit className="h-6 w-6"></BiEdit>
                         </button>
                       </div>
@@ -169,11 +140,7 @@ export default function VehicleSearch() {
                       {searchState.empty ? (
                         <p className="text-neutral">{searchState.empty}</p>
                       ) : (
-                        <>
-                          {searchState.greet ? (
-                            <p className="text-neutral">{searchState.greet}</p>
-                          ) : null}
-                        </>
+                        <>{searchState.greet ? <p className="text-neutral">{searchState.greet}</p> : null}</>
                       )}
                     </>
                   )}

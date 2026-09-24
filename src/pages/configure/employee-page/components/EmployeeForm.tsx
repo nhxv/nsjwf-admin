@@ -38,9 +38,7 @@ export default function EmployeeForm({ isOpen, onClose, employee, onReload }) {
       onReload();
       onClose();
     } catch (e) {
-      const error = JSON.parse(
-        JSON.stringify(e.response ? e.response.data.error : e)
-      );
+      const error = JSON.parse(JSON.stringify(e.response ? e.response.data.error : e));
       setFormState((prev) => ({
         ...prev,
         error: error.message,
@@ -62,80 +60,46 @@ export default function EmployeeForm({ isOpen, onClose, employee, onReload }) {
     <Modal isOpen={isOpen} onClose={onCloseForm}>
       <div className="custom-card text-left">
         <div className="flex justify-end">
-          <button
-            type="button"
-            className="btn btn-circle btn-accent btn-sm"
-            onClick={onCloseForm}
-          >
+          <button type="button" className="btn btn-circle btn-accent btn-sm" onClick={onCloseForm}>
             <BiX className="h-6 w-6"></BiX>
           </button>
         </div>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-5">
-            <label
-              htmlFor="username"
-              className="custom-label mb-2 inline-block"
-            >
+            <label htmlFor="username" className="custom-label mb-2 inline-block">
               <span>Username</span>
             </label>
             <Controller
               name="username"
               control={control}
               render={({ field }) => (
-                <TextInput
-                  id="username"
-                  type="text"
-                  placeholder={`Username`}
-                  name={field.name}
-                  value={field.value}
-                  onChange={field.onChange}
-                ></TextInput>
+                <TextInput id="username" type="text" placeholder={`Username`} name={field.name} value={field.value} onChange={field.onChange}></TextInput>
               )}
             />
           </div>
 
           <div className="mb-5">
-            <label
-              htmlFor="password"
-              className="custom-label mb-2 inline-block"
-            >
+            <label htmlFor="password" className="custom-label mb-2 inline-block">
               <span>Password</span>
             </label>
             <Controller
               name="password"
               control={control}
               render={({ field }) => (
-                <TextInput
-                  id="password"
-                  type="password"
-                  placeholder={`Password`}
-                  name={field.name}
-                  value={field.value}
-                  onChange={field.onChange}
-                ></TextInput>
+                <TextInput id="password" type="password" placeholder={`Password`} name={field.name} value={field.value} onChange={field.onChange}></TextInput>
               )}
             />
           </div>
 
           <div className="mb-5">
-            <label
-              htmlFor="nickname"
-              className="custom-label mb-2 inline-block"
-            >
+            <label htmlFor="nickname" className="custom-label mb-2 inline-block">
               <span>Nickname</span>
             </label>
             <Controller
               name="nickname"
               control={control}
               render={({ field }) => (
-                <TextInput
-                  id="nickname"
-                  type="text"
-                  placeholder={`Nickname`}
-                  name={field.name}
-                  value={field.value}
-                  onChange={field.onChange}
-                ></TextInput>
+                <TextInput id="nickname" type="text" placeholder={`Nickname`} name={field.name} value={field.value} onChange={field.onChange}></TextInput>
               )}
             />
           </div>
@@ -145,21 +109,11 @@ export default function EmployeeForm({ isOpen, onClose, employee, onReload }) {
               name="active"
               control={control}
               render={({ field }) => (
-                <Checkbox
-                  id="active"
-                  name={field.name}
-                  onChange={() => field.onChange(!field.value)}
-                  checked={field.value}
-                  label="Available"
-                ></Checkbox>
+                <Checkbox id="active" name={field.name} onChange={() => field.onChange(!field.value)} checked={field.value} label="Available"></Checkbox>
               )}
             />
           </div>
-          <button
-            type="submit"
-            className="btn btn-primary mt-1 w-full"
-            disabled={formState.loading}
-          >
+          <button type="submit" className="btn btn-primary mt-1 w-full" disabled={formState.loading}>
             Update
           </button>
 

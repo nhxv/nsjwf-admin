@@ -39,16 +39,7 @@ interface ICustomerOrderFormFields {
   products: Array<ICustomerOrderProduct>;
 }
 
-export default function CustomerOrderForm({
-  edit,
-  initialData,
-  customers,
-  editedProducts,
-  allProducts,
-  employees,
-  loadTemplate,
-  onClear,
-}) {
+export default function CustomerOrderForm({ edit, initialData, customers, editedProducts, allProducts, employees, loadTemplate, onClear }) {
   const [formState, setFormState] = useState({
     success: "",
     error: "",
@@ -58,9 +49,7 @@ export default function CustomerOrderForm({
 
   const navigate = useNavigate();
 
-  const [availableProducts, _] = useState(
-    allProducts.filter((product) => !product.discontinued)
-  );
+  const [availableProducts, _] = useState(allProducts.filter((product) => !product.discontinued));
   const [search, setSearch] = useState({
     products: [],
     query: "",
@@ -73,7 +62,7 @@ export default function CustomerOrderForm({
       ...initialData,
       products: editedProducts ?? [],
     }),
-    [initialData, editedProducts]
+    [initialData, editedProducts],
   );
 
   const {
@@ -126,10 +115,7 @@ export default function CustomerOrderForm({
       if (edit) {
         // edit order
         reqData["code"] = data["code"];
-        const res = await api.put(
-          `/customer-orders/${reqData["code"]}`,
-          reqData
-        );
+        const res = await api.put(`/customer-orders/${reqData["code"]}`, reqData);
         if (res) {
           navigate(`/customer/view-customer-order-detail/${reqData["code"]}`);
         }
@@ -141,9 +127,7 @@ export default function CustomerOrderForm({
         }
       }
     } catch (e) {
-      const error = JSON.parse(
-        JSON.stringify(e.response ? e.response.data.error : e)
-      );
+      const error = JSON.parse(JSON.stringify(e.response ? e.response.data.error : e));
       setFormState((prev) => ({
         ...prev,
         error: error.message,
@@ -209,10 +193,7 @@ export default function CustomerOrderForm({
   const onChangeSearch = (e) => {
     if (e.target.value) {
       const searched = availableProducts.filter((product) =>
-        product.name
-          .toLowerCase()
-          .replace(/\s+/g, "")
-          .includes(e.target.value.toLowerCase().replace(/\s+/g, ""))
+        product.name.toLowerCase().replace(/\s+/g, "").includes(e.target.value.toLowerCase().replace(/\s+/g, "")),
       );
       setSearch((prev) => ({
         ...prev,
@@ -228,9 +209,7 @@ export default function CustomerOrderForm({
     }
   };
 
-  const toRow = (
-    f: ICustomerOrderProduct & { rowKey?: string }
-  ): ICustomerOrderProduct => ({
+  const toRow = (f: ICustomerOrderProduct & { rowKey?: string }): ICustomerOrderProduct => ({
     id: f.id,
     appear: f.appear,
     name: f.name,
@@ -246,10 +225,7 @@ export default function CustomerOrderForm({
     const found = fields.filter((f) => f.name === product.name);
     if (found.length >= product.units.length) {
       // cannot add more of this product, but we'll bump them up the list for searching purpose
-      replace([
-        ...found.map(toRow),
-        ...fields.filter((f) => f.name !== product.name).map(toRow),
-      ]);
+      replace([...found.map(toRow), ...fields.filter((f) => f.name !== product.name).map(toRow)]);
       return;
     }
 
@@ -310,12 +286,7 @@ export default function CustomerOrderForm({
               name="customerName"
               control={control}
               render={({ field }) => (
-                <SelectSearch
-                  name="customer"
-                  value={field.value}
-                  setValue={field.onChange}
-                  options={customers.map((customer) => customer.name)}
-                />
+                <SelectSearch name="customer" value={field.value} setValue={field.onChange} options={customers.map((customer) => customer.name)} />
               )}
             />
           </div>
@@ -328,14 +299,7 @@ export default function CustomerOrderForm({
               name="manualCode"
               control={control}
               render={({ field }) => (
-                <TextInput
-                  id="manual-code"
-                  type="text"
-                  placeholder={`Manual code`}
-                  name={field.name}
-                  value={field.value}
-                  onChange={field.onChange}
-                ></TextInput>
+                <TextInput id="manual-code" type="text" placeholder={`Manual code`} name={field.name} value={field.value} onChange={field.onChange}></TextInput>
               )}
             />
           </div>
@@ -355,17 +319,13 @@ export default function CustomerOrderForm({
                   placeholder="Expected Delivery Date"
                   name={field.name}
                   value={field.value}
-                  onChange={field.onChange}
-                ></DateInput>
+                  onChange={field.onChange}></DateInput>
               )}
             />
           </div>
 
           <div className="col-span-12 mb-5 xl:col-span-3">
-            <label
-              htmlFor="employee"
-              className="custom-label mb-2 inline-block"
-            >
+            <label htmlFor="employee" className="custom-label mb-2 inline-block">
               Assign to
             </label>
             <Controller
@@ -376,8 +336,7 @@ export default function CustomerOrderForm({
                   name={field.name}
                   value={field.value}
                   setValue={field.onChange}
-                  options={employees.map((employee) => employee.nickname)}
-                ></SelectInput>
+                  options={employees.map((employee) => employee.nickname)}></SelectInput>
               )}
             />
           </div>
@@ -394,32 +353,20 @@ export default function CustomerOrderForm({
                   name={field.name}
                   value={field.value}
                   setValue={field.onChange}
-                  options={Object.values(OrderStatus).filter(
-                    (status) => status !== OrderStatus.CANCELED
-                  )}
-                ></SelectInput>
+                  options={Object.values(OrderStatus).filter((status) => status !== OrderStatus.CANCELED)}></SelectInput>
               )}
             />
           </div>
 
           {customerName && (
-            <button
-              type="button"
-              className="btn btn-primary col-span-12 mt-3"
-              onClick={onNextPage}
-              disabled={formState.loading || isSubmitting}
-            >
+            <button type="button" className="btn btn-primary col-span-12 mt-3" onClick={onNextPage} disabled={formState.loading || isSubmitting}>
               <span>Set product</span>
               <span>
                 <BiRightArrowAlt className="ml-1 h-7 w-7"></BiRightArrowAlt>
               </span>
             </button>
           )}
-          <button
-            type="button"
-            className="btn btn-accent col-span-12 mt-3"
-            onClick={onClearForm}
-          >
+          <button type="button" className="btn btn-accent col-span-12 mt-3" onClick={onClearForm}>
             <span>Revert change(s)</span>
           </button>
         </div>
@@ -434,15 +381,7 @@ export default function CustomerOrderForm({
                   <Controller
                     name="note"
                     control={control}
-                    render={({ field }) => (
-                      <TextInput
-                        id="note"
-                        name={field.name}
-                        placeholder="Remarks"
-                        value={field.value}
-                        onChange={field.onChange}
-                      />
-                    )}
+                    render={({ field }) => <TextInput id="note" name={field.name} placeholder="Remarks" value={field.value} onChange={field.onChange} />}
                   />
                 </div>
 
@@ -451,23 +390,13 @@ export default function CustomerOrderForm({
                     name="isTest"
                     control={control}
                     render={({ field }) => (
-                      <Checkbox
-                        id="test"
-                        name={field.name}
-                        label="Test"
-                        onChange={() => field.onChange(!field.value)}
-                        checked={field.value}
-                      ></Checkbox>
+                      <Checkbox id="test" name={field.name} label="Test" onChange={() => field.onChange(!field.value)} checked={field.value}></Checkbox>
                     )}
                   />
                 </div>
 
                 <div className="grid grid-cols-12 gap-3">
-                  <button
-                    type="button"
-                    className="btn-outline-primary btn col-span-6"
-                    onClick={onPreviousPage}
-                  >
+                  <button type="button" className="btn-outline-primary btn col-span-6" onClick={onPreviousPage}>
                     <span>
                       <BiLeftArrowAlt className="mr-1 h-7 w-7"></BiLeftArrowAlt>
                     </span>
@@ -476,20 +405,11 @@ export default function CustomerOrderForm({
                   <button
                     type="submit"
                     className="btn btn-primary col-span-6"
-                    disabled={
-                      initialData.status === "COMPLETED" ||
-                      formState.loading ||
-                      isSubmitting
-                    }
-                  >
+                    disabled={initialData.status === "COMPLETED" || formState.loading || isSubmitting}>
                     <span>{edit ? "Update" : "Create"}</span>
                   </button>
 
-                  <button
-                    type="button"
-                    className="btn btn-accent col-span-12"
-                    onClick={onClearForm}
-                  >
+                  <button type="button" className="btn btn-accent col-span-12" onClick={onClearForm}>
                     <span>Clear change(s)</span>
                   </button>
                 </div>
@@ -527,8 +447,7 @@ export default function CustomerOrderForm({
                       }))
                     }
                     onSelect={onAddProduct}
-                    onClear={onClearQuery}
-                  ></SearchSuggest>
+                    onClear={onClearQuery}></SearchSuggest>
                 </div>
 
                 {fields && fields.length > 0 ? (

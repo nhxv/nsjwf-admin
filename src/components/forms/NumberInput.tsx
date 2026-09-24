@@ -1,13 +1,4 @@
-export default function NumberInput({
-  id,
-  placeholder,
-  name,
-  value,
-  onChange,
-  min = -99999,
-  max = 99999,
-  disabled = false,
-}) {
+export default function NumberInput({ id, placeholder, name, value, onChange, min = -99999, max = 99999, disabled = false }) {
   const onSelectAll = (e) => {
     setTimeout(() => e.target.select(), 0);
   };

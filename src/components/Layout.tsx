@@ -256,35 +256,21 @@ export default function Layout({ children }) {
           {/* Navbar */}
           <nav className="navbar sticky top-0 z-20 w-full bg-base-100 shadow-md dark:bg-base-200">
             <div className="navbar-start">
-              <label
-                htmlFor="mobile-drawer"
-                className="btn btn-square btn-ghost hover:bg-base-300"
-              >
+              <label htmlFor="mobile-drawer" className="btn btn-square btn-ghost hover:bg-base-300">
                 <BiMenuAltLeft className="inline-block h-8 w-8"></BiMenuAltLeft>
               </label>
             </div>
             <div className="navbar-center">
-              <div className="mx-2 flex-1 px-2 text-xl font-bold">
-                {getTitle(location.pathname)}
-              </div>
+              <div className="mx-2 flex-1 px-2 text-xl font-bold">{getTitle(location.pathname)}</div>
             </div>
             <div className="navbar-end">
               <div className="dropdown dropdown-end">
-                <label
-                  tabIndex={0}
-                  className="btn btn-square btn-ghost hover:bg-base-300"
-                >
+                <label tabIndex={0} className="btn btn-square btn-ghost hover:bg-base-300">
                   <BiDotsHorizontalRounded className="inline-block h-8 w-8"></BiDotsHorizontalRounded>
                 </label>
-                <ul
-                  tabIndex={0}
-                  className="dropdown-content menu rounded-box w-52 border border-base-300 bg-base-100 p-2 shadow-md dark:bg-base-200"
-                >
+                <ul tabIndex={0} className="dropdown-content menu rounded-box w-52 border border-base-300 bg-base-100 p-2 shadow-md dark:bg-base-200">
                   <li>
-                    <a
-                      className="text-base-content hover:bg-base-200 focus:bg-base-200 dark:hover:bg-base-300 dark:focus:bg-base-300"
-                      onClick={onProfile}
-                    >
+                    <a className="text-base-content hover:bg-base-200 focus:bg-base-200 dark:hover:bg-base-300 dark:focus:bg-base-300" onClick={onProfile}>
                       <span>
                         <BiUser className="mr-1 h-6 w-6"></BiUser>
                       </span>
@@ -292,10 +278,7 @@ export default function Layout({ children }) {
                     </a>
                   </li>
                   <li>
-                    <a
-                      className="text-base-content hover:bg-base-200 focus:bg-base-200 dark:hover:bg-base-300 dark:focus:bg-base-300"
-                      onClick={onSignOut}
-                    >
+                    <a className="text-base-content hover:bg-base-200 focus:bg-base-200 dark:hover:bg-base-300 dark:focus:bg-base-300" onClick={onSignOut}>
                       <span>
                         <BiExit className="mr-1 h-6 w-6"></BiExit>
                       </span>
@@ -332,14 +315,7 @@ export default function Layout({ children }) {
                             <div key={i}>
                               {item.visible.includes(role) && (
                                 <li>
-                                  <NavLink
-                                    to={item.href}
-                                    className={(navData) =>
-                                      navData.isActive
-                                        ? `active text-primary-content`
-                                        : ``
-                                    }
-                                  >
+                                  <NavLink to={item.href} className={(navData) => (navData.isActive ? `active text-primary-content` : ``)}>
                                     {item.icon} {item.itemName}
                                   </NavLink>
                                 </li>
@@ -347,10 +323,7 @@ export default function Layout({ children }) {
                             </div>
                           );
                         })}
-                        {index !== categories.length - 1 &&
-                          categories[index + 1].visible.includes(role) && (
-                            <li></li>
-                          )}
+                        {index !== categories.length - 1 && categories[index + 1].visible.includes(role) && <li></li>}
                       </>
                     )}
                   </div>

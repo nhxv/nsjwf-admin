@@ -44,19 +44,12 @@ export default function VendorOrderDetail() {
     navigate(`/vendor/draft-vendor-order/${code}`);
   };
 
-  if (
-    orderQuery.status === "pending" ||
-    orderQuery.fetchStatus === "fetching"
-  ) {
+  if (orderQuery.status === "pending" || orderQuery.fetchStatus === "fetching") {
     return <Spinner></Spinner>;
   }
 
-  if (
-    orderQuery.fetchStatus === "paused" ||
-    (orderQuery.status === "error" && orderQuery.fetchStatus === "idle")
-  ) {
-    if (orderQuery.fetchStatus === "paused")
-      return <Alert type="error" message="Network Error" />;
+  if (orderQuery.fetchStatus === "paused" || (orderQuery.status === "error" && orderQuery.fetchStatus === "idle")) {
+    if (orderQuery.fetchStatus === "paused") return <Alert type="error" message="Network Error" />;
     return <AlertFromQueryError queryError={orderQuery.error} />;
   }
 
@@ -66,12 +59,8 @@ export default function VendorOrderDetail() {
       <div className="flex justify-between">
         <div>
           <span className="block">#{order.manual_code ?? order.code}</span>
-          <span className="block text-xl font-semibold">
-            {order.vendor_name}
-          </span>
-          <span className="block text-sm text-neutral">
-            {convertTimeToText(new Date(order.expected_at))}
-          </span>
+          <span className="block text-xl font-semibold">{order.vendor_name}</span>
+          <span className="block text-sm text-neutral">{convertTimeToText(new Date(order.expected_at))}</span>
           <div className="mt-6">
             <StatusTag status={order.status}></StatusTag>
           </div>
@@ -85,8 +74,7 @@ export default function VendorOrderDetail() {
             <>
               <Disclosure.Button
                 className="divider w-full py-6 hover:text-primary hover:before:bg-primary hover:after:bg-primary"
-                onClick={(e) => e.stopPropagation()}
-              >
+                onClick={(e) => e.stopPropagation()}>
                 {open ? (
                   <>
                     Hide
@@ -105,10 +93,7 @@ export default function VendorOrderDetail() {
                 )}
               </Disclosure.Button>
               <Disclosure.Panel as={Fragment}>
-                <Disclosure.Button
-                  as="div"
-                  onClick={(e) => e.stopPropagation()}
-                >
+                <Disclosure.Button as="div" onClick={(e) => e.stopPropagation()}>
                   <div className="mb-2 flex items-center">
                     <div className="w-6/12">
                       <span className="font-medium">Product</span>
@@ -124,28 +109,17 @@ export default function VendorOrderDetail() {
                   {/* products in order */}
                   {order.productVendorOrders.map((productOrder) => {
                     return (
-                      <div
-                        key={productOrder.unit_code}
-                        className="rounded-btn mb-2 flex items-center justify-center bg-base-200 py-3 dark:bg-base-300"
-                      >
+                      <div key={productOrder.unit_code} className="rounded-btn mb-2 flex items-center justify-center bg-base-200 py-3 dark:bg-base-300">
                         <div className="ml-3 w-6/12">
                           <span>{productOrder.product_name}</span>
                         </div>
                         <div className="w-3/12 text-center">
                           <span>
                             {productOrder.quantity}{" "}
-                            {productOrder.unit_code
-                              .split("_")[1]
-                              .toLowerCase() === "box"
-                              ? ``
-                              : `(${productOrder.unit_code
-                                  .split("_")[1]
-                                  .toLowerCase()})`}
+                            {productOrder.unit_code.split("_")[1].toLowerCase() === "box" ? `` : `(${productOrder.unit_code.split("_")[1].toLowerCase()})`}
                           </span>
                         </div>
-                        <div className="w-3/12 text-center">
-                          {niceVisualDecimal(productOrder.unit_price)}
-                        </div>
+                        <div className="w-3/12 text-center">{niceVisualDecimal(productOrder.unit_price)}</div>
                       </div>
                     );
                   })}
@@ -160,19 +134,10 @@ export default function VendorOrderDetail() {
       <div className="mt-2 flex items-center">
         <span className="mr-2">Total:</span>
         <span className="text-xl font-medium">
-          $
-          {niceVisualDecimal(
-            order.productVendorOrders.reduce(
-              (prev, curr) => prev + curr.quantity * curr.unit_price,
-              0
-            )
-          )}
+          ${niceVisualDecimal(order.productVendorOrders.reduce((prev, curr) => prev + curr.quantity * curr.unit_price, 0))}
         </span>
       </div>
-      <button
-        className="btn btn-primary mt-5 w-full"
-        onClick={() => onUpdateOrder(order.code)}
-      >
+      <button className="btn btn-primary mt-5 w-full" onClick={() => onUpdateOrder(order.code)}>
         Update order
       </button>
 
@@ -186,11 +151,7 @@ export default function VendorOrderDetail() {
               setIsImgModalOpen(true);
             }}
           />
-          <ImageModal
-            isOpen={isImgModalOpen}
-            onClose={() => setIsImgModalOpen(false)}
-            imageSrc={imageURL}
-          />
+          <ImageModal isOpen={isImgModalOpen} onClose={() => setIsImgModalOpen(false)} imageSrc={imageURL} />
         </>
       )}
     </div>
