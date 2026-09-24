@@ -93,7 +93,7 @@ export default function SaleDetailModal({ isOpen, onClose, report }) {
           setError("");
         }, 2000);
       }
-      saleRevertMut.reset();
+      saleUpdateMut.reset();
     },
   });
 
