@@ -4,19 +4,16 @@ import { convertTimeToText } from "../../../../commons/utils/time.util";
 import Modal from "../../../../components/Modal";
 import StatusTag from "../../../../components/StatusTag";
 import { useAuthStore } from "../../../../stores/auth.store";
-import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
-import api from "../../../../stores/api";
+import api, { getApiError } from "../../../../stores/api";
 import { Menu } from "@headlessui/react";
-import { handleTokenExpire } from "../../../../commons/utils/token.util";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { niceVisualDecimal } from "../../../../commons/utils/fraction.util";
 
 export default function SaleDetailModal({ isOpen, onClose, report }) {
   const role = useAuthStore((state) => state.role);
-  const navigate = useNavigate();
   const [error, setError] = useState("");
 
   const queryClient = useQueryClient();
@@ -38,11 +35,9 @@ export default function SaleDetailModal({ isOpen, onClose, report }) {
       onClose();
     },
     onError: (err: any) => {
-      let _error = JSON.parse(JSON.stringify(err.response ? err.response.data.error : err));
-      if (_error.status === 401) {
-        handleTokenExpire(navigate, setError, (msg) => msg);
-      } else {
-        setError(_error.message);
+      const _error = getApiError(err);
+      setError(_error.message);
+      if (_error.status !== 401) {
         setTimeout(() => {
           setError("");
         }, 2000);

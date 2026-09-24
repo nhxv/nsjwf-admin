@@ -9,8 +9,7 @@ import NumberInput from "../../../../components/forms/NumberInput";
 import SearchSuggest from "../../../../components/forms/SearchSuggest";
 import TextInput from "../../../../components/forms/TextInput";
 import SelectInput from "../../../../components/forms/SelectInput";
-import api from "../../../../stores/api";
-import { handleTokenExpire } from "../../../../commons/utils/token.util";
+import api, { getApiError } from "../../../../stores/api";
 
 export default function CustomerForm({ editedId, editedProducts, initialData, allProducts, onClear }) {
   const navigate = useNavigate();
@@ -116,16 +115,12 @@ export default function CustomerForm({ editedId, editedProducts, initialData, al
         }
       }
     } catch (e) {
-      const error = JSON.parse(JSON.stringify(e.response ? e.response.data.error : e));
+      const error = getApiError(e);
       setFormState((prev) => ({
         ...prev,
         error: error.message,
         loading: false,
       }));
-
-      if (error.status === 401) {
-        handleTokenExpire(navigate, setFormState);
-      }
     }
   };
 

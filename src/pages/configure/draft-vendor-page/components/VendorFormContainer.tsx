@@ -1,14 +1,12 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router";
+import { useParams } from "react-router";
 import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
-import api from "../../../../stores/api";
+import api, { getApiError } from "../../../../stores/api";
 import VendorForm from "./VendorForm";
-import { handleTokenExpire } from "../../../../commons/utils/token.util";
 
 export default function VendorFormContainer() {
   const params = useParams();
-  const navigate = useNavigate();
   const [reload, setReload] = useState(false);
   const [fetchData, setFetchData] = useState({
     allProducts: [],
@@ -62,7 +60,7 @@ export default function VendorFormContainer() {
           }));
         })
         .catch((e) => {
-          const error = JSON.parse(JSON.stringify(e.response ? e.response.data.error : e));
+          const error = getApiError(e);
           setFetchData((prev) => ({
             ...prev,
             allProducts: [],
@@ -71,10 +69,6 @@ export default function VendorFormContainer() {
             error: error.message,
             loading: false,
           }));
-
-          if (error.status === 401) {
-            handleTokenExpire(navigate, setFetchData);
-          }
         });
     } else {
       // create vendor
@@ -106,7 +100,7 @@ export default function VendorFormContainer() {
           }));
         })
         .catch((e) => {
-          const error = JSON.parse(JSON.stringify(e.response ? e.response.data.error : e));
+          const error = getApiError(e);
           setFetchData((prev) => ({
             ...prev,
             allProducts: [],
@@ -115,10 +109,6 @@ export default function VendorFormContainer() {
             empty: "",
             loading: false,
           }));
-
-          if (error.status === 401) {
-            handleTokenExpire(navigate, setFetchData);
-          }
         });
     }
   }, [reload, params]);

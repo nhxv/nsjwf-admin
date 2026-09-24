@@ -2,7 +2,7 @@ import { Controller, useForm } from "react-hook-form";
 import { useState } from "react";
 import { BiCheckDouble, BiError } from "react-icons/bi";
 import { VehicleResponse } from "../../../../models/vehicle-response.model";
-import api from "../../../../stores/api";
+import api, { getApiError } from "../../../../stores/api";
 import Spinner from "../../../../components/Spinner";
 import TextInput from "../../../../components/forms/TextInput";
 import { useVehicleConfigStore } from "../../../../stores/vehicle-config.store";
@@ -54,7 +54,7 @@ export default function VehicleForm() {
           clearVehicleConfig();
         }, 2000);
       } catch (e) {
-        const error = JSON.parse(JSON.stringify(e.response ? e.response.data.error : e));
+        const error = getApiError(e);
         setFormState((prev) => ({
           ...prev,
           error: error.message,
@@ -77,7 +77,7 @@ export default function VehicleForm() {
         }, 2000);
         reset();
       } catch (e) {
-        const error = JSON.parse(JSON.stringify(e.response ? e.response.data.error : e));
+        const error = getApiError(e);
         setFormState((prev) => ({
           ...prev,
           error: error.message,

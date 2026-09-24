@@ -6,7 +6,7 @@ import Alert from "../components/Alert";
 import Spinner from "../components/Spinner";
 import TextInput from "../components/forms/TextInput";
 import { SignInResponse } from "../models/sign-in-response.model";
-import api from "../stores/api";
+import api, { getApiError } from "../stores/api";
 import { useAuthStore } from "../stores/auth.store";
 
 export default function SignInPage() {
@@ -40,7 +40,7 @@ export default function SignInPage() {
         }
       })
       .catch((e) => {
-        const error = JSON.parse(JSON.stringify(e.response ? e.response.data.error : e));
+        const error = getApiError(e);
         setFormState((prev) => ({
           ...prev,
           error: error.message,

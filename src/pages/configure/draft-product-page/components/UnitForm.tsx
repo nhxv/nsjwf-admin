@@ -6,12 +6,9 @@ import Checkbox from "../../../../components/forms/Checkbox";
 import TextInput from "../../../../components/forms/TextInput";
 import Modal from "../../../../components/Modal";
 import Spinner from "../../../../components/Spinner";
-import api from "../../../../stores/api";
-import { useNavigate } from "react-router-dom";
-import { handleTokenExpire } from "../../../../commons/utils/token.util";
+import api, { getApiError } from "../../../../stores/api";
 
 export default function DraftUnitForm({ productId, unit, isOpen, onClose }) {
-  const navigate = useNavigate();
   const [formState, setFormState] = useState({
     error: "",
     loading: false,
@@ -43,16 +40,12 @@ export default function DraftUnitForm({ productId, unit, isOpen, onClose }) {
         }
       }
     } catch (e) {
-      const error = JSON.parse(JSON.stringify(e.response ? e.response.data.error : e));
+      const error = getApiError(e);
       setFormState((prev) => ({
         ...prev,
         error: error.message,
         loading: false,
       }));
-
-      if (error.status === 401) {
-        handleTokenExpire(navigate, setFormState);
-      }
     }
   };
 

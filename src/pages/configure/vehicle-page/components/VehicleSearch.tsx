@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import api from "../../../../stores/api";
+import api, { getApiError } from "../../../../stores/api";
 import SearchInput from "../../../../components/forms/SearchInput";
 import Spinner from "../../../../components/Spinner";
 import { BiSearch, BiTrash, BiEdit } from "react-icons/bi";
@@ -38,7 +38,7 @@ export default function VehicleSearch() {
       }
       setSearchState((prev) => ({ ...prev, loading: false, found: resData }));
     } catch (e) {
-      const error = JSON.parse(JSON.stringify(e.response ? e.response.data.error : e));
+      const error = getApiError(e);
       setSearchState((prev) => ({
         ...prev,
         greet: "",

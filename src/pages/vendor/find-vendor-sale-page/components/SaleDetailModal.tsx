@@ -3,10 +3,9 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { niceVisualDecimal } from "../../../../commons/utils/fraction.util";
 import { convertTimeToText } from "../../../../commons/utils/time.util";
-import { handleTokenExpire } from "../../../../commons/utils/token.util";
 import Modal from "../../../../components/Modal";
 import StatusTag from "../../../../components/StatusTag";
-import api from "../../../../stores/api";
+import api, { getApiError } from "../../../../stores/api";
 import { useAuthStore } from "../../../../stores/auth.store";
 import { Menu } from "@headlessui/react";
 import { BiRotateLeft } from "react-icons/bi";
@@ -59,11 +58,9 @@ export default function SaleDetailModal({ isOpen, onClose, report }) {
       onClose();
     },
     onError: (err: any) => {
-      let _error = JSON.parse(JSON.stringify(err.response ? err.response.data.error : err));
-      if (_error.status === 401) {
-        handleTokenExpire(navigate, setError, (msg) => msg);
-      } else {
-        setError(_error.message);
+      const _error = getApiError(err);
+      setError(_error.message);
+      if (_error.status !== 401) {
         setTimeout(() => {
           setError("");
         }, 2000);
@@ -89,11 +86,9 @@ export default function SaleDetailModal({ isOpen, onClose, report }) {
       onClose();
     },
     onError: (err: any) => {
-      let _error = JSON.parse(JSON.stringify(err.response ? err.response.data.error : err));
-      if (_error.status === 401) {
-        handleTokenExpire(navigate, setError, (msg) => msg);
-      } else {
-        setError(_error.message);
+      const _error = getApiError(err);
+      setError(_error.message);
+      if (_error.status !== 401) {
         setTimeout(() => {
           setError("");
         }, 2000);

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import api from "../../../stores/api";
+import api, { getApiError } from "../../../stores/api";
 import { OrderStatus } from "../../../commons/enums/order-status.enum";
 import SelectInput from "../../../components/forms/SelectInput";
 import Spinner from "../../../components/Spinner";
@@ -8,11 +8,8 @@ import TaskList from "./components/TaskList";
 import { useAuthStore } from "../../../stores/auth.store";
 import Alert from "../../../components/Alert";
 import Stepper from "../../../components/Stepper";
-import { useNavigate } from "react-router-dom";
-import { handleTokenExpire } from "../../../commons/utils/token.util";
 
 export default function ViewTaskPage() {
-  const navigate = useNavigate();
   const [fetchData, setFetchData] = useState({
     tasks: [],
     toast: "",
@@ -111,7 +108,7 @@ export default function ViewTaskPage() {
         }
       })
       .catch((e) => {
-        const error = JSON.parse(JSON.stringify(e.response ? e.response.data.error : e));
+        const error = getApiError(e);
         setFetchData((prev) => ({
           ...prev,
           tasks: [],
@@ -119,10 +116,6 @@ export default function ViewTaskPage() {
           empty: "",
           loading: false,
         }));
-
-        if (error.status === 401) {
-          handleTokenExpire(navigate, setFetchData);
-        }
       });
   };
 

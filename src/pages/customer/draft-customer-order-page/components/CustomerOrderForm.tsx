@@ -11,8 +11,7 @@ import SelectInput from "../../../../components/forms/SelectInput";
 import SelectSearch from "../../../../components/forms/SelectSearch";
 import TextInput from "../../../../components/forms/TextInput";
 import Spinner from "../../../../components/Spinner";
-import api from "../../../../stores/api";
-import { handleTokenExpire } from "../../../../commons/utils/token.util";
+import api, { getApiError } from "../../../../stores/api";
 import CustomerOrderProductRow from "./CustomerOrderProductRow";
 import CustomerOrderTotal from "./CustomerOrderTotal";
 
@@ -127,17 +126,13 @@ export default function CustomerOrderForm({ edit, initialData, customers, edited
         }
       }
     } catch (e) {
-      const error = JSON.parse(JSON.stringify(e.response ? e.response.data.error : e));
+      const error = getApiError(e);
       setFormState((prev) => ({
         ...prev,
         error: error.message,
         success: "",
         loading: false,
       }));
-
-      if (error.status === 401) {
-        handleTokenExpire(navigate, setFormState);
-      }
     }
   };
 

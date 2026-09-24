@@ -9,8 +9,7 @@ import SearchSuggest from "../../../../components/forms/SearchSuggest";
 import SelectInput from "../../../../components/forms/SelectInput";
 import TextInput from "../../../../components/forms/TextInput";
 import Spinner from "../../../../components/Spinner";
-import api from "../../../../stores/api";
-import { handleTokenExpire } from "../../../../commons/utils/token.util";
+import api, { getApiError } from "../../../../stores/api";
 
 export default function VendorForm({ editedId, editedProducts, allProducts, initialData, onClear }) {
   const navigate = useNavigate();
@@ -107,16 +106,12 @@ export default function VendorForm({ editedId, editedProducts, allProducts, init
         }
       }
     } catch (e) {
-      const error = JSON.parse(JSON.stringify(e.response ? e.response.data.error : e));
+      const error = getApiError(e);
       setFormState((prev) => ({
         ...prev,
         error: error.message,
         loading: false,
       }));
-
-      if (error.status === 401) {
-        handleTokenExpire(navigate, setFormState);
-      }
     }
   };
 

@@ -1,15 +1,13 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Location } from "../../../../commons/enums/location.enum";
 import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
-import api from "../../../../stores/api";
+import api, { getApiError } from "../../../../stores/api";
 import ProductForm from "./ProductForm";
-import { handleTokenExpire } from "../../../../commons/utils/token.util";
 
 export default function ProductFormContainer() {
   const params = useParams();
-  const navigate = useNavigate();
   const [reload, setReload] = useState(false);
   const [fetchData, setFetchData] = useState({
     units: [],
@@ -39,17 +37,13 @@ export default function ProductFormContainer() {
           }));
         })
         .catch((e) => {
-          const error = JSON.parse(JSON.stringify(e.response ? e.response.data.error : e));
+          const error = getApiError(e);
           setFetchData((prev) => ({
             ...prev,
             empty: "",
             error: error.message,
             loading: false,
           }));
-
-          if (error.status === 401) {
-            handleTokenExpire(navigate, setFetchData);
-          }
         });
     } else {
       setFetchData((prev) => ({

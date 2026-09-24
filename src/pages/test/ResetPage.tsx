@@ -1,4 +1,4 @@
-import api from "../../stores/api";
+import api, { getApiError } from "../../stores/api";
 import { BiReset } from "react-icons/bi";
 import { useState } from "react";
 
@@ -16,7 +16,7 @@ export default function ResetPage() {
         }, 2000);
       }, 2000);
     } catch (e) {
-      const error = JSON.parse(JSON.stringify(e.response ? e.response.data.error : e));
+      const error = getApiError(e);
       setMessage(error.message);
       setTimeout(() => {
         setMessage("");
@@ -35,7 +35,7 @@ export default function ResetPage() {
         }, 2000);
       }, 2000);
     } catch (e) {
-      const error = JSON.parse(JSON.stringify(e.response ? e.response.data.error : e));
+      const error = getApiError(e);
       setMessage(error.message);
       setTimeout(() => {
         setMessage("");

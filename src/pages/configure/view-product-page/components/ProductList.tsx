@@ -4,8 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Alert from "../../../../components/Alert";
 import SearchInput from "../../../../components/forms/SearchInput";
 import Spinner from "../../../../components/Spinner";
-import api from "../../../../stores/api";
-import { handleTokenExpire } from "../../../../commons/utils/token.util";
+import api, { getApiError } from "../../../../stores/api";
 import InventoryToPrint from "./InventoryToPrint";
 import { useReactToPrint } from "react-to-print";
 
@@ -51,17 +50,13 @@ export default function ProductList() {
         }
       })
       .catch((e) => {
-        const error = JSON.parse(JSON.stringify(e.response ? e.response.data.error : e));
+        const error = getApiError(e);
         setFetchData((prev) => ({
           ...prev,
           error: error.message,
           empty: "",
           loading: false,
         }));
-
-        if (error.status === 401) {
-          handleTokenExpire(navigate, setFetchData);
-        }
       });
   }, []);
 

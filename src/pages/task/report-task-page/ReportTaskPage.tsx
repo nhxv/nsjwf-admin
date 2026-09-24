@@ -3,13 +3,10 @@ import { BiCube } from "react-icons/bi";
 import { HiOutlineTruck } from "react-icons/hi";
 import Alert from "../../../components/Alert";
 import Spinner from "../../../components/Spinner";
-import api from "../../../stores/api";
+import api, { getApiError } from "../../../stores/api";
 import { useAuthStore } from "../../../stores/auth.store";
-import { useNavigate } from "react-router-dom";
-import { handleTokenExpire } from "../../../commons/utils/token.util";
 
 export default function ReportTaskPage() {
-  const navigate = useNavigate();
   const [dataState, setDataState] = useState({
     report: [],
     error: "",
@@ -57,16 +54,12 @@ export default function ReportTaskPage() {
         }));
       })
       .catch((e) => {
-        const error = JSON.parse(JSON.stringify(e.response ? e.response.data.error : e));
+        const error = getApiError(e);
         setDataState((prev) => ({
           ...prev,
           error: error.message,
           loading: false,
         }));
-
-        if (error.status === 401) {
-          handleTokenExpire(navigate, setDataState);
-        }
       });
   }, []);
 

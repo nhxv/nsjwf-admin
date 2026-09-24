@@ -3,15 +3,12 @@ import Modal from "../../../../components/Modal";
 import TextInput from "../../../../components/forms/TextInput";
 import { Controller, useForm } from "react-hook-form";
 import Checkbox from "../../../../components/forms/Checkbox";
-import api from "../../../../stores/api";
+import api, { getApiError } from "../../../../stores/api";
 import { useState } from "react";
 import Spinner from "../../../../components/Spinner";
 import Alert from "../../../../components/Alert";
-import { useNavigate } from "react-router-dom";
-import { handleTokenExpire } from "../../../../commons/utils/token.util";
 
 export default function EmployeeForm({ isOpen, onClose, employee, onReload }) {
-  const navigate = useNavigate();
   const [formState, setFormState] = useState({
     error: "",
     loading: false,
@@ -38,16 +35,12 @@ export default function EmployeeForm({ isOpen, onClose, employee, onReload }) {
       onReload();
       onClose();
     } catch (e) {
-      const error = JSON.parse(JSON.stringify(e.response ? e.response.data.error : e));
+      const error = getApiError(e);
       setFormState((prev) => ({
         ...prev,
         error: error.message,
         loading: false,
       }));
-
-      if (error.status === 401) {
-        handleTokenExpire(navigate, setFormState);
-      }
     }
   };
 

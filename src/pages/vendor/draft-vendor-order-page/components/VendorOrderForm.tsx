@@ -1,7 +1,6 @@
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { useMemo, useState } from "react";
-import api from "../../../../stores/api";
-import { handleTokenExpire } from "../../../../commons/utils/token.util";
+import api, { getApiError } from "../../../../stores/api";
 import { useNavigate } from "react-router-dom";
 import { useStateURL } from "../../../../commons/hooks/objecturl.hook";
 import VendorOrderFormPage0 from "./VendorOrderFormPage0";
@@ -151,16 +150,12 @@ export default function VendorOrderForm({ edit, vendors, allProducts, initialDat
         }
       }
     } catch (e) {
-      const error = JSON.parse(JSON.stringify(e.response ? e.response.data.error : e));
+      const error = getApiError(e);
       setFormState((prev) => ({
         ...prev,
         error: error.message,
         success: "",
       }));
-
-      if (error.status === 401) {
-        handleTokenExpire(navigate, setFormState);
-      }
     }
   };
 

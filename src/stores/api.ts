@@ -1,7 +1,10 @@
-// Thin `fetch` wrapper that mirrors the subset of the axios API used in this app,
-// so callers can keep reading `res.data` and `e.response.data.error`.
+// Thin `fetch` wrapper that mirrors the subset of the axios API used in this app.
+// Use `getApiError(e)` to read a failed request's status and message.
+
+import { useAuthStore } from "./auth.store";
 
 const API_URL: string = import.meta.env.VITE_API_URL ?? "";
+const SESSION_EXPIRED_MESSAGE = "Invalid session, redirecting to sign in page...";
 
 type QueryParams = Record<string, string | number | boolean | null | undefined>;
 
@@ -21,6 +24,7 @@ export interface ApiResponse<T = any> {
 export class ApiError<T = any> extends Error {
   status?: number;
   response?: ApiResponse<T>;
+  isSessionExpired = false;
 
   constructor(message: string, response?: ApiResponse<T>, name = "ApiError") {
     super(message);
@@ -28,12 +32,33 @@ export class ApiError<T = any> extends Error {
     this.status = response?.status;
     this.response = response;
   }
-
-  // Callers do `JSON.parse(JSON.stringify(e))`, which would drop `message` on a plain Error.
-  toJSON() {
-    return { name: this.name, message: this.message, status: this.status };
-  }
 }
+
+/** Normalize anything thrown by an API call into the backend's `{ status, message }` error shape. */
+export const getApiError = (e: unknown): { status?: number; message: string } => {
+  if (e instanceof ApiError) {
+    if (e.isSessionExpired) {
+      return { status: 401, message: SESSION_EXPIRED_MESSAGE };
+    }
+    const body = e.response?.data?.error;
+    return { status: body?.status ?? e.status, message: body?.message ?? e.message };
+  }
+  return { message: e instanceof Error ? e.message : String(e) };
+};
+
+let isSessionExpiring = false;
+
+// Give the UI a moment to show SESSION_EXPIRED_MESSAGE, then sign out and do a full load
+// of the sign-in page (which also picks up a new deployment). Signing out any earlier
+// would make the private routes redirect to /not-found before the message is seen.
+const expireSession = () => {
+  if (isSessionExpiring) return;
+  isSessionExpiring = true;
+  setTimeout(() => {
+    useAuthStore.getState().signOut();
+    location.assign("/sign-in");
+  }, 2000);
+};
 
 const isAbsoluteURL = (url: string) => /^([a-z][a-z\d+\-.]*:)?\/\//i.test(url);
 
@@ -146,7 +171,13 @@ const request = async <T = any>(method: string, url: string, data?: unknown, con
   };
 
   if (!res.ok) {
-    throw new ApiError(`Request failed with status code ${res.status}`, response);
+    // A 401 without a token, or from sign-in itself (wrong credentials), is not an expired session.
+    const error = new ApiError(`Request failed with status code ${res.status}`, response);
+    if (res.status === 401 && token && !/^\/?auth\//.test(url)) {
+      error.isSessionExpired = true;
+      expireSession();
+    }
+    throw error;
   }
   return response;
 };

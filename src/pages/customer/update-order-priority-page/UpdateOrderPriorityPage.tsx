@@ -3,13 +3,10 @@ import { OrderStatus } from "../../../commons/enums/order-status.enum";
 import Alert from "../../../components/Alert";
 import Spinner from "../../../components/Spinner";
 import TabGroup from "../../../components/TabGroup";
-import api from "../../../stores/api";
+import api, { getApiError } from "../../../stores/api";
 import EmployeeTaskList from "./components/EmployeeTaskList";
-import { useNavigate } from "react-router-dom";
-import { handleTokenExpire } from "../../../commons/utils/token.util";
 
 export default function UpdateOrderPriorityPage() {
-  const navigate = useNavigate();
   const [status, setStatus] = useState(OrderStatus.PICKING);
   const [fetchData, setFetchData] = useState({
     tasks: [],
@@ -60,7 +57,7 @@ export default function UpdateOrderPriorityPage() {
         }));
       })
       .catch((e) => {
-        const error = JSON.parse(JSON.stringify(e.response ? e.response.data.error : e));
+        const error = getApiError(e);
         setFetchData((prev) => ({
           ...prev,
           tasks: [],
@@ -68,10 +65,6 @@ export default function UpdateOrderPriorityPage() {
           empty: "",
           loading: false,
         }));
-
-        if (error.status === 401) {
-          handleTokenExpire(navigate, setFetchData);
-        }
       });
   };
 

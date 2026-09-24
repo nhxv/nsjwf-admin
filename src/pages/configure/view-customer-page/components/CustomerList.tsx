@@ -5,7 +5,6 @@ import { BiEdit, BiPlus } from "react-icons/bi";
 import SearchInput from "../../../../components/forms/SearchInput";
 import Spinner from "../../../../components/Spinner";
 import Alert, { AlertFromQueryError } from "../../../../components/Alert";
-import { handleTokenExpire } from "../../../../commons/utils/token.util";
 import { useQuery } from "@tanstack/react-query";
 
 export default function CustomerList() {

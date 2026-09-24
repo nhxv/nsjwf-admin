@@ -1,12 +1,9 @@
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import { useState } from "react";
 import Alert from "../../../../components/Alert";
-import api from "../../../../stores/api";
-import { handleTokenExpire } from "../../../../commons/utils/token.util";
-import { useNavigate } from "react-router-dom";
+import api, { getApiError } from "../../../../stores/api";
 
 export default function EmployeeTaskList({ employeeTasks, reload }) {
-  const navigate = useNavigate();
   const [employees, setEmployees] = useState(employeeTasks);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -43,12 +40,10 @@ export default function EmployeeTaskList({ employeeTasks, reload }) {
     try {
       const res = await api.put(`/customer-orders/tasks/priority`, reqData);
     } catch (e) {
-      const error = JSON.parse(JSON.stringify(e.response ? e.response.data.error : e));
+      const error = getApiError(e);
       setErrorMessage(error.message);
 
-      if (error.status === 401) {
-        handleTokenExpire(navigate, setErrorMessage, (msg) => msg);
-      } else {
+      if (error.status !== 401) {
         setTimeout(() => {
           reload();
         }, 2000);

@@ -5,9 +5,7 @@ import { PaymentStatus } from "../../../../commons/enums/payment-status.enum";
 import { convertTime, convertTimeToText } from "../../../../commons/utils/time.util";
 import Alert, { AlertFromQueryError } from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
-import api from "../../../../stores/api";
-import { useNavigate } from "react-router-dom";
-import { handleTokenExpire } from "../../../../commons/utils/token.util";
+import api, { getApiError } from "../../../../stores/api";
 import { useMutation, useQueryClient, UseQueryResult } from "@tanstack/react-query";
 import { niceVisualDecimal } from "../../../../commons/utils/fraction.util";
 
@@ -42,7 +40,6 @@ function getQuickbooksCustomerName(name: string) {
 }
 
 export default function CustomerSaleList({ reports, reportQuery, onSelectSale }: CustomerSaleListProps) {
-  const navigate = useNavigate();
   const [pinnedSale, setPinnedSale] = useState([]);
 
   const total = useMemo(() => {
@@ -215,17 +212,8 @@ export default function CustomerSaleList({ reports, reportQuery, onSelectSale }:
 
   if (paymentMethodMut.status === "error") {
     // TODO: Convert this to AlertFromQueryError later.
-    let error = JSON.parse(JSON.stringify(paymentMethodMut.error.response ? paymentMethodMut.error.response.data.error : paymentMethodMut.error));
-    if (error.status === 401) {
-      // This is just cursed.
-      handleTokenExpire(
-        navigate,
-        (err) => {
-          error = err;
-        },
-        (msg) => ({ ...error, message: msg }),
-      );
-    } else {
+    const error = getApiError(paymentMethodMut.error);
+    if (error.status !== 401) {
       setTimeout(() => {
         paymentMethodMut.reset();
         queryClient.invalidateQueries({

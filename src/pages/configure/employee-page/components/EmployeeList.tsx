@@ -1,14 +1,11 @@
 import { useEffect, useState } from "react";
 import Alert from "../../../../components/Alert";
 import Spinner from "../../../../components/Spinner";
-import api from "../../../../stores/api";
+import api, { getApiError } from "../../../../stores/api";
 import { BiEdit } from "react-icons/bi";
 import EmployeeForm from "./EmployeeForm";
-import { useNavigate } from "react-router-dom";
-import { handleTokenExpire } from "../../../../commons/utils/token.util";
 
 export default function EmployeeList() {
-  const navigate = useNavigate();
   const [fetchData, setFetchData] = useState({
     employees: [],
     error: "",
@@ -36,16 +33,12 @@ export default function EmployeeList() {
         }));
       })
       .catch((e) => {
-        const error = JSON.parse(JSON.stringify(e.response ? e.response.data.error : e));
+        const error = getApiError(e);
         setFetchData((prev) => ({
           ...prev,
           error: error.message,
           loading: false,
         }));
-
-        if (error.status === 401) {
-          handleTokenExpire(navigate, setFetchData);
-        }
       });
   }, [reload]);
 
